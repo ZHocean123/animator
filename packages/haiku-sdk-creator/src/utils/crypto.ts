@@ -53,7 +53,7 @@ export const unobfuscate = (obfuscation: Obfuscation): any => {
         encoded += String.fromCharCode(value.charCodeAt(cursor) + 1);
       }
     }
-    return JSON.parse((new Buffer(encoded, 'base64')).toString());
+    return JSON.parse((Buffer.from(encoded, 'base64')).toString());
   } catch (error) {
     // Deliberately repress the error here so it doesn't bubble up on any logs or consoles.
     return {};

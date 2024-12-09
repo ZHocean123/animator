@@ -1,5 +1,4 @@
 // @ts-ignore
-import * as Base64 from '@ronomon/base64';
 import {ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
 import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
 // @ts-ignore
@@ -80,7 +79,8 @@ export const dumpBase64Images = (
     cursor = buffer.indexOf(quotation, imageStart + 1) + 1;
     writeFileSync(
       path.join(folder, outputFilename),
-      Base64.decode(buffer.slice(encodingMarkStart + BASE64_DELIMITER.length, cursor - 1)),
+      buffer.slice(encodingMarkStart + BASE64_DELIMITER.length, cursor - 1),
+      {encoding: 'base64'}
     );
     xml += 'web+haikuroot://' + path.posix.normalize(outputFilename);
     xml += quotation;

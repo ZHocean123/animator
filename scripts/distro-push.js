@@ -32,7 +32,7 @@ try {
   // Make sure we pop stashed changes, but allow this step to fail if we don't have any.
   cp.execSync('git stash pop', processOptions);
 } catch (err) {
-  console.log('No stash entries found.')
+  console.log('No stash entries found.');
 }
 cp.execSync('git add -u', processOptions);
 cp.execSync('git commit --allow-empty -m "auto: release"', processOptions);

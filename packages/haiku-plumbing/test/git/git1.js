@@ -1,20 +1,20 @@
 /* tslint:disable */
 import * as fse from 'haiku-fs-extra';
 import * as path from 'path';
-import {commitProject, init} from '@plumbing/Git';
+import { commitProject, init } from '@plumbing/Git';
 const FOLDER = process.env.GIT_PKILL_DIR;
 
-function bigBuffer () {
+function bigBuffer() {
   let largeBuffer;
-  const large = new Buffer('');
-  const other = new Buffer('a');
+  const large = Buffer.from('');
+  const other = Buffer.from('a');
   for (let i = 0; i <= (500 * 1000); i++) {
     largeBuffer = Buffer.concat([large, other]);
   }
   return large;
 }
 
-function handleError (err) {
+function handleError(err) {
   console.error(err);
   throw err;
 }

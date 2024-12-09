@@ -630,7 +630,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
         }
 
         const [_, base64] = matches;
-        buffer = new Buffer(base64, 'base64');
+        buffer = Buffer.from(base64, 'base64');
       }
 
       if (!buffer) {

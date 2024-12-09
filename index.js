@@ -18,7 +18,7 @@ const haikuURI = process.argv.find((arg) => arg.startsWith('haiku://'));
 if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
   require('@haiku/cli');
 } else {
-  const {app, dialog} = require('electron');
+  const { app, dialog } = require('electron');
 
   if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
     dialog.showErrorBox(
@@ -36,7 +36,7 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     global.process.env.HAIKU_INITIAL_URL = haikuURI;
   }
 
-  const haikuHelperArgs = {stdio: 'inherit'};
+  const haikuHelperArgs = { stdio: 'inherit' };
   if (global.process.env.HAIKU_DEBUG) {
     haikuHelperArgs.execArgv = ['--inspect=9221'];
   }
@@ -47,7 +47,7 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
       return;
     }
 
-    const {message} = data;
+    const { message } = data;
     switch (message) {
       case 'launchCreator':
         global.process.env.HAIKU_ENV = JSON.stringify(data.haiku);
@@ -57,7 +57,7 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
         require('haiku-creator/lib/bakery/electron').default(
           data,
           () => {
-            global.haikuHelper.send({type: 'bakePngSequenceComplete'});
+            global.haikuHelper.send({ type: 'bakePngSequenceComplete' });
           },
         );
         break;

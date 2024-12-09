@@ -12,6 +12,6 @@
     "tslint.jsEnable": true,
     "tslint.alwaysShowRuleFailuresAsWarnings": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.tslint": true
+      "source.fixAll.tslint": "explicit"
     }
 }

@@ -129,7 +129,7 @@ if (argv.preset) {
   runInteractive();
 }
 
-function runInteractive () {
+function runInteractive() {
   async.series([
     (cb) => {
       inquirer.prompt([
@@ -138,9 +138,9 @@ function runInteractive () {
           name: 'devChoice',
           message: 'What do you want to develop?',
           choices: [
-            {name: 'the whole chimichanga', value: 'everything'},
-            {name: 'just glass', value: 'glass'},
-            {name: 'just timeline', value: 'timeline'},
+            { name: 'the whole chimichanga', value: 'everything' },
+            { name: 'just glass', value: 'glass' },
+            { name: 'just timeline', value: 'timeline' },
           ],
           default: inputs.devChoice,
         },
@@ -149,21 +149,21 @@ function runInteractive () {
           name: 'folderChoice',
           message: 'Project folder (select "none" to use the dashboard)',
           choices: [
-            {name: 'none', value: 'none'},
-            {name: 'a fresh blank project', value: 'blank'},
-            {name: 'the previous "blank" project including content', value: 'blank-noclean'},
-            {name: 'primitives (glass)', value: 'primitives-glass'},
-            {name: 'AliensRepro (glass)', value: 'AliensRepro-glass'},
-            {name: 'percybanking (glass)', value: 'percy-glass'},
-            {name: 'statetransitions (core)', value: 'statetransitions-core'},
-            {name: 'simple (glass)', value: 'simple-gl'},
-            {name: 'SuperComplex (glass)', value: 'SuperComplex-glass'},
-            {name: 'Apr91 (glass)', value: 'Apr91-glass'},
-            {name: 'complex (timeline)', value: 'complex-timeline'},
-            {name: 'SuperComplex (timeline)', value: 'SuperComplex-timeline'},
-            {name: 'AliensRepro (timeline)', value: 'AliensRepro-timeline'},
-            {name: 'Move (timeline)', value: 'Move-timeline'},
-            {name: 'metapoem2 (timeline)', value: 'metapoem2-timeline'},
+            { name: 'none', value: 'none' },
+            { name: 'a fresh blank project', value: 'blank' },
+            { name: 'the previous "blank" project including content', value: 'blank-noclean' },
+            { name: 'primitives (glass)', value: 'primitives-glass' },
+            { name: 'AliensRepro (glass)', value: 'AliensRepro-glass' },
+            { name: 'percybanking (glass)', value: 'percy-glass' },
+            { name: 'statetransitions (core)', value: 'statetransitions-core' },
+            { name: 'simple (glass)', value: 'simple-gl' },
+            { name: 'SuperComplex (glass)', value: 'SuperComplex-glass' },
+            { name: 'Apr91 (glass)', value: 'Apr91-glass' },
+            { name: 'complex (timeline)', value: 'complex-timeline' },
+            { name: 'SuperComplex (timeline)', value: 'SuperComplex-timeline' },
+            { name: 'AliensRepro (timeline)', value: 'AliensRepro-timeline' },
+            { name: 'Move (timeline)', value: 'Move-timeline' },
+            { name: 'metapoem2 (timeline)', value: 'metapoem2-timeline' },
           ],
           default: inputs.folderChoice,
         },
@@ -206,14 +206,15 @@ function runInteractive () {
   });
 }
 
-function runAutomatic () {
+function runAutomatic() {
   setup();
   go();
 }
 
 // TODO: Duplicated from distro-configure.js. Move it to
 // right place
-function getReleasePlatform () {
+function getReleasePlatform() {
+  console.log('os.platform()', os.platform());
   switch (os.platform()) {
     case 'darwin':
       return 'mac';
@@ -226,11 +227,11 @@ function getReleasePlatform () {
   }
 }
 
-function getReleaseArchitecture () {
+function getReleaseArchitecture() {
   return os.arch();
 }
 
-function setup () {
+function setup() {
   log.hat(`preparing to develop locally`, 'cyan');
 
   if (global.process.env.DEV === undefined) {
@@ -260,12 +261,12 @@ function setup () {
   }
 }
 
-function go () {
+function go() {
   if (inputs.skipInitialBuild) {
     log.hat('skipping initial build');
   } else {
     log.hat('first compiling everything');
-    cp.execSync('yarn run compile-all', {cwd: ROOT, stdio: 'inherit'});
+    cp.execSync('yarn run compile-all', { cwd: ROOT, stdio: 'inherit' });
   }
 
   log.hat('starting local development', 'green');
@@ -308,7 +309,7 @@ function go () {
   // Allow anything in .env to override the environment variables we set here.
   require('dotenv').config();
   log.hat('Note: NOT watching for code changes. To watch for code changes, run yarn watch-all in a new tab.');
-  mainProcess = spawn('yarn', binaryArgs, {cwd, env: global.process.env, stdio: 'inherit'});
+  mainProcess = spawn('yarn', binaryArgs, { cwd, env: global.process.env, stdio: 'inherit' });
 
   global.process.on('exit', () => {
     if (mainProcess && !mainProcess.killed) {

@@ -26,13 +26,13 @@ const runInstruction = (pack, cb) => {
   const useTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
   const cwd = useTscWatch ? global.process.cwd() : pack.abspath;
   const args = useTscWatch ?
-    [
-      'tsc-watch',
-      '-p',
-      pack.abspath,
-      '--onSuccess',
-      `"node ${join(cwd, 'scripts', 'write-last-compiled')} --outputPath=${join(pack.abspath, '.last-compile')}"`
-    ] :
+  [
+    'tsc-watch',
+    '-p',
+    pack.abspath,
+    '--onSuccess',
+    `"node ${join(cwd, 'scripts', 'write-last-compiled')} --outputPath=${join(pack.abspath, '.last-compile')}"`,
+  ] :
     ['develop'];
   const proc = cp.spawn(cmd, args, {cwd, env: process.env, stdio: 'inherit', shell: true});
   children.push({
