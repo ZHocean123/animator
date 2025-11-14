@@ -55,7 +55,7 @@
     "tslint-config-haiku": "^1.0.16",
     "typescript": "^5.6.0",
     "leaked-handles": "^5.2.0",
-    "haiku-testing": "5.1.2",
+    "haiku-testing": "workspace:*",
     "lottie-web": "5.1.20",
     "nodemon": "1.11.0",
     "ts-loader": "^9.5.0",

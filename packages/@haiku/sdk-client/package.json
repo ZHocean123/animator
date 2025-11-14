@@ -37,7 +37,7 @@
     "@types/node": "^22.0.0",
     "@types/request": "^2.0.0",
     "cross-env": "^7.0.3",
-    "haiku-testing": "5.1.2",
+    "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
     "nyc": "^13.0.1",

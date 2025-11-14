@@ -28,7 +28,7 @@
     "async": "^2.5.0",
     "cross-env": "^7.0.3",
     "electron": "^22.3.0",
-    "haiku-testing": "5.1.2",
+    "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "jsdom": "^11.1.0",
     "leaked-handles": "^5.2.0",
