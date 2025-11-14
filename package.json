@@ -10,6 +10,10 @@
   "main": "index.js",
   "author": "Haiku Systems Inc.",
   "license": "AGPL",
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=1.13.0"
+  },
   "scripts": {
     "add-experiment": "node ./scripts/add-experiment.js",
     "republish-projects": "node ./scripts/republish-projects.js",
@@ -32,8 +36,8 @@
   },
   "resolutions": {
     "@haiku/core": "^5.0.0",
-    "**/@types/react": "15.6.11",
-    "@types/node": "10.12.30"
+    "**/@types/react": "^18.0.0",
+    "@types/node": "^22.0.0"
   },
   "dependencies": {
     "@haiku/cli": "5.1.2",
@@ -61,10 +65,10 @@
     "dependency-graph": "^0.5.0",
     "derequire": "^2.0.6",
     "dotenv": "^5.0.1",
-    "electron": "2.0.8",
-    "electron-builder": "21.2.0",
-    "electron-notarize": "^0.3.0",
-    "electron-rebuild": "^1.8.4",
+    "electron": "^22.3.0",
+    "electron-builder": "^24.13.3",
+    "electron-notarize": "^1.2.0",
+    "electron-rebuild": "^3.2.0",
     "fs-extra": "^4.0.2",
     "git-branch": "0.3.0",
     "glob": "^7.1.2",
@@ -81,11 +85,11 @@
     "spectron": "^3.7.2",
     "tap-spec": "^4.1.2",
     "tape": "^4.9.0",
-    "tsc-watch": "^1.0.27",
-    "typescript": "^3.0.3",
+    "tsc-watch": "^4.5.0",
+    "typescript": "^5.6.0",
     "uglify-es": "^3.3.2",
     "uglify-js": "^3.1.4",
-    "webpack": "^4.16.0",
+    "webpack": "^5.95.0",
     "yargs": "^6.6.0"
   },
   "standard": {
@@ -103,7 +107,7 @@
     "nodeGypRebuild": false,
     "productName": "Haiku",
     "forceCodeSigning": true,
-    "electronVersion": "2.0.8",
+    "electronVersion": "22.3.0",
     "afterSign": "scripts/notarize.js",
     "mac": {
       "category": "public.app-category.developer-tools",

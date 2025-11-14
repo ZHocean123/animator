@@ -22,7 +22,7 @@ module.exports = {
     rules: [
       {
         test: /src\/.+\.ts$/,
-        loader: 'ts-loader',
+        use: 'ts-loader',
         options: {
           configFile: path.join(__dirname, '..', 'tsconfig.json'),
         }

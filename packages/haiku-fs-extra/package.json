@@ -46,7 +46,7 @@
     "read-dir-files": "^0.1.1",
     "rimraf": "^2.6.2",
     "secure-random": "^1.1.1",
-    "semver": "^5.4.1",
+    "semver": "^7.6.0",
     "standard": "^10.0.2"
   },
   "main": "./lib/index",

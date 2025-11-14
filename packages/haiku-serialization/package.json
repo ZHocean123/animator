@@ -31,7 +31,7 @@
     "decamelize": "^1.2.0",
     "dedent": "^0.7.0",
     "estree-walker": "^0.5.0",
-    "fs-extra": "^4.0.2",
+    "fs-extra": "^11.2.0",
     "fuzzy-string-matching": "^1.0.2",
     "gl-matrix": "^2.4.0",
     "haiku-common": "5.1.2",
@@ -41,7 +41,7 @@
     "haiku-vendor-legacy": "5.1.2",
     "image-size": "^0.6.3",
     "json-stable-stringify": "^1.0.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "lodash.assign": "^4.2.0",
     "lodash.clonedeepwith": "^4.5.0",
     "lodash.debounce": "4.0.8",
@@ -69,20 +69,20 @@
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.0",
-    "cross-env": "^5.1.6",
+    "cross-env": "^7.0.3",
     "haiku-testing": "5.1.2",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
     "nyc": "^13.0.1",
-    "semver": "^5.4.1",
+    "semver": "^7.6.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.2",
     "tap-spec": "^4.1.2",
     "tape": "^4.9.0",
-    "ts-node": "^6.1.0",
-    "tsconfig-paths": "^3.3.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tslint": "^5.11.0",
     "tslint-config-haiku": "^1.0.16",
-    "typescript": "^3.0.3"
+    "typescript": "^5.6.0"
   }
 }

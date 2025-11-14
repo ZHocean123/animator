@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "*",
+      "Bash(git checkout:*)",
+      "Bash(.nvmrc)",
+      "Bash(find:*)",
+      "Bash(npm info:*)",
+      "Bash(yarn install:*)",
+      "Bash(tee:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
