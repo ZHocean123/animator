@@ -22,7 +22,7 @@ const devChoice = argv.devChoice || 'everything';
 const children = [];
 
 const runInstruction = (pack, cb) => {
-  const cmd = 'yarn';
+  const cmd = 'pnpm';
   const useTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
   const cwd = useTscWatch ? global.process.cwd() : pack.abspath;
   const args = useTscWatch ?
@@ -59,7 +59,7 @@ async.each(allPackages, (pack, done) => {
       done();
       break;
     default:
-      // Standard, new way of doing things: `yarn develop`.
+      // Standard, new way of doing things: `pnpm develop`.
       runInstruction(pack, done);
       break;
   }

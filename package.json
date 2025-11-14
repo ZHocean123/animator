@@ -12,7 +12,7 @@
   "license": "AGPL",
   "engines": {
     "node": ">=22.0.0",
-    "yarn": ">=1.13.0"
+    "pnpm": ">=8.0.0"
   },
   "scripts": {
     "add-experiment": "node ./scripts/add-experiment.js",
@@ -20,9 +20,9 @@
     "changelog": "node ./scripts/changelog.js",
     "demos": "node ./scripts/demos.js",
     "doctor": "node ./scripts/doctor.js",
-    "go": "yarn start default",
+    "go": "pnpm start default",
     "lint": "tslint scripts/**.js scripts/**.ts -t stylish",
-    "fix": "yarn lint --fix",
+    "fix": "pnpm lint --fix",
     "push": "node ./scripts/push.js",
     "semver": "node ./scripts/semver.js",
     "setup": "node ./scripts/setup.js",
@@ -34,10 +34,12 @@
     "lint-report": "node ./scripts/lint-report.js",
     "test-report": "node ./scripts/test-report.js"
   },
-  "resolutions": {
-    "@haiku/core": "^5.0.0",
-    "**/@types/react": "^18.0.0",
-    "@types/node": "^22.0.0"
+  "pnpm": {
+    "overrides": {
+      "@haiku/core": "^5.0.0",
+      "**/@types/react": "^18.0.0",
+      "@types/node": "^22.0.0"
+    }
   },
   "dependencies": {
     "@haiku/cli": "5.1.2",

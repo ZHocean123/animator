@@ -5,11 +5,11 @@
   "main": "lib/index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.all.json -t stylish",
-    "lint-report": "yarn lint -t checkstyle -o checkstyle-result.xml",
-    "fix": "yarn lint --fix",
+    "lint-report": "pnpm lint -t checkstyle -o checkstyle-result.xml",
+    "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
-    "test": "yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsc",
     "develop": "tsc --watch"
   },
@@ -20,7 +20,7 @@
   "license": "UNLICENSED",
   "types": "./lib/index.d.ts",
   "dependencies": {
-    "@haiku/sdk-inkstone": "5.1.2",
+    "@haiku/sdk-inkstone": "workspace:*",
     "dedent": "^0.7.0",
     "dotenv": "^16.4.5",
     "fs-extra": "^11.2.0",

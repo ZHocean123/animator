@@ -35,7 +35,7 @@ async.each(allPackages, (pack, done) => {
     /* Compile package if it has any modified file */
     if (modifiedFiles.length > 0) {
       log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
-      cp.execSync('yarn run compile', {cwd: pack.abspath, stdio: 'inherit'});
+      cp.execSync('pnpm run compile', {cwd: pack.abspath, stdio: 'inherit'});
     } else {
       log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);
     }

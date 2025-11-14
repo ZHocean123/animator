@@ -88,9 +88,9 @@ const FOLDER_CHOICES = {
 };
 
 // Support:
-//   yarn start --default
-//   yarn start default
-//   yarn start --preset=default
+//   pnpm start --default
+//   pnpm start default
+//   pnpm start --preset=default
 if (argv.default === true) {
   argv.preset = 'default';
 } else if (!argv.hasOwnProperty('preset') && args.length > 0) {
@@ -98,7 +98,7 @@ if (argv.default === true) {
 }
 
 // Support:
-//   yarn start haiku://..
+//   pnpm start haiku://..
 //
 // We pass only first haiku:// protocol URI to creator
 // On Windows and Linux, custom protocol handler is passed as argument
@@ -265,7 +265,7 @@ function go () {
     log.hat('skipping initial build');
   } else {
     log.hat('first compiling everything');
-    cp.execSync('yarn run compile-all', {cwd: ROOT, stdio: 'inherit'});
+    cp.execSync('pnpm run compile-all', {cwd: ROOT, stdio: 'inherit'});
   }
 
   log.hat('starting local development', 'green');
@@ -307,8 +307,8 @@ function go () {
 
   // Allow anything in .env to override the environment variables we set here.
   require('dotenv').config();
-  log.hat('Note: NOT watching for code changes. To watch for code changes, run yarn watch-all in a new tab.');
-  mainProcess = spawn('yarn', binaryArgs, {cwd, env: global.process.env, stdio: 'inherit'});
+  log.hat('Note: NOT watching for code changes. To watch for code changes, run pnpm watch-all in a new tab.');
+  mainProcess = spawn('pnpm', binaryArgs, {cwd, env: global.process.env, stdio: 'inherit'});
 
   global.process.on('exit', () => {
     if (mainProcess && !mainProcess.killed) {

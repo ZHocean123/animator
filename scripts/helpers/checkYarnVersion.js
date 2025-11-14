@@ -2,16 +2,16 @@ const cp = require('child_process');
 
 const log = require('./log');
 
-const YARN_VERSION = '1.13.0';
+const PNPM_VERSION = '8.0.0';
 
 module.exports = () => {
-  const yarnVersion = cp.execSync('yarn --version').toString().trim();
-  if (yarnVersion !== YARN_VERSION) {
-    log.warn(`WARNING: you are using yarn version ${yarnVersion}. We recommend version ${YARN_VERSION}.`);
+  const pnpmVersion = cp.execSync('pnpm --version').toString().trim();
+  if (pnpmVersion !== PNPM_VERSION) {
+    log.warn(`WARNING: you are using pnpm version ${pnpmVersion}. We recommend version ${PNPM_VERSION}.`);
     log.warn('Get it via:');
-    log.warn(`  curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version ${YARN_VERSION}`);
+    log.warn(`  npm install -g pnpm@${PNPM_VERSION}`);
     log.warn('You have been warned!\n');
   } else {
-    log.hat(`Using recommended version of yarn (${YARN_VERSION})!`);
+    log.hat(`Using recommended version of pnpm (${PNPM_VERSION})!`);
   }
 };

@@ -8,11 +8,11 @@
   },
   "scripts": {
     "lint": "tslint -p tsconfig.all.json -t stylish",
-    "lint-report": "yarn lint -t checkstyle -o checkstyle-result.xml",
-    "fix": "yarn lint --fix",
+    "lint-report": "pnpm lint -t checkstyle -o checkstyle-result.xml",
+    "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
-    "test": "yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsc",
     "develop": "tsc --watch"
   },
