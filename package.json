@@ -57,6 +57,7 @@
     "haiku-ui-common": "5.1.2"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "async": "^2.5.0",
     "aws-sdk": "^2.85.0",
     "cli-color": "^1.2.0",

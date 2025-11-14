@@ -12,10 +12,6 @@
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ESNext",
-    "types": [
       "node"
     ],
     "typeRoots": [

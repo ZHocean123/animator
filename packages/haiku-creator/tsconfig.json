@@ -11,13 +11,7 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types/"
     ]
   },
   "include": [

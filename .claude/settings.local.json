@@ -7,7 +7,18 @@
       "Bash(find:*)",
       "Bash(npm info:*)",
       "Bash(yarn install:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(npm install:*)",
+      "Bash(where:*)",
+      "Bash(py:*)",
+      "Bash(yarn compile-all:*)",
+      "Bash(for file in packages/*/tsconfig.json)",
+      "Bash(do sed -i '15,17d' \"$file\")",
+      "Bash(done:*)",
+      "Bash(yarn add:*)",
+      "Bash(cat:*)",
+      "Bash(yarn compile)",
+      "Bash(yarn:*)"
     ],
     "deny": [],
     "ask": []

@@ -25,11 +25,8 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ES6",
-    "types": [
-      "node"
-    ],
+    "types": [],
     "typeRoots": [
       "node_modules/@types/"
     ]

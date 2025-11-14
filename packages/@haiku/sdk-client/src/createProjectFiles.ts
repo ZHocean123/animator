@@ -122,7 +122,7 @@ export function createProjectFiles (
           // --
       };
       for (const formerFilePath in filesToMove) {
-        const nextFilePath = filesToMove[formerFilePath];
+        const nextFilePath = filesToMove[formerFilePath as keyof typeof filesToMove];
         if (fse.existsSync(path.join(projectOptions.projectPath, formerFilePath))) {
             // I guess there is no 'moveSync', and 'copySync' acts weird, so here it is imperatively:
           const contentsToCopy = fse.readFileSync(path.join(projectOptions.projectPath, formerFilePath)).toString();
