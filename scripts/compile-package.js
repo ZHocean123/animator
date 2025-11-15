@@ -28,7 +28,7 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-cp.execSync('yarn compile', {cwd: PACKAGE_PATH, stdio: 'inherit'});
+cp.execSync('pnpm compile', {cwd: PACKAGE_PATH, stdio: 'inherit'});
 
 if (argv.uglify) {
   const globule = path.join(PACKAGE_PATH, argv.uglify);

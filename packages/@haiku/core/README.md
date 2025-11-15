@@ -38,11 +38,11 @@ Animator Core provides a simple and familiar API for runtime manipulation of com
 Creating an Animator component begins in Haiku Animator:
 
 1. Design a component in Animator — or ask your designer for a component's Animator share URL
-2. Install the Haiku CLI: `$ yarn global add @haiku/cli` or `$ npm i @haiku/cli --global`
+2. Install the Haiku CLI: `$ pnpm global add @haiku/cli` or `$ npm i @haiku/cli --global`
 3. Add that component to an existing React or web codebase: `$ haiku install @haiku/yourusername-yourcomponent`
 4. Seamlessly update the component as its design changes: `$ haiku upgrade [projectname] [--version=rev]`
 
-**Dev tip:** If you have Animator installed, you can also `$ npm link` or `$ yarn link` your Animator components to make them available to your codebase toolchain's hot reloading hooks. Animator projects live in `~/.haiku/projects`.
+**Dev tip:** If you have Animator installed, you can also `$ npm link` or `$ pnpm link` your Animator components to make them available to your codebase toolchain's hot reloading hooks. Animator projects live in `~/.haiku/projects`.
 
 <br>
 
@@ -54,7 +54,7 @@ If you want to install and develop with Animator Core directly, you can do so wi
 
 Or via yarn:
 
-    $ yarn add @haiku/core
+    $ pnpm add @haiku/core
 
 Animator Core is also available via Haiku's CDN:
 
@@ -202,23 +202,23 @@ Please send contributions via [pull request](https://github.com/HaikuTeam/core/p
 To develop Animator Core locally:
 
 1. Fork the repo
-2. `$ yarn install`
+2. `$ pnpm install`
 
 Compile with:
 
-    $ yarn compile
+    $ pnpm compile
 
 Test with:
 
-    $ yarn test
+    $ pnpm test
 
 Find formatting problems with:
 
-    $ yarn lint
+    $ pnpm lint
 
 Run demos in your browser:
 
-    $ yarn demos
+    $ pnpm demos
 
 <br>
 

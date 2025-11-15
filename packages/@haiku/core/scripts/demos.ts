@@ -10,7 +10,7 @@ const processOptions = {
   cwd: global.process.cwd(),
 };
 childProcess.exec(
-  'yarn webpack --config=demo/webpack.config.js --progress --colors',
+  'pnpm webpack --config=demo/webpack.config.js --progress --colors',
   processOptions,
 );
 childProcess.spawn(

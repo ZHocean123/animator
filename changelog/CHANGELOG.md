@@ -403,7 +403,7 @@
  * ensure lottie exporter can handle when stroke-dasharray is numeric
  * call Globals.allKeysUp when Creator is blur
  * only auto-GIF the the main component, only once per Master
- * restore yarn setup to original glory.
+ * restore pnpm setup to original glory.
  * reset gauge and pointer states on timeline when webview is blur
  * update timelines for GaugeTimeReadout when switching components
  * fallback to computedValue if prettyValue is NaN
@@ -839,7 +839,7 @@
  * Too-short debounce time on heavy method caused deadlock
  * make new projects public by default (#485)
  * update broken imports in core and tests (#483)
- * spell out yarn in self-link to avoid macOS conflict.
+ * spell out pnpm in self-link to avoid macOS conflict.
 
 ### Features
 
@@ -850,7 +850,7 @@
 
 ### Bug Fixes
 
- * spell out yarn in self-link to avoid macOS conflict.
+ * spell out pnpm in self-link to avoid macOS conflict.
 
 ### Features
 
@@ -1810,7 +1810,7 @@
 ### Bug Fixes
 
  * perform hard reset to fix working tree before beginning git subtree pull.
- * always push to mono during `yarn push` before splitting to standalones.
+ * always push to mono during `pnpm push` before splitting to standalones.
  * ensure git-subtree-pull does not fail for changelog.
  * don't try to track activity if no user is present
  * Ensure properties show up in timeline if they have a valid value
@@ -2082,7 +2082,7 @@
  * with the advent of sane deps, we can remove haikuify.
  * use case-insensitive test for all nodgit errors.
  * update module paths to match node_modules hoisted into haiku-plumbing for build.
- * Get build working with yarn workspaces.
+ * Get build working with pnpm workspaces.
  * adjust pan sensitivity based on zoom level; also fix issue where clicking would mysteriously break panning (snapshotOriginalPan); also hack around issue where Artboard.getZoom returns an invalid result, breaking pan and zoom
  * detach frame event listeners on clearPreviouslyRegisteredEventListeners.
 
@@ -2115,7 +2115,7 @@
 
 ### Bug Fixes
 
- * Get `yarn push` working fully.
+ * Get `pnpm push` working fully.
  * actually place haiku-fs-extra deps.
  * Implement topological sort correctly ¯\_(ツ)_/¯!
  * Get push working with new package accounting system.
@@ -2342,7 +2342,7 @@
  * Called method on wrong object for deleting keyframes (TODO TypeScript kthxbye)
  * Upsert keyframe correctly when extant keyframe has been assigned a curve
  * Package order sorting by name not by the object
- * `yarn sync` should link/unlink pkgname, not name.
+ * `pnpm sync` should link/unlink pkgname, not name.
  * Support 2D rotation of <svg /> subelements.
  * fixes haiku-formats tests to resolve Promises; provide {} failsafe export handling.
  * I failed to fix the changed syntax after the merge
@@ -2423,7 +2423,7 @@
  * Add port discovery, more logging, and test proving multiple servers can coexist
  * Add util function to retrieve an open port, and a smoke test for it
  * add sdk method for checking prefinery codes via Inkstone
- * Add 'yarn go' for starting up with sane defaults
+ * Add 'pnpm go' for starting up with sane defaults
  * Add closeConnection method to envoy client
  * Scripts take branch and remote into account
  * remove haiku-sdk and refactor everything to haiku-sdk-client/haiku-sdk-inkstone
@@ -2464,7 +2464,7 @@
  * I munged the playback logic during a refactor
  * Stage transform wasn't working at certain frames due to lack of rounding...probably some player weirdness
  * Envoy client needs the host and port specified since it's dynamic
- * When using yarn to run npm yarn ends up setting env var that conflicts with npm's
+ * When using pnpm to run npm pnpm ends up setting env var that conflicts with npm's
  * watch timeout for zack's slow machine
  * Missing step to finalize script
  * try/catch bundle thing

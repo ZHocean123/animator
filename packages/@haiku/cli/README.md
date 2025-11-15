@@ -7,7 +7,7 @@
 Via yarn:
 
 ```
-$ yarn global add @haiku/cli
+$ pnpm global add @haiku/cli
 ```
 
 Via npm:

@@ -16,7 +16,7 @@ pipeline {
       HAIKU_RELEASE_COUNTDOWN = "${10.power(13) - new Date().getTime()}"
     }
     stages {
-        // Sets up Node and Yarn at the correct versions.
+        // Sets up Node and pnpm at the correct versions.
         stage('Provision-macOS') {
             agent {
                 label 'master'
@@ -252,14 +252,14 @@ void yarnInstallUnixLike() {
     sh '''#!/bin/bash -x
         . $HOME/.bash_profile
         if [ ! -d node_modules ]; then
-            yarn install --frozen-lockfile --force
+            pnpm install --frozen-lockfile --force
         fi'''
 }
 
 void yarnRun(String command) {
     sh '''#!/bin/bash -x
         . $HOME/.bash_profile
-        ''' + "yarn ${command}"
+        ''' + "pnpm ${command}"
 }
 
 void nodeRun(String command) {

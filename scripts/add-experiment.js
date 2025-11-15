@@ -6,7 +6,7 @@ const typescript = require('typescript');
 const log = require('./helpers/log');
 
 if (args.length !== 1) {
-  log.warn('Usage: `yarn add-experiment <ExperimentName>`');
+  log.warn('Usage: `pnpm add-experiment <ExperimentName>`');
   global.process.exit(1);
 }
 
@@ -58,5 +58,5 @@ import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
 if (experimentIsEnabled(Experiment.${experimentName})) { ... }
 
 Don't forget to run
-$ yarn compile-all
+$ pnpm compile-all
 before continuing!`);

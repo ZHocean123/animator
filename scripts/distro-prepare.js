@@ -49,9 +49,9 @@ fse.copySync('HaikuHelper.js', `${DISTRO_DIR}/HaikuHelper.js`);
 fse.copySync('changelog/public/', `${DISTRO_DIR}/changelog/public/`);
 
 // Build everything, then load production dependencies.
-logExec(ROOT, `yarn install ${YARN_INSTALL_FLAGS} --production=false`);
-logExec(ROOT, `yarn compile-all --force`);
-logExec(ROOT, `yarn install ${YARN_INSTALL_FLAGS} --production`);
+logExec(ROOT, `pnpm install ${YARN_INSTALL_FLAGS} --production=false`);
+logExec(ROOT, `pnpm compile-all --force`);
+logExec(ROOT, `pnpm install ${YARN_INSTALL_FLAGS} --production`);
 
 // Important: if we have any modules self-linked, get rid of them with extreme prejudice.
 log.log(`Clear any self-linked module`);
@@ -64,6 +64,6 @@ log.log(`Copy node modules to their canonical location. It may take a while..`);
 fse.copySync(path.join(ROOT, 'node_modules'), path.join(ROOT, DISTRO_DIR, 'node_modules'), {dereference: true});
 
 // Restore dev dependencies in mono.
-logExec(ROOT, `yarn install ${YARN_INSTALL_FLAGS} --production=false`);
+logExec(ROOT, `pnpm install ${YARN_INSTALL_FLAGS} --production=false`);
 // Uglify sources in release.
 logExec(ROOT, 'node ./scripts/distro-uglify-sources.js');

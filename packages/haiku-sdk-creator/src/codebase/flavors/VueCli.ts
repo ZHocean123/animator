@@ -111,7 +111,7 @@ export class VueCliFlavor extends CodebaseFlavor {
   }
 
   buildLibrary () {
-    execSync('yarn build-lib-for-haiku', {cwd: this.directory});
+    execSync('pnpm build-lib-for-haiku', {cwd: this.directory});
   }
 
   testCompatibility () {

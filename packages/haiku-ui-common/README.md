@@ -7,14 +7,14 @@ Common UI components for Haiku projects.
 After cloning the repo:
 
 ```
-$ yarn install
-$ yarn global add @storybook/cli
+$ pnpm install
+$ pnpm global add @storybook/cli
 ```
 
 Then develop with:
 
 ```
-$ yarn develop
+$ pnpm develop
 ```
 
 ## Tests
@@ -22,7 +22,7 @@ $ yarn develop
 Run the tests with:
 
 ```
-$ yarn test
+$ pnpm test
 ```
 
 ## Linting
@@ -30,11 +30,11 @@ $ yarn test
 Lint with:
 
 ```
-$ yarn lint
+$ pnpm lint
 ```
 
 Autofix lint errors with:
 
 ```
-$ yarn fix
+$ pnpm fix
 ```

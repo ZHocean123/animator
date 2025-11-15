@@ -31,8 +31,8 @@ lodash.forEach(allPackages, (pack) => {
   });
 
   if (deps.length > 0) {
-    log.log('yarn upgrade for ' + pack.name + ':');
-    const cmd = `yarn upgrade ${deps.join(' ')} --latest --ignore-engines --non-interactive --mutex file:/tmp/.yarn-mutex --network-concurrency 1`;
+    log.log('pnpm upgrade for ' + pack.name + ':');
+    const cmd = `pnpm upgrade ${deps.join(' ')} --latest --ignore-engines --non-interactive --mutex file:/tmp/.yarn-mutex --network-concurrency 1`;
     log.log(cmd);
     cp.execSync(cmd, {cwd: pack.abspath, stdio: 'inherit'});
   }

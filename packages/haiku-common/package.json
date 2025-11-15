@@ -36,8 +36,8 @@
     "haiku-testing": "workspace:*"
   },
   "dependencies": {
-    "@haiku/core": "5.1.2",
-    "haiku-sdk-creator": "5.1.2",
-    "haiku-vendor-legacy": "5.1.2"
+    "@haiku/core": "workspace:*",
+    "haiku-sdk-creator": "workspace:*",
+    "haiku-vendor-legacy": "workspace:*"
   }
 }

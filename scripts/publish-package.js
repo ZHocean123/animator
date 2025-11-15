@@ -18,7 +18,7 @@ if (!PACKAGE_PATH) {
 
 log.hat(`publishing ${pkg} to the npm registry`);
 
-// Have to set this because when we run via yarn, yarn sets this var and we want npm's registry.
+// Have to set this because when we run via yarn, pnpm sets this var and we want npm's registry.
 process.env.npm_config_registry = 'https://registry.npmjs.org';
 
 cp.execSync(`npm publish --verbose --access public`, {cwd: PACKAGE_PATH, stdio: 'inherit'});

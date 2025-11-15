@@ -846,7 +846,7 @@ During a code reload due to an on-disk change the timeline does not animate, and
 Release Collateral
 
 I can download and extract the .zip archive of the release
-The CLI npm package works (`$ yarn global add @haiku/cli`)
+The CLI npm package works (`$ pnpm global add @haiku/cli`)
 Core CDN links work (`http://code.haiku.ai/scripts/core/HaikuCore.<{version}|latest>[.min].js (http://code.haiku.ai/scripts/core/HaikuCore.%3C%7Bversion%7D|latest%3E[.min].js) (http://code.haiku.ai/scripts/core/HaikuCore.%3C%7Bversion%7D|latest%3E[.min].js)`)
 Core standalone repo has latest https://github.com/HaikuTeam/core
 Core npm package is up to date https://www.npmjs.com/package/@haiku/core
@@ -882,7 +882,7 @@ If dev, mono can launch Glass individually
 If dev, mono can launch Timeline individually
 I can refresh creator, load the same project, and go back to editing as normal
 Plumbing logs show up correctly for actions
-If dev, I can test `haiku://` URLs using `yarn start <url>`
+If dev, I can test `haiku://` URLs using `pnpm start <url>`
 If prod, I can open the app via open `haiku://:`
 
 Core

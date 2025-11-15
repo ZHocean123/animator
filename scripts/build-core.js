@@ -11,11 +11,11 @@ log.hat(`note that the current version is ${nowVersion()}`);
 log.hat('creating distribution builds of our core and adapters');
 
 const makeBundle = () => {
-  cp.execSync('yarn bundle', {cwd: core.abspath, stdio: 'inherit'});
+  cp.execSync('pnpm bundle', {cwd: core.abspath, stdio: 'inherit'});
 };
 
 if (!argv['skip-compile']) {
-  cp.execSync('yarn install', {cwd: global.process.cwd(), stdio: 'inherit'});
+  cp.execSync('pnpm install', {cwd: global.process.cwd(), stdio: 'inherit'});
   runScript('compile-package', ['--package=@haiku/core'], (err) => {
     if (err) {
       throw err;

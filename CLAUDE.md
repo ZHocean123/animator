@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Haiku Animator is a desktop design tool for creating Lottie animations and interactive web components. It's an Electron application built with TypeScript, using a **monorepo structure with Yarn Workspaces** containing 15+ packages.
+Haiku Animator is a desktop design tool for creating Lottie animations and interactive web components. It's an Electron application built with TypeScript, using a **monorepo structure with pnpm Workspaces** containing 15+ packages.
 
 **Technology Stack:**
 - Electron 2.0.8 desktop application
 - TypeScript (all packages)
 - React 15.6.2 for UI
 - Node.js 8.15.1 (exact version required)
-- Yarn 1.13.0 (exact version required)
+- pnpm 1.13.0 (exact version required)
 - Python 2.7.16 (for native module compilation)
 
 ## Repository Structure
@@ -52,42 +52,42 @@ Processes communicate via WebSocket (`haiku-plumbing`) and Electron IPC.
 
 **Setup:**
 ```bash
-yarn install && yarn setup
+pnpm install && pnpm setup
 ```
 
 **Development:**
 ```bash
-yarn start          # Start development with interactive prompts
-yarn go             # Start with defaults (no prompts)
-yarn watch-all      # Watch mode - compile on change (run in separate terminal)
+pnpm start          # Start development with interactive prompts
+pnpm go             # Start with defaults (no prompts)
+pnpm watch-all      # Watch mode - compile on change (run in separate terminal)
 ```
 
 **Build:**
 ```bash
-yarn compile-all    # Compile all TypeScript packages
-yarn electron-rebuild  # Rebuild native Electron modules (use if binary errors)
+pnpm compile-all    # Compile all TypeScript packages
+pnpm electron-rebuild  # Rebuild native Electron modules (use if binary errors)
 ```
 
 **Quality Assurance:**
 ```bash
-yarn lint-all       # Lint all packages
-yarn fix            # Fix lint issues automatically
-yarn test-all       # Run all tests
-yarn test-report    # Generate test coverage report
+pnpm lint-all       # Lint all packages
+pnpm fix            # Fix lint issues automatically
+pnpm test-all       # Run all tests
+pnpm test-report    # Generate test coverage report
 ```
 
 **Package-specific commands** (run from package directory):
 ```bash
-yarn test           # Run tests for specific package
-yarn lint           # Lint specific package
-yarn compile        # Compile specific package
-yarn develop        # Watch mode for specific package
+pnpm test           # Run tests for specific package
+pnpm lint           # Lint specific package
+pnpm compile        # Compile specific package
+pnpm develop        # Watch mode for specific package
 ```
 
 **Single Test:**
 ```bash
 cd packages/{package-name}
-yarn test -- --grep "test name pattern"
+pnpm test -- --grep "test name pattern"
 ```
 
 ## Environment Setup
@@ -112,12 +112,12 @@ FIGMA_TOKEN=figma_token_for_windows_dev  # Required for Windows Figma login
 
 ## Development Workflow
 
-1. **Initial setup:** `yarn install && yarn setup`
-2. **Start development:** `yarn start` (or `yarn go` for defaults)
-3. **Watch mode (optional):** `yarn watch-all` in separate terminal
-4. **Before committing:** `yarn lint-all && yarn test-all && yarn compile-all`
+1. **Initial setup:** `pnpm install && pnpm setup`
+2. **Start development:** `pnpm start` (or `pnpm go` for defaults)
+3. **Watch mode (optional):** `pnpm watch-all` in separate terminal
+4. **Before committing:** `pnpm lint-all && pnpm test-all && pnpm compile-all`
 5. **Debugging:** Use VS Code configurations:
-   - Start app with `yarn start`
+   - Start app with `pnpm start`
    - Attach debugger: `attach-glass`, `attach-timeline`, or `attach-creator`
    - Debug ports: Plumbing (9221), Renderers (9222)
 
@@ -180,10 +180,10 @@ Output: `<timestamp>|<process>|info|d=<duration>|<profile-name>`
 **Native module build errors:**
 - Ensure exact Node 8.15.1 version: `nvm use 8.15.1`
 - Install Python 2.7.16
-- Run: `yarn electron-rebuild`
+- Run: `pnpm electron-rebuild`
 
 **App won't start:**
-- Check native binaries: `yarn electron-rebuild`
+- Check native binaries: `pnpm electron-rebuild`
 - Verify all OS dependencies installed
 - Check `.env` file exists with required variables
 

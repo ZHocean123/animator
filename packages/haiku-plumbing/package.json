@@ -66,7 +66,7 @@
     "@types/semver": "^5.4.1",
     "cross-env": "^7.0.3",
     "electron": "^22.3.0",
-    "haiku-creator": "5.1.2",
+    "haiku-creator": "workspace:*",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
