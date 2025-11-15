@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds';
 import Palette from 'haiku-ui-common/lib/Palette';
 import * as Timeline from 'haiku-serialization/src/bll/Timeline';
@@ -21,11 +22,11 @@ export default class Gauge extends React.Component {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -127,5 +128,5 @@ export default class Gauge extends React.Component {
 }
 
 Gauge.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

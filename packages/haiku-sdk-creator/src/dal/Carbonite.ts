@@ -87,7 +87,7 @@ const zipProjectFolders = (destination: string, sources: string[]) => {
       `tar --exclude='node_modules' -rvf ${parsedDestination} -C ${HOMEDIR_PATH} ${parsedSources}`,
       {},
       (err) => {
-        err ? reject(err) : resolve();
+        err ? reject(err) : resolve(undefined);
       },
     );
   });

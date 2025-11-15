@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as CodeMirror from 'codemirror';
 import {clipboard} from 'electron';
@@ -197,10 +198,10 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.component !== this.props.component) {
+  componentDidUpdate (prevProps) {
+    if (this.props.component !== this.props.component) {
       this.unlistenToComponent(this.props.component);
-      this.listenToComponent(nextProps.component);
+      this.listenToComponent(this.props.component);
     }
   }
 
@@ -1380,10 +1381,10 @@ export default class ExpressionInput extends React.Component {
 }
 
 ExpressionInput.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
-  component: React.PropTypes.object.isRequired,
-  reactParent: React.PropTypes.object.isRequired,
-  onNavigateRequested: React.PropTypes.func.isRequired,
-  onCommitValue: React.PropTypes.func.isRequired,
-  onFocusRequested: React.PropTypes.func.isRequired,
+  timeline: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+  reactParent: PropTypes.object.isRequired,
+  onNavigateRequested: PropTypes.func.isRequired,
+  onCommitValue: PropTypes.func.isRequired,
+  onFocusRequested: PropTypes.func.isRequired,
 };

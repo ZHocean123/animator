@@ -1,4 +1,6 @@
-import {BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, remote} from 'electron';
+import { BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, } from 'electron';
+import * as remote from '@electron/remote';
+
 import {EventEmitter} from 'events';
 
 let remoteMenu: typeof Menu;

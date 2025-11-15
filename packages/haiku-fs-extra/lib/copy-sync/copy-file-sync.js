@@ -1,7 +1,7 @@
 var fs = require('graceful-fs')
 
 var BUF_LENGTH = 64 * 1024
-var _buff = new Buffer(BUF_LENGTH)
+var _buff = Buffer.alloc(BUF_LENGTH)
 
 function copyFileSync (srcFile, destFile, options) {
   var clobber = options.clobber

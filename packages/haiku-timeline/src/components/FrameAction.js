@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
 import Palette from 'haiku-ui-common/lib/Palette';
 
@@ -104,8 +105,8 @@ class FrameAction extends React.Component {
 }
 
 FrameAction.propTypes = {
-  hasActions: React.PropTypes.bool,
-  onShowFrameActionsEditor: React.PropTypes.func.isRequired,
+  hasActions: PropTypes.bool,
+  onShowFrameActionsEditor: PropTypes.func.isRequired,
 };
 
 export default FrameAction;

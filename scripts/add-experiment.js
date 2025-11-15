@@ -53,7 +53,7 @@ log.hat(`Added experiment ${experimentName}!
 
 Usage:
 
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 ...
 if (experimentIsEnabled(Experiment.${experimentName})) { ... }
 

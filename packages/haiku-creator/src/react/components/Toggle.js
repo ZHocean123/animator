@@ -19,7 +19,7 @@ class Toggle extends React.Component {
     }
   }
 
-  componentWillReceiveProps ({active}) {
+  componentDidUpdate ({active}) {
     if (active !== this.props.active) {
       this.changeActiveState(active);
     }

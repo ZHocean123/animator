@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {throttle} from 'lodash';
 
 const STYLES = {
@@ -23,7 +24,7 @@ class Spotlight extends React.PureComponent {
     };
   }
 
-  componentWillReceiveProps () {
+  componentDidUpdate () {
     this.setState({showBackground: true});
   }
 
@@ -68,7 +69,7 @@ class Spotlight extends React.PureComponent {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     document.addEventListener('mousemove', this.setMouseOverHole);
   }
 
@@ -112,12 +113,12 @@ class Spotlight extends React.PureComponent {
 }
 
 Spotlight.propTypes = {
-  offset: React.PropTypes.object,
-  position: React.PropTypes.object,
-  containerStyles: React.PropTypes.object,
-  holeStyles: React.PropTypes.object,
-  display: React.PropTypes.string,
-  isOverlayHideable: React.PropTypes.bool,
+  offset: PropTypes.object,
+  position: PropTypes.object,
+  containerStyles: PropTypes.object,
+  holeStyles: PropTypes.object,
+  display: PropTypes.string,
+  isOverlayHideable: PropTypes.bool,
 };
 
 export default Spotlight;

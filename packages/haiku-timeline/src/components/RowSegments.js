@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import TransitionBody from './TransitionBody';
@@ -29,11 +30,11 @@ export default class RowSegments extends React.Component {
     this.props.row.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -177,12 +178,12 @@ export default class RowSegments extends React.Component {
 }
 
 RowSegments.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  scope: React.PropTypes.string.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  component: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
-  includeDraggables: React.PropTypes.bool.isRequired,
-  preventDragging: React.PropTypes.bool.isRequired,
-  showBezierEditor: React.PropTypes.func,
+  row: PropTypes.object.isRequired,
+  scope: PropTypes.string.isRequired,
+  timeline: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  includeDraggables: PropTypes.bool.isRequired,
+  preventDragging: PropTypes.bool.isRequired,
+  showBezierEditor: PropTypes.func,
 };

@@ -9,7 +9,8 @@ export interface BezierDerivativeGraphProps {
   graphHeight?: number;
   graphWidth?: number;
   sampleSize?: number;
-}
+
+  children?: React.ReactNode;}
 
 export default class BezierDerivativeGraph extends React.PureComponent<BezierDerivativeGraphProps> {
   static defaultProps = {

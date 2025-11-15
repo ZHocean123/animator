@@ -19,7 +19,8 @@ export interface EmbedDetailsProps {
   onHide: (event: any) => void;
   mixpanel?: any;
   urls: HaikuShareUrls;
-}
+
+  children?: React.ReactNode;}
 
 export class EmbedDetails extends React.PureComponent<EmbedDetailsProps> {
   render () {

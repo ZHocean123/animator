@@ -9,7 +9,8 @@ export interface BezierComponentProps {
   xTo: number;
   yFrom: number;
   yTo: number;
-}
+
+  children?: React.ReactNode;}
 
 export default class BezierComponent<T> extends React.Component<T> {
   props: T & BezierComponentProps;

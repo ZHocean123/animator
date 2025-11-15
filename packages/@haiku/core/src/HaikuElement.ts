@@ -58,6 +58,15 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
     this.isHovered = false;
   }
 
+  // Add public getters for protected properties to satisfy interface requirements
+  getConfig(): any {
+    return (this as any).config;
+  }
+
+  getParent(): any {
+    return (this as any).parent;
+  }
+
   get childNodes (): (string|BytecodeNode)[] {
     return (
       this.node &&
@@ -162,7 +171,7 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
     return this.node && this.node.__memory;
   }
 
-  get parent (): any {
+  get parentElement (): HaikuElement {
     return this.parentNode && HaikuElement.findOrCreateByNode(this.parentNode);
   }
 
@@ -180,9 +189,9 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
       ancestry.unshift(this.layout);
     }
     // tslint:disable-next-line:no-this-assignment
-    let ancestor = this;
-    while (ancestor.parent) {
-      ancestor = ancestor.parent;
+    let ancestor: HaikuElement = this;
+    while (ancestor.parentElement) {
+      ancestor = ancestor.parentElement;
       const layout = ancestor.layout;
       if (layout) {
         ancestry.unshift(layout);
@@ -197,23 +206,23 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
   }
 
   get rootSVG (): HaikuElement {
-    let parent = this.parent;
+    let parent = this.parentElement;
     while (parent) {
       if (parent.type === 'svg') {
         return parent;
       }
-      parent = parent.parent;
+      parent = parent.parentElement;
     }
     return undefined;
   }
 
   get isChildOfDefs (): boolean {
-    let parent = this.parent;
+    let parent = this.parentElement;
     while (parent) {
       if (parent.type === 'defs') {
         return true;
       }
-      parent = parent.parent;
+      parent = parent.parentElement;
     }
     return false;
   }
@@ -785,7 +794,7 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
     iteratee: Function,
     filter?: (value: HaikuElement, index: number, array: HaikuElement[]) => boolean,
   ) {
-    if (this.parent && this.parent.isWrapper()) {
+    if (this.parentElement && this.parentElement.isWrapper()) {
       // Avoids traversing down into a subcomponent.
       return true;
     }
@@ -869,8 +878,8 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
       return x;
     }
 
-    if (this.parent) {
-      return this.parent.getNearestDefinedNonZeroAncestorSizeX();
+    if (this.parentElement) {
+      return this.parentElement.getNearestDefinedNonZeroAncestorSizeX();
     }
 
     return 1;
@@ -883,8 +892,8 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
       return y;
     }
 
-    if (this.parent) {
-      return this.parent.getNearestDefinedNonZeroAncestorSizeY();
+    if (this.parentElement) {
+      return this.parentElement.getNearestDefinedNonZeroAncestorSizeY();
     }
 
     return 1;
@@ -897,8 +906,8 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
       return z;
     }
 
-    if (this.parent) {
-      return this.parent.getNearestDefinedNonZeroAncestorSizeZ();
+    if (this.parentElement) {
+      return this.parentElement.getNearestDefinedNonZeroAncestorSizeZ();
     }
 
     return 1;
@@ -918,7 +927,7 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
     }
 
     // tslint:disable-next-line:no-this-assignment
-    let hoverable = this;
+    let hoverable: HaikuElement = this;
 
     // If no last hovered element, there's nothing to unhover.
     let mustUnhover = manager.lastHoveredElement !== undefined;
@@ -941,7 +950,7 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
 
       hovers.push(hoverable);
       hoverable.isHovered = true;
-      hoverable = hoverable.parent;
+      hoverable = hoverable.parentElement;
     }
 
     hovers.forEach((hov) => {
@@ -966,7 +975,7 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
       while (unhoverable && unhoverable !== hoverable) {
         unhovers.push(unhoverable);
         unhoverable.isHovered = false;
-        unhoverable = unhoverable.parent;
+        unhoverable = (unhoverable as HaikuElement).parentElement;
       }
     }
 
@@ -1080,8 +1089,8 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
   static getAncestry = (ancestors: HaikuElement[], element: HaikuElement): HaikuElement[] => {
     ancestors.unshift(element);
 
-    if (element.parent) {
-      HaikuElement.getAncestry(ancestors, element.parent);
+    if (element.parentElement) {
+      HaikuElement.getAncestry(ancestors, element.parentElement);
     }
 
     return ancestors;

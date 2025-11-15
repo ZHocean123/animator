@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Color from 'color';
 import * as lodash from 'lodash';
@@ -28,7 +29,7 @@ import ControlText from 'haiku-ui-common/lib/react/icons/ControlText';
 import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML';
 // import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput'
 import FigmaPopover from './importers/FigmaPopover';
-import {experimentIsEnabled, Experiment} from 'haiku-common/lib/experiments';
+import {experimentIsEnabled, Experiment} from 'haiku-common/src/experiments';
 
 const ASSET_ICONS = {
   ControlImage: () => {
@@ -681,14 +682,14 @@ class AssetItem extends React.Component {
 }
 
 AssetItem.propTypes = {
-  indent: React.PropTypes.number.isRequired,
-  asset: React.PropTypes.object.isRequired,
-  onDragEnd: React.PropTypes.func.isRequired,
-  onDragStart: React.PropTypes.func.isRequired,
-  onAssetDoubleClick: React.PropTypes.func.isRequired,
-  deleteAsset: React.PropTypes.func.isRequired,
-  projectModel: React.PropTypes.object.isRequired,
-  onRefreshFigmaAsset: React.PropTypes.func.isRequired,
+  indent: PropTypes.number.isRequired,
+  asset: PropTypes.object.isRequired,
+  onDragEnd: PropTypes.func.isRequired,
+  onDragStart: PropTypes.func.isRequired,
+  onAssetDoubleClick: PropTypes.func.isRequired,
+  deleteAsset: PropTypes.func.isRequired,
+  projectModel: PropTypes.object.isRequired,
+  onRefreshFigmaAsset: PropTypes.func.isRequired,
 };
 
 export default Radium(AssetItem);

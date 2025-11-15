@@ -8,7 +8,8 @@ const STYLES: React.CSSProperties = {
 
 export interface ModalFooterProps {
   style?: React.CSSProperties;
-}
+
+  children?: React.ReactNode;}
 
 export class ModalFooter extends React.PureComponent<ModalFooterProps> {
   render () {

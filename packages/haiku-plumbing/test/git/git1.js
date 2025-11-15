@@ -6,8 +6,8 @@ const FOLDER = process.env.GIT_PKILL_DIR;
 
 function bigBuffer () {
   let largeBuffer;
-  const large = new Buffer('');
-  const other = new Buffer('a');
+  const large = Buffer.from('');
+  const other = Buffer.from('a');
   for (let i = 0; i <= (500 * 1000); i++) {
     largeBuffer = Buffer.concat([large, other]);
   }

@@ -3,7 +3,7 @@ import {Repository, Reference, Signature, Reset, Remote, Clone, Commit, Merge, R
 import * as path from 'path';
 import * as fs from 'haiku-fs-extra';
 import * as async from 'async';
-import {Environment} from 'haiku-common/lib/environments';
+import {Environment} from 'haiku-common/src/environments';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 const DEFAULT_COMMITTER_EMAIL = 'contact@haiku.ai';

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import Palette from 'haiku-ui-common/lib/Palette';
 
@@ -61,8 +62,8 @@ class NotificationExplorer extends React.PureComponent {
 }
 
 NotificationExplorer.propTypes = {
-  lastViewedChangelog: React.PropTypes.string,
-  onShowChangelogModal: React.PropTypes.func.isRequired,
+  lastViewedChangelog: PropTypes.string,
+  onShowChangelogModal: PropTypes.func.isRequired,
 };
 
 export default NotificationExplorer;

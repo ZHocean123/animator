@@ -38,7 +38,8 @@ export interface ShareModalProps {
   privateProjectLimit: number;
   supportOfflineExport: boolean;
   onClose: () => void;
-}
+
+  children?: React.ReactNode;}
 
 export interface SelectedEntry {
   entry: {

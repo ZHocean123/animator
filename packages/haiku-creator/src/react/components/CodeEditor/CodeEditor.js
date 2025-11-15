@@ -51,10 +51,10 @@ class CodeEditor extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // If we were made visible, we may need to force reload code in case we skipped
     // any updates while we weren't visible
-    if (isCodeEditorMode(nextProps.interactionMode) && !isCodeEditorMode(this.props.interactionMode)) {
+    if (isCodeEditorMode(this.props.interactionMode) && !isCodeEditorMode(this.props.interactionMode)) {
       this.performCodeReload();
       monaco.editor.setTheme('haiku');
     }

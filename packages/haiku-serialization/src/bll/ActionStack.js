@@ -1,6 +1,12 @@
 const lodash = require('lodash');
 
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const Experiment = {
+  OrderedActionStack: 'OrderedActionStack',
+};
+
+const experimentIsEnabled = (experiment) => {
+  return experiment === Experiment.OrderedActionStack ? false : false;
+};
 
 const BaseModel = require('./BaseModel');
 const Lock = require('./Lock');

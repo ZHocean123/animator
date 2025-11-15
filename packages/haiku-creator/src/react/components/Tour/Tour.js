@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Tooltip from './Tooltip';
 import {shell} from 'electron';
 import {TOUR_STYLES} from '../../styles/tourShared';
@@ -176,8 +177,8 @@ class Tour extends React.Component {
 }
 
 Tour.propTypes = {
-  envoyClient: React.PropTypes.object.isRequired,
-  show: React.PropTypes.bool,
+  envoyClient: PropTypes.object.isRequired,
+  show: PropTypes.bool,
 };
 
 export default Tour;

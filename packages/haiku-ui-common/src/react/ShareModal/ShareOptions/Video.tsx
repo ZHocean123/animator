@@ -24,7 +24,8 @@ export interface VideoProps {
   organizationName: string;
   urls: HaikuShareUrls;
   folder: string;
-}
+
+  children?: React.ReactNode;}
 
 export default class Video extends React.PureComponent<VideoProps> {
   get videoUrl () {
@@ -35,7 +36,7 @@ export default class Video extends React.PureComponent<VideoProps> {
 
   render () {
     return (
-      <div style={{textAlign: 'center'}}>
+      <div style={{textAlign: "center" }}>
         <div style={STYLES.videoWrapper}>
           <video controls={true} style={STYLES.video}>
             <source src={this.videoUrl} type="video/mp4" />

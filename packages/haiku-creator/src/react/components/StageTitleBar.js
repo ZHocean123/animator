@@ -1,9 +1,10 @@
 import * as Radium from 'radium';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as ReactDOM from 'react-dom';
 import {ipcRenderer, shell} from 'electron';
 import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
 import Palette from 'haiku-ui-common/lib/Palette';
 import * as Color from 'color';
@@ -830,14 +831,14 @@ class StageTitleBar extends React.Component {
 }
 
 StageTitleBar.propTypes = {
-  folder: React.PropTypes.string.isRequired,
-  projectName: React.PropTypes.string,
-  username: React.PropTypes.string,
-  organizationName: React.PropTypes.string,
-  websocket: React.PropTypes.object.isRequired,
-  createNotice: React.PropTypes.func.isRequired,
-  removeNotice: React.PropTypes.func.isRequired,
-  supportOfflineExport: React.PropTypes.bool,
+  folder: PropTypes.string.isRequired,
+  projectName: PropTypes.string,
+  username: PropTypes.string,
+  organizationName: PropTypes.string,
+  websocket: PropTypes.object.isRequired,
+  createNotice: PropTypes.func.isRequired,
+  removeNotice: PropTypes.func.isRequired,
+  supportOfflineExport: PropTypes.bool,
 };
 
 export default Radium(StageTitleBar);

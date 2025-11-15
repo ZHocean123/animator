@@ -28,14 +28,15 @@ const STYLES = {
     color: Palette.DARK_ROCK,
     fontSize: '0.7em',
     cursor: 'pointer',
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: '1.2em',
     marginTop: '-2px',
   } as React.CSSProperties,
 };
 
 export interface EmbedListProps {
-  onOptionClicked: (option: {entry: SelectedEntry, template: string}) => void;
+  onOptionClicked: (option: {entry: SelectedEntry, template: string
+  children?: React.ReactNode;}) => void;
   isSnapshotSaveInProgress: boolean;
   snapshotSyndicated: boolean;
   mixpanel: any;

@@ -5,7 +5,8 @@ export interface CurveProps {
   leftGradFill: string;
   rightGradFill: string;
   id: string;
-}
+
+  children?: React.ReactNode;}
 
 export const EaseInElasticSVG = ({leftGradFill, rightGradFill, id}: CurveProps) => (
   <svg width="100%" height="27px" viewBox="0 0 222 170" preserveAspectRatio="none">

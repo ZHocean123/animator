@@ -10,8 +10,8 @@
     "rootDir": "src",
     "sourceMap": true,
     "target": "ESNext",
-    "skipLibCheck": true,
-        //"types": [
+    "skipLibCheck": true
+  },
   "include": [
     "src/**/*.js",
     "src/**/*.ts"

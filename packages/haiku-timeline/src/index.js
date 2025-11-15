@@ -1,6 +1,7 @@
 import {ipcRenderer} from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as qs from 'qs';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
@@ -8,7 +9,7 @@ import Timeline from './components/Timeline';
 import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common/src/environments';
 
 // We are in a webview; use query string parameters for boot-up configuration
 const search = (window.location.search || '').split('?')[1] || '';
@@ -64,16 +65,14 @@ try {
 
     window.isWebview = config.webview;
 
-    ReactDOM.render(
-      <Timeline
+    const root = createRoot(document.getElementById('root'));
+    root.render(<Timeline
         mixpanel={mixpanel}
         envoy={config.envoy}
         userconfig={userconfig}
         websocket={websocket}
         folder={config.folder}
-        />,
-      document.getElementById('root'),
-    );
+      />);
   });
 } catch (e) {
   Raven.captureException(e, () => {

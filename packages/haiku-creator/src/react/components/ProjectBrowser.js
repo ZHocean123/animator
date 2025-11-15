@@ -1,5 +1,6 @@
 import * as lodash from 'lodash';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Popover from 'react-popover';
 import {ProjectError} from 'haiku-sdk-creator/lib/bll/Project';
@@ -57,17 +58,17 @@ class ProjectBrowser extends React.Component {
     };
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (!this.props.expiredTrialNonPro && nextProps.expiredTrialNonPro) {
+  componentDidUpdate (prevProps) {
+    if (!prevProps.expiredTrialNonPro && this.props.expiredTrialNonPro) {
       this.setState({showLockoutModal: true});
     }
 
-    if (this.props.isOnline ^ nextProps.isOnline) {
+    if (prevProps.isOnline ^ this.props.isOnline) {
       // Value has changed.
       // This reload should be silent iff offline is allowed.
-      this.loadProjects(nextProps.allowOffline);
+      this.loadProjects(this.props.allowOffline);
 
-      if (!nextProps.isOnline && !nextProps.allowOffline) {
+      if (!this.props.isOnline && !this.props.allowOffline) {
         mixpanel.haikuTrack('creator:upgrade-cta-shown:project-browser-offline');
       }
     }
@@ -720,14 +721,14 @@ class ProjectBrowser extends React.Component {
 }
 
 ProjectBrowser.propTypes = {
-  envoyProject: React.PropTypes.object.isRequired,
-  envoyClient: React.PropTypes.object.isRequired,
-  lastViewedChangelog: React.PropTypes.string,
-  onShowChangelogModal: React.PropTypes.func.isRequired,
-  showChangelogModal: React.PropTypes.bool.isRequired,
-  expiredTrialNonPro: React.PropTypes.bool.isRequired,
-  onShowProxySettings: React.PropTypes.func.isRequired,
-  privateProjectLimit: React.PropTypes.number,
+  envoyProject: PropTypes.object.isRequired,
+  envoyClient: PropTypes.object.isRequired,
+  lastViewedChangelog: PropTypes.string,
+  onShowChangelogModal: PropTypes.func.isRequired,
+  showChangelogModal: PropTypes.bool.isRequired,
+  expiredTrialNonPro: PropTypes.bool.isRequired,
+  onShowProxySettings: PropTypes.func.isRequired,
+  privateProjectLimit: PropTypes.number,
 };
 
 export default Radium(ProjectBrowser);

@@ -18,7 +18,18 @@ const haikuURI = process.argv.find((arg) => arg.startsWith('haiku://'));
 if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
   require('@haiku/cli');
 } else {
-  const {app, dialog} = require('electron');
+  const electron = require('electron');
+  console.log('Electron module:', electron);
+  console.log('Electron keys:', Object.keys(electron));
+  
+  // Try to access electron.app directly
+  console.log('electron.app:', electron.app);
+  console.log('electron[0]:', electron[0]);
+  
+  // In Electron 22, the module structure might be different
+  // Let's try to access app from the electron object
+  const app = electron.app || electron[0];
+  const dialog = electron.dialog || electron[1];
 
   if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
     dialog.showErrorBox(

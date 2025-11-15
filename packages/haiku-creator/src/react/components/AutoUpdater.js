@@ -28,11 +28,11 @@ class AutoUpdater extends React.Component {
     };
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     if (
       process.env.HAIKU_SKIP_AUTOUPDATE !== '1' &&
       this.state.status === statuses.IDLE &&
-      nextProps.check
+      this.props.check
     ) {
       if (isMac()) {
         this.checkForUpdates();

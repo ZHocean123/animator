@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {parse} from '@babel/parser';
 import {EVALUATOR_STATES} from './constants';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -32,7 +33,7 @@ class SyntaxEvaluator extends React.PureComponent {
     return nextProps.evaluate !== this.props.evaluate;
   }
 
-  componentWillUpdate ({evaluate}) {
+  getSnapshotBeforeUpdate (prevProps, prevState) {
     const evaluator = this.getDefaultEvaluator();
 
     try {
@@ -70,8 +71,8 @@ class SyntaxEvaluator extends React.PureComponent {
 }
 
 SyntaxEvaluator.propTypes = {
-  style: React.PropTypes.object,
-  evaluate: React.PropTypes.string.isRequired,
+  style: PropTypes.object,
+  evaluate: PropTypes.string.isRequired,
 };
 
 export default SyntaxEvaluator;

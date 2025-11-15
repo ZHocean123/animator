@@ -61,9 +61,9 @@ export default class EnvoyClient<T extends EnvoyHandler> {
         const property = key as string;
         // TODO:  if we want to support other topologies (vs. only-top-level-functions,) we
         // can implement deserialization/handling logic here
-        if (schema[key] === 'function') {
+        if ((schema as any)[key] === 'function') {
           // Set the new function behavior.
-          returnMe[property] = ((prop) => {
+          (returnMe as any)[property] = ((prop) => {
             return (...args: any[]) => {
 
               // Ask server for a response.
@@ -92,7 +92,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * @description Returns the option of the given key
    */
   getOption (key: string): any {
-    return this.options[key];
+    return (this.options as any)[key];
   }
 
   /**
@@ -173,7 +173,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
         this.isConnected = true;
         this.connectingPromise = null;
         this.logger.info('[haiku envoy client] websocket connection opened');
-        accept();
+        accept(undefined);
       });
 
       this.socket.addEventListener('message', (evt) => {
@@ -227,7 +227,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
           this.rawTransmit(datagram);
         });
       }
-      accept();
+      accept(undefined);
     });
   }
 
@@ -297,7 +297,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
         );
       }
 
-      accept();
+      accept(undefined);
     });
   }
 

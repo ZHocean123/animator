@@ -15,7 +15,8 @@ export interface LoadingTopBarProps {
   progress?: number;
   speed: number|string;
   done: boolean;
-}
+
+  children?: React.ReactNode;}
 
 export class LoadingTopBar extends React.PureComponent<LoadingTopBarProps> {
   shouldComponentUpdate (nextProps: LoadingTopBarProps) {

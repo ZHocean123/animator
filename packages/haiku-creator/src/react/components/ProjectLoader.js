@@ -65,7 +65,7 @@ class ProjectLoader extends React.PureComponent {
   //   this.mount.appendChild(this.webview);
   // }
 
-  // componentWillReceiveProps (nextProps) {
+  // componentDidUpdate (prevProps) {
   //   if (!this.webview) {
   //     return;
   //   }

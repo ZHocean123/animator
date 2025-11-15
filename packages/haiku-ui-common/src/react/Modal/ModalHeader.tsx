@@ -12,7 +12,8 @@ const STYLES: React.CSSProperties = {
 
 export interface ModalHeaderProps {
   style?: React.CSSProperties;
-}
+
+  children?: React.ReactNode;}
 
 export class ModalHeader extends React.PureComponent<ModalHeaderProps> {
   render () {

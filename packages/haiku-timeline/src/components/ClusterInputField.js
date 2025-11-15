@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import Palette from 'haiku-ui-common/lib/Palette';
 
@@ -110,12 +111,12 @@ function safeText (textOrObj) {
 }
 
 ClusterInputField.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
+  row: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
 };
 
 ClusterInputFieldValueDisplay.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

@@ -57,7 +57,7 @@ const experimentCache = {} as ExperimentCache;
 export const clearExperimentCache = () => {
   experimentConfig = null;
   Object.keys(experimentCache).forEach((experimentId) => {
-    delete experimentCache[experimentId];
+    delete (experimentCache as any)[experimentId];
   });
 };
 
@@ -70,9 +70,9 @@ export const experimentIsEnabled = (experiment: Experiment): boolean => {
     throw new Error(`Unknown experiment: ${experiment}`);
   }
 
-  if (experimentCache.hasOwnProperty(experiment)) {
-    return experimentCache[experiment];
+  if ((experimentCache as any).hasOwnProperty(experiment)) {
+    return (experimentCache as any)[experiment];
   }
 
-  return experimentCache[experiment] = experimentConfig[experiment] || false;
+  return (experimentCache as any)[experiment] = (experimentConfig as any)[experiment] || false;
 };

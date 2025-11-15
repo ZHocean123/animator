@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 
 const STYLES = {
@@ -44,8 +45,8 @@ class EditorActions extends React.PureComponent {
 }
 
 EditorActions.propTypes = {
-  onCancel: React.PropTypes.func.isRequired,
-  onSave: React.PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default EditorActions;

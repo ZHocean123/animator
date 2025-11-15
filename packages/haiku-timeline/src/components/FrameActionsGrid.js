@@ -22,13 +22,13 @@ class FrameActionsGrid extends React.PureComponent {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
 
-      this.rootElement = nextProps.timeline.component.findElementRoot();
+      this.rootElement = this.props.timeline.component.findElementRoot();
       this.upsertTimelineEvents();
     }
   }

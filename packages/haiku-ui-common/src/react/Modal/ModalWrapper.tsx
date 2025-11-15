@@ -20,7 +20,8 @@ export interface ModalWrapperProps {
   onEsc?: () => void;
   onCmdEnter?: () => void;
   onCmdS?: () => void;
-}
+
+  children?: React.ReactNode;}
 
 const stopPropagation: React.MouseEventHandler<HTMLDivElement> = (event) => event.stopPropagation();
 

@@ -36,7 +36,7 @@ export interface SentryCallbackData {
 }
 
 const getErrorMetadata = (data: SentryCallbackData) => ({
-  message: (data.exception && data.exception[0] && data.exception[0].value) || 'Unknown',
+  message: (data.exception && (data.exception as any)[0] && (data.exception as any)[0].value) || 'Unknown',
   culprit: data.culprit,
 });
 

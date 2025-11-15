@@ -16,7 +16,8 @@ export interface GridProps {
   xTo: number;
   yFrom: number;
   yTo: number;
-}
+
+  children?: React.ReactNode;}
 
 export default class Grid extends BezierComponent<GridProps> {
   gridX (div: number) {

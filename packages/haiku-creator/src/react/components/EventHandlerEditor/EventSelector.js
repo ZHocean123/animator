@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {SimpleSelect} from 'react-selectize';
 import Palette from 'haiku-ui-common/lib/Palette';
 
@@ -128,10 +129,10 @@ class EventSelector extends React.Component {
 }
 
 EventSelector.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  defaultEventName: React.PropTypes.string,
-  options: React.PropTypes.array.isRequired,
-  disabledOptions: React.PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  defaultEventName: PropTypes.string,
+  options: PropTypes.array.isRequired,
+  disabledOptions: PropTypes.object.isRequired,
 };
 
 export default EventSelector;

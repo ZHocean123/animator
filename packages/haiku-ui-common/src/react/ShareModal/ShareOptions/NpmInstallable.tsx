@@ -5,7 +5,8 @@ import {PUBLISH_SHARED} from './PublishStyles';
 export interface NpmInstallableProps {
   projectName: string;
   organizationName: string;
-}
+
+  children?: React.ReactNode;}
 
 export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
   render () {

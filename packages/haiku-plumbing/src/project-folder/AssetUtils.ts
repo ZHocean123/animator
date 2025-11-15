@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as Base64 from '@ronomon/base64';
 import {ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 // @ts-ignore
 import {LOCKS} from 'haiku-serialization/src/bll/Lock';
 import * as path from 'path';

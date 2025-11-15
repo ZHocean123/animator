@@ -6,7 +6,8 @@ import {NpmInstallable} from './NpmInstallable';
 export interface ReactHaikuProps {
   projectName: string;
   organizationName: string;
-}
+
+  children?: React.ReactNode;}
 
 export default class ReactHaiku extends React.PureComponent<ReactHaikuProps> {
   render () {

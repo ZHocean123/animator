@@ -3745,7 +3745,7 @@ INJECTABLES.$state = {
 INJECTABLES.$parent = {
   schema: INJECTABLES.$element.schema,
   summon (injectees, component: HaikuComponent, node) {
-    injectees.$parent = HaikuElement.findOrCreateByNode(node).parent;
+    injectees.$parent = HaikuElement.findOrCreateByNode(node).parentElement;
   },
 };
 
@@ -3777,7 +3777,7 @@ INJECTABLES.$tree = {
     injectees.$tree = {
       element,
       component,
-      parent: element.parent,
+      parent: element.parentElement,
       children: element.children,
       root: element.owner,
     };

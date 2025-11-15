@@ -24,7 +24,8 @@ export interface GifProps {
   organizationName: string;
   folder: string;
   urls: HaikuShareUrls;
-}
+
+  children?: React.ReactNode;}
 
 export default class Gif extends React.PureComponent<GifProps> {
   get gifUrl () {
@@ -36,7 +37,7 @@ export default class Gif extends React.PureComponent<GifProps> {
 
   render () {
     return (
-      <div style={{textAlign: 'center'}}>
+      <div style={{textAlign: "center" }}>
         <div style={STYLES.imgWrapper}>
           <img src={this.gifUrl} style={STYLES.image} />
         </div>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import ActiveComponentIndicator from './ActiveComponentIndicator';
 import PlaybackButtons from './PlaybackButtons';
@@ -52,5 +53,5 @@ export default class ControlsArea extends React.Component {
 }
 
 ControlsArea.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

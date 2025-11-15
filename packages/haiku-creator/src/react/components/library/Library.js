@@ -1,5 +1,6 @@
 /* global Raven */
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as Radium from 'radium';
 import {shell, ipcRenderer} from 'electron';
@@ -514,7 +515,7 @@ class Library extends React.Component {
 }
 
 Library.propTypes = {
-  projectModel: React.PropTypes.object.isRequired,
+  projectModel: PropTypes.object.isRequired,
 };
 
 export default Radium(Library);

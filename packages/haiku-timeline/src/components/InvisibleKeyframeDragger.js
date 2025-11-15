@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import TimelineDraggable from './TimelineDraggable';
 import Globals from 'haiku-ui-common/lib/Globals';
@@ -14,7 +15,7 @@ export default class InvisibleKeyframeDragger extends React.Component {
     this.canBeDragged = Property.canHaveKeyframes(props.keyframe.row.property.name, props.keyframe.element);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     this.handleProps(nextProps);
   }
 
@@ -131,11 +132,11 @@ export default class InvisibleKeyframeDragger extends React.Component {
 }
 
 InvisibleKeyframeDragger.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  offset: React.PropTypes.number.isRequired,
-  keyframe: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  component: React.PropTypes.object.isRequired,
-  preventDragging: React.PropTypes.bool,
+  id: PropTypes.string.isRequired,
+  offset: PropTypes.number.isRequired,
+  keyframe: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  timeline: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+  preventDragging: PropTypes.bool,
 };

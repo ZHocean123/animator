@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as path from 'path';
 import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom';
@@ -19,7 +20,7 @@ import CreateComponentModal from './modals/CreateComponentModal';
 import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
 import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 import originMana from '../overlays/originMana';
 import controlPointMana from '../overlays/controlPointMana';
 import boxMana from '../overlays/boxMana';
@@ -28,7 +29,7 @@ import defsMana from '../overlays/defsMana';
 import rotationCursorMana from '../overlays/rotationCursorMana';
 import scaleCursorMana from '../overlays/scaleCursorMana';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common/src/environments/os';
 import directSelectionMana from '../overlays/directSelectionMana';
 import {calculateValue} from '@haiku/core/lib/Transitions';
 import {
@@ -38,12 +39,16 @@ import {
   transform2DPoint,
   closestNormalPointOnLineSegment,
   buildPathLUT,
-} from 'haiku-common/lib/math/geometryUtils';
+} from 'haiku-common/src/math/geometryUtils';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
 import Globals from 'haiku-ui-common/lib/Globals';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {clipboard, shell, remote, ipcRenderer} from 'electron';
+import { clipboard, shell, ipcRenderer } from 'electron';
+import * as remote from '@electron/remote';
+
+// 初始化 remote
+remote.initialize();
 
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
@@ -577,25 +582,25 @@ export class Glass extends React.Component {
 
         case 'global-menu:zoom-in':
           mixpanel.haikuTrack('creator:glass:zoom-in');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().zoomIn(1 + SHORTCUT_ZOOM_FACTOR);
+          const component1 = this.getActiveComponent();
+          if (component1) {
+            component1.getArtboard().zoomIn(1 + SHORTCUT_ZOOM_FACTOR);
           }
           break;
 
         case 'global-menu:zoom-out':
           mixpanel.haikuTrack('creator:glass:zoom-out');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().zoomOut(1 + SHORTCUT_ZOOM_FACTOR);
+          const component2 = this.getActiveComponent();
+          if (component2) {
+            component2.getArtboard().zoomOut(1 + SHORTCUT_ZOOM_FACTOR);
           }
           break;
 
         case 'global-menu:reset-viewport':
           mixpanel.haikuTrack('creator:glass:reset-viewport');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().resetZoomPan();
+          const component3 = this.getActiveComponent();
+          if (component3) {
+            component3.getArtboard().resetZoomPan();
           }
           break;
 
@@ -612,15 +617,15 @@ export class Glass extends React.Component {
           break;
 
         case 'global-menu:cut':
-          const proxy = this.fetchProxyElementForSelection();
-          if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
+          const proxy1 = this.fetchProxyElementForSelection();
+          if (proxy1 && proxy1.hasAnythingInSelectionButNotArtboard()) {
             this.handleCutDebounced();
           }
           break;
 
         case 'global-menu:copy':
-          const proxy = this.fetchProxyElementForSelection();
-          if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
+          const proxy2 = this.fetchProxyElementForSelection();
+          if (proxy2 && proxy2.hasAnythingInSelectionButNotArtboard()) {
             this.handleCopyDebounced();
           }
           break;
@@ -3916,9 +3921,9 @@ function belongsToMenuIcon (target) {
 }
 
 Glass.propTypes = {
-  userconfig: React.PropTypes.object,
-  websocket: React.PropTypes.object,
-  folder: React.PropTypes.string,
+  userconfig: PropTypes.object,
+  websocket: PropTypes.object,
+  folder: PropTypes.string,
 };
 
 export default Glass;

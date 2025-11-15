@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Draggable from 'react-draggable';
 
@@ -136,7 +137,7 @@ class SplitPanel extends React.PureComponent {
 }
 
 SplitPanel.propTypes = {
-  split: React.PropTypes.string,
+  split: PropTypes.string,
 };
 
 SplitPanel.defaultProps = {

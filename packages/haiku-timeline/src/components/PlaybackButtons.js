@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as lodash from 'lodash';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -51,11 +52,11 @@ class PlaybackButtons extends React.Component {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -135,7 +136,7 @@ class PlaybackButtons extends React.Component {
 }
 
 PlaybackButtons.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };
 
 export default Radium(PlaybackButtons);

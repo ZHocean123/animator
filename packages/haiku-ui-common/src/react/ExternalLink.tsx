@@ -6,7 +6,8 @@ export interface ExternalLinkProps {
   title?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   href: string;
-}
+
+  children?: React.ReactNode;}
 
 export class ExternalLink extends React.PureComponent<ExternalLinkProps> {
   private boundOnClick: React.MouseEventHandler<HTMLAnchorElement> = (clickEvent) => {

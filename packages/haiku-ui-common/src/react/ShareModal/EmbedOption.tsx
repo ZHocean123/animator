@@ -9,7 +9,8 @@ export interface EmbedOptionProps {
   template: string;
   entry: SelectedEntry;
   category: string;
-  onClick: (option: {entry: SelectedEntry, template: string}) => void;
+  onClick: (option: {entry: SelectedEntry, template: string
+  children?: React.ReactNode;}) => void;
   isSnapshotSaveInProgress: boolean;
   snapshotSyndicated: boolean;
   hasError: boolean;

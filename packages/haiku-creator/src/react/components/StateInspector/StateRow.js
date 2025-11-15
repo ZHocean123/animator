@@ -115,13 +115,13 @@ class StateRow extends React.Component {
     });
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (!nextProps.isNew) {
+  componentDidUpdate (prevProps) {
+    if (!this.props.isNew) {
       this.setState({
-        originalName: nextProps.stateName,
-        name: nextProps.stateName,
-        desc: nextProps.stateDescriptor,
-        valuePreEdit: nextProps.stateDescriptor.value,
+        originalName: this.props.stateName,
+        name: this.props.stateName,
+        desc: this.props.stateDescriptor,
+        valuePreEdit: this.props.stateDescriptor.value,
       });
     }
   }

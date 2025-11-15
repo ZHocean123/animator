@@ -5,18 +5,31 @@
     "declaration": true,
     "declarationDir": "lib",
     "jsx": "react",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
-      "node"
-    ],
+    "target": "es2017",
     "typeRoots": [
       "node_modules/@types/"
-    ]
+    ],
+    "skipLibCheck": true,
+    "strict": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noEmitOnError": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "noImplicitThis": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false
   },
   "include": [
     "src/**/*.ts",

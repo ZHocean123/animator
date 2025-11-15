@@ -21,6 +21,7 @@ export interface ComposedTransformSpec {
   'shear.xy'?: number;
   'shear.xz'?: number;
   'shear.yz'?: number;
+  [key: string]: any; // Add index signature to allow string indexing
 }
 
 const cleanInvalidOrOverexplicitProps = (out: ComposedTransformSpec, explicit = false) => {
@@ -72,7 +73,7 @@ const normalizeRotationsInQuadrants = (out: ComposedTransformSpec, normalizer: L
       return;
     }
 
-    const originalQuadrant = Math.floor(2 * normalizer.rotation[axis] / Math.PI);
+    const originalQuadrant = Math.floor(2 * (normalizer.rotation as any)[axis] / Math.PI);
     const quadrantOut = Math.floor(2 * out[rotationProperty] / Math.PI);
     if (Math.abs(originalQuadrant - quadrantOut) < 3) {
       // We're within a half "tick" of the original normalizer, so there isn't an obvious way to normalize, so let's

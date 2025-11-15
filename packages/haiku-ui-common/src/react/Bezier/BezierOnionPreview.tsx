@@ -6,7 +6,8 @@ export interface BezierOnionPreviewProps {
   numberOnionSlices?: number;
   value?: number[];
   update?: boolean;
-}
+
+  children?: React.ReactNode;}
 
 export default class BezierOnionPreview extends React.Component<BezierOnionPreviewProps> {
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as Color from 'color';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -171,13 +172,13 @@ function remapPrettyValue (prettyValue) {
 }
 
 PropertyInputField.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
-  disabled: React.PropTypes.bool,
+  row: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  disabled: PropTypes.bool,
 };
 
 PropertyInputFieldValueDisplay.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

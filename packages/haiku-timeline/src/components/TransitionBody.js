@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Color from 'color';
 import * as lodash from 'lodash';
 import zIndex from './styles/zIndex';
@@ -44,7 +45,7 @@ export default class TransitionBody extends React.Component {
     this.handleProps(props);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     this.handleProps(nextProps);
   }
 
@@ -309,10 +310,10 @@ export default class TransitionBody extends React.Component {
 }
 
 TransitionBody.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  keyframe: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  component: React.PropTypes.object.isRequired,
-  preventDragging: React.PropTypes.bool.isRequired,
-  showBezierEditor: React.PropTypes.func,
+  id: PropTypes.string.isRequired,
+  keyframe: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+  preventDragging: PropTypes.bool.isRequired,
+  showBezierEditor: PropTypes.func,
 };

@@ -24,7 +24,8 @@ const STYLES = {
 export interface EmbedCategoryProps {
   category: string;
   options: any;
-  onOptionClicked?: (option: {entry: SelectedEntry, template: string}) => void;
+  onOptionClicked?: (option: {entry: SelectedEntry, template: string
+  children?: React.ReactNode;}) => void;
   isSnapshotSaveInProgress?: boolean;
   snapshotSyndicated?: boolean;
   hasError: boolean;

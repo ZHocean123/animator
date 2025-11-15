@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import StatesSVG from 'haiku-ui-common/lib/react/icons/StatesSVG';
 import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
@@ -91,6 +92,6 @@ export default class PropertyRowHeading extends React.Component {
 }
 
 PropertyRowHeading.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  humanName: React.PropTypes.string.isRequired,
+  row: PropTypes.object.isRequired,
+  humanName: PropTypes.string.isRequired,
 };

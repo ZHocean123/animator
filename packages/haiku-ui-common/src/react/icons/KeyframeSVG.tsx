@@ -4,7 +4,8 @@ import Palette from './../../Palette';
 export interface KeyframeSVGProps {
   color?: string;
   style?: React.CSSProperties;
-}
+
+  children?: React.ReactNode;}
 
 export default ({color = Palette.ROCK, style}: KeyframeSVGProps) => (
   <svg width="7" height="7" viewBox="0 8 7 7" style={style}>

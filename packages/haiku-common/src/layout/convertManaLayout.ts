@@ -11,7 +11,7 @@ import parseCssTransformString from './parseCssTransformString';
 
 const ROOT_LOCATOR = '0';
 
-const TRANSFORM_COMPONENT_WHITELIST = {
+const TRANSFORM_COMPONENT_WHITELIST: {[key: string]: boolean} = {
   'rotation.x': true,
   'rotation.y': true,
   'rotation.z': true,
@@ -108,7 +108,7 @@ export default (mana: BytecodeNode) => {
     }
 
     // Specifically avoid setting up layout size for SVG elements that can receive width and height as attributes.
-    if (typeof name !== 'string' || !SVG_SIZEABLES[name]) {
+    if (typeof name !== 'string' || !(SVG_SIZEABLES as any)[name]) {
       // Convert the width attribute to our layout-friendly size property
       if (attributes.width !== undefined && attributes.width !== null) {
         const widthProp = determineSizingProp(attributes.width);
@@ -198,7 +198,7 @@ export default (mana: BytecodeNode) => {
       const transformAttributes = parseCssTransformString(attributes.transform, 1e6);
 
       for (const transformAttributeName in transformAttributes) {
-        const transformValue = transformAttributes[transformAttributeName];
+        const transformValue = (transformAttributes as any)[transformAttributeName];
         if (!TRANSFORM_COMPONENT_WHITELIST[transformAttributeName]) {
           console.warn(
             'Skipping transform attribute ' +
@@ -207,7 +207,7 @@ export default (mana: BytecodeNode) => {
           );
           continue;
         }
-        attributes[transformAttributeName] = transformValue;
+        (attributes as any)[transformAttributeName] = transformValue;
       }
 
       // Strip off the old value which is no longer needed

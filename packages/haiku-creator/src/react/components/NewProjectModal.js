@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import {DASH_STYLES} from '../styles/dashShared';
 import {BTN_STYLES} from '../styles/btnShared';
@@ -113,9 +114,9 @@ class NewProjectModal extends React.PureComponent {
 }
 
 NewProjectModal.propTypes = {
-  duplicate: React.PropTypes.bool,
-  onCancel: React.PropTypes.func,
-  projectsList: React.PropTypes.array,
+  duplicate: PropTypes.bool,
+  onCancel: PropTypes.func,
+  projectsList: PropTypes.array,
 };
 
 export default Radium(NewProjectModal);

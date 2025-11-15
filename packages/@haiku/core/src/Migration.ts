@@ -173,7 +173,7 @@ export const runMigrationsPrePhase = (component: IHaikuComponent, options: Migra
   if (bytecode.template) {
     // y-overflow + preserve-3d leads to various rendering bugs, so for now, disable when overflow is available.
     // #FIXME
-    const autoPreserve3d = component.config.preserve3d === 'auto' && component.config.overflowY !== 'visible';
+    const autoPreserve3d = (component as any).config.preserve3d === 'auto' && (component as any).config.overflowY !== 'visible';
 
     visitManaTree(
       '0',

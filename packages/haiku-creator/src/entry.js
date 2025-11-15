@@ -1,7 +1,7 @@
 import * as electron from 'electron';
 import setup from './dom';
 import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common/src/environments';
 
 electron.ipcRenderer.on('haiku', (_, haiku) => {
 

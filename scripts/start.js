@@ -280,7 +280,7 @@ function go () {
   switch (inputs.devChoice) {
     case 'everything':
       global.process.env.HAIKU_DEBUG = '1';
-      binaryArgs.push('electron', '--inspect=9220', '--remote-debugging-port=9222', '.');
+      binaryArgs.push('electron', '--inspect=9220', '.');
 
       // Fix drag and drop linux bug on debug build. A Heisenbug according to
       // https://github.com/electron/electron/issues/12820

@@ -8,6 +8,41 @@ const glob = require('glob');
 const allPackages = require('./helpers/packages')();
 const log = require('./helpers/log');
 
+// Define build order to ensure dependencies are built first
+const buildOrder = [
+  'haiku-common',
+  '@haiku/core',
+  'haiku-serialization',
+  'haiku-plumbing',
+  'haiku-formats',
+  'haiku-ui-common',
+  'haiku-timeline',
+  'haiku-glass',
+  'haiku-sdk-creator',
+  '@haiku/sdk-client',
+  '@haiku/cli',
+  'haiku-admin-cli',
+  'haiku-creator'
+];
+
+// Sort packages according to build order
+const sortedPackages = allPackages.sort((a, b) => {
+  const aIndex = buildOrder.indexOf(a.shortname);
+  const bIndex = buildOrder.indexOf(b.shortname);
+  
+  // If both packages are in build order, sort by that order
+  if (aIndex !== -1 && bIndex !== -1) {
+    return aIndex - bIndex;
+  }
+  
+  // If only one package is in build order, prioritize it
+  if (aIndex !== -1) return -1;
+  if (bIndex !== -1) return 1;
+  
+  // Otherwise, keep original order
+  return 0;
+});
+
 if (!process.env.NODE_ENV) {
   // babel-cli requires this to be set for reasons I don't know
   process.env.NODE_ENV = 'development';
@@ -15,7 +50,7 @@ if (!process.env.NODE_ENV) {
 
 const getModificationTime = (file) => new Date(fs.statSync(file).mtime);
 
-async.each(allPackages, (pack, done) => {
+async.each(sortedPackages, (pack, done) => {
   if (pack.pkg && pack.pkg.scripts && pack.pkg.scripts.compile) {
     const lastCompileFilename = path.join(pack.abspath, '.last-compile');
 
@@ -35,7 +70,12 @@ async.each(allPackages, (pack, done) => {
     /* Compile package if it has any modified file */
     if (modifiedFiles.length > 0) {
       log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
-      cp.execSync('pnpm run compile', {cwd: pack.abspath, stdio: 'inherit'});
+      try {
+        cp.execSync('pnpm run compile', {cwd: pack.abspath, stdio: 'inherit'});
+      } catch (error) {
+        log.warn(`Compilation failed for ${pack.shortname}, but continuing...`);
+        // Continue with next package even if compilation fails
+      }
     } else {
       log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);
     }

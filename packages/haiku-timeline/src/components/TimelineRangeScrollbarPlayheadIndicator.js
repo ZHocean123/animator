@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
 import * as lodash from 'lodash';
@@ -31,11 +32,11 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -76,5 +77,5 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
 }
 
 TimelineRangeScrollbarPlayheadIndicator.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

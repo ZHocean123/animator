@@ -18,7 +18,8 @@ export interface HandleProps {
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onMouseDown?: () => void;
-}
+
+  children?: React.ReactNode;}
 
 export default class Handle extends BezierComponent<HandleProps> {
 

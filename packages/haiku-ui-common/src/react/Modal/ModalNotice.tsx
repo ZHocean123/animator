@@ -4,7 +4,8 @@ import Palette from '../../Palette';
 export interface ModalNoticeProps {
   color?: string;
   message: string;
-}
+
+  children?: React.ReactNode;}
 
 export class ModalNotice extends React.PureComponent<ModalNoticeProps> {
   render () {
@@ -15,7 +16,7 @@ export class ModalNotice extends React.PureComponent<ModalNoticeProps> {
           height: '25px',
           lineHeight: '25px',
           padding: '3px',
-          textAlign: 'center',
+          textAlign: "center",
           color: Palette.SUNSTONE,
           backgroundColor: this.props.color,
         }}

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
 import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
@@ -108,7 +109,7 @@ export default class Preview extends React.Component {
 }
 
 Preview.propTypes = {
-  component: React.PropTypes.object.isRequired,
-  mount: React.PropTypes.object.isRequired,
-  container: React.PropTypes.object.isRequired,
+  component: PropTypes.object,
+  mount: PropTypes.object,
+  container: PropTypes.object,
 };

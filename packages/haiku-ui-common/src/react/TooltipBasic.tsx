@@ -21,7 +21,7 @@ const STYLES = {
     maxWidth: 170,
     minWidth: 110,
     padding: '0 4px',
-    textAlign: 'center',
+    textAlign: "center",
     color: Palette.SUNSTONE,
     backgroundColor: Palette.DARKEST_COAL,
     borderColor: Palette.DARKEST_COAL,
@@ -50,7 +50,8 @@ export interface TooltipBasicProps {
   light?: boolean;
   top?: number;
   width?: number;
-}
+
+  children?: React.ReactNode;}
 
 export class TooltipBasic extends React.PureComponent<TooltipBasicProps> {
   render () {

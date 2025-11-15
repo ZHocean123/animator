@@ -1,8 +1,9 @@
 import {ipcRenderer} from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as qs from 'qs';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common/src/environments';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
 import Glass from './Glass';
@@ -66,17 +67,15 @@ try {
 
     window.isWebview = config.webview;
 
-    ReactDOM.render(
-      <Glass
+    const root = createRoot(document.getElementById('root'));
+    root.render(<Glass
         mixpanel={mixpanel}
         envoy={config.envoy}
         userconfig={userconfig}
         websocket={websocket}
         folder={config.folder}
         projectName={userconfig.project || 'untitled'}
-      />,
-      document.getElementById('root'),
-    );
+      />);
   });
 } catch (e) {
   Raven.captureException(e, () => {

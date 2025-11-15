@@ -7,13 +7,13 @@ const STYLES: React.CSSProperties = {
     transition: 'transform 200ms linear',
     padding: '0 20px',
     marginBottom: '30px',
-    pointerEvents: 'none',
+    pointerEvents: "none" as any,
   },
   item: {
     width: '50%',
   },
   hidden: {
-    pointerEvents: 'none',
+    pointerEvents: "none",
     opacity: 0,
   },
   visible: {
@@ -27,7 +27,8 @@ export interface RevealPanelProps {
   leftPanel?: React.ReactNode;
   rightPanel?: React.ReactNode;
   wrapperStyles?: React.CSSProperties;
-}
+
+  children?: React.ReactNode;}
 
 export class RevealPanel extends React.PureComponent<RevealPanelProps> {
   render () {

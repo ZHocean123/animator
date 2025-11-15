@@ -102,7 +102,7 @@ const STYLES = {
     color: Palette.DARK_ROCK,
     fontSize: '0.7em',
     cursor: 'pointer',
-    textAlign: 'center',
+    textAlign: "center" as any,
     lineHeight: '1.2em',
     marginTop: '12px',
   },
@@ -116,7 +116,7 @@ const STYLES = {
     border: '1px solid ' + Palette.BLUE,
     padding: '14px 20px',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   btnSecondary: {
     height: '25px',
@@ -154,7 +154,8 @@ export interface ProjectShareDetailsProps {
   privateProjectLimit: number;
   hasError: boolean;
   organizationName: string;
-}
+
+  children?: React.ReactNode;}
 
 export interface ProjectShareDetailsStates {
   showTooltip: boolean;

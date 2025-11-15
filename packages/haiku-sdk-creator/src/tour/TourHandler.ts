@@ -190,16 +190,16 @@ export class TourHandler implements Tour {
   receiveElementCoordinates (webview: string, position: ClientBoundingRect) {
     const state = this.getPlatformState();
     const fallbackPosition = {top: 0, left: 0};
-    const origin = this.webviewData[webview] || fallbackPosition;
+    const origin = (this.webviewData as any)[webview] || fallbackPosition;
     const top = origin.top + position.top;
     const left =  origin.left + position.left;
-    const {width, height} = position;
+    const {width, height} = (position as any);
 
     this.requestShowStep(state, {top, left, width, height});
   }
 
   receiveWebviewCoordinates (webview: string, coordinates: ClientBoundingRect) {
-    this.webviewData[webview] = coordinates;
+    (this.webviewData as any)[webview] = coordinates;
     this.renderCurrentStepAgain();
   }
 

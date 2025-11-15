@@ -47,7 +47,8 @@ export interface LinkHolsterProps {
   onCopy?: () => void;
   onLinkOpen?: () => void;
   hasError?: boolean;
-}
+
+  children?: React.ReactNode;}
 
 export interface LinkHolsterStates {
   copied: boolean;

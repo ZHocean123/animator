@@ -5,6 +5,7 @@
  /* global monaco:true */
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import Palette from 'haiku-ui-common/lib/Palette';
 
@@ -144,15 +145,15 @@ class MonacoEditor extends React.Component {
 }
 
 MonacoEditor.propTypes = {
-  value: React.PropTypes.string,
-  defaultValue: React.PropTypes.string,
-  language: React.PropTypes.string,
-  theme: React.PropTypes.string,
-  options: React.PropTypes.object,
-  style: React.PropTypes.object,
-  editorDidMount: React.PropTypes.func,
-  editorWillMount: React.PropTypes.func,
-  onChange: React.PropTypes.func,
+  value: PropTypes.string,
+  defaultValue: PropTypes.string,
+  language: PropTypes.string,
+  theme: PropTypes.string,
+  options: PropTypes.object,
+  style: PropTypes.object,
+  editorDidMount: PropTypes.func,
+  editorWillMount: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 function noop () {}

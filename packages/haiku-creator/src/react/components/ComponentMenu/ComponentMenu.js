@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Color from 'color';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -105,7 +106,7 @@ class ComponentMenu extends React.Component {
 }
 
 ComponentMenu.propTypes = {
-  projectModel: React.PropTypes.object.isRequired,
+  projectModel: PropTypes.object.isRequired,
 };
 
 export default Radium(ComponentMenu);

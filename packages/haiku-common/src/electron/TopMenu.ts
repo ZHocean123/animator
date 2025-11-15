@@ -31,6 +31,7 @@ export interface TopMenuOptions {
   projectsList: PlumbingProject[];
   subComponents: SubComponent[];
   undoState: UndoState;
+  [key: string]: any; // Add index signature to allow string indexing
 }
 
 export default class TopMenu {

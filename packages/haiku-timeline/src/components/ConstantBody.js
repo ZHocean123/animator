@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Color from 'color';
 import Palette from 'haiku-ui-common/lib/Palette';
 import Globals from 'haiku-ui-common/lib/Globals';
@@ -11,7 +12,7 @@ export default class ConstantBody extends React.Component {
     this.handleProps(props);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     this.handleProps(nextProps);
   }
 
@@ -139,9 +140,9 @@ export default class ConstantBody extends React.Component {
 }
 
 ConstantBody.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  keyframe: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
-  preventDragging: React.PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+  keyframe: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  preventDragging: PropTypes.bool.isRequired,
 };

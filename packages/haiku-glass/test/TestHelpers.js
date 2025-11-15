@@ -1,6 +1,7 @@
 import {JSDOM} from 'jsdom';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
 
 export default class TestHelpers {
@@ -61,13 +62,13 @@ export default class TestHelpers {
           throw fetchErr;
         }
         const websocket = {on: () => {}, send: () => {}, method: () => {}, request: () => {}, action: () => {}, connect: () => {}};
-        ReactDOM.render(
-          React.createElement(Glass, {
+        const root = createRoot({
             userconfig,
             websocket,
             folder,
             envoy: {mock: true},
-          }),
+          });
+  root.render(React.createElement(Glass),
           document.getElementById('root'),
         );
         return cb(window.timeline, window, teardown);

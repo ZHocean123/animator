@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import RowSegments from './RowSegments';
 
 export default class PropertyTimelineSegments extends React.Component {
@@ -21,10 +22,10 @@ export default class PropertyTimelineSegments extends React.Component {
 }
 
 PropertyTimelineSegments.propTypes = {
-  row: React.PropTypes.object.isRequired,
-  component: React.PropTypes.object.isRequired,
-  timeline: React.PropTypes.object.isRequired,
-  rowHeight: React.PropTypes.number.isRequired,
-  preventDragging: React.PropTypes.bool.isRequired,
-  showBezierEditor: React.PropTypes.func,
+  row: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  preventDragging: PropTypes.bool.isRequired,
+  showBezierEditor: PropTypes.func,
 };

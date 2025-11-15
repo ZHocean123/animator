@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
 
 const STYLES = {
@@ -30,9 +31,9 @@ class EventHandlerTriggerer extends React.PureComponent {
 }
 
 EventHandlerTriggerer.propTypes = {
-  element: React.PropTypes.object.isRequired,
-  onEventHandlerTriggered: React.PropTypes.func.isRequired,
-  boltColor: React.PropTypes.string.isRequired,
+  element: PropTypes.object.isRequired,
+  onEventHandlerTriggered: PropTypes.func.isRequired,
+  boltColor: PropTypes.string.isRequired,
 };
 
 export default EventHandlerTriggerer;

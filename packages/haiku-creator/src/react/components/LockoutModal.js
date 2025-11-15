@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {
   ModalWrapper,
   ModalHeader,
@@ -110,7 +111,7 @@ class LockoutModal extends React.PureComponent {
 }
 
 LockoutModal.propTypes = {
-  onClose: React.PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default LockoutModal;

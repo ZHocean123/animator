@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Modal, {MODAL_STYLES} from '../Modal';
 
 const DEFAULT_COMPONENT_NAME = 'Name Component';
@@ -126,9 +127,9 @@ const isLetter = (c) => {
 };
 
 CreateComponentModal.propTypes = {
-  options: React.PropTypes.object.isRequired,
-  existingComponentNames: React.PropTypes.object.isRequired,
-  onSubmit: React.PropTypes.func.isRequired,
-  onCancel: React.PropTypes.func.isRequired,
-  isOpen: React.PropTypes.bool.isRequired,
+  options: PropTypes.object.isRequired,
+  existingComponentNames: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };

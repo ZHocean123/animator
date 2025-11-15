@@ -1,5 +1,6 @@
 import * as Radium from 'radium';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as qs from 'qs';
 import * as assign from 'lodash.assign';
 import * as path from 'path';
@@ -8,7 +9,7 @@ import StageTitleBar from './StageTitleBar';
 import ComponentMenu from './ComponentMenu/ComponentMenu';
 import CodeEditor from './CodeEditor/CodeEditor';
 import Palette from 'haiku-ui-common/lib/Palette';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
 import {
   isPreviewMode,
@@ -372,16 +373,16 @@ class Stage extends React.Component {
 }
 
 Stage.propTypes = {
-  folder: React.PropTypes.string.isRequired,
-  haiku: React.PropTypes.object.isRequired,
-  envoyClient: React.PropTypes.object.isRequired,
-  websocket: React.PropTypes.object.isRequired,
-  project: React.PropTypes.object.isRequired,
-  createNotice: React.PropTypes.func.isRequired,
-  removeNotice: React.PropTypes.func.isRequired,
-  organizationName: React.PropTypes.string,
-  username: React.PropTypes.string,
-  supportOfflineExport: React.PropTypes.bool,
+  folder: PropTypes.string.isRequired,
+  haiku: PropTypes.object.isRequired,
+  envoyClient: PropTypes.object.isRequired,
+  websocket: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
+  createNotice: PropTypes.func.isRequired,
+  removeNotice: PropTypes.func.isRequired,
+  organizationName: PropTypes.string,
+  username: PropTypes.string,
+  supportOfflineExport: PropTypes.bool,
 };
 
 export default Radium(Stage);

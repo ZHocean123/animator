@@ -33,7 +33,8 @@ export interface LoadingButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onMouseOver?: React.MouseEventHandler<HTMLButtonElement>;
   onMouseOut?: React.MouseEventHandler<HTMLButtonElement>;
-}
+
+  children?: React.ReactNode;}
 
 export class LoadingButton extends React.PureComponent<LoadingButtonProps> {
   render () {

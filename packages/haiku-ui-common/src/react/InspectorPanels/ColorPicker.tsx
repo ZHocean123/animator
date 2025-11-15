@@ -13,22 +13,49 @@ declare module 'react-color' {
     v: number;
   }
 
-  interface CustomPickerProps<A> {
+  interface HSLColor {
+    a: number;
+    h: number;
+    s: number;
+    l: number;
+  }
+
+  interface RGBColor {
+    a: number;
+    r: number;
+    g: number;
+    b: number;
+  }
+
+  interface ColorState {
+    hex: string;
+    hsl: HSLColor;
+    hsv: HSVColor;
+    rgb: RGBColor;
+    oldHue: number;
+  }
+
+  interface CustomPickerProps<A = any> {
     hex?: string;
     hsl?: HSLColor;
     hsv?: HSVColor;
     rgb?: RGBColor;
-    oldHue?: string;
+    oldHue?: number;
     label?: string;
-    picker?: any;
+    onChange?: (color: any) => void;
   }
 
   interface EditableInputProps {
     arrowOffset?: number;
-    style?: React.CSSProperties;
+    style?: any;
+    children?: React.ReactNode;
   }
 
   interface ColorResult {
+    hex: string;
+    hsl: HSLColor;
+    hsv: HSVColor;
+    rgb: RGBColor;
     source: string;
   }
 }
@@ -50,7 +77,7 @@ const INPUT_STYLES: EditableInputStyles = {
   },
 };
 
-const STYLES: React.CSSProperties = {
+const STYLES: any = {
   picker: {
     width: '9px',
     height: '9px',
@@ -113,7 +140,7 @@ const STYLES: React.CSSProperties = {
   },
 };
 
-export interface HaikuColorPickerProps extends CustomPickerProps<any> {
+export interface HaikuColorPickerProps extends CustomPickerProps {
   displayValue: DisplayValues;
 }
 
@@ -131,11 +158,13 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
   onValueDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({valueDisplay: Number(event.currentTarget.value)});
 
-    this.props.onChange({
-      hex: this.props.hex,
-      hsl: this.props.hsl,
-      rgb: this.props.rgb,
+    this.props.onChange && this.props.onChange({
+      hex: this.props.hex || '',
+      hsl: this.props.hsl || { a: 1, h: 0, s: 0, l: 0 },
+      hsv: this.props.hsv || { a: 1, h: 0, s: 0, v: 0 },
+      rgb: this.props.rgb || { a: 1, r: 0, g: 0, b: 0 },
       source: event.currentTarget.value,
+      oldHue: 0,
     });
   };
 
@@ -149,7 +178,7 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
       source = this.state.valueDisplay;
     }
 
-    this.props.onChange({
+    this.props.onChange && this.props.onChange({
       ...data,
       source,
     });
@@ -172,22 +201,35 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
         </style>
         <div style={STYLES.editorsContainer}>
           <div style={STYLES.saturationContainer} className="saturation-container">
-            <Saturation hsl={this.props.hsl} hsv={this.props.hsv} onChange={this.onChange} />
+            <Saturation 
+              hsl={this.props.hsl || { a: 1, h: 0, s: 0, l: 0 }} 
+              hsv={this.props.hsv || { a: 1, h: 0, s: 0, v: 0 }} 
+              onChange={this.onChange} 
+            />
           </div>
           <div style={STYLES.leftPanel}>
             <div style={STYLES.sliderContainer}>
-              <Hue hsl={this.props.hsl} onChange={this.onChange} pointer={SliderPointer} />
+              <Hue 
+                hsl={this.props.hsl || { a: 1, h: 0, s: 0, l: 0 }} 
+                onChange={this.onChange} 
+                pointer={SliderPointer} 
+              />
             </div>
             <div style={{...STYLES.sliderContainer, background: 'white', opacity: 1}}>
-              <Alpha rgb={this.props.rgb} hsl={this.props.hsl} onChange={this.onChange} pointer={SliderPointer} />
-              <div style={{pointerEvents: 'none', background: 'white', opacity: 1}}>
+              <Alpha 
+                rgb={this.props.rgb || { a: 1, r: 0, g: 0, b: 0 }} 
+                hsl={this.props.hsl || { a: 1, h: 0, s: 0, l: 0 }} 
+                onChange={this.onChange} 
+                pointer={SliderPointer} 
+              />
+              <div style={{pointerEvents: "none", background: 'white', opacity: 1}}>
                 <Checkboard />
               </div>
             </div>
             <div style={{width: '57%', display: 'inline-block', marginTop: 2}}>
               <EditableInput
                 style={STYLES.smallInput}
-                value={`${this.props.hsl.a * 100}%`}
+                value={`${this.props.hsl?.a || 0 * 100}%`}
                 onChange={this.onChange}
               />
             </div>

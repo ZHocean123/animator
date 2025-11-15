@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import Palette from 'haiku-ui-common/lib/Palette';
 import toTitleCase from '../../helpers/toTitleCase';
@@ -100,8 +101,8 @@ class ComponentTab extends React.Component {
 }
 
 ComponentTab.propTypes = {
-  projectModel: React.PropTypes.object.isRequired,
-  tab: React.PropTypes.object.isRequired,
+  projectModel: PropTypes.object.isRequired,
+  tab: PropTypes.object.isRequired,
 };
 
 export default Radium(ComponentTab);

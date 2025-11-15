@@ -1,5 +1,6 @@
 /* global monaco */
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import SyntaxEvaluator from './SyntaxEvaluator';
 import Snippets from './Snippets';
@@ -150,10 +151,10 @@ class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-  onContentChange: React.PropTypes.func.isRequired,
-  selectedEventName: React.PropTypes.string.isRequired,
-  contents: React.PropTypes.string,
-  params: React.PropTypes.array.isRequired,
+  onContentChange: PropTypes.func.isRequired,
+  selectedEventName: PropTypes.string.isRequired,
+  contents: PropTypes.string,
+  params: PropTypes.array.isRequired,
 };
 
 export default Editor;

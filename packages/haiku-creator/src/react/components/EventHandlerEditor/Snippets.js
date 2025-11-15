@@ -1,5 +1,6 @@
 /* global monaco */
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import {shell} from 'electron';
 import Palette from 'haiku-ui-common/lib/Palette';
 import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
@@ -91,7 +92,7 @@ class Snippets extends React.PureComponent {
     ];
   }
 
-  componentWillReceiveProps (newProps) {
+  componentDidUpdate (newProps) {
     if (newProps.editor && !this.props.editor) {
 
       newProps.editor.getDomNode().appendChild(this._rightGradientDiv);
@@ -187,7 +188,7 @@ class Snippets extends React.PureComponent {
 }
 
 Snippets.propTypes = {
-  editor: React.PropTypes.object,
+  editor: PropTypes.object,
 };
 
 export default Snippets;

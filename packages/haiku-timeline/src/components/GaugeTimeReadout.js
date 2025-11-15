@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as lodash from 'lodash';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -22,11 +23,11 @@ export default class GaugeTimeReadout extends React.Component {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -136,11 +137,11 @@ class FpsReadout extends React.Component {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -182,11 +183,11 @@ class TimeReadout extends React.Component {
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // When switching the active component, we also get a new timeline instance
-    if (nextProps.timeline !== this.props.timeline) {
+    if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.on('update', this.handleUpdate);
     }
   }
 
@@ -212,13 +213,13 @@ class TimeReadout extends React.Component {
 }
 
 GaugeTimeReadout.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };
 
 FpsReadout.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };
 
 TimeReadout.propTypes = {
-  timeline: React.PropTypes.object.isRequired,
+  timeline: PropTypes.object.isRequired,
 };

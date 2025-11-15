@@ -34,7 +34,7 @@ import {
   fetchProjectConfigInfo,
 } from './project-folder/ProjectDefinitions';
 import {dumpBase64Images} from './project-folder/AssetUtils';
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common/src/environments/os';
 
 if (isMac()) {
   Sketch.findAndUpdateInstallPath();

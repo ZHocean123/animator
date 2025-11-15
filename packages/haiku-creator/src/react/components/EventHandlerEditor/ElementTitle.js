@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric';
 import {TrashIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -57,10 +58,10 @@ class ElementTitle extends React.PureComponent {
 }
 
 ElementTitle.propTypes = {
-  element: React.PropTypes.object,
-  onEditorRemoved: React.PropTypes.func.isRequired,
-  currentFrame: React.PropTypes.number,
-  currentEvent: React.PropTypes.string,
+  element: PropTypes.object,
+  onEditorRemoved: PropTypes.func.isRequired,
+  currentFrame: PropTypes.number,
+  currentEvent: PropTypes.string,
 };
 
 export default ElementTitle;

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as qs from 'qs';
 import * as assign from 'lodash.assign';
 import * as path from 'path';
@@ -127,8 +128,8 @@ export default class Timeline extends React.Component {
 }
 
 Timeline.propTypes = {
-  folder: React.PropTypes.string.isRequired,
-  haiku: React.PropTypes.object.isRequired,
-  envoyClient: React.PropTypes.object.isRequired,
-  onReady: React.PropTypes.func,
+  folder: PropTypes.string.isRequired,
+  haiku: PropTypes.object.isRequired,
+  envoyClient: PropTypes.object.isRequired,
+  onReady: PropTypes.func,
 };

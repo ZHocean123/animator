@@ -9,7 +9,8 @@ export interface EmbedProps {
   userName: string;
   organizationName: string;
   urls: HaikuShareUrls;
-}
+
+  children?: React.ReactNode;}
 
 export default class Embed extends React.PureComponent<EmbedProps> {
   render () {

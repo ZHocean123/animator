@@ -12,7 +12,8 @@ registerLanguage('jsx', jsx);
 
 export interface CodeBoxProps {
   lang?: string;
-}
+
+  children?: React.ReactNode;}
 
 export class CodeBox extends React.PureComponent<CodeBoxProps> {
   static defaultProps = {

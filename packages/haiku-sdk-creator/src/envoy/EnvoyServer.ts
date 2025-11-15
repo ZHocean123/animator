@@ -177,7 +177,7 @@ export default class EnvoyServer {
     if (data.intent === DatagramIntent.REQUEST) {
       const handler = this.handlerRegistry.get(data.channel);
       if (handler) {
-        const method = handler.instance[data.method];
+        const method = (handler.instance as any)[data.method];
         if (method && typeof method === 'function') {
           const returnValue = method.apply(handler.instance, data.params);
 
@@ -280,8 +280,8 @@ export default class EnvoyServer {
     // Note how we append getConfig and setConfig from the parent.
     Object.getOwnPropertyNames(proto).concat(['getConfig', 'setConfig']).forEach((name) => {
       // TODO: handle nested objects & non-method members?
-      if (typeof instance[name] === 'function') {
-        ret[name] = 'function';
+      if (typeof (instance as any)[name] === 'function') {
+        (ret as any)[name] = 'function';
       }
     });
     return ret;

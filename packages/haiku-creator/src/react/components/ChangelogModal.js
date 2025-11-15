@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as marked from 'marked';
 import {shell} from 'electron';
 import {
@@ -165,8 +166,8 @@ class ChangelogModal extends React.PureComponent {
 }
 
 ChangelogModal.propTypes = {
-  onClose: React.PropTypes.func.isRequired,
-  lastViewedChangelog: React.PropTypes.string,
+  onClose: PropTypes.func.isRequired,
+  lastViewedChangelog: PropTypes.string,
 };
 
 export default ChangelogModal;

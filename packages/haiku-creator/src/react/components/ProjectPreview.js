@@ -3,6 +3,7 @@ import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTraili
 import * as fs from 'fs';
 import * as Module from 'module';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
 import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
 import {TourUtils} from 'haiku-common/lib/types/enums';
@@ -47,7 +48,7 @@ class ProjectPreview extends React.Component {
     this.component = null;
   }
 
-  componentWillMount () {
+  componentDidMount () {
     try {
       // TODO: Try to get the bytecode from CDN or eager clone if not yet available.
       this.bytecode = requireModuleFromFilename(this.props.bytecodePath);
@@ -102,8 +103,8 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (!this.component || this.props.playing === nextProps.playing) {
+  componentDidUpdate (prevProps) {
+    if (!this.component || this.props.playing === this.props.playing) {
       return;
     }
 
@@ -179,7 +180,7 @@ class ProjectPreview extends React.Component {
 }
 
 ProjectPreview.propTypes = {
-  bytecodePath: React.PropTypes.string.isRequired,
+  bytecodePath: PropTypes.string.isRequired,
 };
 
 export default ProjectPreview;

@@ -4,18 +4,18 @@ import Palette from './../Palette';
 const STYLES = {
   pagerWrap: {
     flex: 'none',
-    textAlign: 'center',
+    textAlign: "center" as any,
     height: '50px',
     width: '100%',
     backgroundColor: Palette.GRAY,
-    pointerEvents: 'none',
+    pointerEvents: "none" as any,
     bottom: '0px',
     transition: 'opacity 125ms, filter 140ms',
     userSelect: 'none',
   },
   pagerHolster: {
     transform: 'translateY(-12px)',
-    pointerEvents: 'auto',
+    pointerEvents: "auto",
   },
   pageNumber: {
     fontSize: 55,
@@ -38,7 +38,8 @@ export interface PaginatorProps {
   blur: boolean;
   fadeOut: boolean;
   onChangeFirstItemToDisplay: (firstItemToDisplay: number) => void;
-}
+
+  children?: React.ReactNode;}
 
 export interface PaginatorState {
   numPages: number;

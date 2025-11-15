@@ -1,4 +1,8 @@
-import {remote, ipcRenderer} from 'electron';
+import { ipcRenderer } from 'electron';
+import * as remote from '@electron/remote';
+
+// 初始化 remote
+remote.initialize();
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
@@ -32,7 +36,7 @@ import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
 import {USER_CHANNEL, UserSettings} from 'haiku-sdk-creator/lib/bll/User';
 import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 import zIndex from './styles/zIndex';
 import Globals from 'haiku-ui-common/lib/Globals';
 

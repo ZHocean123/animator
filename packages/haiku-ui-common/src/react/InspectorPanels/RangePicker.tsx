@@ -17,7 +17,8 @@ export interface RangePickerProps {
   thumbHeight?: number;
   trackHeight?: number;
   onValueChange?: (value: number) => null;
-}
+
+  children?: React.ReactNode;}
 
 export default class RangePicker extends React.PureComponent<RangePickerProps> {
   static defaultProps: RangePickerProps = {

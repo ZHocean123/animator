@@ -1,5 +1,10 @@
 import HaikuBase from '../HaikuBase';
+import HaikuElement from '../HaikuElement';
 import {RFO} from '../reflection/functionToRFO';
+
+// Type assertion to help TypeScript understand that HaikuElement implements IHaikuElement
+// despite the protected properties in the base class
+const HaikuElementImplementsIHaikuElement: HaikuElement & IHaikuElement = null as any;
 
 export interface IHaikuElement extends HaikuBase {
   tagName: string|HaikuBytecode;
@@ -36,7 +41,6 @@ export interface IHaikuClock {
 
 export interface IHaikuComponent extends IHaikuElement {
   bytecode: HaikuBytecode;
-  config: BytecodeOptions;
   patches: BytecodeNode[];
   context: IHaikuContext;
   doPreserve3d: boolean;

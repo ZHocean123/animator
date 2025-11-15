@@ -6,7 +6,8 @@ import {NpmInstallable} from './NpmInstallable';
 export interface VanillaJSProps {
   projectName: string;
   organizationName: string;
-}
+
+  children?: React.ReactNode;}
 
 export default class VanillaJS extends React.PureComponent<VanillaJSProps> {
   render () {

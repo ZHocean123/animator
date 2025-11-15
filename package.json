@@ -42,6 +42,7 @@
     }
   },
   "dependencies": {
+    "@electron/remote": "^2.1.3",
     "@haiku/cli": "workspace:*",
     "@haiku/core": "workspace:*",
     "@haiku/player": "^3.0.4",
@@ -56,7 +57,8 @@
     "haiku-sdk-creator": "workspace:*",
     "haiku-serialization": "workspace:*",
     "haiku-timeline": "workspace:*",
-    "haiku-ui-common": "workspace:*"
+    "haiku-ui-common": "workspace:*",
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -68,7 +70,7 @@
     "dependency-graph": "^0.5.0",
     "derequire": "^2.0.6",
     "dotenv": "^5.0.1",
-    "electron": "^22.3.0",
+    "electron": "^22.3.27",
     "electron-builder": "^24.13.3",
     "electron-notarize": "^1.2.0",
     "electron-rebuild": "^3.2.0",

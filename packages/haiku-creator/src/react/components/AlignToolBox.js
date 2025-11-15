@@ -1,5 +1,6 @@
 import * as Radium from 'radium';
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import * as Popover from 'react-popover';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import Palette from 'haiku-ui-common/lib/Palette';
@@ -259,8 +260,8 @@ class AlignToolBox extends React.PureComponent {
 }
 
 AlignToolBox.propTypes = {
-  websocket: React.PropTypes.object.isRequired,
-  projectModel: React.PropTypes.object.isRequired,
+  websocket: PropTypes.object.isRequired,
+  projectModel: PropTypes.object.isRequired,
 };
 
 export default Radium(AlignToolBox);

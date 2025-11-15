@@ -24,18 +24,18 @@ export class TimelineHandler implements Timeline {
   // TODO: pass EnvoyLogger in here
   constructor (server: EnvoyServer) {
     this.server = server;
-    this.timelineRegistry = {};
+    this.timelineRegistry = {} as {[key: string]: any};
   }
 
   private timelineRegistry: {};
 
   private getTimelineDataById (timelineId: string) {
-    if (this.timelineRegistry[timelineId]) {
-      return this.timelineRegistry[timelineId];
+    if ((this.timelineRegistry as any)[timelineId]) {
+      return (this.timelineRegistry as any)[timelineId];
     }
 
     const newTimelineData = Object.assign({}, DEFAULT_TIMELINE_DATA, {stopwatch: Date.now()});
-    this.timelineRegistry[timelineId] = newTimelineData;
+    (this.timelineRegistry as any)[timelineId] = newTimelineData;
     return newTimelineData;
   }
 

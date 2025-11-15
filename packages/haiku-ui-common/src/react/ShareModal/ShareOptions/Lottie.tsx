@@ -1,4 +1,5 @@
-import {remote} from 'electron';
+import * as remote from '@electron/remote';
+
 import {copyFile, exists} from 'fs-extra';
 import {join} from 'path';
 import * as React from 'react';
@@ -14,7 +15,8 @@ export interface LottieProps {
   organizationName: string;
   mixpanel: any;
   folder: string;
-}
+
+  children?: React.ReactNode;}
 
 export default class Lottie extends React.PureComponent<LottieProps> {
   private onClick = () => {

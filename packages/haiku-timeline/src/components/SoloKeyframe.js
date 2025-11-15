@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG';
 import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
@@ -9,7 +10,7 @@ export default class SoloKeyframe extends React.Component {
     this.handleProps(props);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     this.handleProps(nextProps);
   }
 
@@ -130,7 +131,7 @@ export default class SoloKeyframe extends React.Component {
 }
 
 SoloKeyframe.propTypes = {
-  id: React.PropTypes.string.isRequired,
-  keyframe: React.PropTypes.object.isRequired,
-  preventDragging: React.PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+  keyframe: PropTypes.object.isRequired,
+  preventDragging: PropTypes.bool.isRequired,
 };

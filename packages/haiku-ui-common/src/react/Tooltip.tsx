@@ -9,7 +9,7 @@ const STYLES = {
     margin: '0',
     fontSize: '11px',
     display: 'block',
-    textAlign: 'center',
+    textAlign: "center",
     borderRadius: '5px',
   },
 };
@@ -21,7 +21,8 @@ export interface TooltipProps {
   place: string;
   style?: React.CSSProperties;
   tooltipBackground?: string;
-}
+
+  children?: React.ReactNode;}
 
 export interface TooltipStates {
   isPopoverOpen: boolean;

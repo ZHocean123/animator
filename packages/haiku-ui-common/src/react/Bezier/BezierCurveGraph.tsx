@@ -9,7 +9,8 @@ export interface BezierCurveGraphProps {
   xTo: number;
   yFrom: number;
   yTo: number;
-}
+
+  children?: React.ReactNode;}
 
 export default class BezierCurveGraph extends BezierComponent<BezierCurveGraphProps> {
   shouldComponentUpdate (nextProps: BezierCurveGraphProps) {
