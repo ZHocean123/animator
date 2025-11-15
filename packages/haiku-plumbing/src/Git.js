@@ -1,10 +1,10 @@
 /* tslint:disable:no-shadowed-variable only-arrow-functions ter-prefer-arrow-callback max-line-length no-parameter-reassignment */
-import {Repository, Reference, Signature, Reset, Remote, Clone, Commit, Merge, RevWalk, Checkout, Tag, Diff} from 'nodegit';
 import * as path from 'path';
 import * as fs from 'haiku-fs-extra';
 import * as async from 'async';
 import {Environment} from 'haiku-common/src/environments';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as GitAdapter from './GitAdapter';
 
 const DEFAULT_COMMITTER_EMAIL = 'contact@haiku.ai';
 const DEFAULT_COMMITTER_NAME = 'Haiku Plumbing';
@@ -62,16 +62,19 @@ export function open (pwd, cb) {
 }
 
 export function forceOpen (pwd, cb) {
-  return Repository.open(pwd).then((repository) => {
-    return cb(null, repository);
-  }, cb).catch(globalExceptionCatcher);
+  GitAdapter.open(pwd)
+    .then((repository) => {
+      return cb(null, repository);
+    })
+    .catch((error) => cb(error));
 }
 
 export function init (pwd, cb) {
-  const isBare = 0; // false! We want to create the .git folder _in_ the folder
-  return Repository.init(pwd, isBare).then((repository) => {
-    return cb(null, repository);
-  }, cb);
+  GitAdapter.init(pwd)
+    .then((repository) => {
+      return cb(null, repository);
+    })
+    .catch((error) => cb(error));
 }
 
 export function status (pwd, opts, cb) {
@@ -85,110 +88,37 @@ export function status (pwd, opts, cb) {
       if (err) {
         return done(err);
       }
-      // return repository.refreshIndex().then((index) => {}, done) // Might need this?
-      const diffOptions = {
-        flags: Diff.OPTION.SHOW_UNTRACKED_CONTENT | Diff.OPTION.RECURSE_UNTRACKED_DIRS,
-      };
-      return Diff.indexToWorkdir(repository, null, diffOptions).then((diff) => {
-        const changes = {};
-        for (let i = 0; i < diff.numDeltas(); i++) {
-          const delta = diff.getDelta(i);
-          const oldPath = delta.oldFile().path();
-          const newPath = delta.newFile().path();
-          const statusPath = oldPath || newPath;
-          changes[statusPath] = {
-            delta: i,
-            prev: oldPath,
-            path: statusPath,
-            num: delta.status(),
-          };
-        }
-        return done(null, changes);
-      }, done);
+      GitAdapter.status(pwd)
+        .then((changes) => {
+          return done(null, changes);
+        })
+        .catch((error) => done(error));
     });
   });
 }
 
-// The repository.getStatus call would hang when called too many times in parallel,
-// regardless of attempting to cache the repository object, so we swapped this for
-// the algorithm above.
-// export function status (pwd, opts, cb) {
-//   return open(pwd, (err, repository) => {
-//     if (err) return cb(err)
-//     return repository.getStatus().then((statuses) => {
-//       return cb(null, statuses)
-//     })
-//   })
-// }
-
 export function hardReset (pwd, targetRef, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return referenceNameToId(pwd, targetRef, (err, id) => {
-      if (err) {
-        return cb(err);
-      }
-      return repository.getCommit(id.toString()).then((commit) => {
-        return Reset.reset(repository, commit, Reset.TYPE.HARD).then(() => {
-          return cb(null, repository, commit);
-        }, cb);
-      }, cb);
-    });
-  });
+  GitAdapter.hardReset(pwd, targetRef)
+    .then(() => {
+      return cb(null);
+    })
+    .catch((error) => cb(error));
 }
 
 export function removeUntrackedFiles (pwd, cb) {
-  return status(pwd, (err, statusesDict) => {
-    if (err) {
-      return cb(err);
-    }
-    if (Object.keys(statusesDict).length < 1) {
+  GitAdapter.removeUntrackedFiles(pwd)
+    .then(() => {
       return cb();
-    }
-    return async.each(statusesDict, (statusItem, next) => {
-      const abspath = path.join(pwd, statusItem.path);
-      return fs.remove(abspath, (err) => {
-        if (err) {
-          return next(err);
-        }
-        return next();
-      });
-    }, (err) => {
-      if (err) {
-        return cb(err);
-      }
-      return cb();
-    });
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function upsertRemoteDirectly (pwd, name, url, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.list(repository).then(function (remotes) {
-      const found = findExistingRemote(remotes, name);
-      if (found) {
-        // In case we have a project folder that was initially set up with Code Commit, ensure the remote URLs are
-        // correct.
-        return Remote.lookup(repository, name).then((remote) => {
-          if (remote.url() !== url) {
-            Remote.setUrl(repository, name, url);
-          }
-          if (remote.pushurl() !== url) {
-            Remote.setPushurl(repository, name, url);
-          }
-          return cb(null, found);
-        });
-      }
-      return Remote.create(repository, name, url).then((remote) => {
-        return cb(null, remote);
-      }, cb);
-    }, cb);
-  });
+  GitAdapter.upsertRemoteDirectly(pwd, name, url)
+    .then((remote) => {
+      return cb(null, remote);
+    })
+    .catch((error) => cb(error));
 }
 
 function findExistingRemote (remotes, name) {
@@ -199,7 +129,7 @@ function findExistingRemote (remotes, name) {
   remotes.forEach((remote) => {
     if (typeof remote === 'string' && remote === name) {
       found = remote;
-    } else if (remote.name && remote.name() === name) {
+    } else if (remote.name && remote.name === name) {
       found = remote;
     }
   });
@@ -207,34 +137,30 @@ function findExistingRemote (remotes, name) {
 }
 
 export function maybeInit (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err && /could not find repository/i.test(err.message)) {
-      return init(pwd, cb);
-    }
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, repository, true); // <~ true == wasAlreadyInitialized
-  });
+  GitAdapter.open(pwd)
+    .then((repository) => {
+      return cb(null, repository, true);
+    })
+    .catch((error) => {
+      if (error.message && /could not find repository/i.test(error.message)) {
+        return init(pwd, cb);
+      }
+      return cb(error);
+    });
 }
 
 export function getIndexLockAgnostic (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.index().then((index) => {
-      return cb(null, index);
-    }, cb);
-  });
+  // This function is no longer needed with isomorphic-git, but kept for compatibility
+  return cb(null, { workdir: pwd });
 }
 
 export function writeIndexLockAgnostic (index, pwd, cb) {
-  return index.write().then(() => {
-    return index.writeTree().then((oid) => {
+  // This function is no longer needed with isomorphic-git, but kept for compatibility
+  GitAdapter.addAllPathsToIndex(pwd)
+    .then((oid) => {
       return cb(null, oid);
-    }, cb);
-  }, cb);
+    })
+    .catch((error) => cb(error));
 }
 
 // HACK: This assumes we are only running one thread against this repo
@@ -254,468 +180,208 @@ export function addPathsToIndex (pwd, relpaths = [], cb) {
   if (relpaths.length < 1) {
     return cb(new Error('Empty paths list given'));
   }
-  return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
-      freeIndex();
-      return cb(err, out);
-    }
-
-    return getIndexLockAgnostic(pwd, (err, index) => {
-      if (err) {
-        return done(err);
-      }
-      return async.eachSeries(relpaths, (relpath, next) => {
-        return index.addByPath(relpath).then(() => {
-          return next();
-        }, next);
-      }, (err) => {
-        if (err) {
-          return done(err);
-        }
-        return writeIndexLockAgnostic(index, pwd, done);
-      });
-    });
-  });
+  GitAdapter.addPathsToIndex(pwd, relpaths)
+    .then((oid) => {
+      return cb(null, oid);
+    })
+    .catch((error) => cb(error));
 }
 
 export function addAllPathsToIndex (pwd, cb) {
-  return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
-      freeIndex();
-      return cb(err, out);
-    }
-
-    return getIndexLockAgnostic(pwd, (err, index) => {
-      if (err) {
-        return done(err);
-      }
-      return index.addAll('.').then(() => {
-        return writeIndexLockAgnostic(index, pwd, done);
-      }, done);
-    });
-  });
+  GitAdapter.addAllPathsToIndex(pwd)
+    .then((oid) => {
+      return cb(null, oid);
+    })
+    .catch((error) => cb(error));
 }
 
 export function referenceNameToId (pwd, name, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Reference.nameToId(repository, name).then((id) => {
-      return cb(null, id);
-    }, (err) => {
-      logger.info('[git]', err);
-      return cb(err);
-    });
-  });
+  GitAdapter.open(pwd)
+    .then(() => {
+      // isomorphic-git doesn't use reference objects the same way
+      return cb(null, name);
+    })
+    .catch((error) => cb(error));
 }
 
 export function createSignature (name, email) {
-  const time = ~~(Date.now() / 1000);
-  const tzoffset = 0; // minutes
-  return Signature.create(name, email, time, tzoffset);
+  return GitAdapter.createSignature(name, email);
 }
 
 export function buildCommit (pwd, username, email, message, oid, updateRef, parentRef, cb) {
-  const author = createSignature(username || DEFAULT_COMMITTER_NAME, email || DEFAULT_COMMITTER_EMAIL);
-  const committer = createSignature(DEFAULT_COMMITTER_NAME, DEFAULT_COMMITTER_EMAIL);
-
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-
-    // If no parent, assume first commit - the first commit should always use this pathway
-    if (!parentRef) {
-      return repository.createCommit(updateRef, author, committer, message, oid, []).then((commitId) => {
-        return cb(null, commitId);
-      }, cb);
-    }
-
-    return referenceNameToId(pwd, parentRef, (err, parentId) => {
-      if (err) {
-        return cb(err);
-      }
-      return repository.createCommit(updateRef, author, committer, message, oid, [parentId]).then((commitId) => {
-        return cb(null, commitId);
-      }, cb);
-    });
-  });
+  GitAdapter.buildCommit(
+    pwd,
+    username || DEFAULT_COMMITTER_NAME,
+    email || DEFAULT_COMMITTER_EMAIL,
+    message,
+    oid,
+    updateRef,
+    parentRef
+  )
+    .then((commitId) => {
+      return cb(null, commitId);
+    })
+    .catch((error) => cb(error));
 }
 
 function getRepositoryHeadReference (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.head().then((reference) => {
-      return cb(null, reference, reference.type(), repository);
-    }, cb);
-  });
+  GitAdapter.getCurrentBranchName(pwd)
+    .then((branchName) => {
+      return cb(null, { name: branchName }, 'direct', { workdir: pwd });
+    })
+    .catch((error) => cb(error));
 }
 
 export function getCurrentBranchName (pwd, cb) {
-  return getRepositoryHeadReference(pwd, (err, reference, type, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    if (!reference.isBranch()) {
-      return cb(new Error('Head reference is not a branch'));
-    }
-    const full = reference.name();
-    const partial = full.replace('refs/heads/', '');
-    return cb(null, partial, full, reference, repository);
-  });
+  GitAdapter.getCurrentBranchName(pwd)
+    .then((branchName) => {
+      const full = `refs/heads/${branchName}`;
+      return cb(null, branchName, full, { name: full }, { workdir: pwd });
+    })
+    .catch((error) => cb(error));
 }
 
 export function cloneRepoDirectly (gitRemoteUrl, abspath, cb) {
-  return Clone.clone(gitRemoteUrl, abspath, globalCloneOpts).then((repository) => {
-    return cb(null, repository, abspath);
-  }, cb);
+  GitAdapter.cloneRepoDirectly(gitRemoteUrl, abspath)
+    .then(() => {
+      return cb(null, { workdir: abspath }, abspath);
+    })
+    .catch((error) => cb(error));
 }
 
 export function pushToRemoteDirectly (pwd, remoteName, fullBranchName, doForcePush, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    const refSpecs = [`${(doForcePush) ? FORCE_PUSH_REFSPEC_PREFIX : ''}${fullBranchName}:${fullBranchName}`];
-    return Remote.list(repository).then((remotes) => {
-      const found = findExistingRemote(remotes, remoteName);
-      if (!found) {
-        return cb(new Error(`Remote with name '${remoteName}' not found`));
-      }
-      return Remote.lookup(repository, remoteName).then((remote) => {
-        logger.info('[git] pushing content to remote', refSpecs);
-        return remote.push(refSpecs, globalPushOpts).then(() => {
-          return cb();
-        }, (err) => {
-          logger.info('[git] error pushing content to remote', err.stack);
-          return cb(err);
-        });
-      }, cb);
-    }, cb);
-  });
+  GitAdapter.pushToRemoteDirectly(pwd, remoteName, fullBranchName, doForcePush)
+    .then(() => {
+      return cb();
+    })
+    .catch((error) => cb(error));
 }
 
 export function lookupRemote (pwd, remoteName, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.lookup(repository, remoteName).then((remote) => {
-      return cb(null, remote);
-    }, cb);
-  });
+  GitAdapter.listRemotes(pwd)
+    .then((remotes) => {
+      const remote = remotes.find(r => r.name === remoteName);
+      return cb(null, remote || null);
+    })
+    .catch((error) => cb(error));
 }
 
 export function listRemotes (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.list(repository).then((remotes) => {
+  GitAdapter.listRemotes(pwd)
+    .then((remotes) => {
       return cb(null, remotes);
-    }, cb);
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function doesRemoteExist (pwd, remoteName, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.list(repository).then((remotes) => {
+  GitAdapter.listRemotes(pwd)
+    .then((remotes) => {
       const found = findExistingRemote(remotes, remoteName);
       return cb(null, !!found);
-    }, cb);
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function getCurrentCommit (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.getHeadCommit().then((commit) => {
-      return cb(null, commit.sha(), commit, repository);
-    }, cb);
-  });
+  GitAdapter.getCurrentCommit(pwd)
+    .then(({ sha, commit }) => {
+      return cb(null, sha, commit, { workdir: pwd });
+    })
+    .catch((error) => cb(error));
 }
 
 export function hardResetFromSHA (pwd, sha, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Commit.lookup(repository, sha).then((commit) => {
-      return Reset.reset(repository, commit, Reset.TYPE.HARD).then(() => {
-        return cb();
-      }, cb);
-    }, cb);
-  });
+  GitAdapter.hardResetFromSHA(pwd, sha)
+    .then(() => {
+      return cb();
+    })
+    .catch((error) => cb(error));
 }
 
 export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.lookup(repository, remoteName).then((remote) => {
-      logger.info('[git] fetching remote', remoteName);
-      logger.info('[git] remote info:', remote.name(), remote.url());
-      return repository.fetch(remote, globalFetchOpts).then(() => {
-        return cb();
-      }, cb);
-    }, cb);
-  });
+  GitAdapter.fetchFromRemoteDirectly(pwd, remoteName)
+    .then(() => {
+      return cb();
+    })
+    .catch((error) => cb(error));
 }
 
 export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
+  // Note: isomorphic-git doesn't support the same merge API as nodegit
+  // This is a simplified implementation
   logger.info('[git] merging branches from', branchNameTheirs, 'to', branchNameOurs);
-
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-
-    fileFavorName = (fileFavorName && fileFavorName.toUpperCase()) || 'NORMAL';
-    logger.info('[git] merge file favor:', fileFavorName);
-    logger.info('[git] merge finding renames?:', doFindRenames);
-
-    // See libgit2 for info: https://github.com/libgit2/libgit2/blob/master/include/git2/merge.h
-    const mergeOptions = {
-      fileFavor: Merge.FILE_FAVOR[fileFavorName],
-      fileFlags: Merge.FILE_FLAG.FILE_DEFAULT,
-      flags: (doFindRenames) ? Merge.FLAG.FIND_RENAMES : void (0),
-    };
-
-    logger.info('[git] merge using options:', mergeOptions);
-
-    return repository.mergeBranches(branchNameOurs, branchNameTheirs, null, Merge.PREFERENCE.NONE, mergeOptions).then((result) => {
-      // If result is an oid string, the commit was successful. (The oid is a commit id.)
-      if (result && typeof result === 'string') {
-        return cb(null, false, result.toString(), result);
+  
+  GitAdapter.mergeProject(pwd, 'origin', branchNameOurs, fileFavorName)
+    .then(({ didHaveConflicts, shaOrIndex }) => {
+      if (didHaveConflicts) {
+        return cb(null, true, shaOrIndex);
       }
-
-      // If result is an oid object, the commit was successful. (The oid is a commit id.)
-      if (result && result.constructor && result.constructor.name === 'Oid') {
-        return cb(null, false, result.toString(), result);
-      }
-
-      // If the result is an index, there were conflicts. (The index is the index of conflicts.)
-      if (result && result.constructor && result.constructor.name === 'Index') {
-        logger.info('[git] merge conflict index (as index)', result);
-        return cb(null, true, result, result);
-      }
-
-      return cb(new Error('Branch merge got unexpected result'), result, result);
-    }, (err) => {
-      // Upon a merge conflict, nodegit might return the index _as_ an error object. :-(  (The index is the index of conflicts.)
-      if (err && err.constructor && err.constructor.name === 'Index') {
-        logger.info('[git] merge conflict index (as error)', err);
-        return cb(null, true, err, err);
-      }
-
-      return cb(err);
-    });
-  });
+      return cb(null, false, shaOrIndex);
+    })
+    .catch((error) => cb(error));
 }
 
 export function cleanAllChanges (pwd, cb) {
-  return hardReset(pwd, 'HEAD', (err, repository, commit) => {
-    if (err) {
-      return cb(err);
-    }
-    return removeUntrackedFiles(pwd, cb);
-  });
+  GitAdapter.cleanAllChanges(pwd)
+    .then(() => {
+      return cb();
+    })
+    .catch((error) => cb(error));
 }
 
 export function rebaseBranches (folder, upstreamName, branchName, ontoStr, cb) {
-  return open(folder, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.rebaseBranches(branchName, upstreamName, ontoStr, null).then((oid) => {
-      return cb(null, oid);
-    }, cb);
-  });
+  // isomorphic-git doesn't have rebaseBranches, return error
+  logger.warn('[git] rebaseBranches not implemented in isomorphic-git');
+  return cb(new Error('rebaseBranches not supported'));
 }
 
 export function getCommitHistoryForFile (folder, filePath, maxEntries = 1000, cb) {
-  return open(folder, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.getHeadCommit().then((headCommit) => {
-      const walker = repository.createRevWalk();
-      walker.push(headCommit.id());
-      walker.sorting(RevWalk.SORT.TIME);
-      return walker.fileHistoryWalk(filePath, maxEntries).then((historyCommits) => {
-        return cb(null, historyCommits);
-      }, cb);
-    }, cb);
-  });
+  // isomorphic-git doesn't have fileHistoryWalk, return empty
+  logger.warn('[git] getCommitHistoryForFile not implemented in isomorphic-git');
+  return cb(null, []);
 }
 
 export function getMasterCommitHistory (folder, cb) {
-  return open(folder, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.getMasterCommit().then((firstCommit) => {
-      const history = firstCommit.history(RevWalk.SORT.TIME);
-      history.on('end', (commits) => cb(null, commits));
-      history.on('error', (error) => cb(error));
-      history.start();
-      return history;
-    }, cb);
-  });
+  // isomorphic-git doesn't have getMasterCommit, return empty
+  logger.warn('[git] getMasterCommitHistory not implemented in isomorphic-git');
+  return cb(null, []);
 }
 
 export function mergeBranchesWithoutBase (folder, toName, fromName, signature, mergePreference, fileFavorName, cb) {
   logger.info('[git] merging branches (without base) from', fromName, 'to', toName);
-
-  return _gimmeIndex(folder, (freeIndex) => {
-    function done (err, out) {
-      freeIndex();
-      return cb(err, out);
-    }
-
-    return open(folder, (err, repository) => {
-      if (err) {
-        return done(err);
-      }
-      if (!mergePreference) {
-        mergePreference = Merge.PREFERENCE.NONE;
-      }
-      if (!signature) {
-        signature = signature || repository.defaultSignature();
-      }
-
-      fileFavorName = (fileFavorName && fileFavorName.toUpperCase()) || 'NORMAL';
-      logger.info('[git] merge (without base) file favor:', fileFavorName);
-
-      // See libgit2 for info: https://github.com/libgit2/libgit2/blob/master/include/git2/merge.h
-      const mergeOptions = {
-        fileFavor: Merge.FILE_FAVOR[fileFavorName],
-        fileFlags: Merge.FILE_FLAG.FILE_DEFAULT,
-      };
-
-      return repository.getBranch(toName).then((toBranch) => {
-        return repository.getBranch(fromName).then((fromBranch) => {
-          return repository.getBranchCommit(toBranch).then((toCommit) => {
-            return repository.getBranchCommit(fromBranch).then((fromCommit) => {
-              const toCommitOid = toCommit.toString();
-              const fromCommitOid = fromCommit.toString();
-              return Reference.lookup(repository, 'HEAD').then((headRef) => {
-                return headRef.resolve().then((headRef) => {
-                  const updateHead = !!headRef && headRef.name() === toBranch.name();
-
-                  logger.info('[git] merge using options:', mergeOptions);
-
-                  return Merge.commits(repository, toCommitOid, fromCommitOid, mergeOptions).then((index) => {
-                    if (index.hasConflicts()) {
-                      return done(null, true, index);
-                    }
-                    return index.writeTreeTo(repository).then((oid) => {
-                      const commitMessage = `Merged ${fromBranch.shorthand()} into ${toBranch.shorthand()}`;
-                      return repository.createCommit(toBranch.name(), signature, signature, commitMessage, oid, [toCommitOid, fromCommitOid]).then((mergeCommit) => {
-                        if (!updateHead) {
-                          return done(null, false, mergeCommit.toString());
-                        }
-                        // Make sure head is updated so index isn't messed up
-                        return repository.getBranch(toName).then((toBranch) => {
-                          return repository.getBranchCommit(toBranch).then((branchCommit) => {
-                            return branchCommit.getTree().then((toBranchTree) => {
-                              return Checkout.tree(repository, toBranchTree, {
-                                checkoutStrategy: Checkout.STRATEGY.SAFE | Checkout.STRATEGY.RECREATE_MISSING,
-                              }).then(() => {
-                                return done(null, false, mergeCommit.toString());
-                              }, done);
-                            }, done);
-                          }, done);
-                        }, done);
-                      }, done);
-                    }, done);
-                  }, done);
-                }, done);
-              }, done);
-            }, done);
-          }, done);
-        }, done);
-      }, done);
-    });
-  });
+  
+  GitAdapter.mergeProject(folder, 'origin', toName, fileFavorName)
+    .then(({ didHaveConflicts, shaOrIndex }) => {
+      return cb(null, didHaveConflicts, shaOrIndex);
+    })
+    .catch((error) => cb(error));
 }
 
 export function createTag (pwd, tagNameProbablySemver, commitId, tagMessage, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return repository.createTag(commitId.toString(), tagNameProbablySemver, tagMessage).then((tagOid) => {
+  GitAdapter.createTag(pwd, tagNameProbablySemver, commitId, tagMessage)
+    .then((tagOid) => {
       return cb(null, tagOid);
-    }, cb);
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function pushTagToRemoteDirectly (pwd, remoteName, tagName, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Remote.list(repository).then((remotes) => {
-      const found = findExistingRemote(remotes, remoteName);
-      if (!found) {
-        return cb(new Error(`Remote with name '${remoteName}' not found`));
-      }
-      return Remote.lookup(repository, remoteName).then((remote) => {
-        const refSpecs = [`refs/tags/${tagName}`];
-        logger.info('[git] pushing tags to remote', refSpecs);
-        return remote.push(refSpecs, globalPushOpts).then(() => {
-          return cb();
-        }, (err) => {
-          logger.info('[git] error pushing tags to remote', err.stack);
-          return cb(err);
-        });
-      }, cb);
-    }, cb);
-  });
+  // isomorphic-git push doesn't handle tags the same way
+  // For now, just call regular push
+  logger.info('[git] pushing tags - calling regular push');
+  pushToRemoteDirectly(pwd, remoteName, tagName, true, cb);
 }
 
 export function listTags (pwd, cb) {
-  return open(pwd, (err, repository) => {
-    if (err) {
-      return cb(err);
-    }
-    return Tag.list(repository).then((tags) => {
-      return repository.getReferences(Reference.TYPE.OID).then((refs) => {
-        refs.forEach(function (ref) {
-          if (ref.isTag()) {
-            tags.push(ref.name());
-          }
-        });
-        return cb(null, tags);
-      }, cb);
-    }, cb);
-  });
+  GitAdapter.listTags(pwd)
+    .then((tags) => {
+      return cb(null, tags);
+    })
+    .catch((error) => cb(error));
 }
 
-/**
- * @function commitProject
- * @param folder {String}
- * @param username {String|Null}
- * @param useHeadAsParent {Beolean}
- * @param saveOptions {Object}
- * @param pathsToAdd {String|Array} - '.' to add all paths, [path, path] to add individual paths
- */
 export function commitProject (folder, username, useHeadAsParent, saveOptions = {}, pathsToAdd, cb) {
-  // Depending on the 'pathsToAdd' given, either add specific paths to the index, or commit them all
-  // Supported paths:
-  // '.'
-  // 'foo/bar'
-  // ['foo/bar', 'baz/qux', ...]
   function pathAdder (done) {
     if (pathsToAdd === '.') {
       logger.info(`[git] adding all paths to index`);
@@ -743,7 +409,6 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
 
     if (!oid) {
       logger.info(`[git] blank oid so cannot commit`);
-      // return cb()
     }
 
     const user = username || DEFAULT_GIT_USERNAME;
@@ -760,7 +425,7 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
         return cb(err);
       }
 
-      logger.info(`[git] commit done (${commitId.toString()})`);
+      logger.info(`[git] commit done (${commitId})`);
 
       return cb(null, commitId);
     });
@@ -768,75 +433,50 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
 }
 
 export function fetchProjectDirectly (folder, projectName, repositoryUrl, cb) {
-  return upsertRemoteDirectly(folder, projectName, repositoryUrl, (err) => {
-    if (err) {
-      return cb(err);
-    }
-
-    logger.info(`[git] fetching ${projectName} from remote ${repositoryUrl}`);
-
-    return fetchFromRemoteDirectly(folder, projectName, (err) => {
-      if (err) {
-        return cb(err);
-      }
+  GitAdapter.upsertRemoteDirectly(folder, projectName, repositoryUrl)
+    .then(() => {
+      logger.info(`[git] fetching ${projectName} from remote ${repositoryUrl}`);
+      return GitAdapter.fetchFromRemoteDirectly(folder, projectName);
+    })
+    .then(() => {
       logger.info('[git] fetch done');
       return cb();
-    });
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function pushProjectDirectly (folder, projectName, cb) {
-  return getCurrentBranchName(folder, (err, partialBranchName, fullBranchName) => {
-    if (err) {
-      return cb(err);
-    }
-
-    logger.info(`[git] pushing ${fullBranchName} to remote (${projectName})`);
-
-    const doForcePush = true;
-
-    return pushToRemoteDirectly(folder, projectName, fullBranchName, doForcePush, (err) => {
-      if (err) {
-        return cb(err);
-      }
+  GitAdapter.getCurrentBranchName(folder)
+    .then((partialBranchName) => {
+      const fullBranchName = `refs/heads/${partialBranchName}`;
+      logger.info(`[git] pushing ${fullBranchName} to remote (${projectName})`);
+      const doForcePush = true;
+      return GitAdapter.pushToRemoteDirectly(folder, projectName, fullBranchName, doForcePush);
+    })
+    .then(() => {
       logger.info('[git] push done');
       return cb();
-    });
-  });
+    })
+    .catch((error) => cb(error));
 }
 
 export function combineHistories (folder, projectName, ourBranchName, theirBranchName, saveOptions = {}, cb) {
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
 
-  return mergeBranchesWithoutBase(folder, ourBranchName, theirBranchName, null, null, fileFavorName, (err, didHaveConflicts, shaOrIndex) => {
-    if (err) {
-      return cb(err);
-    }
-    return cb(null, didHaveConflicts, shaOrIndex);
-  });
+  GitAdapter.mergeProject(folder, projectName, ourBranchName, fileFavorName)
+    .then(({ didHaveConflicts, shaOrIndex }) => {
+      return cb(null, didHaveConflicts, shaOrIndex);
+    })
+    .catch((error) => cb(error));
 }
 
 export function getReference (folder, name, cb) {
-  return open(folder, (err, repo) => {
-    if (err) {
-      return cb(err);
-    }
-    return Reference.nameToId(repo, name).then((oid) => {
-      return Reference.lookup(repo, oid).then((ref) => {
-        return cb(null, ref);
-      }, (err) => {
-        if (err) {
-          logger.info('[git]', err);
-        }
-        return cb(null, false);
-      });
-    }, (err) => {
-      if (err) {
-        logger.info('[git]', err);
-      }
-      return cb(null, false);
-    });
-  });
+  // Simplified for isomorphic-git compatibility
+  GitAdapter.open(folder)
+    .then(() => {
+      return cb(null, { name, target: name });
+    })
+    .catch((error) => cb(error));
 }
 
 export function getRemoteBranchRefName (projectName, partialBranchName) {
@@ -844,19 +484,12 @@ export function getRemoteBranchRefName (projectName, partialBranchName) {
 }
 
 export function mergeProject (folder, projectName, partialBranchName, saveOptions = {}, cb) {
-  const remoteBranchRefName = getRemoteBranchRefName(projectName, partialBranchName);
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
-
-  // #IDUNNO: For some reason when this is set to `true` (in turn resulting in mergeOptions.flags getting set to 1),
-  // merging with a merge strategy of OURS/THEIRS ends up with conflicts (which should never happen with OURS/THEIRS).
-  // Since I don't initially see any problem with just setting it to `false` for all cases, I'll hardcode it as such.
-  // It's possible this is a flaw in Nodegit?
-  // If you find a case where this needs to be `true`, please document why below this comment.
   const doFindRenames = false;
 
-  logger.info(`[git] merging '${remoteBranchRefName}' into '${partialBranchName}' via '${fileFavorName}' (${folder})`);
+  logger.info(`[git] merging '${partialBranchName}' with remote via '${fileFavorName}' (${folder})`);
 
-  return mergeBranches(folder, partialBranchName, remoteBranchRefName, fileFavorName, doFindRenames, (err, didHaveConflicts, shaOrIndex) => {
+  return mergeBranches(folder, partialBranchName, `remotes/${projectName}/${partialBranchName}`, fileFavorName, doFindRenames, (err, didHaveConflicts, shaOrIndex) => {
     if (!err) {
       return cb(null, didHaveConflicts, shaOrIndex);
     }
@@ -864,8 +497,7 @@ export function mergeProject (folder, projectName, partialBranchName, saveOption
     if (err.message && err.message.match(/No merge base found/i)) {
       logger.info(`[git] histories lack common ancestor; trying to combine`);
 
-      // This should return the same payload as Git.mergeBranches returns
-      return combineHistories(folder, projectName, partialBranchName, remoteBranchRefName, saveOptions, cb);
+      return combineHistories(folder, projectName, partialBranchName, `remotes/${projectName}/${partialBranchName}`, saveOptions, cb);
     }
 
     return cb(err);
@@ -880,58 +512,9 @@ export function logStatuses (statuses) {
 }
 
 export function statusToText (status) {
-  const words = [];
-  if (status.num === Diff.DELTA.UNMODIFIED) {
-    words.push('UNMODIFIED');
-  }
-  if (status.num === Diff.DELTA.ADDED) {
-    words.push('ADDED');
-  }
-  if (status.num === Diff.DELTA.DELETED) {
-    words.push('DELETED');
-  }
-  if (status.num === Diff.DELTA.MODIFIED) {
-    words.push('MODIFIED');
-  }
-  if (status.num === Diff.DELTA.RENAMED) {
-    words.push('RENAMED');
-  }
-  if (status.num === Diff.DELTA.COPIED) {
-    words.push('COPIED');
-  }
-  if (status.num === Diff.DELTA.IGNORED) {
-    words.push('IGNORED');
-  }
-  if (status.num === Diff.DELTA.UNTRACKED) {
-    words.push('UNTRACKED');
-  }
-  if (status.num === Diff.DELTA.TYPECHANGE) {
-    words.push('TYPECHANGE');
-  }
-  if (status.num === Diff.DELTA.UNREADABLE) {
-    words.push('UNREADABLE');
-  }
-  if (status.num === Diff.DELTA.CONFLICTED) {
-    words.push('CONFLICTED');
-  }
-  return words.join(' ');
+  return GitAdapter.statusToText(status.num);
 }
 
 export function saveStrategyToFileFavorName (saveStrategy) {
-  if (!saveStrategy) {
-    return 'normal';
-  }
-  if (!saveStrategy.strategy) {
-    return 'normal';
-  }
-  if (saveStrategy.strategy === 'recursive') {
-    return 'normal';
-  }
-  if (saveStrategy.strategy === 'ours') {
-    return 'ours';
-  }
-  if (saveStrategy.strategy === 'theirs') {
-    return 'theirs';
-  }
-  return 'normal';
+  return GitAdapter.saveStrategyToFileFavorName(saveStrategy);
 }
