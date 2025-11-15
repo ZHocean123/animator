@@ -845,7 +845,7 @@ export default class MasterGitProject extends EventEmitter {
 
           // No status means no changes.
           // 0 is UNMODIFIED, everything else is a change
-          // See http://www.nodegit.org/api/diff/#getDelta
+          // Status constants from GitAdapter.DELTA_STATUS
           if (err || !status || !status.num || status.num < 1) {
             return finish(err);
           }

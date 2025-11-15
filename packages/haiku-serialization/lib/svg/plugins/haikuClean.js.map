@@ -1,0 +1,1 @@
+{"version":3,"file":"haikuClean.js","sourceRoot":"","sources":["../../../src/svg/plugins/haikuClean.js"],"names":[],"mappings":"AAAA;;;;GAIG;AACH,MAAM,CAAC,OAAO,GAAG;IACf,IAAI,EAAE,SAAS;IACf,EAAE,EAAE,UAAC,IAAI;QACP,iGAAiG;QACjG,IAAI,IAAI,CAAC,OAAO,CAAC,aAAa,CAAC,EAAE,CAAC;YAChC,IAAI,CAAC,IAAI,CAAC,aAAa,CAAC,CAAC,KAAK,GAAG,8BAA8B,CAAC;QAClE,CAAC;IACH,CAAC;CACF,CAAC"}

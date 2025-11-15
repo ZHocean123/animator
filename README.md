@@ -23,7 +23,7 @@ Some features:
 
 ## 1. Install OS dependencies
 
-It's important to use precise minor version numbers where specified. `nodegit`/`node-gyp` build errors are expected if you ignore this.
+It's important to use precise minor version numbers where specified.
 
 ### Mac OS dependencies
 
@@ -40,9 +40,6 @@ It's important to use precise minor version numbers where specified. `nodegit`/`
     $ npm install -g pnpm@8.0.0
 
 4.) python 2.7.16 (if you need multiple Python environments on your machine, we recommend [pyenv](https://github.com/pyenv/pyenv))
-
-5.) libgcrypt (required for nodegit native bindings)
-$ brew install libgcrypt
 
 ### Windows OS dependencies
 
@@ -64,8 +61,6 @@ choco install pnpm -y --version 8.0.0  --ignore-dependencies
 # Update PowerShell environment vars
 refreshenv
 
-# Install windows build tools (to compile native electron modules, e.g. nodegit)
-npm install -g windows-build-tools@2.3.0
 ```
 
 In Windows is not possible to login in Figma while running Animator in development. In order to connect with Figma, is needed to set an environment variable called `FIGMA_TOKEN` with a Figma token as value.

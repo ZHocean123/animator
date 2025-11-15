@@ -37,12 +37,7 @@ echo ""
 # 解决方案 3: 创建 mock 模块
 echo "3. 创建 mock 模块"
 echo "   创建 mock 实现以允许应用启动（禁用 git 功能）"
-if [ "./scripts/fix-nodegit-issue.sh" ]; then
-    echo "   执行: ./scripts/fix-nodegit-issue.sh" && ./scripts/fix-nodegit-issue.sh
-  echo "   ✅ 完成"
-else
-  echo "   ⚠️  需要手动执行"
-fi
+echo "   ⚠️  此解决方案已被移除（nodegit 相关代码已清理）"
 echo ""
 
 

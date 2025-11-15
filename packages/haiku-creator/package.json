@@ -68,7 +68,7 @@
     "@types/qs": "^6.9.0",
     "@types/uuid": "^3.2.1",
     "cross-env": "^7.0.3",
-    "electron": "^22.3.0",
+    "electron": "^33.2.1",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",

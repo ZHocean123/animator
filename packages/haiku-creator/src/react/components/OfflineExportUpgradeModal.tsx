@@ -81,7 +81,7 @@ export class OfflineExportUpgradeModal extends React.PureComponent<OfflineExport
             </span>
             {(this.props.metadata.framerate === 15) &&
               <div style={{marginTop: 12}}>
-                Note that a medium quailty GIF is made available with every project
+                Note that a medium quality GIF is made available with every project
                 publish. You may access it by publishing your project via the button
                 located on the top right of the menu bar.
               </div>

@@ -308,8 +308,8 @@ export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
 }
 
 export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
-  // Note: isomorphic-git doesn't support the same merge API as nodegit
-  // This is a simplified implementation
+  // Note: isomorphic-git merge API implementation
+  // Using simplified branch merge approach
   logger.info('[git] merging branches from', branchNameTheirs, 'to', branchNameOurs);
   
   GitAdapter.mergeProject(pwd, 'origin', branchNameOurs, fileFavorName)

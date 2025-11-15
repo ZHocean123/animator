@@ -1,0 +1,1 @@
+{"version":3,"file":"computeUnaryExpression.js","sourceRoot":"","sources":["../../src/ast/computeUnaryExpression.js"],"names":[],"mappings":"AAAA,SAAS,sBAAsB,CAAE,IAAI;IACnC,OAAO,MAAM,CAAC,IAAI,CAAC,QAAQ,GAAG,IAAI,CAAC,QAAQ,CAAC,KAAK,CAAC,CAAC;AACrD,CAAC;AAED,MAAM,CAAC,OAAO,GAAG,sBAAsB,CAAC"}

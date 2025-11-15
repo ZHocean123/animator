@@ -140,7 +140,7 @@ packages/{package}/test/
 ## Key Technical Notes
 
 **Native Dependencies:**
-- `nodegit` - Requires libgcrypt, Python 2.7, exact Node version
+- `isomorphic-git` - Pure JavaScript git implementation, no native dependencies
 - `electron-rebuild` - May be needed after dependency changes
 - FFmpeg static - Bundled for video export
 

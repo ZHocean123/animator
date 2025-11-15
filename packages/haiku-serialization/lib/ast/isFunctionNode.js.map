@@ -1,0 +1,1 @@
+{"version":3,"file":"isFunctionNode.js","sourceRoot":"","sources":["../../src/ast/isFunctionNode.js"],"names":[],"mappings":"AAAA,IAAI,mBAAmB,GAAG;IACxB,kBAAkB,EAAE,IAAI;IACxB,WAAW,EAAE,IAAI;IACjB,uBAAuB,EAAE,IAAI;IAC7B,YAAY,EAAE,IAAI;CACnB,CAAC;AAEF,SAAS,cAAc,CAAE,IAAI;IAC3B,OAAO,CAAC,IAAI,CAAC,IAAI,IAAI,mBAAmB,CAAC,CAAC;AAC5C,CAAC;AAED,MAAM,CAAC,OAAO,GAAG,cAAc,CAAC"}
