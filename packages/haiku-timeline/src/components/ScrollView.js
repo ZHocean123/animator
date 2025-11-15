@@ -45,7 +45,7 @@ class ScrollView extends React.PureComponent {
         id="property-rows"
         className="no-select"
         style={{
-          position: 'absolute',
+          position: 'absolute' as const,
           top: 35,
           left: 0,
           width: this.props.timeline.calculateFullTimelineWidth(),
@@ -63,7 +63,7 @@ class ScrollView extends React.PureComponent {
           zIndex: zIndex.backgroundHelper.base,
           flex: 1,
           width: this.props.propertiesPixelWidth,
-          position: 'sticky',
+          position: 'sticky' as const,
           left: 0,
           paddingBottom: 20,
           marginTop: -20,

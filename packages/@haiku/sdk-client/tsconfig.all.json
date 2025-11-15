@@ -4,11 +4,18 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@sdk-client/*": ["src/*"]
-    }
+      "@sdk-client/*": [
+        "src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

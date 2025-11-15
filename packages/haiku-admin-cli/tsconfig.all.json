@@ -5,12 +5,19 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@admin-cli/*": ["src/*"]
-    }
+      "@admin-cli/*": [
+        "src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
     "scripts/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

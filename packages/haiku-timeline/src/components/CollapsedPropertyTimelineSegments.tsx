@@ -20,7 +20,7 @@ export default class CollapsedPropertyTimelineSegments extends React.PureCompone
       <div
         className="collapsed-segments-box"
         style={{
-          position: 'absolute',
+          position: 'absolute' as const,
           left: this.props.timeline.getPropertiesPixelWidth() + 1,
           height: this.props.rowHeight,
           width: '100%',

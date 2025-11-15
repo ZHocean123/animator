@@ -52,12 +52,12 @@ export default class GaugeTimeReadout extends React.Component {
         <div
           className="gauge-time-readout"
           style={{
-            float: 'right',
+            float: 'right' as const,
             top: 0,
             minWidth: 86,
             height: 'inherit',
             verticalAlign: 'top',
-            textAlign: 'right',
+            textAlign: 'right' as const,
             paddingTop: 2,
             paddingRight: 10,
           }}>
@@ -68,13 +68,13 @@ export default class GaugeTimeReadout extends React.Component {
           className="gauge-fps-readout"
           style={{
             width: 38,
-            float: 'right',
+            float: 'right' as const,
             left: 211,
             height: 'inherit',
             verticalAlign: 'top',
             color: Palette.ROCK_MUTED,
             fontStyle: 'italic',
-            textAlign: 'right',
+            textAlign: 'right' as const,
             paddingTop: 5,
             paddingRight: 5,
             cursor: 'default',
@@ -89,28 +89,28 @@ export default class GaugeTimeReadout extends React.Component {
           onClick={this.handleClick}
           style={{
             width: 50,
-            float: 'right',
+            float: 'right' as const,
             marginRight: 3,
             fontSize: 9,
             height: 'inherit',
             verticalAlign: 'top',
             color: Palette.ROCK_MUTED,
-            textAlign: 'right',
+            textAlign: 'right' as const,
             paddingTop: 7,
             paddingRight: 12,
             cursor: 'pointer',
           }}>
           {this.props.timeline.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES
             ? (<span>
-              <div style={{color: Palette.SUNSTONE, position: 'relative'}}>FRAMES
-                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2}} />
+              <div style={{color: Palette.SUNSTONE, position: 'relative' as const}}>FRAMES
+                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute' as const, right: -11, top: 2}} />
               </div>
               <div style={{marginTop: '-2px'}}>SECONDS</div>
             </span>)
             : (<span>
               <div>FRAMES</div>
-              <div style={{marginTop: '-2px', color: Palette.SUNSTONE, position: 'relative'}}>SECONDS
-                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2}} />
+              <div style={{marginTop: '-2px', color: Palette.SUNSTONE, position: 'relative' as const}}>SECONDS
+                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute' as const, right: -11, top: 2}} />
               </div>
             </span>)
           }

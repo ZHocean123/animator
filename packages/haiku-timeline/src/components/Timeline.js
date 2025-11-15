@@ -1090,7 +1090,7 @@ class Timeline extends React.Component {
     return (
       <div
         style={{
-          position: 'relative',
+          position: 'relative' as const,
           top: 17,
           width: '100%',
         }}>
@@ -1136,7 +1136,7 @@ class Timeline extends React.Component {
         />
         <div
           style={{
-            position: 'absolute',
+            position: 'absolute' as const,
             right: 5,
             top: -12,
             marginRight: 5,
@@ -1342,7 +1342,7 @@ class Timeline extends React.Component {
           height: 45,
           backgroundColor: Palette.COAL,
           overflow: 'visible',
-          position: 'fixed',
+          position: 'fixed' as const,
           bottom: 0,
           left: 0,
           zIndex: zIndex.bottomControls.base,
@@ -1401,7 +1401,7 @@ class Timeline extends React.Component {
         id="timeline"
         className="no-select"
         style={{
-          position: 'absolute',
+          position: 'absolute' as const,
           backgroundColor: Palette.GRAY,
           color: Palette.ROCK,
           top: 0,
@@ -1423,7 +1423,7 @@ class Timeline extends React.Component {
         className="no-select"
         onClick={this.onTimelineClick}
         style={{
-          position: 'absolute',
+          position: 'absolute' as const,
           backgroundColor: Palette.GRAY,
           color: Palette.ROCK,
           top: 0,
@@ -1437,7 +1437,7 @@ class Timeline extends React.Component {
             <div
               style={{
                 opacity: 0.6,
-                position: 'fixed',
+                position: 'fixed' as const,
                 top: 0,
                 left: 0,
                 right: 0,

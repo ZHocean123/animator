@@ -7,7 +7,7 @@ import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/
 import * as React from 'react';
 import {BTN_STYLES} from '../styles/btnShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   disabledForm: {
     opacity: 0.5,
   },

@@ -16,7 +16,7 @@ export class ModalNotice extends React.PureComponent<ModalNoticeProps> {
           height: '25px',
           lineHeight: '25px',
           padding: '3px',
-          textAlign: "center",
+          textAlign: "center" as const,
           color: Palette.SUNSTONE,
           backgroundColor: this.props.color,
         }}

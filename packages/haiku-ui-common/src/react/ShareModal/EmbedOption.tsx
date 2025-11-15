@@ -137,7 +137,7 @@ export class EmbedOption extends React.PureComponent<EmbedOptionProps> {
     const {entry} = this.props;
 
     return (
-      <li style={{position: 'relative'}}>
+      <li style={{position: 'relative' as const}}>
         <LoadingButton
           disabled={!this.state.done}
           done={this.state.done}

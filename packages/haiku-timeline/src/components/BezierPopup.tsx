@@ -105,7 +105,7 @@ export default class BezierPopup extends React.Component<BezierPopupProps> {
     return (
       <div
         style={{
-          position: 'fixed',
+          position: 'fixed' as const,
           zIndex: zIndex.bezierEditor.base,
           background: 'transparent',
           top: 0,

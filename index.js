@@ -18,18 +18,22 @@ const haikuURI = process.argv.find((arg) => arg.startsWith('haiku://'));
 if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
   require('@haiku/cli');
 } else {
-  const electron = require('electron');
-  console.log('Electron module:', electron);
-  console.log('Electron keys:', Object.keys(electron));
+  // 直接尝试导入Electron模块
+  let app, dialog;
+  try {
+    const electron = require('electron');
+    app = electron.app;
+    dialog = electron.dialog;
+  } catch (error) {
+    console.error('Failed to import electron module:', error);
+    process.exit(1);
+  }
   
-  // Try to access electron.app directly
-  console.log('electron.app:', electron.app);
-  console.log('electron[0]:', electron[0]);
-  
-  // In Electron 22, the module structure might be different
-  // Let's try to access app from the electron object
-  const app = electron.app || electron[0];
-  const dialog = electron.dialog || electron[1];
+  // 检查app是否可用
+  if (!app) {
+    console.error('Electron app module is not available');
+    process.exit(1);
+  }
 
   if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
     dialog.showErrorBox(

@@ -10,8 +10,8 @@ function createLink (srcpath, dstpath, callback) {
     })
   }
 
-  fs.exists(dstpath, function (destinationExists) {
-    if (destinationExists) return callback(null)
+  fs.access(dstpath, fs.constants.F_OK, function (err) {
+    if (!err) return callback(null)
     fs.lstat(srcpath, function (err, stat) {
       if (err) {
         err.message = err.message.replace('lstat', 'ensureLink')
@@ -19,8 +19,8 @@ function createLink (srcpath, dstpath, callback) {
       }
 
       var dir = path.dirname(dstpath)
-      fs.exists(dir, function (dirExists) {
-        if (dirExists) return makeLink(srcpath, dstpath)
+      fs.access(dir, fs.constants.F_OK, function (err) {
+        if (!err) return makeLink(srcpath, dstpath)
         mkdir.mkdirs(dir, function (err) {
           if (err) return callback(err)
           makeLink(srcpath, dstpath)

@@ -110,7 +110,7 @@ const writeHtmlSnapshot = (html, react) => {
     if (err) {
       return void (0);
     }
-    shell.openItem(filepath);
+    shell.openPath(filepath);
   });
 };
 
@@ -3298,7 +3298,7 @@ overlays.push({
         className="no-select"
         style={{
           opacity,
-          position: 'absolute',
+          position: 'absolute' as const,
           left: mount.x,
           top: mount.y,
           width: mount.w,
@@ -3405,7 +3405,7 @@ overlays.push({
       enabled: proxy.isSelectionFinderOpenable(),
       onClick: () => {
         mixpanel.haikuTrack('creator:glass:open-in-finder');
-        shell.openItem(proxy.getAbspath());
+        shell.openPath(proxy.getAbspath());
       },
     });
 
@@ -3416,7 +3416,7 @@ overlays.push({
         enabled: proxy.isSelectionSketchEditable(),
         onClick: () => {
           mixpanel.haikuTrack('creator:glass:edit-in-sketch');
-          shell.openItem(path.join(this.props.folder, proxy.getSketchAssetPath()));
+          shell.openPath(path.join(this.props.folder, proxy.getSketchAssetPath()));
         },
       });
     }
@@ -3435,7 +3435,7 @@ overlays.push({
       enabled: proxy.isSelectionIllustratorEditable(),
       onClick: () => {
         mixpanel.haikuTrack('creator:glass:edit-in-illustrator');
-        shell.openItem(path.join(this.props.folder, proxy.getIllustratorAssetPath()));
+        shell.openPath(path.join(this.props.folder, proxy.getIllustratorAssetPath()));
       },
     });
 
@@ -3644,7 +3644,7 @@ overlays.push({
             id="zoom-indicator"
             className="no-select"
             style={{
-              position: 'fixed',
+              position: 'fixed' as const,
               top: 5,
               right: 10,
               zIndex: MAX_Z_INDEX - 8,
@@ -3687,18 +3687,18 @@ overlays.push({
             width: '100%',
             height: '100%',
             overflow: 'visible',
-            position: 'absolute',
+            position: 'absolute' as const,
             top: 0,
             left: 0,
             transform: this.getCSSTransform(zoom, pan),
-            backgroundColor: 'inherit',
+            backgroundColor: 'inherit' as const,
           }}>
 
           {(!this.isPreviewMode())
             ? <svg
               id="haiku-glass-stage-background-live"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 top: container.y,
                 left: container.x,
                 width: container.w,
@@ -3748,7 +3748,7 @@ overlays.push({
                 }}>
                 {`${this.props.userconfig.project || '[n/a]'} (`}
               </span>
-              <span style={{position: 'relative', top: 3, marginLeft: 2, marginRight: 2}}>
+              <span style={{position: 'relative' as const, top: 3, marginLeft: 2, marginRight: 2}}>
                 <ComponentIconSVG/>
               </span>
               <span
@@ -3768,7 +3768,7 @@ overlays.push({
             ? <svg
               id="haiku-glass-opacitator"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 top: container.y,
                 left: container.x,
                 zIndex: 20,
@@ -3804,7 +3804,7 @@ overlays.push({
             ? <svg
               id="haiku-glass-stage-border"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 top: container.y,
                 left: container.x,
                 zIndex: 1010,
@@ -3857,7 +3857,7 @@ overlays.push({
                 pointerEvents: 'none', // This needs to be un-set for surface elements that take mouse interaction
                 width: container.w,
                 height: this.getContainerHeight(),
-                position: 'absolute',
+                position: 'absolute' as const,
                 overflow: 'visible',
                 top: container.y,
                 left: container.x,
@@ -3872,7 +3872,7 @@ overlays.push({
               ref="outline"
               id="haiku-glass-outline-mount"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 pointerEvents: 'none',
                 left: mount.x,
                 top: mount.y,
@@ -3888,7 +3888,7 @@ overlays.push({
             ? <div
               id="preview-container"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 left: mount.x,
                 top: mount.y,
                 width: mount.w,

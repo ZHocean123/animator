@@ -114,12 +114,12 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
             height: this.props.rowHeight,
             left: 0,
             opacity: this.props.row.isHidden() ? 0.5 : 1.0,
-            position: 'relative',
+            position: 'relative' as const,
           }}
         >
           <div
             style={{
-              position: 'sticky',
+              position: 'sticky' as const,
               top: 0,
               left: 0,
               width: this.props.timeline.getPropertiesPixelWidth(),
@@ -138,12 +138,12 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
               {this.props.row.isFirstRowOfPropertyCluster() && (
                 <div
                   style={{
-                    position: 'absolute',
+                    position: 'absolute' as const,
                     width: 14,
                     right: 150,
                     top: -2,
                     zIndex: 1006,
-                    textAlign: 'right',
+                    textAlign: 'right' as const,
                     height: 'inherit',
                   }}
                 >
@@ -158,10 +158,10 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
                   right: 0,
                   width: this.props.timeline.getPropertiesPixelWidth() - 120,
                   height: this.props.rowHeight,
-                  textAlign: 'right',
+                  textAlign: 'right' as const,
                   backgroundColor: Palette.GRAY,
                   zIndex: 1004,
-                  position: 'relative',
+                  position: 'relative' as const,
                   paddingTop: 6,
                   paddingRight: 10,
                   marginLeft: 40,
@@ -170,7 +170,7 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
                 <div
                   className="hacky-property-row-coverup"
                   style={{
-                    position: 'absolute',
+                    position: 'absolute' as const,
                     left: -40,
                     height: '100%',
                     width: 40,
@@ -183,12 +183,12 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
             <div
               className="property-input-field-row"
               style={{
-                position: 'absolute',
+                position: 'absolute' as const,
                 left: this.props.timeline.getPropertiesPixelWidth() - 82,
                 width: 82,
                 top: 0,
                 height: this.props.rowHeight - 1,
-                textAlign: 'left',
+                textAlign: 'left' as const,
               }}
             >
               <PropertyInputField
@@ -209,7 +209,7 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
             onDoubleClick={this.props.onDoubleClickToMoveGauge}
             onMouseDown={this.activate}
             style={{
-              position: 'absolute',
+              position: 'absolute' as const,
               width: '100%',
               left: this.props.timeline.getPropertiesPixelWidth() + 1,
               top: 0,

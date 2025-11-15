@@ -37,8 +37,8 @@ function copy (src, dest, options, callback) {
       dir = path.dirname(dest)
     }
 
-    fs.exists(dir, function (dirExists) {
-      if (dirExists) return ncp(src, dest, options, callback)
+    fs.access(dir, fs.constants.F_OK, function (err) {
+      if (!err) return ncp(src, dest, options, callback)
       mkdir.mkdirs(dir, function (err) {
         if (err) return callback(err)
         ncp(src, dest, options, callback)

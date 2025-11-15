@@ -271,7 +271,7 @@ export default class BezierEditor extends React.Component<BezierEditorProps> {
             width: popupWidth,
             padding: '11px 20px 0 20px',
             height: popupHeight,
-            textAlign: "center",
+            textAlign: "center" as const,
             boxShadow: 'rgba(21, 32, 34, 0.9) 0px 12px 60px 0px',
           }}
         >

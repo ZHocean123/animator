@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Base from './Base';
 
 const svg = `

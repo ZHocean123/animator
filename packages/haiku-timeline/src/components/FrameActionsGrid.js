@@ -85,7 +85,7 @@ class FrameActionsGrid extends React.PureComponent {
 
     return (
       <div style={{
-        position: 'sticky',
+        position: 'sticky' as const,
         top: 0,
         height: 12,
         backgroundColor: Palette.COAL,
@@ -99,7 +99,7 @@ class FrameActionsGrid extends React.PureComponent {
               <div
                 key={`frame-${frameNumber}`}
                 style={{
-                  position: 'absolute',
+                  position: 'absolute' as const,
                   left: pixelOffsetLeft + propertiesWidth,
                   top: 34,
                 }}

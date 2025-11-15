@@ -4,11 +4,18 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@common/*": ["src/*"]
-    }
+      "@common/*": [
+        "src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

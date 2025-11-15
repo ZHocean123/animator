@@ -28,7 +28,7 @@ export class TrackedExporterRequests
     return (
       <ul
         style={{
-          float: 'left',
+          float: 'left' as const,
           margin: '0 5px 0 0',
           listStyleType: 'none',
         }}

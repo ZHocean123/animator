@@ -55,7 +55,7 @@ export default class Gauge extends React.Component {
           {this.props.timeline.mapVisibleFrames((frameNumber, pixelOffsetLeft, pixelsPerFrame, frameModulus) => {
             if ((frameNumber % frameModulus) === 0) {
               return (
-                <span key={`frame-${frameNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
+                <span key={`frame-${frameNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute' as const, left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
                   <span style={{
                     fontWeight: 'bold',
                     color: (this.props.timeline.getHoveredFrame() === frameNumber)
@@ -77,14 +77,14 @@ export default class Gauge extends React.Component {
           {this.props.timeline.mapVisibleTimes((millisecondsNumber, pixelOffsetLeft, totalMilliseconds) => {
             if (totalMilliseconds <= 1000) {
               return (
-                <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
+                <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute' as const, left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
                   <span style={{fontWeight: 'bold'}}>{millisecondsNumber}ms</span>
                 </span>
               );
             }
 
             return (
-              <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
+              <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute' as const, left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
                 <span style={{fontWeight: 'bold'}}>{formatSeconds(millisecondsNumber / 1000)}s</span>
               </span>
             );
@@ -99,7 +99,7 @@ export default class Gauge extends React.Component {
       style={{
         height: 23,
         backgroundColor: Palette.COAL,
-        position: 'sticky',
+        position: 'sticky' as const,
         top: 12,
         marginLeft: this.props.timeline.getPropertiesPixelWidth() + this.props.timelineOffsetPadding,
         width: this.props.timeline.calculateFullTimelineWidth(),
@@ -114,11 +114,11 @@ export default class Gauge extends React.Component {
         style={{
           display: 'inline-block',
           width: '15px',
-          position: 'absolute',
+          position: 'absolute' as const,
           left: '-8px',
           height: 'inherit',
           border: 'inherit',
-          backgroundColor: 'inherit',
+          backgroundColor: 'inherit' as const,
         }}
        />
        {out}

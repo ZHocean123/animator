@@ -61,7 +61,7 @@ export default class Modal extends React.Component {
       <div
         className="glass-modal"
         style={{
-          position: 'fixed',
+          position: 'fixed' as const,
           display: 'table',
           top: 0,
           left: 0,
@@ -73,7 +73,7 @@ export default class Modal extends React.Component {
           className="glass-modal-inner"
           style={{
             display: 'table-cell',
-            textAlign: 'center',
+            textAlign: 'center' as const,
             verticalAlign: 'middle',
           }}>
           {this.props.children}

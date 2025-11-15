@@ -55,7 +55,7 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
       <div
         onMouseDown={this.props.onMouseDown}
         style={{
-          position: 'sticky',
+          position: 'sticky' as const,
           top: 0,
           marginTop: -45,
           zIndex: zIndex.scrubber.base,
@@ -81,7 +81,7 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
         >
           <span
             style={{
-              position: 'absolute',
+              position: 'absolute' as const,
               top: 1,
               left: 0,
               width: '100%',
@@ -91,7 +91,7 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
           </span>
           <span
             style={{
-              position: 'absolute',
+              position: 'absolute' as const,
               width: 0,
               height: 0,
               top: 13,
@@ -103,7 +103,7 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
           />
           <span
             style={{
-              position: 'absolute',
+              position: 'absolute' as const,
               width: 0,
               height: 0,
               top: 15,

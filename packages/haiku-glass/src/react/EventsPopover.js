@@ -222,7 +222,7 @@ class EventsPopover extends React.Component {
               style={STYLES.row}
               onClick={() => this.goToPageThree('One', connection[0])}>
               {connection[0]} <span style={STYLES.mutedText}>plays</span> {connection[1]}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              <span style={{position: 'absolute' as const, right: '4px', top: 0}}>
                 <button
                   key={`v-${connection}`}
                   style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
@@ -247,7 +247,7 @@ class EventsPopover extends React.Component {
               style={STYLES.row}
               onClick={() => this.goToPageThree('Two', theEvent)}>
               {theEvent}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              <span style={{position: 'absolute' as const, right: '4px', top: 0}}>
                 <button
                   key={`v-${theEvent}`}
                   style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>

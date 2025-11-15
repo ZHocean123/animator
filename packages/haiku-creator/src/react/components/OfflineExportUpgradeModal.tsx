@@ -6,7 +6,7 @@ import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/
 import * as React from 'react';
 import {BTN_STYLES} from '../styles/btnShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   wrapper: {
     width: 500,
     overflow: 'hidden',
@@ -27,7 +27,7 @@ const STYLES: React.CSSProperties = {
   upgradeWrap: {
     color: Palette.SUNSTONE,
     marginTop: 20,
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   btnSecondary: {
     ...BTN_STYLES.btnText,

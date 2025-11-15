@@ -12,7 +12,7 @@
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json ./node_modules/tape/bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "test-report": "nyc pnpm ts ./node_modules/tape/bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsc",
     "develop": "tsc --watch"
   },

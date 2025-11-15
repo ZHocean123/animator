@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {render} from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
 import Creator from './react/Creator';
@@ -39,13 +39,14 @@ export default function dom (haiku) {
     }
   });
 
-  render(
+  const container = document.getElementById('mount');
+  const root = createRoot(container);
+  root.render(
     <Creator
       websocket={websocket}
       haiku={haiku}
       folder={haiku.folder}
       {...props}
-    />,
-    document.getElementById('mount'),
+    />
   );
 }

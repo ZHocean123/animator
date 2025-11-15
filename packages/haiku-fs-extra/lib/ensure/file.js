@@ -10,11 +10,11 @@ function createFile (file, callback) {
     })
   }
 
-  fs.exists(file, function (fileExists) {
-    if (fileExists) return callback()
+  fs.access(file, fs.constants.F_OK, function (err) {
+    if (!err) return callback()
     var dir = path.dirname(file)
-    fs.exists(dir, function (dirExists) {
-      if (dirExists) return makeFile()
+    fs.access(dir, fs.constants.F_OK, function (err) {
+      if (!err) return makeFile()
       mkdir.mkdirs(dir, function (err) {
         if (err) return callback(err)
         makeFile()

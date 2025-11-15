@@ -4,7 +4,10 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -12,6 +15,7 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
+    "target": "ES2020",
     "typeRoots": [
       "node_modules/@types/"
     ]

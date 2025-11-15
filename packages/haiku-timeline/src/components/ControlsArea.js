@@ -43,7 +43,7 @@ export default class ControlsArea extends React.Component {
             toggleRepeat={this.props.toggleRepeat}
             isRepeat={this.props.isRepeat} />
           <div style={{
-            position: 'absolute',
+            position: 'absolute' as const,
             top: -63,
           }} />
         </span>

@@ -16,16 +16,16 @@ function createSymlink (srcpath, dstpath, type, callback) {
   callback = (typeof type === 'function') ? type : callback
   type = (typeof type === 'function') ? false : type
 
-  fs.exists(dstpath, function (destinationExists) {
-    if (destinationExists) return callback(null)
+  fs.access(dstpath, fs.constants.F_OK, function (err) {
+    if (!err) return callback(null)
     symlinkPaths(srcpath, dstpath, function (err, relative) {
       if (err) return callback(err)
       srcpath = relative.toDst
       symlinkType(relative.toCwd, type, function (err, type) {
         if (err) return callback(err)
         var dir = path.dirname(dstpath)
-        fs.exists(dir, function (dirExists) {
-          if (dirExists) return fs.symlink(srcpath, dstpath, type, callback)
+        fs.access(dir, fs.constants.F_OK, function (err) {
+          if (!err) return fs.symlink(srcpath, dstpath, type, callback)
           mkdirs(dir, function (err) {
             if (err) return callback(err)
             fs.symlink(srcpath, dstpath, type, callback)

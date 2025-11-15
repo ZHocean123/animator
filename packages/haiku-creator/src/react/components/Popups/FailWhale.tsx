@@ -9,12 +9,12 @@ import * as React from 'react';
 import {BTN_STYLES} from '../../styles/btnShared';
 import {DASH_STYLES} from '../../styles/dashShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   modalWrapper: {
     zIndex: 9002,
-    position: 'absolute',
+    position: 'absolute' as const,
     top: '50%',
-    transform: 'translateY(-50%)',
+    transform: 'translateY(-50%)' as const,
     width: 548,
     borderBottomRightRadius: '7px',
     borderBottomLeftRadius: '7px',
@@ -29,7 +29,7 @@ const STYLES: React.CSSProperties = {
     padding: 50,
     lineHeight: 1.5,
     fontSize: '1.1em',
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   header: {
     fontWeight: 'normal',
@@ -47,6 +47,7 @@ const STYLES: React.CSSProperties = {
   },
   link: {
     color: Palette.LIGHT_BLUE,
+    float: 'left' as const,
   },
 };
 

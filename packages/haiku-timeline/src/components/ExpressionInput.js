@@ -185,8 +185,9 @@ export default class ExpressionInput extends React.Component {
     this.mountCodeMirror();
   }
 
-  componentWillUpdate () {
+  getSnapshotBeforeUpdate () {
     this.mountCodeMirror();
+    return null;
   }
 
   mountCodeMirror () {
@@ -1245,7 +1246,7 @@ export default class ExpressionInput extends React.Component {
         <div
           key="range-picker"
           style={{
-            position: 'absolute',
+            position: 'absolute' as const,
             top: '-22px',
             left: 0,
             width: '100%',
@@ -1274,7 +1275,7 @@ export default class ExpressionInput extends React.Component {
       return (
         <div
           onClick={this.stopPropagation}
-          style={{position: 'absolute', width: 'auto', height: 'auto', top: '-115px', left: 0}}
+          style={{position: 'absolute' as const, width: 'auto', height: 'auto', top: '-115px', left: 0}}
         >
           <ColorPicker
             displayValue={derivateDisplayValueFromColorString(displayColor)}
@@ -1294,7 +1295,7 @@ export default class ExpressionInput extends React.Component {
   renderSaveButton () {
     if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
       return (
-        <div style={{textAlign: 'right', marginTop: 5, marginBottom: -5}}>
+        <div style={{textAlign: 'right' as const, marginTop: 5, marginBottom: -5}}>
           <button
             style={{
               fontSize: '10px',

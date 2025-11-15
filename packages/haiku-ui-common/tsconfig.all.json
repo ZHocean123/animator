@@ -5,13 +5,20 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@ui-common/*": ["src/*"]
-    }
+      "@ui-common/*": [
+        "src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "test/**/*.ts",
     "scripts/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

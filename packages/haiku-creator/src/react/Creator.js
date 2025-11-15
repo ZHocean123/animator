@@ -611,7 +611,7 @@ export default class Creator extends React.Component {
   openFinder () {
     if (this.state.projectModel) {
       try {
-        logger.info('[creator] finder opening', shell.openItem(this.state.projectModel.getFolder()));
+        logger.info('[creator] finder opening', shell.openPath(this.state.projectModel.getFolder()));
       } catch (exception) {
         logger.error(exception);
       }

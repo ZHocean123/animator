@@ -11,7 +11,7 @@
     "preserveConstEnums": false,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ESNext",
+    "target": "ES2020",
     "typeRoots": [
       "node_modules/@types/"
     ]

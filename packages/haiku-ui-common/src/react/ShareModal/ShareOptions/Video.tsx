@@ -36,7 +36,7 @@ export default class Video extends React.PureComponent<VideoProps> {
 
   render () {
     return (
-      <div style={{textAlign: "center" }}>
+      <div style={{textAlign: "center" as const }}>
         <div style={STYLES.videoWrapper}>
           <video controls={true} style={STYLES.video}>
             <source src={this.videoUrl} type="video/mp4" />

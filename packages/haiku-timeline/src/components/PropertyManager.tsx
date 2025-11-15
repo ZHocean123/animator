@@ -42,10 +42,10 @@ export default class PropertyManager extends React.Component<PropertyManagerProp
         className="property-manager"
         style={{
           width: this.props.timelinePropertiesWidth,
-          textAlign: 'center',
+          textAlign: 'center' as const,
           height: 30,
           paddingTop: 6,
-          position: 'sticky',
+          position: 'sticky' as const,
           zIndex: zIndex.addButton.base,
           background: Palette.GRAY,
           left: 0,

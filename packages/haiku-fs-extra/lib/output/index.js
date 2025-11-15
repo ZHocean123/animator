@@ -9,8 +9,8 @@ function outputFile (file, data, encoding, callback) {
   }
 
   var dir = path.dirname(file)
-  fs.exists(dir, function (itDoes) {
-    if (itDoes) return fs.writeFile(file, data, encoding, callback)
+  fs.access(dir, fs.constants.F_OK, function (err) {
+    if (!err) return fs.writeFile(file, data, encoding, callback)
 
     mkdir.mkdirs(dir, function (err) {
       if (err) return callback(err)

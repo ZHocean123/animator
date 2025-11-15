@@ -7,7 +7,7 @@ import * as React from 'react';
 import {BTN_STYLES} from '../../../styles/btnShared';
 import {DASH_STYLES} from '../../../styles/dashShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   form: {
     position: 'absolute',
     background: Palette.COAL,

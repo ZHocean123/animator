@@ -1,7 +1,7 @@
 import * as React from 'react';
 import FigmaForm from './FigmaForm';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   button: {
     color: 'inherit',
     fontSize: 'inherit',

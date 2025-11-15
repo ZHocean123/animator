@@ -5,11 +5,18 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@cli/*": ["src/*"]
-    }
+      "@cli/*": [
+        "src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

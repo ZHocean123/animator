@@ -358,7 +358,7 @@ export const PenSVG = (props: any) => (
 );
 
 export const DropTriangle = (props: any) => (
-  <svg width="25px" height="25px" viewBox="0 0 25 25" style={{position: 'absolute', top: '0', left: 0}}>
+  <svg width="25px" height="25px" viewBox="0 0 25 25" style={{position: 'absolute' as const, top: '0', left: 0}}>
     <polygon fill="#FFFFFF" points="23 17 23 23 17 23" />
   </svg>
 );

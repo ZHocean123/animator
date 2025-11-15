@@ -16,7 +16,7 @@
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json ./node_modules/tape/bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' | tap-spec",
     "e2e": "pnpm ts ./node_modules/.bin/tape 'test/e2e/*.e2e.ts' | tap-spec",
-    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
+    "test-report": "nyc pnpm ts ./node_modules/tape/bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
     "compile": "tsc",
     "compile-declarations": "tsc -p tsconfig.declarations.json",
     "develop": "tsc --watch"
@@ -46,7 +46,7 @@
     "lodash.merge": "4.6.0",
     "lodash.throttle": "4.1.1",
     "moment": "^2.29.4",
-    "nodegit": "0.20.3",
+    "nodegit": "0.27.0",
     "qs": "^6.12.0",
     "raven": "2.3.0",
     "rollup": "^0.53.3",

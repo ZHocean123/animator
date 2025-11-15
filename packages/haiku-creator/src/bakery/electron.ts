@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {ErrorCallback, queue} from 'async';
 import {BrowserWindow, ipcMain} from 'electron';
 import {existsSync, mkdirpSync, removeSync, writeFile} from 'fs-extra';
@@ -91,7 +92,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
         return finish();
       }
 
-      browserWindow.capturePage((image) => {
+      browserWindow.capturePage().then((image) => {
         const data = image.toPNG();
         if (data.byteLength === 0) {
           // Try again…within reason.
@@ -108,7 +109,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
             ? path.join(outputDirectory, 'still.png')
             : path.join(outputDirectory, `frame-${frame.toString().padStart(7, '0')}.png`),
           data,
-          (err) => {
+          (err: NodeJS.ErrnoException | null) => {
             if (err) {
               LoggerInstance.warn(err);
               return finish();

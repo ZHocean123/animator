@@ -88,7 +88,7 @@ export default class SimplifiedFrameGrid extends React.PureComponent<SimplifiedF
                 key={`frame-${frameNumber}`}
                 style={{
                   height: 'calc(100vh - 80px)',
-                  position: 'absolute',
+                  position: 'absolute' as const,
                   borderLeft: this.defaultFrameBorder,
                   left: pixelOffsetLeft + this.props.propertiesPixelWidth,
                   top: 34,

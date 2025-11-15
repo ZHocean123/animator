@@ -9,7 +9,7 @@ import {DASH_STYLES} from '../../styles/dashShared';
 import FigmaImporter from './importers/FigmaImporter';
 import FileSystemImporter from './importers/FileSystemImporter';
 
-const STYLES: React.CSSProperties = {
+const STYLES = {
   popover: {
     background: Palette.COAL,
     borderRadius: '4px',
@@ -92,7 +92,7 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
           ...DASH_STYLES.popover.container,
           right: 0,
           top: 0,
-          position: 'initial',
+          position: 'initial' as const,
         }}
       >
         <div style={STYLES.popover.item}>

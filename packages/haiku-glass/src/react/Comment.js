@@ -22,7 +22,7 @@ export default class Comment extends React.Component {
             tabIndex="1"
             style={{
               display: 'block',
-              backgroundColor: 'black',
+              backgroundColor: 'black' as const,
               color: 'white',
               border: 'none',
               padding: 5,
@@ -89,7 +89,7 @@ export default class Comment extends React.Component {
           ? <span
             style={{
               cursor: 'pointer',
-              position: 'absolute',
+              position: 'absolute' as const,
               right: '10px',
               color: '#999',
             }}
@@ -106,7 +106,7 @@ export default class Comment extends React.Component {
           ? <span
             style={{
               cursor: 'pointer',
-              position: 'absolute',
+              position: 'absolute' as const,
               right: '10px',
               bottom: '10px',
               color: '#f66',
@@ -175,7 +175,7 @@ export default class Comment extends React.Component {
             this.forceUpdate();
           }}
           style={{
-            position: 'absolute',
+            position: 'absolute' as const,
             left: this.props.x || 0,
             top: this.props.y || 0,
             pointerEvents: 'auto',
@@ -183,10 +183,10 @@ export default class Comment extends React.Component {
             height: 50,
             padding: '11px 10px 10px',
             borderRadius: '50%',
-            backgroundColor: '#333',
+            backgroundColor: '#333' as const,
             color: 'white',
             fontSize: 18,
-            textAlign: 'center',
+            textAlign: 'center' as const,
             cursor: 'pointer',
             opacity: 0.8,
             boxShadow: '0px 1px 13px 0px rgba(0,0,0,0.75)',
@@ -206,7 +206,7 @@ export default class Comment extends React.Component {
           mouseEvent.preventDefault();
         }}
         style={{
-          position: 'absolute',
+          position: 'absolute' as const,
           left: this.props.x || 0,
           top: this.props.y || 0,
           width: this.props.comment.w || 250,
@@ -214,7 +214,7 @@ export default class Comment extends React.Component {
           pointerEvents: 'auto',
           padding: 10,
           borderRadius: 2,
-          backgroundColor: '#333',
+          backgroundColor: '#333' as const,
           color: 'white',
           opacity: 0.8,
           boxShadow: '0px 1px 13px 0px rgba(0,0,0,0.5)',
@@ -239,7 +239,7 @@ export default class Comment extends React.Component {
               ref="replyInput"
               style={{
                 display: 'block',
-                backgroundColor: 'black',
+                backgroundColor: 'black' as const,
                 color: 'white',
                 border: 'none',
                 padding: 5,

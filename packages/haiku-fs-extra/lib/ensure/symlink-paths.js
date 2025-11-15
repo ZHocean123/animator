@@ -39,8 +39,8 @@ function symlinkPaths (srcpath, dstpath, callback) {
   } else {
     var dstdir = path.dirname(dstpath)
     var relativeToDst = path.join(dstdir, srcpath)
-    return fs.exists(relativeToDst, function (exists) {
-      if (exists) {
+    return fs.access(relativeToDst, fs.constants.F_OK, function (err) {
+      if (!err) {
         return callback(null, {
           'toCwd': relativeToDst,
           'toDst': srcpath

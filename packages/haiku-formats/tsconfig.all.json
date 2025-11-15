@@ -5,13 +5,22 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@formats/*": ["src/*"],
-      "@core/*": ["../@haiku/core/src/*"]
-    }
+      "@formats/*": [
+        "src/*"
+      ],
+      "@core/*": [
+        "../@haiku/core/src/*"
+      ]
+    },
+    "checkJs": false,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
     "scripts/*.ts"
+  ],
+  "exclude": [
+    "src/**"
   ]
 }

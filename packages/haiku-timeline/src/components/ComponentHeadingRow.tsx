@@ -214,7 +214,7 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
           style={{
             backgroundColor,
             display: 'flex',
-            position: 'sticky',
+            position: 'sticky' as const,
             top: 0,
             left: 0,
             paddingLeft: isRootRow ? 5 : 0,
@@ -249,7 +249,7 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
                 : propertiesPixelWidth,
               height: 'inherit',
               cursor: 'pointer',
-              backgroundColor: 'transparent',
+              backgroundColor: 'transparent' as const,
               display: 'flex',
               flexDirection: 'column',
               paddingLeft: 27 * (depth - 1),
