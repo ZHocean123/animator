@@ -1,9 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const async = require('async');
-const initializeAWSService = require('./initializeAwsService');
-const uploadObjectToS3 = require('./uploadObjectToS3');
-const log = require('./log');
+
+
+
+
+
+
+
+import fs from "fs";
+import path from "path";
+import async from "async";
+import initializeAWSService from "./initializeAwsService";
+import uploadObjectToS3 from "./uploadObjectToS3";
+import log from "./log";
+
 const ROOT = global.process.cwd();
 
 function uploadRelease (region, key, secret, bucket, folder, platform, environment, branch, version, cb) {
@@ -67,4 +75,4 @@ function uploadRelease (region, key, secret, bucket, folder, platform, environme
   });
 }
 
-module.exports = uploadRelease;
+export default uploadRelease;

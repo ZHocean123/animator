@@ -1,4 +1,4 @@
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';

@@ -1,13 +1,22 @@
-const childProcess = require('child_process');
-const fse = require('fs-extra');
-const path = require('path');
-const rimraf = require('rimraf');
 
-const log = require('./helpers/log');
-const nowVersion = require('./helpers/nowVersion');
-const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction');
 
-require('./../config');
+
+
+
+
+
+
+
+
+import childProcess from "child_process";
+import fse from "fs-extra";
+import path from "path";
+import rimraf from "rimraf";
+import log from "./helpers/log";
+import nowVersion from "./helpers/nowVersion";
+import forceNodeEnvProduction from "./helpers/forceNodeEnvProduction";
+
+(await import("./../config"));
 forceNodeEnvProduction();
 
 const ROOT = global.process.cwd();

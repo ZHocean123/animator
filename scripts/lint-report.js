@@ -1,8 +1,13 @@
-const async = require('async');
-const cp = require('child_process');
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
-const unbuildables = require('./helpers/unbuildables');
+
+
+
+
+import async from "async";
+import cp from "child_process";
+import log from "./helpers/log.js";
+import allPackages from "./helpers/packages.js";
+import unbuildables from "./helpers/unbuildables.js";
+
 
 let hadError = false;
 async.each(allPackages, (pack, next) => {

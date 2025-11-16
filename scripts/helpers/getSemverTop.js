@@ -1,14 +1,15 @@
-let fse = require('fs-extra');
-let semver = require('semver');
-let lodash = require('lodash');
-let path = require('path');
-let allPackages = require('./packages')();
+let fs = await import("fs");
+let semver = await import("semver");
+let { forEach } = await import("lodash-es");
+let path = await import("path");
+let packagesModule = await import("./packages.js");
+let allPackages = packagesModule.default();
 
-module.exports = function getSemverTop () {
+export default function getSemverTop () {
   let top;
-  lodash.forEach(allPackages, (pack) => {
+  forEach(allPackages, (pack) => {
     const packageJsonPath = path.join(pack.abspath, 'package.json');
-    const packageJson = fse.readJsonSync(packageJsonPath);
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
     if (!top) {
       top = packageJson.version;
     }

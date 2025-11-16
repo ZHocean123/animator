@@ -1,6 +1,6 @@
 import {BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api';
 import * as BezierEasing from 'bezier-easing';
-import {flatten} from 'lodash';
+import {flatten} from 'lodash-es';
 
 export type InterpolationPoints = [number, number, number, number];
 

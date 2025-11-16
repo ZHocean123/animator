@@ -1,8 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+
+
+
 
 // 需要处理的文件模式
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+import glob from "glob";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const filePatterns = [
   'packages/haiku-glass/src/react/index.js',
   'packages/haiku-timeline/src/index.js',

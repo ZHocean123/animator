@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as CodeMirror from 'codemirror';
 import {clipboard} from 'electron';
 import * as stripindent from 'strip-indent';

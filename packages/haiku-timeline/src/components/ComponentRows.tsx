@@ -1,5 +1,5 @@
 import Palette from 'haiku-ui-common/lib/Palette';
-import {throttle} from 'lodash';
+import {throttle} from 'lodash-es';
 import * as React from 'react';
 import RowManager from './RowManager';
 

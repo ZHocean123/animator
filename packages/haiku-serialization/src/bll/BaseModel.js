@@ -1,5 +1,5 @@
 const {EventEmitter} = require('events');
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 const Cache = require('./Cache');
 const MemoryStorage = require('./storage/MemoryStorage');
 const DiskStorage = require('./storage/DiskStorage');

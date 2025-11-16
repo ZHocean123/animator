@@ -1,7 +1,7 @@
-const lodash = require('lodash');
-const clone = require('lodash.clone');
-const cloneDeepWith = require('lodash.clonedeepwith');
-const merge = require('lodash.merge');
+import * as lodash from 'lodash-es';
+const clone = import { clone } from 'lodash-es';
+const cloneDeepWith = import { cloneDeepWith } from 'lodash-es';
+const merge = import { merge } from 'lodash-es';
 const BaseModel = require('./BaseModel');
 const enhance = require('@haiku/core/lib/reflection/enhance').default;
 const {xmlToMana} = require('haiku-common/lib/layout/xmlUtils');

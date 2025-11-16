@@ -1,14 +1,14 @@
 const path = require('path');
-const find = require('lodash.find');
-const merge = require('lodash.merge');
+const find = import { find } from 'lodash-es';
+const merge = import { merge } from 'lodash-es';
 const pascalcase = require('pascalcase');
 const {ATTRS_HYPH_TO_CAMEL} = require('@haiku/core/lib/HaikuComponent');
 const SVGPoints = require('@haiku/core/lib/helpers/SVGPoints').default;
 const {default: convertManaLayout} = require('haiku-common/lib/layout/convertManaLayout');
 const {visitManaTree} = require('@haiku/core/lib/HaikuNode');
 const {manaToXml} = require('haiku-common/lib/layout/xmlUtils');
-const assign = require('lodash.assign');
-const defaults = require('lodash.defaults');
+const assign = import { assign } from 'lodash-es';
+const defaults = import { defaults } from 'lodash-es';
 const BaseModel = require('./BaseModel');
 const CryptoUtils = require('./../utils/CryptoUtils');
 

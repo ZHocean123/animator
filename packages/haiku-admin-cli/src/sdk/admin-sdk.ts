@@ -1,5 +1,5 @@
 /* tslint:disable:no-namespace */
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import * as requestLib from 'request';
 
 const ENDPOINTS = {

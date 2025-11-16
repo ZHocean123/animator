@@ -1,10 +1,14 @@
-const cp = require('child_process');
 
-const log = require('./log');
+
+
+
+
+import cp from "child_process";
+import log from "./log.js";
 
 const NODE_VERSION = '8.15.1';
 
-module.exports = () => {
+export default () => {
   const nodeVersion = cp.execSync('node --version').toString().trim();
   if (nodeVersion !== `v${NODE_VERSION}`) {
     log.warn(`WARNING: you are using node version ${nodeVersion}. We recommend version v${NODE_VERSION}.`);

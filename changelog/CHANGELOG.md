@@ -1,6 +1,19 @@
 # Changelog
 
 
+## 5.1.2
+
+### Dependencies
+
+ * migrate from lodash to lodash-es for better tree-shaking support and optimized bundling
+ * update import statements across all packages to use lodash-es syntax
+ * verify all lodash functionality remains intact after migration
+
+### Performance Improvements
+
+ * reduced bundle sizes through improved tree-shaking with lodash-es
+ * better ES module compatibility for modern bundlers
+
 ## 5.0.0
 
 ### Bug Fixes

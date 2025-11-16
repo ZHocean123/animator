@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as path from 'path';
 import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom';
 import HaikuContext from '@haiku/core/lib/HaikuContext';

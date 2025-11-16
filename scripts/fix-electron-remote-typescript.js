@@ -1,8 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+
+
+
 
 // 需要处理的文件模式
+
+import fs from "fs";
+import path from "path";
+import glob from "glob";
+
 const filePatterns = [
   'packages/haiku-ui-common/src/**/*.ts',
   'packages/haiku-ui-common/src/**/*.tsx',
@@ -33,10 +38,10 @@ function fixElectronRemote(content) {
     }
   );
   
-  // 替换 require('electron').remote 为 require('@electron/remote')
+  // 替换 (await import("electron")).remote 为 (await import("@electron/remote"))
   content = content.replace(
     /require\(['"]electron['"]\)\.remote/g,
-    "require('@electron/remote')"
+    "(await import("@electron/remote"))"
   );
   
   // 初始化 remote

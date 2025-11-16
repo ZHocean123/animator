@@ -1,10 +1,10 @@
-let fs = require('fs');
-let log = require('./log');
-let initializeAWSService = require('./initializeAwsService');
-let uploadObjectToS3 = require('./uploadObjectToS3');
-let DEPLOY_CONFIGS = require('./../deploy');
+let fs = (await import("fs"));
+let log = (await import("./log"));
+let initializeAWSService = (await import("./initializeAwsService"));
+let uploadObjectToS3 = (await import("./uploadObjectToS3"));
+let DEPLOY_CONFIGS = (await import("./../deploy"));
 
-module.exports = function uploadFileStream (sourcepath, destpath, region, deployer, env, bucket, acl, cb) {
+export default function uploadFileStream (sourcepath, destpath, region, deployer, env, bucket, acl, cb) {
   const config = DEPLOY_CONFIGS[deployer][env];
 
   if (!config) {

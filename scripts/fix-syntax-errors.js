@@ -1,8 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+
+
+
 
 // 需要处理的文件模式
+
+import fs from "fs";
+import path from "path";
+import glob from "glob";
+
 const filePatterns = [
   'packages/haiku-ui-common/src/**/*.tsx',
 ];

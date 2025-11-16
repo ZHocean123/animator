@@ -1,5 +1,5 @@
 import {app, Menu, MenuItemConstructorOptions, shell} from 'electron';
-import {assign, isEqual} from 'lodash';
+import {assign, isEqual} from 'lodash-es';
 import {getAccountUrl} from '../environments';
 import {isMac} from '../environments/os';
 import {isWindows} from '../environments/os';

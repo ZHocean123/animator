@@ -1,10 +1,13 @@
-const async = require('async');
-const cp = require('child_process');
-const {join} = require('path');
-const argv = require('yargs').argv;
 
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
+
+
+
+import async from "async";
+import cp from "child_process";
+import { argv } from "yargs";
+import log from "./helpers/log.js";
+import allPackages from "./helpers/packages.js";
+import { join } from "path";
 
 if (!process.env.NODE_ENV) {
   // babel-cli requires this to be set for reasons I don't know

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Color from 'color';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import zIndex from './styles/zIndex';
 import Palette from 'haiku-ui-common/lib/Palette';
 import TimelineDraggable from './TimelineDraggable';

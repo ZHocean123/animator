@@ -105,6 +105,8 @@ For the compiler to watch for changes as you develop, run the following command 
 
 > **Note**: This project has migrated from `tsc` to [`tsdown`](https://github.com/rolldown/tsdown) for faster TypeScript compilation. The `watch-all` command now uses `tsdown --watch` instead of `tsc --watch`.
 
+> **Note**: This project has migrated from `lodash` to [`lodash-es`](https://github.com/lodash/lodash-es) for better tree-shaking support and optimized bundling. See the [lodash-es Migration Guide](#lodash-es-migration-guide) section for more details.
+
 ### Before committing
 
 First lint all of the code:
@@ -172,3 +174,47 @@ Our hope is that open-sourcing Haiku Animator allows it to be even more useful, 
 This project is open to new maintainers. This codebase isn't perfect. In fact, in its current state it has deep flaws. That said, to a dedicated tinkerer, it has potential. We created it chasing a dream of creative empowerment — we open-source it in hopes of that dream continuing on.
 
 Read more at https://www.haikuanimator.com/
+
+## lodash-es Migration Guide
+
+Haiku Animator has successfully migrated from `lodash` to `lodash-es` to improve bundle size and enable better tree-shaking support.
+
+### Migration Overview
+
+- **Migration Date**: November 2025
+- **Version**: 5.1.2
+- **Target**: Complete replacement of lodash with lodash-es across all packages
+
+### Benefits of Migration
+
+1. **Better Tree-shaking**: lodash-es provides ES modules that enable modern bundlers to eliminate unused code
+2. **Reduced Bundle Size**: Only the lodash functions actually used are included in the final bundle
+3. **Modern JavaScript**: Full ES module compatibility for better performance
+4. **Future-proof**: Aligns with modern JavaScript development practices
+
+### Changes for Developers
+
+- Import syntax has been updated from:
+  ```javascript
+  import { find } from 'lodash';
+  // or
+  import find from 'lodash.find';
+  ```
+  To:
+  ```javascript
+  import find from 'lodash-es/find.js';
+  ```
+
+- All existing lodash functionality remains the same
+- No breaking changes to the public API
+- Build process automatically handles the new imports
+
+### Migration Details
+
+The migration process included:
+- Automated code transformation across all packages
+- Updated import statements
+- Verification of functionality through comprehensive testing
+- Bundle size optimization verification
+
+For detailed technical information about the migration process, see the [lodash-es migration test report](lodash-es-migration-test-report.md).

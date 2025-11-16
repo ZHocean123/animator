@@ -1,6 +1,6 @@
-let cp = require('child_process');
+import cp from "child_process";
 
-module.exports = function gitStatusInfo (cwd) {
+export default function gitStatusInfo (cwd) {
   const info = {};
 
   info.output = cp.execSync('git status', {cwd}).toString().trim();

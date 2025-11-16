@@ -1,6 +1,9 @@
-const log = require('./log');
 
-module.exports = (command, commandAlias, attempts) => {
+
+
+import log from "./log.js";
+
+export default (command, commandAlias, attempts) => {
   let remainingTries = attempts;
 
   while (remainingTries > 0) {

@@ -1,4 +1,4 @@
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 const HaikuElement = require('@haiku/core/lib/HaikuElement').default;
 const Layout3D = require('@haiku/core/lib/Layout3D').default;
 const {cssQueryTree} = require('@haiku/core/lib/HaikuNode');

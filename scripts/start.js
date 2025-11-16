@@ -1,16 +1,27 @@
-const async = require('async');
-const lodash = require('lodash');
-const cp = require('child_process');
-const fse = require('fs-extra');
-const inquirer = require('inquirer');
-const path = require('path');
-const argv = require('yargs').argv;
-const log = require('./helpers/log');
-const spawn = require('cross-spawn');
-const os = require('os');
+import async from 'async';
+import {assign, keyBy} from 'lodash-es';
+import { createRequire } from 'module';
+import fse from 'fs-extra';
 
-const allPackages = require('./helpers/packages')();
-const groups = lodash.keyBy(allPackages, 'shortname');
+const require = createRequire(import.meta.url);
+const cp = require('child_process').execSync;
+import inquirer from 'inquirer';
+import path from 'path';
+import yargs from 'yargs';
+import log from './helpers/log.js';
+import spawn from 'cross-spawn';
+import os from 'os';
+import 'dotenv/config.js';
+
+import packages from './helpers/packages.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageInfo = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'));
+const groups = keyBy(packages(), 'shortname');
 const ROOT = path.join(__dirname, '..');
 const plumbingPackage = groups.plumbing;
 const blankProject = path.join(plumbingPackage.abspath, 'test/fixtures/projects/blank-project/');
@@ -30,12 +41,12 @@ const DEFAULTS = {
   skipInitialBuild: false,
 };
 
-const inputs = lodash.assign({}, DEFAULTS, argv);
+const inputs = assign({}, DEFAULTS, yargs.argv);
 delete inputs._;
 delete inputs.$0;
 
 // List of arguments following the command
-const args = argv._;
+const args = yargs.argv._;
 
 const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim();
 log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`);
@@ -91,10 +102,10 @@ const FOLDER_CHOICES = {
 //   pnpm start --default
 //   pnpm start default
 //   pnpm start --preset=default
-if (argv.default === true) {
-  argv.preset = 'default';
-} else if (!argv.hasOwnProperty('preset') && args.length > 0) {
-  argv.preset = args[0];
+if (yargs.argv.default === true) {
+  yargs.argv.preset = 'default';
+} else if (!yargs.argv.hasOwnProperty('preset') && args.length > 0) {
+  yargs.argv.preset = args[0];
 }
 
 // Support:
@@ -111,15 +122,15 @@ const availablePresets = {
   'blank-noclean': 'blank-noclean',
 };
 
-if (FOLDER_CHOICES.hasOwnProperty(argv.preset)) {
-  inputs.folderChoice = argv.preset;
-} else if (availablePresets[argv.preset]) {
-  inputs.devChoice = argv.preset;
-  inputs.folderChoice = availablePresets[argv.preset] || global.process.env.HAIKU_PROJECT_FOLDER;
-} else if (argv.preset === 'fast') {
+if (FOLDER_CHOICES.hasOwnProperty(yargs.argv.preset)) {
+  inputs.folderChoice = yargs.argv.preset;
+} else if (availablePresets[yargs.argv.preset]) {
+  inputs.devChoice = yargs.argv.preset;
+  inputs.folderChoice = availablePresets[yargs.argv.preset] || global.process.env.HAIKU_PROJECT_FOLDER;
+} else if (yargs.argv.preset === 'fast') {
   inputs.skipInitialBuild = true;
 } else {
-  delete argv.preset;
+  delete yargs.argv.preset;
 }
 
 if (argv.preset) {
@@ -174,7 +185,7 @@ function runInteractive () {
           default: inputs.dev,
         },
       ]).then((answers) => {
-        lodash.assign(inputs, answers);
+        assign(inputs, answers);
         return cb();
       });
     },
@@ -245,7 +256,7 @@ function setup () {
   global.process.env.HAIKU_RELEASE_BRANCH = 'master';
   global.process.env.HAIKU_RELEASE_PLATFORM = getReleasePlatform();
   global.process.env.HAIKU_RELEASE_ARCHITECTURE = getReleaseArchitecture();
-  global.process.env.HAIKU_RELEASE_VERSION = require('./../package.json').version;
+  global.process.env.HAIKU_RELEASE_VERSION = packageInfo.version;
   global.process.env.HAIKU_AUTOUPDATE_SERVER = 'http://localhost:3002';
 
   if (inputs.devChoice === 'everything') {
@@ -306,7 +317,7 @@ function go () {
   }
 
   // Allow anything in .env to override the environment variables we set here.
-  require('dotenv').config();
+  // dotenv config is already imported at the top
   log.hat('Note: NOT watching for code changes. To watch for code changes, run pnpm watch-all in a new tab.');
   mainProcess = spawn('pnpm', binaryArgs, {cwd, env: global.process.env, stdio: 'inherit'});
 

@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
 /**
+
+import fs from "fs";
+import path from "path";
+
  * Fix CSSProperties type errors in TypeScript files
  * 
  * This script fixes the common TypeScript error where React.CSSProperties is used
@@ -18,8 +22,8 @@
  * - library/importers/FigmaImporter.tsx
  */
 
-const fs = require('fs');
-const path = require('path');
+
+
 
 const TARGET_FILES = [
   'packages/haiku-creator/src/react/components/PublicPrivateOptInModal.tsx',
@@ -79,4 +83,3 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { fixFile };

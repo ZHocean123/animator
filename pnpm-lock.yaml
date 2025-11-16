@@ -122,8 +122,8 @@ importers:
       inquirer:
         specifier: ^3.0.6
         version: 3.3.0
-      lodash:
-        specifier: ^4.17.4
+      lodash-es:
+        specifier: ^4.17.21
         version: 4.17.21
       mime-types:
         specifier: ^2.1.17
@@ -200,7 +200,7 @@ importers:
       inquirer:
         specifier: ^3.0.6
         version: 3.3.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       mkdirp:
@@ -408,7 +408,7 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.3.2
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       mkdirp:
@@ -563,7 +563,7 @@ importers:
       inquirer:
         specifier: ^3.0.6
         version: 3.3.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       mkdirp:
@@ -754,15 +754,9 @@ importers:
       haiku-ui-common:
         specifier: workspace:*
         version: link:../haiku-ui-common
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
-      lodash.assign:
-        specifier: ^4.2.0
-        version: 4.2.0
-      lodash.debounce:
-        specifier: 4.0.8
-        version: 4.0.8
       marked:
         specifier: ^9.1.6
         version: 9.1.6
@@ -905,7 +899,7 @@ importers:
       image-size:
         specifier: ^0.6.3
         version: 0.6.3
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
@@ -930,6 +924,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.0
         version: 4.17.20
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       async:
         specifier: ^2.5.0
         version: 2.6.4
@@ -1060,7 +1057,7 @@ importers:
       haiku-vendor-legacy:
         specifier: workspace:*
         version: link:../haiku-vendor-legacy
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       moment:
@@ -1184,33 +1181,9 @@ importers:
       isomorphic-git:
         specifier: ^1.35.0
         version: 1.35.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
-      lodash.assign:
-        specifier: ^4.2.0
-        version: 4.2.0
-      lodash.clone:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.debounce:
-        specifier: 4.0.8
-        version: 4.0.8
-      lodash.filter:
-        specifier: ^4.6.0
-        version: 4.6.0
-      lodash.find:
-        specifier: ^4.6.0
-        version: 4.6.0
-      lodash.foreach:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.merge:
-        specifier: 4.6.0
-        version: 4.6.0
-      lodash.throttle:
-        specifier: 4.1.1
-        version: 4.1.1
       moment:
         specifier: ^2.29.4
         version: 2.30.1
@@ -1450,27 +1423,9 @@ importers:
       json-stable-stringify:
         specifier: ^1.0.1
         version: 1.3.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
-      lodash.assign:
-        specifier: ^4.2.0
-        version: 4.2.0
-      lodash.clonedeepwith:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.debounce:
-        specifier: 4.0.8
-        version: 4.0.8
-      lodash.defaults:
-        specifier: ^4.2.0
-        version: 4.2.0
-      lodash.find:
-        specifier: ^4.6.0
-        version: 4.6.0
-      lodash.merge:
-        specifier: 4.6.0
-        version: 4.6.0
       mixpanel:
         specifier: 0.6.0
         version: 0.6.0
@@ -1653,7 +1608,7 @@ importers:
       haiku-ui-common:
         specifier: workspace:*
         version: link:../haiku-ui-common
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       qs:
@@ -2671,6 +2626,9 @@ packages:
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
+
+  '@types/lodash-es@4.17.12':
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
   '@types/lodash@4.17.20':
     resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
@@ -5859,16 +5817,6 @@ packages:
   lodash.assign@3.2.0:
     resolution: {integrity: sha512-/VVxzgGBmbphasTg51FrztxQJ/VgAUpol6zmJuSVSGcNg4g7FA4z7rQV8Ovr9V3vFBNWZhvKWHfpAytjTVUfFA==}
 
-  lodash.assign@4.2.0:
-    resolution: {integrity: sha512-hFuH8TY+Yji7Eja3mGiuAxBqLagejScbG8GbG0j6o9vzn0YL14My+ktnqtZgFTosKymC9/44wP6s7xyuLfnClw==}
-
-  lodash.clone@4.5.0:
-    resolution: {integrity: sha512-GhrVeweiTD6uTmmn5hV/lzgCQhccwReIVRLHp7LT4SopOjqEZ5BbX8b5WWEtAKasjmy8hR7ZPwsYlxRCku5odg==}
-    deprecated: This package is deprecated. Use structuredClone instead.
-
-  lodash.clonedeepwith@4.5.0:
-    resolution: {integrity: sha512-QRBRSxhbtsX1nc0baxSkkK5WlVTTm/s48DSukcGcWZwIyI8Zz+lB+kFiELJXtzfH4Aj6kMWQ1VWW4U5uUDgZMA==}
-
   lodash.cond@4.5.2:
     resolution: {integrity: sha512-RWjUhzGbzG/KfDwk+onqdXvrsNv47G9UCMJgSKalPTSqJQyxZhQophG9jgqLf+15TIbZ5a/yG2YKOWsH3dVy9A==}
 
@@ -5877,9 +5825,6 @@ packages:
 
   lodash.debounce@3.1.1:
     resolution: {integrity: sha512-lcmJwMpdPAtChA4hfiwxTtgFeNAaow701wWUgVUqeD0XJF7vMXIN+bu/2FJSGxT0NUbZy9g9VFrlOFfPjl+0Ew==}
-
-  lodash.debounce@4.0.8:
-    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
   lodash.defaults@3.1.2:
     resolution: {integrity: sha512-X7135IXFQt5JDFnYxOVAzVz+kFvwDn3N8DJYf+nrz/mMWEuSu7+OL6rWqsk3+VR1T4TejFCSu5isBJOLSID2bg==}
@@ -5893,17 +5838,8 @@ packages:
   lodash.escaperegexp@4.1.2:
     resolution: {integrity: sha512-TM9YBvyC84ZxE3rgfefxUWiQKLilstD6k7PTGt6wfbtXF8ixIJLOL3VYyV/z+ZiPLsVxAsKAFVwWlWeb2Y8Yyw==}
 
-  lodash.filter@4.6.0:
-    resolution: {integrity: sha512-pXYUy7PR8BCLwX5mgJ/aNtyOvuJTdZAo9EQFUvMIYugqmJxnrYaANvTbgndOzHSCSR0wnlBBfRXJL5SbWxo3FQ==}
-
-  lodash.find@4.6.0:
-    resolution: {integrity: sha512-yaRZoAV3Xq28F1iafWN1+a0rflOej93l1DQUejs3SZ41h2O9UJBoS9aueGjPDgAl4B6tPC0NuuchLKaDQQ3Isg==}
-
   lodash.flatten@4.4.0:
     resolution: {integrity: sha512-C5N2Z3DgnnKr0LOpv/hKCgKdb7ZZwafIrsesve6lmzvZIRZRGaZ/l6Q8+2W7NaT+ZwO3fFlSCzCzrDCFdJfZ4g==}
-
-  lodash.foreach@4.5.0:
-    resolution: {integrity: sha512-aEXTF4d+m05rVOAUG3z4vZZ4xVexLKZGF0lIxuHZ1Hplpk/3B6Z1+/ICICYRLm7c41Z2xiejbkCkJoTlypoXhQ==}
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
@@ -5928,9 +5864,6 @@ packages:
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
-  lodash.merge@4.6.0:
-    resolution: {integrity: sha512-yP6Me/9MwNfgOdUmMspV4xyjBVktgzlKDYLC9tSmldZGD7stwi6D+bbKihbMDLvFWnP9hr44lidKv5ETe82DKQ==}
-
   lodash.omitby@4.6.0:
     resolution: {integrity: sha512-5OrRcIVR75M288p4nbI2WLAf3ndw2GD9fyNv3Bc15+WCxJDdZ4lYndSxGd7hnG6PVjiJTeJE2dHEGhIuKGicIQ==}
 
@@ -5945,9 +5878,6 @@ packages:
 
   lodash.throttle@3.0.4:
     resolution: {integrity: sha512-dRU/xiF4W8a521NYnQosG5drDqv4+hp3ND6yWNJUMnwO1E87Q/A7oc9M/g6pk29K9U3j/ZWhM3BAQZyr/P6TTQ==}
-
-  lodash.throttle@4.1.1:
-    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
   lodash.union@4.6.0:
     resolution: {integrity: sha512-c4pB2CdGrGdjMKYLA+XiRDO7Y0PRQbm/Gzg8qMj+QH+pFVAoTp5sBpO0odL3FjoPCGjK96p6qsP+yQoiLoOBcw==}
@@ -9645,6 +9575,10 @@ snapshots:
   '@types/keyv@3.1.4':
     dependencies:
       '@types/node': 22.19.1
+
+  '@types/lodash-es@4.17.12':
+    dependencies:
+      '@types/lodash': 4.17.20
 
   '@types/lodash@4.17.20': {}
 
@@ -13368,12 +13302,6 @@ snapshots:
       lodash._createassigner: 3.1.1
       lodash.keys: 3.1.2
 
-  lodash.assign@4.2.0: {}
-
-  lodash.clone@4.5.0: {}
-
-  lodash.clonedeepwith@4.5.0: {}
-
   lodash.cond@4.5.2: {}
 
   lodash.create@3.1.1:
@@ -13386,8 +13314,6 @@ snapshots:
     dependencies:
       lodash._getnative: 3.9.1
 
-  lodash.debounce@4.0.8: {}
-
   lodash.defaults@3.1.2:
     dependencies:
       lodash.assign: 3.2.0
@@ -13399,13 +13325,7 @@ snapshots:
 
   lodash.escaperegexp@4.1.2: {}
 
-  lodash.filter@4.6.0: {}
-
-  lodash.find@4.6.0: {}
-
   lodash.flatten@4.4.0: {}
-
-  lodash.foreach@4.5.0: {}
 
   lodash.get@4.4.2: {}
 
@@ -13425,8 +13345,6 @@ snapshots:
 
   lodash.memoize@4.1.2: {}
 
-  lodash.merge@4.6.0: {}
-
   lodash.omitby@4.6.0: {}
 
   lodash.range@3.2.0: {}
@@ -13438,8 +13356,6 @@ snapshots:
   lodash.throttle@3.0.4:
     dependencies:
       lodash.debounce: 3.1.1
-
-  lodash.throttle@4.1.1: {}
 
   lodash.union@4.6.0: {}
 

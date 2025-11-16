@@ -1,7 +1,11 @@
-const fs = require('fs');
-const path = require('path');
 
-module.exports = (name) => {
+
+
+
+import fs from "fs";
+import path from "path";
+
+export default (name) => {
   if (!name.startsWith('haiku-') && !name.startsWith('@haiku')) {
     return false;
   }

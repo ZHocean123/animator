@@ -3,7 +3,7 @@ import {inkstone} from '@haiku/sdk-inkstone';
 import {execSync} from 'child_process';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import * as mkdirp from 'mkdirp';
 import * as os from 'os';
 import * as path from 'path';

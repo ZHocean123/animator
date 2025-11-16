@@ -1,7 +1,8 @@
-let path = require('path');
-let fse = require('fs-extra');
-let ROOT = global.process.cwd();
+import path from "path";
+import fse from "fs-extra";
 
-module.exports = function nowVersion () {
+const ROOT = process.cwd();
+
+export default function nowVersion () {
   return fse.readJsonSync(path.join(ROOT, 'package.json')).version;
 };

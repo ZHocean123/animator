@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as Radium from 'radium';
 import Palette from 'haiku-ui-common/lib/Palette';
 import {BranchIconSVG, CommentsIconSVG, EditsIconSVG, TeammatesIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';

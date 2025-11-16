@@ -1,10 +1,14 @@
-const cp = require('child_process');
 
-const log = require('./log');
+
+
+
+
+import cp from "child_process";
+import log from "./log.js";
 
 const PNPM_VERSION = '8.0.0';
 
-module.exports = () => {
+export default () => {
   const pnpmVersion = cp.execSync('pnpm --version').toString().trim();
   if (pnpmVersion !== PNPM_VERSION) {
     log.warn(`WARNING: you are using pnpm version ${pnpmVersion}. We recommend version ${PNPM_VERSION}.`);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as Color from 'color';
 import Palette from 'haiku-ui-common/lib/Palette';
 

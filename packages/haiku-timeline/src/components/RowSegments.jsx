@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import TransitionBody from './TransitionBody';
 import ConstantBody from './ConstantBody';

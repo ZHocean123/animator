@@ -1,16 +1,23 @@
-const async = require('async');
-const lodash = require('lodash');
-const fse = require('fs-extra');
-const path = require('path');
-const argv = require('yargs').argv;
-const semver = require('semver');
-const inquirer = require('inquirer');
+import async from 'async';
+import {assign} from 'lodash-es';
+import fse from 'fs-extra';
+import path from 'path';
+import yargs from 'yargs';
+import semver from 'semver';
+import inquirer from 'inquirer';
+import { fileURLToPath } from 'url';
 
-const depTypes = require('./constants/depTypes');
-const log = require('./helpers/log');
-const getSemverTop = require('./helpers/getSemverTop');
-const isHaikuDep = require('./helpers/isHaikuDep');
-const allPackages = require('./helpers/packages')();
+import depTypes from './constants/depTypes.js';
+import log from './helpers/log.js';
+import getSemverTop from './helpers/getSemverTop.js';
+import isHaikuDep from './helpers/isHaikuDep.js';
+import packages from './helpers/packages.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const argv = yargs.argv;
+const allPackages = packages();
 
 const current = getSemverTop();
 const patched = semver.inc(current, 'patch');
@@ -19,7 +26,7 @@ const DEFAULTS = {
   version: patched,
 };
 
-const inputs = lodash.assign({}, DEFAULTS, argv);
+const inputs = assign({}, DEFAULTS, argv);
 
 if (argv['non-interactive']) {
   go();
@@ -35,7 +42,7 @@ if (argv['non-interactive']) {
       default: inputs.version,
     },
   ]).then((answers) => {
-    lodash.assign(inputs, answers);
+    assign(inputs, answers);
 
     if (semver.lt(inputs.version, current)) {
       throw new Error('You cannot set a lower version than the current one');
@@ -65,7 +72,7 @@ function go () {
     });
     fse.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n', done);
   }, () => {
-    const monoJsonPath = path.join(global.process.cwd(), 'package.json');
+    const monoJsonPath = path.join(process.cwd(), 'package.json');
     const monoJson = fse.readJsonSync(monoJsonPath);
     log.log('setting mono to ' + inputs.version + ' (was ' + monoJson.version + ')');
     monoJson.version = inputs.version;

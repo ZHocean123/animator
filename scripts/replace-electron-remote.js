@@ -1,8 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+
+
+
 
 // 需要处理的文件模式
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+import glob from "glob";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const filePatterns = [
   'packages/haiku-glass/src/react/Glass.js',
   'packages/haiku-creator/src/dom.js',
@@ -33,10 +42,10 @@ function replaceElectronRemote(content) {
     }
   );
   
-  // 替换 require('electron').remote 为 require('@electron/remote')
+  // 替换 (await import("electron")).remote 为 (await import("@electron/remote"))
   content = content.replace(
     /require\(['"]electron['"]\)\.remote/g,
-    "require('@electron/remote')"
+    "(await import("@electron/remote"))"
   );
   
   // 初始化 remote

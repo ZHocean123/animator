@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 
 /**
+
+import fs from "fs";
+import path from "path";
+
  * 修复测试框架兼容性问题
  * - 修复 tape 路径错误（将 ./node_modules/.bin/tape 改为 ./node_modules/tape/bin/tape）
  * - 确保测试用的 tsconfig 正确配置 checkJs 选项
  */
 
-const fs = require('fs');
-const path = require('path');
+
+
 
 const findFiles = (dir, pattern) => {
   const results = [];
@@ -171,4 +175,3 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { updatePackageJson, updateTsconfigForTests };

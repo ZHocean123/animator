@@ -1,8 +1,11 @@
-const async = require('async');
-const cp = require('child_process');
-const argv = require('yargs').argv;
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
+
+
+
+import async from "async";
+import cp from "child_process";
+import { argv } from "yargs";
+import log from "./helpers/log.js";
+import allPackages from "./helpers/packages.js";
 
 let args = argv._;
 let cmd = args[0];

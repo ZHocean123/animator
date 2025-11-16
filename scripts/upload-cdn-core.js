@@ -1,10 +1,19 @@
-const path = require('path');
-const async = require('async');
-const log = require('./helpers/log');
-const uploadFileStream = require('./helpers/uploadFileStream');
-const s3CopyObject = require('./helpers/s3CopyObject');
-const nowVersion = require('./helpers/nowVersion');
-const core = require('./helpers/packages')('@haiku/core');
+
+
+
+
+
+
+
+import path from "path";
+import async from "async";
+import log from "./helpers/log";
+import uploadFileStream from "./helpers/uploadFileStream";
+import s3CopyObject from "./helpers/s3CopyObject";
+import nowVersion from "./helpers/nowVersion";
+import core from "./helpers/packages";
+
+('@haiku/core');
 
 const CORE_PATH = core.abspath;
 

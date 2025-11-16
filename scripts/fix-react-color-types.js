@@ -1,7 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+
+
 
 // 修复 react-color 类型定义问题
+
+import fs from "fs";
+import path from "path";
+
 function fixReactColorTypes() {
   const typeDefPath = 'node_modules/@types/react-color/index.d.ts';
   

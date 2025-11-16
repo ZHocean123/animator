@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
 /**
+
+import fs from "fs";
+import path from "path";
+
  * 自动修复 TypeScript 类型错误
  * 主要解决 CSSProperties 和 ReactNode 类型不兼容问题
  */
 
-const fs = require('fs');
-const path = require('path');
+
+
 
 class TypeScriptFixer {
   constructor() {
@@ -221,5 +225,5 @@ if (require.main === module) {
   const fixer = new TypeScriptFixer();
   fixer.run(targetPaths);
 } else {
-  module.exports = TypeScriptFixer;
+  export default TypeScriptFixer;
 }

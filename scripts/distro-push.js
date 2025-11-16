@@ -1,8 +1,14 @@
-const cp = require('child_process');
 
-const openSourcePackages = require('./helpers/openSourcePackages');
-const openSourceProjects = require('./helpers/openSourceProjects');
-const nowVersion = require('./helpers/nowVersion');
+
+
+
+
+
+
+import cp from "child_process";
+import openSourcePackages from "./helpers/openSourcePackages";
+import openSourceProjects from "./helpers/openSourceProjects";
+import nowVersion from "./helpers/nowVersion";
 
 const branch = global.process.env.GITHUB_PR_SOURCE_BRANCH;
 if (!branch || !branch.startsWith('rc-')) {

@@ -1,12 +1,20 @@
-const fse = require('fs-extra');
-const cp = require('child_process');
-const path = require('path');
-const nowVersion = require('./helpers/nowVersion');
-// This line should be commented to build locally on windows
-const deploy = require('./deploy');
-const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction');
 
-require('./../config');
+
+
+
+// This line should be commented to build locally on windows
+
+
+
+
+import fse from "fs-extra";
+import cp from "child_process";
+import path from "path";
+import nowVersion from "./helpers/nowVersion";
+import deploy from "./deploy";
+import forceNodeEnvProduction from "./helpers/forceNodeEnvProduction";
+
+(await import("./../config"));
 forceNodeEnvProduction();
 
 const ROOT = global.process.cwd();

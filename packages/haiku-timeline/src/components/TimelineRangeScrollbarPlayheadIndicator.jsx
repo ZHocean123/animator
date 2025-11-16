@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Palette from 'haiku-ui-common/lib/Palette';
 import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 
 const KNOB_RADIUS = 5;
 

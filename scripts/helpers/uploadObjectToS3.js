@@ -1,5 +1,5 @@
-let path = require('path');
-let getMimeType = require('./getMimeType');
+let path = (await import("path"));
+let getMimeType = (await import("./getMimeType"));
 
 const DEFAULT_ACL = 'private';
 
@@ -21,4 +21,4 @@ function uploadItemToS3 (s3, key, body, bucket, acl, cb) {
   });
 }
 
-module.exports = uploadItemToS3;
+export default uploadItemToS3;

@@ -1,11 +1,19 @@
-const fs = require('fs');
-const glob = require('glob');
-const path = require('path');
 
-const depTypes = require('../constants/depTypes');
-const packagePatterns = require('../constants/packagePatterns');
 
-const isHaikuDep = require('./isHaikuDep');
+
+
+
+
+
+
+
+
+import fs from "fs";
+import glob from "glob";
+import path from "path";
+import depTypes from "../constants/depTypes.js";
+import packagePatterns from "../constants/packagePatterns.js";
+import isHaikuDep from "./isHaikuDep.js";
 
 const PACKAGE_ROOT = path.join(global.process.cwd(), 'packages/');
 const allPackages = {};
@@ -63,7 +71,7 @@ const visit = (pack, packages) => {
   packages.splice(spliceIndex, 0, pack);
 };
 
-module.exports = (names) => {
+export default (names) => {
   const packages = [];
   const unsortedPackages = Object.values(allPackages);
   unsortedPackages.forEach((pack) => {

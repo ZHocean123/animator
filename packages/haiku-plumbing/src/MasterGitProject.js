@@ -5,7 +5,7 @@ import * as path from 'path';
 import {EventEmitter} from 'events';
 import * as semver from 'semver';
 import * as tmp from 'tmp';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as Git from './Git';
 import * as Lock from 'haiku-serialization/src/bll/Lock';

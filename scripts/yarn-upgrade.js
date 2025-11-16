@@ -1,4 +1,4 @@
-const lodash = require('lodash');
+import {forEach} from 'lodash-es';
 const cp = require('child_process');
 const argv = require('yargs').argv;
 const log = require('./helpers/log');
@@ -11,7 +11,7 @@ let DEP_TYPES = [
   'optionalDependencies',
 ];
 
-lodash.forEach(allPackages, (pack) => {
+forEach(allPackages, (pack) => {
   // If one specific package has been mentioned, only upgrade it
   if (argv.package && argv.package !== pack.name) {
     return void (0);
@@ -21,7 +21,7 @@ lodash.forEach(allPackages, (pack) => {
 
   DEP_TYPES.forEach((type) => {
     if (pack.pkg && pack.pkg[type]) {
-      lodash.forEach(pack.pkg[type], (val, key) => {
+      forEach(pack.pkg[type], (val, key) => {
         const haiku = key.slice(0, 6);
         if (haiku === 'haiku-' || haiku === '@haiku') {
           deps.push(key);

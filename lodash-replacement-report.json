@@ -1,0 +1,177 @@
+{
+  "startTime": "2025-11-16T07:37:39.467Z",
+  "endTime": "2025-11-16T07:37:40.998Z",
+  "totalFilesProcessed": 3009,
+  "totalFilesModified": 54,
+  "totalPackageJsonModified": 9,
+  "filesModified": [
+    "packages/haiku-creator/src/electron.js",
+    "packages/haiku-creator/src/react/components/BranchesDrawer.js",
+    "packages/haiku-creator/src/react/components/library/AssetItem.js",
+    "packages/haiku-creator/src/react/components/library/Library.js",
+    "packages/haiku-creator/src/react/components/ProjectBrowser.js",
+    "packages/haiku-creator/src/react/components/StateInspector/StateInspector.js",
+    "packages/haiku-creator/src/react/components/Tour/Spotlight.js",
+    "packages/haiku-creator/src/react/Creator.js",
+    "packages/haiku-creator/src/utils/activityMonitor.js",
+    "packages/haiku-glass/lib/react/Glass.js",
+    "packages/haiku-glass/src/react/Glass.js",
+    "packages/haiku-plumbing/lib/Plumbing.js",
+    "packages/haiku-plumbing/src/haikuInfo.js",
+    "packages/haiku-plumbing/src/Master.js",
+    "packages/haiku-plumbing/src/MasterGitProject.js",
+    "packages/haiku-plumbing/src/Plumbing.js",
+    "packages/haiku-serialization/lib/bll/Bytecode.js",
+    "packages/haiku-serialization/lib/bll/Template.js",
+    "packages/haiku-serialization/src/bll/ActionStack.js",
+    "packages/haiku-serialization/src/bll/ActiveComponent.js",
+    "packages/haiku-serialization/src/bll/BaseModel.js",
+    "packages/haiku-serialization/src/bll/Bytecode.js",
+    "packages/haiku-serialization/src/bll/Element.js",
+    "packages/haiku-serialization/src/bll/ElementSelectionProxy.js",
+    "packages/haiku-serialization/src/bll/File.js",
+    "packages/haiku-serialization/src/bll/Project.js",
+    "packages/haiku-serialization/src/bll/Template.js",
+    "packages/haiku-timeline/src/components/ClusterInputField.jsx",
+    "packages/haiku-timeline/src/components/ExpressionInput.jsx",
+    "packages/haiku-timeline/src/components/GaugeTimeReadout.jsx",
+    "packages/haiku-timeline/src/components/InvisibleKeyframeDragger.jsx",
+    "packages/haiku-timeline/src/components/PlaybackButtons.jsx",
+    "packages/haiku-timeline/src/components/PropertyInputField.jsx",
+    "packages/haiku-timeline/src/components/RowSegments.jsx",
+    "packages/haiku-timeline/src/components/Timeline.jsx",
+    "packages/haiku-timeline/src/components/TimelineRangeScrollbar.jsx",
+    "packages/haiku-timeline/src/components/TimelineRangeScrollbarPlayheadIndicator.jsx",
+    "packages/haiku-timeline/src/components/TransitionBody.jsx",
+    "packages/@haiku/cli/src/haiku-cli.ts",
+    "packages/@haiku/cli/src/nib/nib.ts",
+    "packages/@haiku/sdk-client/src/index.ts",
+    "packages/haiku-admin-cli/src/sdk/admin-sdk.ts",
+    "packages/haiku-common/src/electron/TopMenu.ts",
+    "packages/haiku-formats/src/exporters/bodymovin/bodymovinExporter.ts",
+    "packages/haiku-formats/src/exporters/curves.ts",
+    "packages/haiku-plumbing/src/envInfo.ts",
+    "packages/haiku-timeline/src/components/ComponentRows.tsx",
+    "scripts/compile-package.js",
+    "scripts/distro-configure.js",
+    "scripts/publish-package.js",
+    "scripts/replace-lodash-with-lodash-es.js",
+    "scripts/semver.js",
+    "scripts/start.js",
+    "scripts/yarn-upgrade.js"
+  ],
+  "packageJsonModified": [
+    {
+      "file": "packages/@haiku/cli/node_modules/@haiku/sdk-client/package.json",
+      "changes": {
+        "added": [],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/@haiku/cli/package.json",
+      "changes": {
+        "added": [],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-admin-cli/package.json",
+      "changes": {
+        "added": [],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-creator/node_modules/haiku-glass/package.json",
+      "changes": {
+        "added": [],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-creator/node_modules/haiku-serialization/package.json",
+      "changes": {
+        "added": [],
+        "removed": [
+          "lodash.assign",
+          "lodash.clonedeepwith",
+          "lodash.debounce",
+          "lodash.defaults",
+          "lodash.find",
+          "lodash.merge"
+        ],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-creator/node_modules/haiku-timeline/package.json",
+      "changes": {
+        "added": [],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-creator/package.json",
+      "changes": {
+        "added": [],
+        "removed": [
+          "lodash.assign",
+          "lodash.debounce"
+        ],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-formats/package.json",
+      "changes": {
+        "added": [
+          "@types/lodash-es"
+        ],
+        "removed": [],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    },
+    {
+      "file": "packages/haiku-plumbing/package.json",
+      "changes": {
+        "added": [],
+        "removed": [
+          "lodash.assign",
+          "lodash.clone",
+          "lodash.debounce",
+          "lodash.find",
+          "lodash.filter",
+          "lodash.foreach",
+          "lodash.merge",
+          "lodash.throttle"
+        ],
+        "updated": [
+          "lodash → lodash-es"
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

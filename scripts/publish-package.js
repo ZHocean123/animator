@@ -1,10 +1,11 @@
-const cp = require('child_process');
-const lodash = require('lodash');
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
-const argv = require('yargs').argv;
+import cp from 'child_process';
+import { keyBy } from 'lodash-es';
+import log from './helpers/log.js';
+import allPackages from './helpers/packages.js';
+import { argv } from 'yargs';
 
-let groups = lodash.keyBy(allPackages, 'name');
+const packages = allPackages();
+let groups = keyBy(packages, 'name');
 
 let pkg = argv.package;
 if (!pkg) {

@@ -1,9 +1,16 @@
-const {execSync} = require('child_process');
-const {existsSync, writeFileSync, copyFileSync} = require('fs');
-const {join} = require('path');
 
-const log = require('./helpers/log');
-const nowVersion = require('./helpers/nowVersion')();
+
+
+
+
+
+import log from "./helpers/log";
+import nowVersion from "./helpers/nowVersion";
+import { execSync } from "child_process";
+import { existsSync, writeFileSync, copyFileSync } from "fs";
+import { join } from "path";
+
+();
 
 const ROOT = join(global.process.cwd(), 'changelog', 'public');
 const newOldVersion = join(ROOT, `${nowVersion}.json`);

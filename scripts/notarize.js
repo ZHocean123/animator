@@ -1,4 +1,7 @@
-const {notarize} = require('electron-notarize');
+
+
+
+import { notarize } from "electron-notarize";
 
 if (!process.env.APPLE_NOTARIZATION_APPLE_ID) {
   throw new Error('env var missing');
@@ -8,8 +11,7 @@ if (!process.env.APPLE_NOTARIZATION_PASSWORD) {
   throw new Error('env var missing');
 }
 
-exports.default = function notarizing(context) {
-  const {electronPlatformName, appOutDir} = context;
+
 
   if (electronPlatformName !== 'darwin') {
     return;
@@ -24,3 +26,7 @@ exports.default = function notarizing(context) {
     appleIdPassword: process.env.APPLE_NOTARIZATION_PASSWORD
   });
 };
+
+
+export const default = function notarizing(context) {
+  const {electronPlatformName, appOutDir} = context;

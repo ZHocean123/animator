@@ -17,7 +17,7 @@ import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {isMac, isWindows} from 'haiku-common/lib/environments/os';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { writeJSON } from 'fs-extra';
 
 if (!app) {

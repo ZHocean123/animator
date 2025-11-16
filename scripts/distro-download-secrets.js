@@ -1,12 +1,20 @@
-const path = require('path');
-const fse = require('fs-extra');
-const initializeAWSService = require('./helpers/initializeAwsService');
-const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction');
 
-const config = require('./../config');
+
+
+
+
+
+
+import path from "path";
+import fse from "fs-extra";
+import initializeAWSService from "./helpers/initializeAwsService";
+import forceNodeEnvProduction from "./helpers/forceNodeEnvProduction";
+import config from "./../config";
+import deploy from "./deploy";
+
 forceNodeEnvProduction();
 
-const deploy = require('./deploy');
+
 
 let s3 = initializeAWSService(
   'S3',

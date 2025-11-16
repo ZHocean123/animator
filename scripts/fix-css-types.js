@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 
 /**
+
+import fs from "fs";
+import path from "path";
+import glob from "glob";
+
  * 修复 CSSProperties 类型错误
  * 主要解决样式对象属性访问问题，如 STYLES.wrapper
  */
 
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+
+
+
 
 class CSSPropertiesFixer {
   constructor() {
@@ -195,5 +200,5 @@ if (require.main === module) {
   const fixer = new CSSPropertiesFixer();
   fixer.run(targetPaths);
 } else {
-  module.exports = CSSPropertiesFixer;
+  export default CSSPropertiesFixer;
 }

@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
 /**
+
+import fs from "fs";
+import path from "path";
+
  * Fix Electron remote API deprecation issues
  * 
  * This script fixes the Electron remote API deprecation by replacing:
@@ -14,8 +18,8 @@
  * Target file: packages/haiku-creator/src/utils/autoUpdate.ts
  */
 
-const fs = require('fs');
-const path = require('path');
+
+
 
 const TARGET_FILE = 'packages/haiku-creator/src/utils/autoUpdate.ts';
 
@@ -76,4 +80,3 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { fixElectronRemote };

@@ -1,8 +1,13 @@
-const log = require('./log');
-const initializeAWSService = require('./initializeAwsService');
-const DEPLOY_CONFIGS = require('./../deploy');
 
-module.exports = function s3CopyObject (sourceKey, destKey, region, deployer, env, bucket, acl, cb) {
+
+
+
+
+import log from "./log";
+import initializeAWSService from "./initializeAwsService";
+import DEPLOY_CONFIGS from "./../deploy";
+
+export default function s3CopyObject (sourceKey, destKey, region, deployer, env, bucket, acl, cb) {
   const config = DEPLOY_CONFIGS[deployer][env];
 
   if (!config) {

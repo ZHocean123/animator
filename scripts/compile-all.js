@@ -1,12 +1,17 @@
-const async = require('async');
-const cp = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const argv = require('yargs').argv;
-const glob = require('glob');
 
-const allPackages = require('./helpers/packages')();
-const log = require('./helpers/log');
+
+
+
+
+import async from "async";
+import cp from "child_process";
+import fs from "fs";
+import path from "path";
+import { argv } from "yargs";
+import glob from "glob";
+import allPackages from "./helpers/packages.js";
+import log from "./helpers/log.js";
+
 
 // Define build order to ensure dependencies are built first
 const buildOrder = [
@@ -57,9 +62,20 @@ async.each(sortedPackages, (pack, done) => {
     /* Load last compile time from file */
     let lastCompileTime = null;
     if (!argv.force && fs.existsSync(lastCompileFilename)) {
-      const lastCompile = require(lastCompileFilename);
-      if (lastCompile.hasOwnProperty('lastCompileTime')) {
-        lastCompileTime = new Date(lastCompile.lastCompileTime);
+      try {
+        // 动态导入文件内容
+        const lastCompileContent = fs.readFileSync(lastCompileFilename, 'utf8');
+        // 简单解析 export default 对象
+        const jsonMatch = lastCompileContent.match(/export default\s+(\{.*\});/s);
+        if (jsonMatch) {
+          const lastCompile = JSON.parse(jsonMatch[1]);
+          if (lastCompile.hasOwnProperty('lastCompileTime')) {
+            lastCompileTime = new Date(lastCompile.lastCompileTime);
+          }
+        }
+      } catch (e) {
+        // 如果解析失败，继续编译
+        lastCompileTime = null;
       }
     }
 
@@ -82,7 +98,7 @@ async.each(sortedPackages, (pack, done) => {
 
     /* Update last compile time */
     lastCompileTime = new Date();
-    fs.writeFileSync(lastCompileFilename, `module.exports = ${JSON.stringify({lastCompileTime})};`);
+    fs.writeFileSync(lastCompileFilename, `export default ${JSON.stringify({lastCompileTime})};`);
 
     done();
   } else {

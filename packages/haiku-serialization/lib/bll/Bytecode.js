@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var lodash = require('lodash');
-var clone = require('lodash.clone');
-var cloneDeepWith = require('lodash.clonedeepwith');
-var merge = require('lodash.merge');
+var clone = import { clone } from 'lodash-es';
+var cloneDeepWith = import { cloneDeepWith } from 'lodash-es';
+var merge = import { merge } from 'lodash-es';
 var BaseModel = require('./BaseModel');
 var enhance = require('@haiku/core/lib/reflection/enhance').default;
 var xmlToMana = require('haiku-common/lib/layout/xmlUtils').xmlToMana;

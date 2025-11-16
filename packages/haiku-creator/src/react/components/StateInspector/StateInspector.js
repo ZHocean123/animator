@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as Color from 'color';
 import StateRow from './StateRow';
 import Loader from './Loader';

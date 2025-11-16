@@ -1,5 +1,5 @@
 const path = require('path');
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 const pretty = require('pretty');
 const async = require('async');
 const jss = require('json-stable-stringify');

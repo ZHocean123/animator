@@ -1,15 +1,17 @@
-const path = require('path');
-const cp = require('child_process');
-const lodash = require('lodash');
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
-const argv = require('yargs').argv;
-const async = require('async');
-const uglify2 = require('uglify-js');
-const glob = require('glob-all');
-const fse = require('fs-extra');
+import path from 'path';
+import cp from 'child_process';
+import { keyBy } from 'lodash-es';
+import log from './helpers/log.js';
+import allPackages from './helpers/packages.js';
+import { argv } from 'yargs';
+import async from 'async';
+import uglify2 from 'uglify-js';
+import glob from 'glob-all';
+import fse from 'fs-extra';
 
-const groups = lodash.keyBy(allPackages, 'name');
+const packages = allPackages();
+
+const groups = keyBy(packages, 'name');
 
 const pkg = argv.package;
 if (!pkg) {

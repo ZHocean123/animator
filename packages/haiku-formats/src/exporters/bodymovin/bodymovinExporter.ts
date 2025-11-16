@@ -16,7 +16,7 @@ import * as Template from 'haiku-serialization/src/bll/Template';
 // @ts-ignore
 import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance';
 import * as imageSize from 'image-size';
-import {difference, flatten, mapKeys} from 'lodash';
+import {difference, flatten, mapKeys} from 'lodash-es';
 import {extname, join} from 'path';
 
 import {ExporterInterface} from '..';

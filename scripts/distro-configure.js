@@ -2,7 +2,7 @@ const argv = require('yargs').argv;
 const fse = require('fs-extra');
 const os = require('os');
 const path = require('path');
-const lodash = require('lodash');
+import {assign} from 'lodash-es';
 const inquirer = require('inquirer');
 const log = require('./helpers/log');
 const writeHackyDynamicDistroConfig = require('./helpers/writeHackyDynamicDistroConfig');
@@ -30,7 +30,7 @@ function getReleaseArchitecture () {
   return os.arch();
 }
 
-let inputs = lodash.assign({
+let inputs = assign({
   branch: 'master',
   environment: 'production',
   appenv: 'production', // sets NODE_ENV in the running app and the autoupdate channel
@@ -72,7 +72,7 @@ if (!argv['non-interactive']) {
       default: inputs.shout,
     },
   ]).then((answers) => {
-    lodash.assign(inputs, answers);
+    assign(inputs, answers);
 
     if (inputs.uglify === false && inputs.environment === 'production') {
       throw new Error(`refusing to create a non-obfuscated build for 'production'`);

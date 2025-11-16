@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import {argv} from 'yargs';
 
 export type NibAction = (context: IContext) => void;

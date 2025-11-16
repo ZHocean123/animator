@@ -1,10 +1,22 @@
-const async = require('async');
-const cp = require('child_process');
-const path = require('path');
-const fse = require('fs-extra');
-const semverSort = require('semver-sort');
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
+
+
+
+
+
+
+
+import async from "async";
+import cp from "child_process";
+import path from "path";
+import fse from "fs-extra";
+import semverSort from "semver-sort";
+import log from "./helpers/log.js";
+import allPackages from "./helpers/packages.js";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 let ROOT = path.join(__dirname, '..');
 let CHANGELOG_JSON = path.join(ROOT, 'changelog/changelog.json');
 let CHANGELOG_MD = path.join(ROOT, 'changelog/CHANGELOG.md');

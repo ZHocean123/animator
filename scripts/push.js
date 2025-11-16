@@ -1,9 +1,16 @@
-const cp = require('child_process');
 
-const openSourcePackages = require('./helpers/openSourcePackages');
-const openSourceProjects = require('./helpers/openSourceProjects');
-const log = require('./helpers/log');
-const nowVersion = require('./helpers/nowVersion');
+
+
+
+
+
+
+
+import cp from "child_process";
+import openSourcePackages from "./helpers/openSourcePackages";
+import openSourceProjects from "./helpers/openSourceProjects";
+import log from "./helpers/log";
+import nowVersion from "./helpers/nowVersion";
 
 const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim();
 if (branch !== 'master') {

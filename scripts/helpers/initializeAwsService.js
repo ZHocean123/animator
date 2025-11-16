@@ -1,4 +1,4 @@
-let AWS = require('aws-sdk');
+let AWS = (await import("aws-sdk"));
 
 function initializeAwsService (serviceName, awsRegion, awsAccessKeyId, awsSecretAccessKey, env) {
   let credentials = new AWS.Credentials({
@@ -16,4 +16,4 @@ function initializeAwsService (serviceName, awsRegion, awsAccessKeyId, awsSecret
   return instance;
 }
 
-module.exports = initializeAwsService;
+export default initializeAwsService;

@@ -1,10 +1,19 @@
-const async = require('async');
-const {readJsonSync} = require('fs-extra');
-const {join} = require('path');
-const cp = require('child_process');
-const log = require('./helpers/log');
-const allPackages = require('./helpers/packages')();
-const unbuildables = require('./helpers/unbuildables');
+
+
+
+
+
+
+import async from "async";
+import cp from "child_process";
+import log from "./helpers/log";
+import allPackages from "./helpers/packages";
+import unbuildables from "./helpers/unbuildables";
+import { readJsonSync } from "fs-extra";
+import { join } from "path";
+
+();
+
 
 let hadError = false;
 async.each(allPackages, (pack, next) => {

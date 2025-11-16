@@ -1,10 +1,10 @@
 /* tslint:disable:no-parameter-reassignment no-shadowed-variable max-line-length */
 import * as path from 'path';
 import * as async from 'async';
-import * as lodash from 'lodash';
-import * as find from 'lodash.find';
-import * as merge from 'lodash.merge';
-import * as filter from 'lodash.filter';
+import * as lodash from 'lodash-es';
+import find from 'lodash-es/find';
+import merge from 'lodash-es/merge';
+import filter from 'lodash-es/filter';
 import * as net from 'net';
 import * as qs from 'qs';
 import * as WebSocket from 'ws';

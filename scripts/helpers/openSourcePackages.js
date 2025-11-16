@@ -1,7 +1,11 @@
-const getPackages = require('./packages');
-const openSourceProjects = require('./openSourceProjects');
+
+
 
 // Pull in the set of dependencies recursively.
+
+import getPackages from "./packages";
+import openSourceProjects from "./openSourceProjects";
+
 const openSourcePackages = getPackages(Array.from(openSourceProjects));
 const processedDependencies = new Set();
 let foundNewDeps;
@@ -29,4 +33,4 @@ do {
   });
 } while (foundNewDeps);
 
-module.exports = openSourcePackages;
+export default openSourcePackages;

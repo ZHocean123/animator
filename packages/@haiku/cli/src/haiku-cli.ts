@@ -19,7 +19,7 @@ import * as fs from 'fs';
 // @ts-ignore
 import * as hasbin from 'hasbin';
 import * as inquirer from 'inquirer';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import * as path from 'path';
 // @ts-ignore
 import * as prependFile from 'prepend-file';

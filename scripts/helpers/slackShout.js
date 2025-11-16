@@ -1,8 +1,8 @@
-let slack = require('slack');
-let log = require('./log');
-let deploy = require('./../deploy');
+let slack = (await import("slack"));
+let log = (await import("./log"));
+let deploy = (await import("./../deploy"));
 
-module.exports = function shout (options, text, cb) {
+export default function shout (options, text, cb) {
   if (options && options.shout) {
     return slack.chat.postMessage({
       text,

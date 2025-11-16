@@ -7,7 +7,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {StyleRoot} from 'radium';
 import {CSSTransition} from 'react-transition-group';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as EventEmitter from 'event-emitter';
 import * as path from 'path';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';

@@ -1,5 +1,9 @@
-const checkYarnVersion = require('./helpers/checkYarnVersion');
-const checkNodeVersion = require('./helpers/checkNodeVersion');
+
+
+
+
+import checkYarnVersion from "./helpers/checkYarnVersion.js";
+import checkNodeVersion from "./helpers/checkNodeVersion.js";
 
 checkYarnVersion();
 checkNodeVersion();

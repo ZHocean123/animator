@@ -1,11 +1,19 @@
-const path = require('path');
-const inquirer = require('inquirer');
-const argv = require('yargs').argv;
 
-require('../config');
-const deploy = require('./deploy');
-const initializeAWSService = require('./helpers/initializeAwsService');
-const log = require('./helpers/log');
+
+
+import path from "path";
+import inquirer from "inquirer";
+import argv from "yargs";
+import deploy from "./deploy";
+import initializeAWSService from "./helpers/initializeAwsService";
+import log from "./helpers/log";
+
+.argv;
+
+(await import("../config"));
+
+
+
 
 const platform = global.process.env.HAIKU_RELEASE_PLATFORM;
 const branch = global.process.env.HAIKU_RELEASE_BRANCH;

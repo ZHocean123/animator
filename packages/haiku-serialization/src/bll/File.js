@@ -1,5 +1,5 @@
 const fse = require('fs-extra');
-const {debounce} = require('lodash');
+import {debounce} from 'lodash-es';
 const path = require('path');
 const {xmlToMana} = require('haiku-common/lib/layout/xmlUtils');
 const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;

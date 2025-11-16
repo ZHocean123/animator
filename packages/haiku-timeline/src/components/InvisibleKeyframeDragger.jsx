@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import TimelineDraggable from './TimelineDraggable';
 import Globals from 'haiku-ui-common/lib/Globals';
 import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';

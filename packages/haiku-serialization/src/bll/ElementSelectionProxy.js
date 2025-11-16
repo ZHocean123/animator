@@ -11,7 +11,7 @@ const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments'
 const {Figma} = require('./Figma');
 const Sketch = require('./Sketch');
 const Illustrator = require('./Illustrator');
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 
 const PI_OVER_12 = Math.PI / 12;
 

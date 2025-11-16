@@ -1,7 +1,7 @@
 /* global Raven */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as Radium from 'radium';
 import {shell, ipcRenderer} from 'electron';
 import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';

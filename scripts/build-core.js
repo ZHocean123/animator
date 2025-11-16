@@ -1,10 +1,13 @@
-const cp = require('child_process');
-const argv = require('yargs').argv;
+import cp from "child_process";
+import yargs from "yargs";
+import log from "./helpers/log.js";
+import runScript from "./helpers/runScript.js";
+import nowVersion from "./helpers/nowVersion.js";
+import packages from "./helpers/packages.js";
 
-const log = require('./helpers/log');
-const runScript = require('./helpers/runScript');
-const nowVersion = require('./helpers/nowVersion');
-const core = require('./helpers/packages')('@haiku/core');
+const { argv } = yargs;
+
+const core = packages("@haiku/core");
 
 log.hat(`note that the current version is ${nowVersion()}`);
 
@@ -15,7 +18,7 @@ const makeBundle = () => {
 };
 
 if (!argv['skip-compile']) {
-  cp.execSync('pnpm install', {cwd: global.process.cwd(), stdio: 'inherit'});
+  cp.execSync('pnpm install', {cwd: process.cwd(), stdio: 'inherit'});
   runScript('compile-package', ['--package=@haiku/core'], (err) => {
     if (err) {
       throw err;

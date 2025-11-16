@@ -1,30 +1,32 @@
-const fs = require('fs');
-const path = require('path');
-const args = require('yargs').argv._;
-const typescript = require('typescript');
+import fs from 'fs';
+import path from 'path';
+import typescript from 'typescript';
+import { argv } from 'yargs';
 
-const log = require('./helpers/log');
+import log from './helpers/log.js';
+
+const args = argv._;
 
 if (args.length !== 1) {
   log.warn('Usage: `pnpm add-experiment <ExperimentName>`');
-  global.process.exit(1);
+  process.exit(1);
 }
 
 const experimentName = args[0];
 
 if (!/^([A-Z][a-z]*)+([A-Z0-9][a-z]*)+$/.test(experimentName)) {
   log.warn(`Invalid experiment name: ${experimentName}. Experiment names should be in StudlyCase.`);
-  global.process.exit(1);
+  process.exit(1);
 }
 
-const haikuCommonPath = path.join(global.process.cwd(), 'packages', 'haiku-common');
+const haikuCommonPath = path.join(process.cwd(), 'packages', 'haiku-common');
 const experimentJsonPath = path.join(haikuCommonPath, 'config', 'experiments.json');
 const experimentIndexPath = path.join(haikuCommonPath, 'src', 'experiments', 'index.ts');
 
 const experimentJson = JSON.parse(fs.readFileSync(experimentJsonPath).toString());
 if (Object.prototype.hasOwnProperty.call(experimentJson, experimentName)) {
   log.warn(`Experiment named ${experimentName} already exists!`);
-  global.process.exit(1);
+  process.exit(1);
 }
 
 experimentJson[experimentName] = true;

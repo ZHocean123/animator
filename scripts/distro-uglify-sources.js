@@ -1,9 +1,17 @@
-const async = require('async');
-const path = require('path');
-const uglifyES = require('uglify-es');
-const glob = require('glob-all');
-const log = require('./helpers/log');
-const fse = require('fs-extra');
+
+
+
+
+
+
+
+
+import async from "async";
+import path from "path";
+import uglifyES from "uglify-es";
+import glob from "glob-all";
+import log from "./helpers/log";
+import fse from "fs-extra";
 
 const ROOT = global.process.cwd();
 

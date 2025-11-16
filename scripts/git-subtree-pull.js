@@ -1,9 +1,17 @@
-const cp = require('child_process');
-const argv = require('yargs').argv;
-const path = require('path');
-const log = require('./helpers/log');
-const nowVersion = require('./helpers/nowVersion');
-const getPackage = require('./helpers/packages');
+
+
+import cp from "child_process";
+import argv from "yargs";
+import path from "path";
+import log from "./helpers/log";
+import nowVersion from "./helpers/nowVersion";
+import getPackage from "./helpers/packages";
+
+.argv;
+
+
+
+
 
 const ROOT = global.process.cwd();
 const branch = argv.branch || 'master';
@@ -15,7 +23,7 @@ if (!packageName) {
 }
 
 if (packageName === 'all') {
-  const openSourcePackages = require('./helpers/openSourcePackages');
+  const openSourcePackages = (await import("./helpers/openSourcePackages"));
   openSourcePackages.forEach((openSourcePack) => {
     cp.execSync(`node ./scripts/git-subtree-pull.js --package=${openSourcePack.name}`, {cwd: ROOT, stdio: 'inherit'});
   });

@@ -1,4 +1,4 @@
-module.exports = function forceNodeEnvProduction () {
+export default function forceNodeEnvProduction () {
   // For consistency, always set _our_ build process NODE_ENV to 'production'.
   // Note that this is different than the NODE_ENV set within the app runtime.
   process.env.NODE_ENV = 'production';

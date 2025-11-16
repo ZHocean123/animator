@@ -1,8 +1,15 @@
-const cp = require('child_process');
-const path = require('path');
-const argv = require('yargs').argv;
-const log = require('./helpers/log');
-const getPackage = require('./helpers/packages');
+
+
+
+import cp from "child_process";
+import path from "path";
+import argv from "yargs";
+import log from "./helpers/log";
+import getPackage from "./helpers/packages";
+
+.argv;
+
+
 const ROOT = path.join(__dirname, '..');
 
 const branch = argv.branch || 'master';

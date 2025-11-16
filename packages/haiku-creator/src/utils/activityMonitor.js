@@ -1,4 +1,4 @@
-const {debounce} = require('lodash');
+import {debounce} from 'lodash-es';
 
 const REPORT_INTERVAL = 1800000; // 30mins
 const DEBOUNCE_RATIO = 1000;

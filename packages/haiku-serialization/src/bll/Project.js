@@ -2,7 +2,7 @@ const fse = require('haiku-fs-extra');
 const path = require('path');
 const async = require('async');
 const WebSocket = require('ws');
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 const jss = require('json-stable-stringify');
 const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
 const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default;

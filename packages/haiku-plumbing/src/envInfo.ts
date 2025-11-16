@@ -1,4 +1,4 @@
-import {clone} from 'lodash';
+import {clone} from 'lodash-es';
 import * as path from 'path';
 import {argv} from 'yargs';
 

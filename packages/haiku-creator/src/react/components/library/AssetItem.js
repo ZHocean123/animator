@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Color from 'color';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
 import {Figma} from 'haiku-serialization/src/bll/Figma';
 import {Draggable} from 'react-drag-and-drop';

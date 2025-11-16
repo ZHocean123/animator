@@ -1,4 +1,4 @@
-const lodash = require('lodash');
+import * as lodash from 'lodash-es';
 
 const Experiment = {
   OrderedActionStack: 'OrderedActionStack',

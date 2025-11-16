@@ -1,0 +1,67 @@
+{
+  "name": "haiku-admin-cli",
+  "version": "5.1.2",
+  "description": "Haiku Admin CLI",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "tslint -p tsconfig.all.json -t stylish",
+    "lint-report": "pnpm lint -t checkstyle -o checkstyle-result.xml",
+    "fix": "pnpm lint --fix",
+    "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
+    "test": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json ./node_modules/tape/bin/tape 'test/**/*.test.ts' | tap-spec",
+    "test-report": "nyc pnpm ts ./node_modules/tape/bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "compile": "tsdown",
+    "develop": "tsdown --watch"
+  },
+  "bin": {
+    "haiku": "./bin/basmala"
+  },
+  "authors": [
+    "Zack Brown <zack@haiku.ai>"
+  ],
+  "files": [
+    "bin/**/*",
+    "lib/**/*",
+    "src/**/*"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@haiku/cli": "workspace:*",
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
+    "async": "^2.5.0",
+    "chalk": "^2.4.2",
+    "cli-color": "^1.2.0",
+    "dedent": "^0.7.0",
+    "fs-extra": "^11.2.0",
+    "hasbin": "^1.2.3",
+    "inquirer": "^3.0.6",
+    "mkdirp": "^0.5.1",
+    "prepend-file": "^1.3.1",
+    "request": "^2.83.0",
+    "semver": "^7.6.0",
+    "tail": "^1.2.1",
+    "yargs": "^17.7.2",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/cli-color": "^0.3.29",
+    "@types/inquirer": "0.0.32",
+    "@types/mkdirp": "^0.3.29",
+    "@types/request": "^2.0.0",
+    "@types/yargs": "^6.5.0",
+    "cross-env": "^7.0.3",
+    "istanbul-reporter-cobertura-haiku": "^1.0.2",
+    "nyc": "^13.0.1",
+    "tap-spec": "^4.1.2",
+    "tape": "^4.9.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tslint": "^5.11.0",
+    "tslint-config-haiku": "^1.0.16",
+    "tsdown": "^0.5.0",
+    "typescript": "^5.6.0",
+    "leaked-handles": "^5.2.0",
+    "haiku-testing": "workspace:*"
+  }
+}

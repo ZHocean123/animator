@@ -1,12 +1,20 @@
-const log = require('./helpers/log');
-const slackShout = require('./helpers/slackShout');
-const uploadRelease = require('./helpers/uploadRelease');
-const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction');
 
-const config = require('./../config');
+
+
+
+
+
+
+import log from "./helpers/log";
+import slackShout from "./helpers/slackShout";
+import uploadRelease from "./helpers/uploadRelease";
+import forceNodeEnvProduction from "./helpers/forceNodeEnvProduction";
+import config from "./../config";
+import deploy from "./deploy";
+
 forceNodeEnvProduction();
 
-const deploy = require('./deploy');
+
 
 let platform = process.env.HAIKU_RELEASE_PLATFORM;
 let branch = process.env.HAIKU_RELEASE_BRANCH;

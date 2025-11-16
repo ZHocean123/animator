@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import Palette from 'haiku-ui-common/lib/Palette';
 import SkipBackIconSVG from 'haiku-ui-common/lib/react/icons/SkipBackIconSVG';
 import SkipForwardIconSVG from 'haiku-ui-common/lib/react/icons/SkipForwardIconSVG';

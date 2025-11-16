@@ -1,8 +1,8 @@
-let clc = require('cli-color');
+import clc from 'cli-color';
 
 let SPACER = '\n=============================================\n';
 
-module.exports = {
+export default {
   log (msg) {
     console.log(clc.white(msg));
   },

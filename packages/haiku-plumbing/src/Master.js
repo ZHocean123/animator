@@ -2,7 +2,7 @@
 import * as async from 'async';
 import * as path from 'path';
 import * as os from 'os';
-import {debounce} from 'lodash';
+import {debounce} from 'lodash-es';
 import * as fse from 'haiku-fs-extra';
 import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
 import HaikuComponent from '@haiku/core/lib/HaikuComponent';

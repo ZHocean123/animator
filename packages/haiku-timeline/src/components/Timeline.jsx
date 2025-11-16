@@ -4,7 +4,7 @@ import * as remote from '@electron/remote';
 // 初始化 remote
 remote.initialize();
 import * as React from 'react';
-import * as lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
 import * as Project from 'haiku-serialization/src/bll/Project';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
