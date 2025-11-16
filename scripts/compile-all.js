@@ -68,7 +68,7 @@ async.each(sortedPackages, (pack, done) => {
     const modifiedFiles = files.filter((file) => getModificationTime(file) > lastCompileTime);
 
     /* Compile package if it has any modified file */
-    if (modifiedFiles.length > 0) {
+    // if (modifiedFiles.length > 0) {
       log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
       try {
         cp.execSync('pnpm run compile', {cwd: pack.abspath, stdio: 'inherit'});
@@ -76,9 +76,9 @@ async.each(sortedPackages, (pack, done) => {
         log.warn(`Compilation failed for ${pack.shortname}, but continuing...`);
         // Continue with next package even if compilation fails
       }
-    } else {
-      log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);
-    }
+    // } else {
+    //   log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);
+    // }
 
     /* Update last compile time */
     lastCompileTime = new Date();

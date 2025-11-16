@@ -24,6 +24,13 @@ For a list of available commands, enter:
 $ haiku --help
 ```
 
+## Development
+
+This package uses [`tsdown`](https://github.com/rolldown/tsdown) for TypeScript compilation.
+
+- Build: `pnpm compile`
+- Watch mode: `pnpm develop` (runs `tsdown --watch`)
+
 ## License
 
 MIT. See LICENSE.

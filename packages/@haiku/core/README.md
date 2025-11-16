@@ -208,6 +208,8 @@ Compile with:
 
     $ pnpm compile
 
+> **Note**: This package now uses [`tsdown`](https://github.com/rolldown/tsdown) instead of `tsc` for faster TypeScript compilation with better performance and developer experience.
+
 Test with:
 
     $ pnpm test

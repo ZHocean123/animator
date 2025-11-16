@@ -23,22 +23,24 @@ const children = [];
 
 const runInstruction = (pack, cb) => {
   const cmd = 'pnpm';
-  const useTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
-  const cwd = useTscWatch ? global.process.cwd() : pack.abspath;
-  const args = useTscWatch ?
-    [
-      'tsc-watch',
-      '-p',
-      pack.abspath,
-      '--onSuccess',
-      `"node ${join(cwd, 'scripts', 'write-last-compiled')} --outputPath=${join(pack.abspath, '.last-compile')}"`
-    ] :
-    ['develop'];
-  const proc = cp.spawn(cmd, args, {cwd, env: process.env, stdio: 'inherit', shell: true});
-  children.push({
-    info: {cwd, cmd, args},
-    proc,
-  });
+  const useTsdownWatch = pack.pkg.scripts.develop === 'tsdown --watch';
+  const cwd = pack.abspath;
+  
+  if (useTsdownWatch) {
+    // 使用 tsdown watch 模式
+    const proc = cp.spawn('tsdown', ['--watch'], {cwd, env: process.env, stdio: 'inherit'});
+    children.push({
+      info: {cwd, cmd: 'tsdown --watch', args: []},
+      proc,
+    });
+  } else {
+    // 使用 pnpm develop
+    const proc = cp.spawn(cmd, ['develop'], {cwd, env: process.env, stdio: 'inherit', shell: true});
+    children.push({
+      info: {cwd, cmd, args: ['develop']},
+      proc,
+    });
+  }
   cb();
 };
 

@@ -1,3 +1,3 @@
 node ./scripts/distro-configure.js --non-interactive
 node ./scripts/distro-prepare.js
-node ./scripts/distro-build.js
+call tsdown --tsconfig tsconfig.all.json

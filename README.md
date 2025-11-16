@@ -103,6 +103,8 @@ For the compiler to watch for changes as you develop, run the following command 
 
     $ pnpm watch-all
 
+> **Note**: This project has migrated from `tsc` to [`tsdown`](https://github.com/rolldown/tsdown) for faster TypeScript compilation. The `watch-all` command now uses `tsdown --watch` instead of `tsc --watch`.
+
 ### Before committing
 
 First lint all of the code:
@@ -116,6 +118,8 @@ Then run the unit tests in all of the code:
 You might also want to run:
 
     $ pnpm compile-all
+
+> **Note**: Individual packages now use `tsdown` instead of `tsc` for compilation, providing faster build times and better developer experience.
 
 Assuming no lint errors or test failures, push your changes:
 
