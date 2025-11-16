@@ -7,6 +7,6 @@ export default defineConfig({
   outDir: 'lib',
   clean: true,
   sourcemap: true,
-  dts: true,
+  dts: false,
   external: []
 });

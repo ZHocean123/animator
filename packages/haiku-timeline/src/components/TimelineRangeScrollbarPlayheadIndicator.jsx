@@ -59,12 +59,12 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
         id="timeline-playhead-indicator-container"
         style={{
           left: 10,
-          position: 'relative' as const,
+          position: 'relative',
         }}>
         <div
           id="timeline-playhead-indicator"
           style={{
-            position: 'absolute' as const,
+            position: 'absolute',
             pointerEvents: 'none',
             height: KNOB_RADIUS * 2,
             width: 1,

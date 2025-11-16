@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as fs from 'haiku-fs-extra';
 import * as async from 'async';
-import {Environment} from 'haiku-common/src/environments';
+import {Environment} from 'haiku-common';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as GitAdapter from './GitAdapter';
 

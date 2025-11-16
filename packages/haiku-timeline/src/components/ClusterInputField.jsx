@@ -14,7 +14,7 @@ export default class ClusterInputField extends React.Component {
           color: 'transparent',
           textShadow: '0 0 0 ' + Palette.DARK_ROCK,
           backgroundColor: Palette.LIGHT_GRAY,
-          position: 'relative' as const,
+          position: 'relative' ,
           zIndex: 1004,
           borderTopLeftRadius: 4,
           borderBottomLeftRadius: 4,

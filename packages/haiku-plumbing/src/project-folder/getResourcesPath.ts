@@ -1,4 +1,4 @@
-import {isMac} from 'haiku-common/src/environments/os';
+import {isMac} from 'haiku-common';
 import {join} from 'path';
 
 /**

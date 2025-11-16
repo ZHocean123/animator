@@ -4,6 +4,7 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
+    "esModuleInterop": true,
     "lib": [
       "es2017",
       "dom"

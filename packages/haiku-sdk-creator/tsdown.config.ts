@@ -5,7 +5,7 @@ export default defineConfig({
   outDir: 'lib',
   format: ['cjs'],
   clean: true,
-  dts: true,
+  dts: false,
   target: 'ES2020',
   external: [
     // Workspace dependencies - mark as external to avoid bundling

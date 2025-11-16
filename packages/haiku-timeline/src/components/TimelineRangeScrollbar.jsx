@@ -143,7 +143,7 @@ export default class TimelineRangeScrollbar extends React.Component {
         style={{
           width: this.frameInfo.scL,
           height: KNOB_DIAMETER,
-          position: 'relative' as const,
+          position: 'relative' ,
           backgroundColor: Palette.DARKER_GRAY,
           borderTop: '1px solid ' + Palette.FATHER_COAL,
           borderBottom: '1px solid ' + Palette.FATHER_COAL,
@@ -156,7 +156,7 @@ export default class TimelineRangeScrollbar extends React.Component {
           <div
             id="timeline-range-scrollbar"
             style={{
-              position: 'absolute' as const,
+              position: 'absolute' ,
               backgroundColor: Palette.LIGHTEST_GRAY,
               height: KNOB_DIAMETER,
               left: leftPosition,
@@ -175,7 +175,7 @@ export default class TimelineRangeScrollbar extends React.Component {
                 style={{
                   width: KNOB_DIAMETER,
                   height: KNOB_DIAMETER,
-                  position: 'absolute' as const,
+                  position: 'absolute' ,
                   cursor: 'ew-resize',
                   left: 0,
                   borderRadius: '50%',
@@ -192,7 +192,7 @@ export default class TimelineRangeScrollbar extends React.Component {
                 style={{
                   width: KNOB_DIAMETER,
                   height: KNOB_DIAMETER,
-                  position: 'absolute' as const,
+                  position: 'absolute' ,
                   cursor: 'ew-resize',
                   right: 0,
                   borderRadius: '50%',

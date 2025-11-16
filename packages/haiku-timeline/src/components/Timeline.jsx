@@ -1090,7 +1090,7 @@ class Timeline extends React.Component {
     return (
       <div
         style={{
-          position: 'relative' as const,
+          position: 'relative' ,
           top: 17,
           width: '100%',
         }}>
@@ -1136,7 +1136,7 @@ class Timeline extends React.Component {
         />
         <div
           style={{
-            position: 'absolute' as const,
+            position: 'absolute' ,
             right: 5,
             top: -12,
             marginRight: 5,
@@ -1283,7 +1283,7 @@ class Timeline extends React.Component {
 
     const frameInfo = this.getActiveComponent().getCurrentTimeline().getFrameInfo();
     const leftX = evt.clientX + (this.container.scrollLeft || 0) - this.getActiveComponent().getCurrentTimeline().getPropertiesPixelWidth() - TIMELINE_OFFSET_PADDING;
-    const frameX = Math.round(leftX / frameInfo.pxpf);
+    let frameX = Math.round(leftX / frameInfo.pxpf);
 
     // Allow the scrubber to be dragged past 0 in order to reach 0
     if (frameX < 0) {
@@ -1342,7 +1342,7 @@ class Timeline extends React.Component {
           height: 45,
           backgroundColor: Palette.COAL,
           overflow: 'visible',
-          position: 'fixed' as const,
+          position: 'fixed' ,
           bottom: 0,
           left: 0,
           zIndex: zIndex.bottomControls.base,
@@ -1401,7 +1401,7 @@ class Timeline extends React.Component {
         id="timeline"
         className="no-select"
         style={{
-          position: 'absolute' as const,
+          position: 'absolute' ,
           backgroundColor: Palette.GRAY,
           color: Palette.ROCK,
           top: 0,
@@ -1423,7 +1423,7 @@ class Timeline extends React.Component {
         className="no-select"
         onClick={this.onTimelineClick}
         style={{
-          position: 'absolute' as const,
+          position: 'absolute' ,
           backgroundColor: Palette.GRAY,
           color: Palette.ROCK,
           top: 0,
@@ -1437,7 +1437,7 @@ class Timeline extends React.Component {
             <div
               style={{
                 opacity: 0.6,
-                position: 'fixed' as const,
+                position: 'fixed' ,
                 top: 0,
                 left: 0,
                 right: 0,

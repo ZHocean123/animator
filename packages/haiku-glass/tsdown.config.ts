@@ -1,11 +1,11 @@
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
-  entry: ['src/**/*.ts', 'src/**/*.tsx'],
+  entry: ['src/**/*.(j|t)s'],
   outDir: 'lib',
   format: ['cjs'],
   clean: true,
-  dts: true,
+  dts: false,
   target: 'ES2020',
   external: [
     // Workspace dependencies - mark as external to avoid bundling
@@ -14,6 +14,9 @@ export default defineConfig({
     'haiku-fs-extra',
     'haiku-serialization',
     'haiku-ui-common',
-    'haiku-vendor-legacy'
+    'haiku-vendor-legacy',
+    // React and related libraries should be external
+    'react',
+    'react-dom'
   ]
 })

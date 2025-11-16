@@ -114,9 +114,9 @@ export default class InvisibleKeyframeDragger extends React.Component {
           }}
           style={{
             display: 'inline-block',
-            position: 'absolute' as const,
+            position: 'absolute' ,
             // For debugging:
-            // backgroundColor: 'red' as const,
+            // backgroundColor: 'red' ,
             // borderRight: '1px solid white',
             // opacity: '0.2',
             top: 1,

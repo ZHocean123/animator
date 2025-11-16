@@ -224,7 +224,7 @@ export default class TransitionBody extends React.Component {
           }}
           onDoubleClick={this.showBezierEditor}
           style={{
-            position: 'absolute' as const,
+            position: 'absolute' ,
             left: pxOffsetLeft + 4,
             width: pxOffsetRight - pxOffsetLeft - 2,
             top: 1,
@@ -239,7 +239,7 @@ export default class TransitionBody extends React.Component {
           <span
             className={`pill ${this.props.keyframe.isWithinCollapsedRow() ? '' : 'js-avoid-marquee-init'}`}
             style={{
-              position: 'absolute' as const,
+              position: 'absolute' ,
               zIndex: 1001,
               width: '100%',
               height: '100%',
@@ -251,7 +251,7 @@ export default class TransitionBody extends React.Component {
           <span
             className="js-avoid-marquee-init"
             style={{
-              position: 'absolute' as const,
+              position: 'absolute' ,
               left: -5,
               width: 9,
               height: 24,
@@ -260,7 +260,7 @@ export default class TransitionBody extends React.Component {
             <span
               className="keyframe-diamond js-avoid-marquee-init"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute' ,
                 top: 5,
                 left: 1,
                 cursor: (this.props.keyframe.isWithinCollapsedRow()) ? 'pointer' : 'move',
@@ -269,7 +269,7 @@ export default class TransitionBody extends React.Component {
             </span>
           </span>
           <span style={{
-            position: 'absolute' as const,
+            position: 'absolute' ,
             zIndex: 1002,
             width: '100%',
             height: '100%',
@@ -283,7 +283,7 @@ export default class TransitionBody extends React.Component {
           <span
             className="js-avoid-marquee-init"
             style={{
-              position: 'absolute' as const,
+              position: 'absolute' ,
               right: -5,
               width: 9,
               height: 24,
@@ -293,7 +293,7 @@ export default class TransitionBody extends React.Component {
             <span
               className="keyframe-diamond js-avoid-marquee-init"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute' ,
                 top: 5,
                 left: 1,
                 cursor: (this.props.keyframe.isWithinCollapsedRow())

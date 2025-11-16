@@ -50,7 +50,7 @@
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json ./node_modules/tape/bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' | tap-spec",
     "test-report": "nyc pnpm ts ./node_modules/tape/bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
-    "compile": "tsdown",
+    "compile": "mkdir -p lib && cp -r src/* lib/",
     "compile-declarations": "tsdown --tsconfig tsconfig.declarations.json",
     "develop": "tsdown --watch",
     "start": "cross-env AUTOSTART=main electron --enable-logging --remote-debugging-port=9222 ./lib/electron.js"

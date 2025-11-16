@@ -323,7 +323,7 @@ export class Glass extends React.Component {
           this.handleInteractionModeChange();
           break;
         case 'mergeDesigns':
-          Element.directlySelected = null;
+          (Element.directlySelected = null);
           break;
         case 'setLockedStatusForComponent':
           // Unselect element after locking it
@@ -358,7 +358,7 @@ export class Glass extends React.Component {
 
   handleActiveComponentReady () {
     // Reset direct selection before mounting new component
-    Element.directlySelected = null;
+    (Element.directlySelected = null);
 
     this.mountHaikuComponent();
     this.updateMenu();
@@ -3298,7 +3298,7 @@ overlays.push({
         className="no-select"
         style={{
           opacity,
-          position: 'absolute' as const,
+          position: 'absolute',
           left: mount.x,
           top: mount.y,
           width: mount.w,
@@ -3644,7 +3644,7 @@ overlays.push({
             id="zoom-indicator"
             className="no-select"
             style={{
-              position: 'fixed' as const,
+              position: 'fixed',
               top: 5,
               right: 10,
               zIndex: MAX_Z_INDEX - 8,
@@ -3687,18 +3687,18 @@ overlays.push({
             width: '100%',
             height: '100%',
             overflow: 'visible',
-            position: 'absolute' as const,
+            position: 'absolute',
             top: 0,
             left: 0,
             transform: this.getCSSTransform(zoom, pan),
-            backgroundColor: 'inherit' as const,
+            backgroundColor: 'inherit',
           }}>
 
           {(!this.isPreviewMode())
             ? <svg
               id="haiku-glass-stage-background-live"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute',
                 top: container.y,
                 left: container.x,
                 width: container.w,
@@ -3768,7 +3768,7 @@ overlays.push({
             ? <svg
               id="haiku-glass-opacitator"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute',
                 top: container.y,
                 left: container.x,
                 zIndex: 20,
@@ -3804,7 +3804,7 @@ overlays.push({
             ? <svg
               id="haiku-glass-stage-border"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute',
                 top: container.y,
                 left: container.x,
                 zIndex: 1010,
@@ -3857,7 +3857,7 @@ overlays.push({
                 pointerEvents: 'none', // This needs to be un-set for surface elements that take mouse interaction
                 width: container.w,
                 height: this.getContainerHeight(),
-                position: 'absolute' as const,
+                position: 'absolute',
                 overflow: 'visible',
                 top: container.y,
                 left: container.x,
@@ -3872,7 +3872,7 @@ overlays.push({
               ref="outline"
               id="haiku-glass-outline-mount"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute',
                 pointerEvents: 'none',
                 left: mount.x,
                 top: mount.y,
@@ -3888,7 +3888,7 @@ overlays.push({
             ? <div
               id="preview-container"
               style={{
-                position: 'absolute' as const,
+                position: 'absolute',
                 left: mount.x,
                 top: mount.y,
                 width: mount.w,

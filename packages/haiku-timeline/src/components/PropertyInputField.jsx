@@ -67,7 +67,7 @@ export default class PropertyInputField extends React.Component {
         style={{
           height: this.props.rowHeight - 1,
           width: CELL_WIDTH,
-          position: 'relative' as const,
+          position: 'relative' ,
           outline: 'none',
         }}
         onClick={this.handleClick}

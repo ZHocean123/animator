@@ -5,10 +5,19 @@ export default defineConfig({
   outDir: 'lib',
   format: ['cjs'],
   clean: true,
-  dts: true,
+  dts: false,
   target: 'ES2020',
   external: [
     // Workspace dependencies - mark as external to avoid bundling
-    '@haiku/sdk-inkstone'
+    '@haiku/sdk-inkstone',
+    // External dependencies that should not be transformed
+    'dedent',
+    'fs-extra',
+    'path',
+    'lodash',
+    'mkdirp',
+    'pascalcase',
+    'request',
+    'dotenv'
   ]
 })

@@ -38,7 +38,7 @@ export default class PropertyRowHeading extends React.Component {
         <span
           style={{
             transform: 'scale(0.75)',
-            position: 'absolute' as const,
+            position: 'absolute' ,
             top: -7,
             left: 100,
           }}>
@@ -63,7 +63,7 @@ export default class PropertyRowHeading extends React.Component {
         draggable="false"
         className="property-row-label-box no-select"
         style={{
-          position: 'relative' as const,
+          position: 'relative' ,
           textTransform: 'uppercase',
           fontSize,
           lineHeight: 1,
@@ -81,7 +81,7 @@ export default class PropertyRowHeading extends React.Component {
           className="property-row-label-text no-select"
           style={{
             display: 'inline-block',
-            textAlign: 'right' as const,
+            textAlign: 'right' ,
             marginTop,
           }}>
           {this.props.humanName}

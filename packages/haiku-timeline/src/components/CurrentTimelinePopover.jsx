@@ -215,7 +215,7 @@ class CurrentTimelinePopover extends React.Component {
                   this.handleSelectTimeline(e, timelineName);
                 }
               }}
-              style={{position: 'relative' as const}}>
+              style={{position: 'relative' }}>
               <form
                 onSubmit={(e) => {
                   this.handleRename(e, timelineName);
@@ -246,7 +246,7 @@ class CurrentTimelinePopover extends React.Component {
                 </div>
               </form>
               {!Radium.getState(this.state, `t-${timelineName}`, ':focus')
-                ? (<span style={{position: 'absolute' as const, right: '4px', top: '5px'}}>
+                ? (<span style={{position: 'absolute' , right: '4px', top: '5px'}}>
                   <button
                     onClick={this.handleDeleteTimeline.bind(this)}
                     key={`d-${timelineName}`}

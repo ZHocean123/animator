@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import * as mkdirp from 'mkdirp';
 import * as os from 'os';
 import * as path from 'path';
+import {bootstrapSceneFilesSync} from './bootstrapSceneFilesSync';
 
 const HAIKU_HOME = path.join(os.homedir(), '.haiku');
 
@@ -124,3 +125,6 @@ export namespace client {
     }
   }
 }
+
+// Export bootstrapSceneFilesSync function
+export {bootstrapSceneFilesSync};
