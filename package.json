@@ -8,7 +8,7 @@
   ],
   "version": "5.1.2",
   "description": "Haiku Animator",
-  "main": "index.js",
+  "main": "index.mjs",
   "author": "Haiku Systems Inc.",
   "license": "AGPL",
   "engines": {
@@ -33,7 +33,13 @@
     "test-all": "node ./scripts/test-all.js",
     "watch-all": "node ./scripts/watch-all.js",
     "lint-report": "node ./scripts/lint-report.js",
-    "test-report": "node ./scripts/test-report.js"
+    "test-report": "node ./scripts/test-report.js",
+    "cm:build": "tsc -p scripts/tsconfig.json",
+    "cm:convert": "node ./scripts/lib/runner/convert-require-to-import.js",
+    "cm:diff": "node -e \"console.log('diff 已生成于 reports/require-to-import.patch')\"",
+    "cm:tsc": "tsc --noEmit",
+    "cm:lint": "eslint \"**/*.{js,ts,jsx,tsx}\" --max-warnings=0",
+    "cm:smoke": "node ./scripts/start-electron.js"
   },
   "pnpm": {
     "overrides": {
@@ -45,6 +51,7 @@
     "onlyBuiltDependencies": [
       "aws-sdk",
       "core-js",
+      "electron",
       "electron-chromedriver",
       "es5-ext",
       "fsevents",
@@ -72,7 +79,15 @@
     "prop-types": "^15.8.1"
   },
   "devDependencies": {
+    "@babel/generator": "7.0.0",
+    "@babel/parser": "7.28.5",
+    "@babel/traverse": "7.0.0",
+    "@babel/types": "^7.28.5",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__parser": "^7.1.5",
+    "@types/babel__traverse": "^7.28.0",
     "@types/node": "^22.0.0",
+    "ast-types": "^0.14.2",
     "async": "^2.5.0",
     "aws-sdk": "^2.85.0",
     "cli-color": "^1.2.0",
@@ -80,11 +95,14 @@
     "cross-spawn": "^6.0.5",
     "dependency-graph": "^0.5.0",
     "derequire": "^2.0.6",
+    "diff": "^8.0.2",
     "dotenv": "^5.0.1",
     "electron": "^33.2.1",
     "electron-builder": "^24.13.3",
     "electron-notarize": "^1.2.0",
     "electron-rebuild": "^3.2.0",
+    "eslint": "^9.39.1",
+    "fast-glob": "^3.3.3",
     "fs-extra": "^4.0.3",
     "git-branch": "0.3.0",
     "glob": "^7.1.2",
@@ -95,6 +113,8 @@
     "mime-types": "^2.1.17",
     "moment": "2.18.1",
     "node-gyp": "^3.6.3",
+    "picocolors": "^1.1.1",
+    "recast": "^0.23.11",
     "semver": "^5.4.1",
     "semver-sort": "^0.0.4",
     "slack": "^8.3.1",

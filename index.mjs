@@ -1,6 +1,11 @@
-const path = require('path');
-const cp = require('child_process');
-const os = require('os');
+import path from 'path';
+import cp from 'child_process';
+import os from 'os';
+import {createRequire} from 'module';
+import {fileURLToPath} from 'url';
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (!global.process.env.NODE_ENV || global.process.env.NODE_ENV === 'production') {
   process.env.HAIKU_GLASS_URL_MODE = 'distro';
@@ -66,21 +71,25 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     switch (message) {
       case 'launchCreator':
         global.process.env.HAIKU_ENV = JSON.stringify(data.haiku);
-        require('haiku-creator/lib/electron');
+        import('haiku-creator/lib/electron');
         break;
       case 'bakePngSequence':
-        require('haiku-creator/lib/bakery/electron').default(
-          data,
-          () => {
-            global.haikuHelper.send({type: 'bakePngSequenceComplete'});
-          },
-        );
+        import('haiku-creator/lib/bakery/electron')
+          .then((m) => m.default(
+            data,
+            () => {
+              global.haikuHelper.send({type: 'bakePngSequenceComplete'});
+            },
+          ))
+          .catch((err) => {
+            console.error('Failed to load bakery electron module', err);
+          });
         break;
     }
   });
 
   global.haikuHelper.on('exit', global.process.exit);
   global.process.on('exit', () => {
-    haikuHelper.kill('SIGKILL');
+    global.haikuHelper && global.haikuHelper.kill('SIGKILL');
   });
 }
