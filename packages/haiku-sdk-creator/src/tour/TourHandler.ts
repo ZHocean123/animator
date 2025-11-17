@@ -135,7 +135,7 @@ export class TourHandler implements Tour {
     }
   }
 
-  private renderCurrentStepAgain () {
+  private renderCurrentStepAgain (): void {
     if (this.shouldRenderAgain) {
       this.currentStep--;
       this.next();
@@ -143,7 +143,7 @@ export class TourHandler implements Tour {
     }
   }
 
-  private requestWebviewCoordinates () {
+  private requestWebviewCoordinates (): void {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:requestWebviewCoordinates',
@@ -157,7 +157,7 @@ export class TourHandler implements Tour {
     } as EnvoyEvent);
   }
 
-  private requestShowStep (state: TourState, position: ClientBoundingRect) {
+  private requestShowStep (state: TourState, position: ClientBoundingRect): void {
     this.server.emit(TOUR_CHANNEL, {
       payload: {
         ...state,
@@ -168,14 +168,14 @@ export class TourHandler implements Tour {
     } as EnvoyEvent);
   }
 
-  private requestFinish () {
+  private requestFinish (): void {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:requestFinish',
     } as EnvoyEvent);
   }
 
-  private requestHide () {
+  private requestHide (): void {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:hide',
@@ -183,11 +183,11 @@ export class TourHandler implements Tour {
   }
 
   // It maps sequential currentStep to platform state
-  private getPlatformState () {
+  private getPlatformState (): TourState {
     return this.states[this.platformStates[this.currentStep]];
   }
 
-  receiveElementCoordinates (webview: string, position: ClientBoundingRect) {
+  receiveElementCoordinates (webview: string, position: ClientBoundingRect): void {
     const state = this.getPlatformState();
     const fallbackPosition = {top: 0, left: 0};
     const origin = (this.webviewData as any)[webview] || fallbackPosition;
@@ -198,12 +198,12 @@ export class TourHandler implements Tour {
     this.requestShowStep(state, {top, left, width, height});
   }
 
-  receiveWebviewCoordinates (webview: string, coordinates: ClientBoundingRect) {
+  receiveWebviewCoordinates (webview: string, coordinates: ClientBoundingRect): void {
     (this.webviewData as any)[webview] = coordinates;
     this.renderCurrentStepAgain();
   }
 
-  updateLayout () {
+  updateLayout (): void {
     if (this.currentStep > 0) {
       this.shouldRenderAgain = true;
     }
@@ -211,11 +211,11 @@ export class TourHandler implements Tour {
     this.requestWebviewCoordinates();
   }
 
-  hide () {
+  hide (): void {
     this.requestHide();
   }
 
-  start (force?: boolean) {
+  start (force?: boolean): void {
     if ((!didTakeTour() && !this.isActive) || force) {
       this.currentStep = 0;
       this.isActive = true;
@@ -223,7 +223,7 @@ export class TourHandler implements Tour {
     }
   }
 
-  finish (createFile?: boolean) {
+  finish (createFile?: boolean): void {
     if (!this.isActive) {
       return;
     }
@@ -236,7 +236,7 @@ export class TourHandler implements Tour {
     this.requestFinish();
   }
 
-  next () {
+  next (): void {
     if (!this.isActive) {
       return;
     }
@@ -252,7 +252,7 @@ export class TourHandler implements Tour {
     }
   }
 
-  prev () {
+  prev (): void {
     if (this.isActive && this.currentStep-- > 0) {
       const nextState = this.getPlatformState();
       this.requestElementCoordinates(nextState);

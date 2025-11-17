@@ -10,12 +10,12 @@ export interface Services {
 
 export class ServicesHandler implements Services {
 
-  figmaImportSVG (importSpec: ImportSpec, authToken: string) {
+  figmaImportSVG (importSpec: ImportSpec, authToken: string): MaybeAsync<void> {
     const figma = new Figma({token: authToken});
     return figma.importSVG(importSpec);
   }
 
-  figmaGetAccessToken (tokenExchange: TokenExchange) {
+  figmaGetAccessToken (tokenExchange: TokenExchange): MaybeAsync<object> {
     return Figma.getAccessToken(tokenExchange);
   }
 }

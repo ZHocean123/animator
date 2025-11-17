@@ -26,14 +26,14 @@ import MasterModuleProject from './MasterModuleProject';
 import getExporterListener from './envoy/getExporterListener';
 import Raven from './Raven';
 import saveExport from './publish-hooks/saveExport';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
-import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
-import {createCDNBundles} from './project-folder/createCDNBundle';
+import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles.js';
+import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter/index.js';
+import {createCDNBundles} from './project-folder/createCDNBundle.js';
 import {
   getHaikuCoreVersion,
   fetchProjectConfigInfo,
-} from './project-folder/ProjectDefinitions';
-import {dumpBase64Images} from './project-folder/AssetUtils';
+} from './project-folder/ProjectDefinitions.js';
+import {dumpBase64Images} from './project-folder/AssetUtils.js';
 import {isMac} from 'haiku-common';
 
 if(isMac()) {

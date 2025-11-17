@@ -1,6 +1,6 @@
 import * as fse from 'fs-extra';
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import * as path from 'path';
 import * as semver from 'semver';
 

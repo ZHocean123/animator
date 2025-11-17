@@ -1,11 +1,10 @@
-const path = require('path');
-const winston = require('winston');
-const jsonStringify = require('fast-safe-stringify');
-const EventEmitter = require('events');
-const {isProduction} = require('haiku-common/lib/environments');
-const {isWindows} = require('haiku-common/lib/environments/os');
-
-require('colors'); // TODO: use non-string-extending module
+import path from 'node:path';
+import winston from 'winston';
+import jsonStringify from 'fast-safe-stringify';
+import { EventEmitter } from 'events';
+import { isProduction } from 'haiku-common/lib/environments/index.js';
+import { isWindows } from 'haiku-common/lib/environments/os.js';
+import 'colors';
 
 const formatJsonLogToString = (message) => {
   if (message.noFormat) {
@@ -186,4 +185,4 @@ class Logger extends EventEmitter {
   }
 }
 
-module.exports = {Logger, formatJsonLogToString};
+export { Logger, formatJsonLogToString };

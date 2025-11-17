@@ -9,13 +9,12 @@
       "dom",
       "es2017"
     ],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "noImplicitAny": false,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
-    "target": "ES2022",
+    "target": "esnext",
     "typeRoots": [
       "node_modules/@types/"
     ],
@@ -27,8 +26,6 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "strictFunctionTypes": false,
-    "noImplicitThis": false,
-    "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false
   },
   "include": [

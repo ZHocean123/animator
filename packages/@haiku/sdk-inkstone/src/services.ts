@@ -66,18 +66,18 @@ export class RequestBuilder {
     'Content-Type': 'application/json',
   };
 
-  private setAuthToken (authToken: string) {
+  private setAuthToken (authToken: string): void {
     this.headers.Authorization = `INKSTONE auth_token="${authToken}"`;
   }
 
   constructor (private readonly method: (options: request.OptionsWithUrl, cb: request.RequestCallback) => void) {}
 
-  withEndpoint (endpoint: Endpoints) {
+  withEndpoint (endpoint: Endpoints): RequestBuilder {
     this.url = `${inkstoneConfig.baseUrl}v0${endpoint}`;
     return this;
   }
 
-  withUrlParameters (params: UriParams) {
+  withUrlParameters (params: UriParams): RequestBuilder {
     for (const param in params) {
       this.url = this.url.replace(param, params[param]);
     }
@@ -87,24 +87,24 @@ export class RequestBuilder {
   /**
    * @deprecated - prefer config-based and/or cookie-based auth tokens!
    */
-  withAuthToken (authToken: MaybeAuthToken) {
+  withAuthToken (authToken: MaybeAuthToken): RequestBuilder {
     if (authToken) {
       this.setAuthToken(authToken);
     }
     return this;
   }
 
-  withJson (json: any) {
+  withJson (json: any): RequestBuilder {
     this.json = json;
     return this;
   }
 
-  withQueryParams (params: QueryParams) {
+  withQueryParams (params: QueryParams): RequestBuilder {
     Object.assign(this.queryParams, params);
     return this;
   }
 
-  get fullUrl () {
+  get fullUrl (): string {
     if (Object.keys(this.queryParams).length === 0) {
       return this.url;
     }
@@ -117,7 +117,7 @@ export class RequestBuilder {
     return `${this.url}?${expandedParams.join('&')}`;
   }
 
-  get fullHeaders () {
+  get fullHeaders (): request.Headers {
     if (inkstoneConfig.authToken) {
       this.setAuthToken(inkstoneConfig.authToken);
     }
@@ -125,7 +125,7 @@ export class RequestBuilder {
     return this.headers;
   }
 
-  call (cb: request.RequestCallback) {
+  call (cb: request.RequestCallback): void {
     if (!this.url) {
       throw new Error('No URL specified!');
     }
@@ -153,7 +153,7 @@ export class RequestBuilder {
   callWithCallback<T> (
     cb: (err: Error, data: T, response: request.RequestResponse) => void,
     successCode = 200,
-  ) {
+  ): void {
     this.call((err, httpResponse, body) => {
       if (httpResponse && httpResponse.statusCode === successCode) {
         cb(
@@ -168,7 +168,7 @@ export class RequestBuilder {
   }
 }
 
-export const newGetRequest = () => new RequestBuilder(requestInstance.get);
-export const newPostRequest = () => new RequestBuilder(requestInstance.post);
-export const newPutRequest = () => new RequestBuilder(requestInstance.put);
-export const newDeleteRequest = () => new RequestBuilder(requestInstance.delete);
+export const newGetRequest = (): RequestBuilder => new RequestBuilder(requestInstance.get);
+export const newPostRequest = (): RequestBuilder => new RequestBuilder(requestInstance.post);
+export const newPutRequest = (): RequestBuilder => new RequestBuilder(requestInstance.put);
+export const newDeleteRequest = (): RequestBuilder => new RequestBuilder(requestInstance.delete);

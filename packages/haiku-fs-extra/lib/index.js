@@ -1,38 +1,46 @@
-var assign = require('./util/assign')
+import { createRequire } from 'node:module'
+const require = createRequire(import.meta.url)
+const assign = require('./util/assign.js')
+const gfs = require('graceful-fs')
+const copyMod = require('./copy')
+const copySyncMod = require('./copy-sync')
+const mkdirsMod = require('./mkdirs')
+const removeMod = require('./remove')
+const jsonMod = require('./json')
+const moveMod = require('./move')
+const emptyMod = require('./empty')
+const ensureMod = require('./ensure')
+const outputMod = require('./output')
+const walkMod = require('./walk')
+const walkSyncMod = require('./walk-sync')
 
-var fse = {}
-var gfs = require('graceful-fs')
-
-// attach fs methods to fse
-Object.keys(gfs).forEach(function (key) {
+const fse = {}
+Object.keys(gfs).forEach((key) => {
   fse[key] = gfs[key]
 })
 
-var fs = fse
+const fs = fse
 
-assign(fs, require('./copy'))
-assign(fs, require('./copy-sync'))
-assign(fs, require('./mkdirs'))
-assign(fs, require('./remove'))
-assign(fs, require('./json'))
-assign(fs, require('./move'))
-assign(fs, require('./empty'))
-assign(fs, require('./ensure'))
-assign(fs, require('./output'))
-assign(fs, require('./walk'))
-assign(fs, require('./walk-sync'))
+assign(fs, copyMod)
+assign(fs, copySyncMod)
+assign(fs, mkdirsMod)
+assign(fs, removeMod)
+assign(fs, jsonMod)
+assign(fs, moveMod)
+assign(fs, emptyMod)
+assign(fs, ensureMod)
+assign(fs, outputMod)
+assign(fs, walkMod)
+assign(fs, walkSyncMod)
 
-module.exports = fs
+export default fs
 
-// maintain backwards compatibility for awhile
-var jsonfile = {}
+export const jsonfile = {}
 Object.defineProperty(jsonfile, 'spaces', {
-  get: function () {
-    return fs.spaces // found in ./json
+  get () {
+    return fs.spaces
   },
-  set: function (val) {
+  set (val) {
     fs.spaces = val
   }
 })
-
-module.exports.jsonfile = jsonfile // so users of fs-extra can modify jsonFile.spaces

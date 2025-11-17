@@ -11,7 +11,7 @@ export default class EnvoyHandler {
 
   private eventHandlers = new Map<string, EnvoyClientEventHandler[]>();
 
-  handleEventDirectly (event: EnvoyEvent) {
+  handleEventDirectly (event: EnvoyEvent): void {
     const handlers = this.eventHandlers.get(event.name);
     if (handlers) {
       for (const handler of handlers) {
@@ -20,13 +20,13 @@ export default class EnvoyHandler {
     }
   }
 
-  on (eventName: string, handler: EnvoyClientEventHandler) {
+  on (eventName: string, handler: EnvoyClientEventHandler): void {
     const handlers = this.eventHandlers.get(eventName as string) || [];
     handlers.push(handler);
     this.eventHandlers.set(eventName, handlers);
   }
 
-  off (eventName: string, handler: EnvoyClientEventHandler) {
+  off (eventName: string, handler: EnvoyClientEventHandler): void {
     const handlers = this.eventHandlers.get(eventName as string) || [];
     const idx = handlers.indexOf(handler);
     if (idx !== -1) {
@@ -34,25 +34,25 @@ export default class EnvoyHandler {
     }
   }
 
-  setConfig<T> (key: string, value: T) {
+  setConfig<T> (key: string, value: T): void {
     if (this.registry) {
       this.registry.setConfig<T>(key, value);
     }
   }
 
-  getConfig<T> (key: string): T {
+  getConfig<T> (key: string): T | undefined {
     if (this.registry) {
       return this.registry.getConfig<T>(key);
     }
   }
 
-  deleteConfig (key: string) {
+  deleteConfig (key: string): void {
     if (this.registry) {
       this.registry.deleteConfig(key);
     }
   }
 
-  setConfigObfuscated<T> (key: string, value: T) {
+  setConfigObfuscated<T> (key: string, value: T): void {
     this.setConfig<Obfuscation>(key, obfuscate(value));
   }
 

@@ -14,7 +14,7 @@ export class VueCliFlavor extends CodebaseFlavor {
     super(directory);
   }
 
-  initCodebase () {
+  initCodebase (): void {
     // TODO:  add .npmrc
     // TODO:  figure out how to require & parse the component lib from a node process,
     //        specifically: wrangle the "`document` is not defined" issues.
@@ -45,7 +45,7 @@ export class VueCliFlavor extends CodebaseFlavor {
   }
 
   // Injects data into the host codebase's package.json & writes the file to disk
-  sideEffectfullyProcessPackageJson () {
+  sideEffectfullyProcessPackageJson (): void {
     const packageJson = this.getPackageJsonAsObject();
     packageJson.scripts = packageJson.scripts || {};
     packageJson.scripts['build-lib-for-haiku'] = // TODO: parameterize these paths: (may also need to support TS vs JS)
@@ -71,7 +71,7 @@ export class VueCliFlavor extends CodebaseFlavor {
   }
 
   // Traverse fs, list all files into an index file, which is written to disk
-  generateIndexFile () {
+  generateIndexFile (): void {
     const MATCHING_FILES = /\.vue$/; // /(\.vue|\.js|\.ts)$/;
     const fileTree = FileSystem.walkDirectoryAndMatch(this.getProjectSrcDir(), MATCHING_FILES);
     const fileContents =
@@ -96,7 +96,7 @@ export class VueCliFlavor extends CodebaseFlavor {
     return importStrings.join('\n');
   }
 
-  evalIndexReturnObjectTemplate (fileTree: FolderNode) {
+  evalIndexReturnObjectTemplate (fileTree: FolderNode): string {
     const imports = this.recurseAndReduceToSymbolsAndPaths(fileTree, []);
     const objectFriendlySymbolDeclarations = imports.map((imp, i) => {
       return imp.SymbolName + ': ' + imp.SymbolName + (i === imports.length - 1 ? '' : ',');
@@ -110,11 +110,11 @@ export class VueCliFlavor extends CodebaseFlavor {
     return retTemplate;
   }
 
-  buildLibrary () {
+  buildLibrary (): void {
     execSync('pnpm build-lib-for-haiku', {cwd: this.directory});
   }
 
-  testCompatibility () {
+  testCompatibility (): boolean {
     const packageJson = this.getPackageJsonAsObject();
     const conditions = [
       // has @vue/cli-service as a devDependency:
@@ -187,7 +187,7 @@ export class VueCliFlavor extends CodebaseFlavor {
   }
 
   // reduces directory of matched files to a list of symbol name + file path
-  private recurseAndReduceToSymbolsAndPaths (node: FolderNode, accum: SymbolNameAndFilePath[] = []) {
+  private recurseAndReduceToSymbolsAndPaths (node: FolderNode, accum: SymbolNameAndFilePath[] = []): SymbolNameAndFilePath[] {
     if (node.files && node.files.length) {
       node.files.forEach((file) => {
         const symbolName = this.integerToSymbolFriendlyHash(accum.length);

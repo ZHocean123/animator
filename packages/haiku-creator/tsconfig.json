@@ -7,14 +7,14 @@
       "ES2017",
       "dom"
     ],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ES2022"
+    "target": "esnext"
   },
   "include": [
     "src/**/*.js",

@@ -1,8 +1,8 @@
-import {ExporterRequest} from '.';
-import {UserHandler} from '../bll/User';
-import {EnvoyEvent, MaybeAsync} from '../envoy';
-import EnvoyHandler from '../envoy/EnvoyHandler';
-import EnvoyServer from '../envoy/EnvoyServer';
+import {UserHandler} from '../bll/User.js';
+import {EnvoyEvent, MaybeAsync} from '../envoy/index.js';
+import EnvoyHandler from '../envoy/EnvoyHandler.js';
+import EnvoyServer from '../envoy/EnvoyServer.js';
+import { ExporterRequest } from './index.js';
 
 export const EXPORTER_CHANNEL = 'exporter';
 

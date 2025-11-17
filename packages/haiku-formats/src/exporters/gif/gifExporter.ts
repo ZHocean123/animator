@@ -8,7 +8,7 @@ export class GifExporter extends BaseExporter implements ExporterInterface {
    * Interface method to write binary output out to a file.
    * @returns {Promise<void>}
    */
-  writeToFile (filename: string, framerate: number) {
+  writeToFile (filename: string, framerate: number): Promise<void> {
     const workingDirectory = path.join(this.componentFolder, `png-${framerate}`);
     const palettePath = path.join(workingDirectory, 'palette.png');
     const assetPathPattern = path.join(workingDirectory, 'frame-%07d.png');

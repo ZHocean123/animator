@@ -3,7 +3,7 @@ import * as fs from 'fs';
 // @ts-ignore
 import {ditto, download, unzip} from 'haiku-serialization/src/utils/fileManipulation';
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance';
 import nodeFetch from 'node-fetch';
 import * as os from 'os';
 import * as path from 'path';

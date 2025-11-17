@@ -35,13 +35,13 @@ export interface SentryCallbackData {
   culprit?: string;
 }
 
-const getErrorMetadata = (data: SentryCallbackData) => ({
+const getErrorMetadata = (data: SentryCallbackData): {message: string; culprit?: string} => ({
   message: (data.exception && (data.exception as any)[0] && (data.exception as any)[0].value) || 'Unknown',
   culprit: data.culprit,
 });
 
 // Returns true iff a culprit is from a local component file.
-export const isUserlandCulprit = (culprit: string) => culprit && basename(culprit) === 'code.js';
+export const isUserlandCulprit = (culprit: string): boolean => !!culprit && basename(culprit) === 'code.js';
 
 export class SentryReporter {
   /**
@@ -54,7 +54,7 @@ export class SentryReporter {
   /**
    * Attaches carbonite data to an SentryExtraData payload and freezes the data.
    */
-  freezeInCarbonite (data: SentryCallbackData, emit = true) {
+  freezeInCarbonite (data: SentryCallbackData, emit = true): string | undefined {
     const {organizationName, projectName, projectPath} = data.extra;
     if (organizationName && projectName && projectPath) {
       const timestamp = generateUUIDv4();
@@ -105,7 +105,7 @@ export class SentryReporter {
 export class ErrorHandler extends EnvoyHandler {
   private lastUploadTime: number;
 
-  get shouldSendCrashReport () {
+  get shouldSendCrashReport (): boolean {
     return !this.lastUploadTime || Date.now() >= UPLOAD_INTERVAL * 60000 + this.lastUploadTime;
   }
 

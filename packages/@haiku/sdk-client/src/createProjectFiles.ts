@@ -25,7 +25,7 @@ export function createProjectFiles (
     skipContentCreation: boolean,
   },
   finish: any,
-) {
+): void {
   try {
     logger.info('[project folder] building project content', projectOptions.projectPath);
 

@@ -1,7 +1,7 @@
 import * as chokidar from 'chokidar';
 import {EventEmitter} from 'events';
 import {sep} from 'path';
-import {LOCKS, emitter} from 'haiku-serialization/src/bll/Lock';
+import {LOCKS, emitter} from 'haiku-serialization/src/bll/Lock.js';
 
 const WRITE_WAIT_DELAY = 1000;
 

@@ -13,7 +13,7 @@ export class VideoExporter extends BaseExporter implements ExporterInterface {
    * Interface method to write binary output out to a file.
    * @returns {Promise<void>}
    */
-  writeToFile (filename: string, framerate: number) {
+  writeToFile (filename: string, framerate: number): Promise<void> {
     const assetPathPattern = path.join(this.componentFolder, `png-${framerate}`, 'frame-%07d.png');
     const componentSize = this.getComponentSize();
     return new Promise<void>((resolve, reject) => {

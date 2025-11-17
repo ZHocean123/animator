@@ -1,6 +1,14 @@
-const fs = require('haiku-fs-extra');
-const {Logger} = require('./Logger');
-const {HOMEDIR_LOGS_PATH} = require('./HaikuHomeDir');
-fs.mkdirpSync(HOMEDIR_LOGS_PATH);
+import fse from 'fs-extra';
+import { Logger } from './Logger.js';
+import { HOMEDIR_LOGS_PATH } from './HaikuHomeDir.js';
+
+fse.mkdirpSync(HOMEDIR_LOGS_PATH);
 const logger = new Logger(HOMEDIR_LOGS_PATH, 'haiku-debug.log');
-module.exports = logger;
+
+export default logger;
+export const raw = (...args) => logger.raw(...args);
+export const info = (...args) => logger.info(...args);
+export const traceInfo = (...args) => logger.traceInfo(...args);
+export const debug = (...args) => logger.debug(...args);
+export const warn = (...args) => logger.warn(...args);
+export const error = (...args) => logger.error(...args);

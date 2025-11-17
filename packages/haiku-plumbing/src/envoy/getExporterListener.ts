@@ -1,7 +1,7 @@
 import {queue} from 'async';
-import {ExporterFormat, ExporterHandler, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
+import {ExporterFormat, ExporterHandler, ExporterRequest} from 'haiku-sdk-creator/lib/exporter/index.js';
 // @ts-ignore
-import * as ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent';
+import ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent.js';  
 import MasterGitProject from '../MasterGitProject';
 
 import saveExport from '../publish-hooks/saveExport';

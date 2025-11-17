@@ -8,14 +8,15 @@
       "es6",
       "dom"
     ],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
+    "isolatedDeclarations": true,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ES2022",
+    "target": "esnext",
     "typeRoots": [
       "node_modules/@types/"
     ]

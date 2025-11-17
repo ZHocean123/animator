@@ -456,7 +456,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
   /**
    * Handle a subcomponent as a precomp.
    */
-  handleSubcomponent (subcomponentSpec: BodymovinAnimation, node: BytecodeNode, parentNode: BytecodeNode) {
+  handleSubcomponent (subcomponentSpec: BodymovinAnimation, node: BytecodeNode, parentNode: BytecodeNode): void {
     const precompId = `precomp_${++this.assetUniqueId.index}`;
     // Hack: for now, just ensure the animation can at least run for the duration of the subcomponent.
     this.outPoint = Math.max(this.outPoint, subcomponentSpec.op);
@@ -1582,7 +1582,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
   /**
    * Method to provide binary output.
    */
-  binaryOutput () {
+  binaryOutput (): string {
     return JSON.stringify(this.rawOutput());
   }
 
@@ -1590,7 +1590,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
    * Interface method to write binary output out to a file.
    * @returns {Promise<void>}
    */
-  writeToFile (filename: string|Buffer) {
+  writeToFile (filename: string|Buffer): Promise<void> {
     try {
       return writeFile(filename, this.binaryOutput());
     } catch (e) {

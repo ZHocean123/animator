@@ -23,23 +23,23 @@ export const enum EnvironmentType {
  *
  * If no environment is provided as an environment variable, assume production.
  */
-export const getEnvironment = () => global.process.env.NODE_ENV || Environment.Production;
+export const getEnvironment = (): string => global.process.env.NODE_ENV || Environment.Production;
 
 /**
  * Gets the environment type.
  */
-export const getEnvironmentType = () => {
+export const getEnvironmentType = (): EnvironmentType => {
   const environment = getEnvironment();
   return (environment === Environment.Staging || environment === Environment.Production)
     ? EnvironmentType.Production
     : EnvironmentType.Development;
 };
 
-export const isProduction = () => getEnvironmentType() === EnvironmentType.Production;
-export const isDevelopment = () => getEnvironmentType() === EnvironmentType.Development;
+export const isProduction = (): boolean => getEnvironmentType() === EnvironmentType.Production;
+export const isDevelopment = (): boolean => getEnvironmentType() === EnvironmentType.Development;
 
-export const getUrl = (path: string) => `${global.process.env.HAIKU_WWW || 'https://www.haiku.ai/'}${path}`;
-export const getAccountUrl = (path: string) =>
+export const getUrl = (path: string): string => `${global.process.env.HAIKU_WWW || 'https://www.haiku.ai/'}${path}`;
+export const getAccountUrl = (path: string): string =>
   `${global.process.env.HAIKU_ACCOUNT || 'https://account.haiku.ai/'}${path}`;
 
-export const shouldEmitErrors = () => isProduction() || global.process.env.DEBUG_SENTRY === '1';
+export const shouldEmitErrors = (): boolean => isProduction() || global.process.env.DEBUG_SENTRY === '1';

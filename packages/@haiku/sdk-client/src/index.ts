@@ -11,17 +11,17 @@ import {bootstrapSceneFilesSync} from './bootstrapSceneFilesSync';
 
 const HAIKU_HOME = path.join(os.homedir(), '.haiku');
 
-export const FILE_PATHS = {
+export const FILE_PATHS: { HAIKU_HOME: string; AUTH_TOKEN: string; DOTENV: string } = {
   HAIKU_HOME,
   AUTH_TOKEN: path.join(HAIKU_HOME, 'auth'),
   DOTENV: path.join(HAIKU_HOME, '.env'),
 };
 
-export const ensureFolder = (folder: string) => {
+export const ensureFolder = (folder: string): void => {
   mkdirp.sync(folder);
 };
 
-export const ensureHomeFolder = () => {
+export const ensureHomeFolder = (): void => {
   ensureFolder(HAIKU_HOME);
 };
 
@@ -29,7 +29,7 @@ export type HaikuDotEnv = {
   [key in string]: string;
 };
 
-const applyEnv = (env: HaikuDotEnv) => {
+const applyEnv = (env: HaikuDotEnv): void => {
   Object.assign(global.process.env, env);
   if (env.HAIKU_API) {
     inkstone.setConfig({baseUrl: env.HAIKU_API});
@@ -38,13 +38,13 @@ const applyEnv = (env: HaikuDotEnv) => {
 
 export namespace client {
 
-  export const verboselyLog =  (message: string, ...args: any[]) => {
+  export const verboselyLog =  (message: string, ...args: any[]): void => {
     if (clientConfig.verbose) {
       console.log(message, ...args);
     }
   };
 
-  export const error = (err: any) => {
+  export const error = (err: any): void => {
     // TODO: elegantly handle errors
   };
 
@@ -53,13 +53,13 @@ export namespace client {
       return JSON.parse(fs.readFileSync(pathIn, 'utf8'));
     }
 
-    static writePackageJson (jsonObject: any, pathIn: string = global.process.cwd() + '/package.json') {
+    static writePackageJson (jsonObject: any, pathIn: string = global.process.cwd() + '/package.json'): void {
       fs.writeFileSync(pathIn, JSON.stringify(jsonObject, undefined, 2));
     }
   }
 
   export class git {
-    static cloneRepo (remote: string, pathIn: string, cb: (error?: any) => any) {
+    static cloneRepo (remote: string, pathIn: string, cb: (error?: any) => any): void {
       let err;
       try {
         execSync(`git clone ${remote} ${pathIn}`);
@@ -80,7 +80,7 @@ export namespace client {
     verbose: false,
   };
 
-  export function setConfig (newVals: ClientConfig) {
+  export function setConfig (newVals: ClientConfig): void {
     _.extend(clientConfig, newVals);
   }
 
@@ -111,7 +111,7 @@ export namespace client {
       return newenv;
     }
 
-    static getAuthToken (): string {
+    static getAuthToken (): string | undefined {
       if (fs.existsSync(FILE_PATHS.AUTH_TOKEN)) {
         const token = fs.readFileSync(FILE_PATHS.AUTH_TOKEN).toString();
         return token;
@@ -119,7 +119,7 @@ export namespace client {
       return undefined;
     }
 
-    static setAuthToken (newToken: string) {
+    static setAuthToken (newToken: string): void {
       ensureHomeFolder();
       fs.writeFileSync(FILE_PATHS.AUTH_TOKEN, newToken);
     }

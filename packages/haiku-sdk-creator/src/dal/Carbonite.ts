@@ -21,7 +21,7 @@ export const crashReportFork = (
   zipName: string,
   zipPath: string,
   finalUrl: string,
-) => {
+): void => {
   logger.info('[carbonite] initiating crash report', projectPath, zipName, zipPath, cleanPresignedUrl(finalUrl));
   process.env.HAIKU_CRASH_REPORT_PROJECT_PATH = projectPath;
   process.env.HAIKU_CRASH_REPORT_ZIP_PATH = zipPath;
@@ -93,7 +93,7 @@ const zipProjectFolders = (destination: string, sources: string[]) => {
   });
 };
 
-export const crashReportCreate = (cb: () => void) => {
+export const crashReportCreate = (cb: () => void): void => {
   logger.info(`[carbonite] preparing crash report for ${cleanPresignedUrl(process.env.HAIKU_CRASH_REPORT_URL)}`);
 
   ensureFolderExist(HOMEDIR_PROJECTS_PATH)

@@ -29,7 +29,7 @@ const getOperatingSystem: () => OperatingSystem = () => {
 };
 
 /* These OS detection functions should be prefered, as they are concise */
-export const isMac = () => getOperatingSystem() === OperatingSystem.Mac;
-export const isWindows = () => getOperatingSystem() === OperatingSystem.Windows;
-export const isLinux = () => getOperatingSystem() === OperatingSystem.Linux;
-export const isWeb = () => getOperatingSystem() === OperatingSystem.Web;
+export const isMac = (): boolean => getOperatingSystem() === OperatingSystem.Mac;
+export const isWindows = (): boolean => getOperatingSystem() === OperatingSystem.Windows;
+export const isLinux = (): boolean => getOperatingSystem() === OperatingSystem.Linux;
+export const isWeb = (): boolean => getOperatingSystem() === OperatingSystem.Web;

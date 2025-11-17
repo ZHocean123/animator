@@ -76,7 +76,7 @@ const fallbackSizeAbsolute = (node: BytecodeNode, axis: string): number => {
   return DEFAULT_SIZE_ABSOLUTE;
 };
 
-export default (mana: BytecodeNode) => {
+export default (mana: BytecodeNode): BytecodeNode => {
   visitManaTree(ROOT_LOCATOR, mana, (
     name,
     attributes,

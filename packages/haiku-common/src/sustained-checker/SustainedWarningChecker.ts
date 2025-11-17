@@ -36,7 +36,7 @@ export default class SustainedWarningChecker {
    * Transverse injected HaikuBytecode and check if all injected
    * functions parameters are known
    */
-  checkIdentifierNotFound () {
+  checkIdentifierNotFound (): SustainedWarning[] {
     const bytecodeTimeline = this.component.bytecode.timelines;
 
     const injectables = Object.keys(this.component.getInjectables());

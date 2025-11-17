@@ -45,14 +45,14 @@ export default class TopMenu {
   //   This is used for emulating default macOS menu behaviors.
   //   Usually you would just use the role property of a MenuItem."
   // Because we want a custom behavior, we can't use roles for some actions
-  private sendActionToFirstReponderAndEmit (eventName: string) {
+  private sendActionToFirstReponderAndEmit (eventName: string): void {
     if (isMac()) {
       Menu.sendActionToFirstResponder(`${eventName}:`);
     }
     this.sender.send(`global-menu:${eventName}`);
   }
 
-  private emitExportRequest (extension: string, framerate: number) {
+  private emitExportRequest (extension: string, framerate: number): void {
     this.sender.send(
       'global-menu:save-as',
       extension,
@@ -67,7 +67,7 @@ export default class TopMenu {
    * @method update
    * @description Like create, but may optimize and not update if no changes
    */
-  update (nextOptions: TopMenuOptions) {
+  update (nextOptions: TopMenuOptions): void {
     let didChange = false;
 
     for (const key in this.options) {
@@ -87,7 +87,7 @@ export default class TopMenu {
     }
   }
 
-  create (options: TopMenuOptions) {
+  create (options: TopMenuOptions): void {
     this.options = options;
 
     const developerMenuItems = [

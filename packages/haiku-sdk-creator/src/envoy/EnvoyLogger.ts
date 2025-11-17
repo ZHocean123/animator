@@ -14,121 +14,121 @@ export default class EnvoyLogger implements Console {
     }
   }
 
-  info (...args: any[]) {
+  info (...args: any[]): void {
     if (this.logLevel === 'info') {
-      return this.logger.info(...args);
+      this.logger.info(...args);
     }
   }
 
-  log (...args: any[]) {
+  log (...args: any[]): void {
     if (this.logLevel === 'info' || this.logLevel === 'log') {
-      return this.logger.info(...args);
+      this.logger.info(...args);
     }
   }
 
-  warn (...args: any[]) {
+  warn (...args: any[]): void {
     if (this.logLevel === 'info' || this.logLevel === 'log' || this.logLevel === 'warn') {
-      return this.logger.warn(...args);
+      this.logger.warn(...args);
     }
   }
 
-  error (...args: any[]) {
-    return this.logger.error(...args);
+  error (...args: any[]): void {
+    this.logger.error(...args);
   }
 
-  assert (...args: any[]) {
-    return this.logger.assert(...args);
+  assert (...args: any[]): void {
+    this.logger.assert(...args);
   }
 
-  clear () {
-    return this.logger.clear();
+  clear (): void {
+    this.logger.clear();
   }
 
-  count (...args: any[]) {
-    return this.logger.count(...args);
+  count (...args: any[]): void {
+    this.logger.count(...args);
   }
 
-  countReset (label?: string) {
-    return this.logger.countReset(label);
+  countReset (label?: string): void {
+    this.logger.countReset(label);
   }
 
-  debug (...args: any[]) {
-    return this.logger.debug(...args);
+  debug (...args: any[]): void {
+    this.logger.debug(...args);
   }
 
-  dir (...args: any[]) {
-    return this.logger.dir(...args);
+  dir (...args: any[]): void {
+    this.logger.dir(...args);
   }
 
-  dirxml (arg: any[]) {
-    return this.logger.dirxml(arg);
+  dirxml (arg: any[]): void {
+    this.logger.dirxml(arg);
   }
 
-  exception (...args: any[]) {
-    return this.logger.exception(...args);
+  exception (...args: any[]): void {
+    this.logger.exception(...args);
   }
 
-  group (...args: any[]) {
-    return this.logger.group(...args);
+  group (...args: any[]): void {
+    this.logger.group(...args);
   }
 
-  groupCollapsed (...args: any[]) {
-    return this.logger.groupCollapsed(...args);
+  groupCollapsed (...args: any[]): void {
+    this.logger.groupCollapsed(...args);
   }
 
-  groupEnd () {
-    return this.logger.groupEnd();
+  groupEnd (): void {
+    this.logger.groupEnd();
   }
 
-  markTimeline (label?: string) {
-    return this.logger.markTimeline(label);
+  markTimeline (label?: string): void {
+    this.logger.markTimeline(label);
   }
 
-  msIsIndependentlyComposed (element: any) {
-    return this.logger.msIsIndependentlyComposed(element);
+  msIsIndependentlyComposed (element: any): void {
+    this.logger.msIsIndependentlyComposed(element);
   }
 
-  profile (...args: any[]) {
-    return this.logger.profile(...args);
+  profile (...args: any[]): void {
+    this.logger.profile(...args);
   }
 
-  profileEnd () {
-    return this.logger.profileEnd();
+  profileEnd (): void {
+    this.logger.profileEnd();
   }
 
-  select (arg: any) {
-    return this.logger.select(arg);
+  select (arg: any): void {
+    this.logger.select(arg);
   }
 
-  table (...args: any[]) {
-    return this.logger.table(...args);
+  table (...args: any[]): void {
+    this.logger.table(...args);
   }
 
-  time (...args: any[]) {
-    return this.logger.time(...args);
+  time (...args: any[]): void {
+    this.logger.time(...args);
   }
 
-  timeEnd (...args: any[]) {
-    return this.logger.timeEnd(...args);
+  timeEnd (...args: any[]): void {
+    this.logger.timeEnd(...args);
   }
 
-  timeLog (label?: string, ...data: any[]) {
-    return this.logger.timeLog(label, ...data);
+  timeLog (label?: string, ...data: any[]): void {
+    this.logger.timeLog(label, ...data);
   }
 
-  timeStamp (...args: any[]) {
-    return this.logger.timeStamp(...args);
+  timeStamp (...args: any[]): void {
+    this.logger.timeStamp(...args);
   }
 
-  timeline (...args: any[]) {
-    return this.logger.timeline(...args);
+  timeline (...args: any[]): void {
+    this.logger.timeline(...args);
   }
 
-  timelineEnd (...args: any[]) {
-    return this.logger.timelineEnd(...args);
+  timelineEnd (...args: any[]): void {
+    this.logger.timelineEnd(...args);
   }
 
-  trace (...args: any[]) {
-    return this.logger.trace(...args);
+  trace (...args: any[]): void {
+    this.logger.trace(...args);
   }
 }

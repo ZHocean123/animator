@@ -16,14 +16,14 @@ import * as nodeResolve from 'rollup-plugin-node-resolve';
 // @ts-ignore
 import * as uglify from 'rollup-plugin-uglify-es';
 
-import {HaikuProject} from 'haiku-sdk-creator/lib/bll/Project';
+import {HaikuProject} from 'haiku-sdk-creator/lib/bll/Project.js';
 import {
   getCopyrightNotice,
   getCurrentHumanTimestamp,
   getEmbedName,
   getOrganizationNameOrFallback,
   getStandaloneName,
-} from './ProjectDefinitions';
+} from './ProjectDefinitions.js';
 
 const createBundle = (moduleDirectory: string, input: string, name: string, cb: any) => {
   logger.info('[bundler] beginning in basedir', moduleDirectory);

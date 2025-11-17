@@ -50,7 +50,7 @@ const getShimLayoutTimeline: (value: number) => BytecodeTimelineProperty = (valu
  * @param {LayoutPropertyType} propertyType
  * @returns {{'0': {value: number}}}
  */
-export const simulateLayoutProperty = (propertyType: LayoutPropertyType) => {
+export const simulateLayoutProperty = (propertyType: LayoutPropertyType): BytecodeTimelineProperty => {
   switch (propertyType) {
     case LayoutPropertyType.Additive:
       return getShimLayoutTimeline(0);

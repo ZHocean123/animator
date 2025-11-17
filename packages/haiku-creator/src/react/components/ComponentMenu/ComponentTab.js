@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import Palette from 'haiku-ui-common/lib/Palette';
 import toTitleCase from '../../helpers/toTitleCase';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 const STYLES = {
   container: {

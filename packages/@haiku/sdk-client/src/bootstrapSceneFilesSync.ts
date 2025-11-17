@@ -3,7 +3,7 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import {getAngularSelectorName, getHaikuCoreVersion} from './ProjectDefinitions';
 
-export const bootstrapSceneFilesSync = (componentFolder: string, scenename: string, userconfig: any) => {
+export const bootstrapSceneFilesSync = (componentFolder: string, scenename: string, userconfig: any): string => {
   const rootComponentId = getCodeJs(scenename, userconfig);
 
     // Only write these files if they don't exist yet; don't overwrite the user's own content

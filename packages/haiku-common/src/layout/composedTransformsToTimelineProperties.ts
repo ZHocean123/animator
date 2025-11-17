@@ -94,7 +94,7 @@ export default (
   explicit = false,
   normalizer: LayoutSpec = null,
   epsilon: number = 1e3,
-) => {
+): ComposedTransformSpec => {
   // Note the array reversal - to combine matrices we go in the opposite of the transform sequence
   // I.e. if we transform A->B->C, the multiplication order should be CxBxA
   const decomposed = mat4Decompose(Layout3D.multiplyArrayOfMatrices(matrices.reverse()), epsilon);

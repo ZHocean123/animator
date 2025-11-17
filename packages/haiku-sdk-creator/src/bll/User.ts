@@ -43,9 +43,9 @@ export class UserHandler extends EnvoyHandler {
   // We'll negate this later if we find it to be the case.
   private isOnline = true;
 
-  protected registry = new Registry(FILE_PATHS.HAIKU_HOME);
+  protected registry: Registry = new Registry(FILE_PATHS.HAIKU_HOME);
 
-  reportActivity () {
+  reportActivity (): void {
     const authToken = sdkClient.config.getAuthToken();
     // Faked query string to keep squirrel happy.  as this is not genuinely an 'update' check, this shouldn't matter.
     return inkstone.updates.check(authToken, '?platform=mac&environment=production&branch=master', () => {

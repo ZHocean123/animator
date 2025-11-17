@@ -6,8 +6,8 @@
     "declaration": true,
     "declarationDir": "lib",
     "jsx": "react",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "paths": {
@@ -46,9 +46,9 @@
       ]
     },
     "preserveConstEnums": true,
-    "rootDir": "src",
+    "rootDir": ".",
     "sourceMap": true,
-    "target": "ES2020",
+    "target": "esnext",
     "types": [],
     "typeRoots": [
       "node_modules/@types/"
@@ -56,5 +56,13 @@
   },
   "include": [
     "packages/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/test/**",
+    "**/*.config.ts",
+    "**/tsdown.config.ts",
+    "lib",
+    "dist"
   ]
 }

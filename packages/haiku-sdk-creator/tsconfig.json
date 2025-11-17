@@ -4,14 +4,14 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": false,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ES2022",
+    "target": "esnext",
     "typeRoots": [
       "node_modules/@types/"
     ]

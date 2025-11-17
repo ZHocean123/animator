@@ -29,7 +29,7 @@ import {IContext, Nib} from './nib';
 // tslint:disable-next-line:no-var-requires
 const pkg = require('./../package.json');
 
-const cli = new Nib({
+const cli: Nib = new Nib({
   name: 'haiku',
   version: pkg.version,
   description: 'The Haiku CLI — developer utilities for automating Haiku actions and performing local and' +

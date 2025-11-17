@@ -1,42 +1,39 @@
 /* tslint:disable:no-parameter-reassignment no-shadowed-variable max-line-length */
 import * as path from 'path';
 import * as async from 'async';
-import * as lodash from 'lodash-es';
-import find from 'lodash-es/find';
-import merge from 'lodash-es/merge';
-import filter from 'lodash-es/filter';
+import {assign, find, merge, filter} from 'lodash-es';
 import * as net from 'net';
 import * as qs from 'qs';
 import * as WebSocket from 'ws';
 import {EventEmitter} from 'events';
 import {fileURLToPath} from 'node:url';
-import EnvoyServer from 'haiku-sdk-creator/lib/envoy/EnvoyServer';
-import EnvoyLogger from 'haiku-sdk-creator/lib/envoy/EnvoyLogger';
-import {EXPORTER_CHANNEL, ExporterHandler} from 'haiku-sdk-creator/lib/exporter';
-import {ERROR_CHANNEL, ErrorHandler} from 'haiku-sdk-creator/lib/bll/Error';
-import {USER_CHANNEL, UserHandler} from 'haiku-sdk-creator/lib/bll/User';
-import {PROJECT_CHANNEL, ProjectHandler} from 'haiku-sdk-creator/lib/bll/Project';
-import {GLASS_CHANNEL, GlassHandler} from 'haiku-sdk-creator/lib/glass';
-import {TIMELINE_CHANNEL, TimelineHandler} from 'haiku-sdk-creator/lib/timeline';
-import {TOUR_CHANNEL, TourHandler} from 'haiku-sdk-creator/lib/tour';
-import {SERVICES_CHANNEL, ServicesHandler} from 'haiku-sdk-creator/lib/services';
+import EnvoyServer from 'haiku-sdk-creator/lib/envoy/EnvoyServer.js';
+import EnvoyLogger from 'haiku-sdk-creator/lib/envoy/EnvoyLogger.js';
+import {EXPORTER_CHANNEL, ExporterHandler} from 'haiku-sdk-creator/lib/exporter/index.js';
+import {ERROR_CHANNEL, ErrorHandler} from 'haiku-sdk-creator/lib/bll/Error.js';
+import {USER_CHANNEL, UserHandler} from 'haiku-sdk-creator/lib/bll/User.js';
+import {PROJECT_CHANNEL, ProjectHandler} from 'haiku-sdk-creator/lib/bll/Project.js';
+import {GLASS_CHANNEL, GlassHandler} from 'haiku-sdk-creator/lib/glass/index.js';
+import {TIMELINE_CHANNEL, TimelineHandler} from 'haiku-sdk-creator/lib/timeline/index.js';
+import {TOUR_CHANNEL, TourHandler} from 'haiku-sdk-creator/lib/tour/index.js';
+import {SERVICES_CHANNEL, ServicesHandler} from 'haiku-sdk-creator/lib/services/index.js';
 import {inkstone} from '@haiku/sdk-inkstone';
 import {client as sdkClient} from '@haiku/sdk-client';
-import * as serializeError from 'haiku-serialization/src/utils/serializeError';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
-import {awaitAllLocksFree} from 'haiku-serialization/src/bll/Lock';
-import Master from './Master';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
+import * as serializeError from 'haiku-serialization/src/utils/serializeError.js';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
+import * as BaseModel from 'haiku-serialization/src/bll/BaseModel.js';
+import {awaitAllLocksFree} from 'haiku-serialization/src/bll/Lock.js';
+import Master from './Master.js';
+import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles.js';
 import {
   copyDefaultSketchFile,
   copyDefaultIllustratorFile,
-} from './project-folder/copyExternalExampleFilesToProject';
-import {duplicateProject} from './project-folder/duplicateProject';
+} from './project-folder/copyExternalExampleFilesToProject.js';
+import {duplicateProject} from './project-folder/duplicateProject.js';
 import {
   storeConfigValues,
-} from './project-folder/ProjectDefinitions';
+} from './project-folder/ProjectDefinitions.js';
 
 global.eval = () => {
   // noop: eval is forbidden
@@ -524,7 +521,7 @@ export default class Plumbing extends EventEmitter {
       clientSpec = Q_MASTER;
     }
 
-    const clientQuery = lodash.assign({folder}, clientSpec);
+    const clientQuery = assign({folder}, clientSpec);
 
     logger.info(`[plumbing] relaying ${message.name} to ${message.view}`);
 
@@ -859,7 +856,7 @@ export default class Plumbing extends EventEmitter {
         return this.awaitMasterAndCallMethod(folder, method, params, nextStep);
       }
 
-      this.sendQueriedClientMethod(lodash.assign({folder}, clientSpec), method, params, () => {});
+      this.sendQueriedClientMethod(assign({folder}, clientSpec), method, params, () => {});
       return nextStep();
     }, (err) => {
       return logAndHandleActionResult(err, cb, method, type, alias);
@@ -950,7 +947,7 @@ Plumbing.prototype.upsertMaster = function ({folder, fileOptions, envoyOptions, 
     });
 
     master.on('project-state-change', (payload) => {
-      remote(lodash.assign({
+      remote(assign({
         type: 'broadcast',
         name: 'project-state-change',
         folder: master.folder,

@@ -139,7 +139,7 @@ const manaChildToHtml = (child: BytecodeNode|string) => {
   return manaToXml(EMPTY, child);
 };
 
-export const xmlToMana = (xml: string) => {
+export const xmlToMana = (xml: string): BytecodeNode | undefined => {
   const obj = xmlParser(xml).root;
   return fixNode(obj);
 };

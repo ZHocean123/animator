@@ -60,14 +60,14 @@ export class Nib {
    * Kicks off CLI process.  Separated from constructor for ease of testing.
    * @param mockContext optional override IContext, useful for testing
    */
-  run (mockContext?: IContext) {
+  run (mockContext?: IContext): void {
     if (mockContext) {
       this.rootContext = mockContext;
     }
     this.interpretContext(this.rootContext);
   }
 
-  private usage (head: string[], command: Command | Command[], context: IContext) {
+  private usage (head: string[], command: Command | Command[], context: IContext): void {
     const topLevel = head.length === 0;
     const vals: {
       name?: string,
@@ -162,7 +162,7 @@ ${vals.options || ''}`);
    * Runs the CLI process by executing the provided context
    * @param context IContext specifying flags, args, etc.
    */
-  private interpretContext (context: IContext) {
+  private interpretContext (context: IContext): void {
     const head = [];
     const arg = context.argList.shift();
     if (arg) {
@@ -212,7 +212,7 @@ ${vals.options || ''}`);
    * @param context
    * @param head
    */
-  private evaluateCommand (command: Command, context: IContext, head: string[]) {
+  private evaluateCommand (command: Command, context: IContext, head: string[]): void {
     let evaluatingSubcommand = false;
     const args = context.argList;
     if (command.subcommands && args.length) {
@@ -303,13 +303,13 @@ export class Context implements IContext {
     readonly mockMode = false,
   ) {}
 
-  exit (code: number) {
+  exit (code: number): void {
     if (!this.mockMode) {
       process.exit(code);
     }
   }
 
-  writeLine (string: string) {
+  writeLine (string: string): void {
     this.logger.log(string);
   }
 }

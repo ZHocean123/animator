@@ -69,7 +69,7 @@ export namespace inkstone {
     Collection: T[];
   }
 
-  export const setConfig = (newVals: InkstoneConfig) => {
+  export const setConfig = (newVals: InkstoneConfig): void => {
     Object.assign(inkstoneConfig, newVals);
   };
 
@@ -92,7 +92,7 @@ export namespace inkstone {
   export type Callback<T> = (err: Error|null, data: T, response: request.RequestResponse) => void;
 
   export namespace support {
-    export function getPresignedUrl (authToken: MaybeAuthToken, uuid: string, cb: inkstone.Callback<string>) {
+    export function getPresignedUrl (authToken: MaybeAuthToken, uuid: string, cb: inkstone.Callback<string>): void {
 
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.SUPPORT_UPLOAD_GET_PRESIGNED_URL.replace(':UUID', uuid),
@@ -131,7 +131,7 @@ export namespace inkstone {
       IsAdmin: boolean;
     }
 
-    export function authenticate (username: string, password: string, cb: inkstone.Callback<Authentication>) {
+    export function authenticate (username: string, password: string, cb: inkstone.Callback<Authentication>): void {
       const formData = {
         username,
         password,
@@ -153,7 +153,7 @@ export namespace inkstone {
       });
     }
 
-    export function unauthenticate (authToken: MaybeAuthToken, cb: inkstone.Callback<boolean>) {
+    export function unauthenticate (authToken: MaybeAuthToken, cb: inkstone.Callback<boolean>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.LOGOUT,
         headers: {
@@ -167,7 +167,7 @@ export namespace inkstone {
       });
     }
 
-    export const get = (cb: inkstone.Callback<User>) => {
+    export const get = (cb: inkstone.Callback<User>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.UserDetailResource)
         .callWithCallback(cb);
@@ -177,7 +177,7 @@ export namespace inkstone {
       Username: string;
     }
 
-    export const update = (params: UserUpdateParams, cb: inkstone.Callback<User>) => {
+    export const update = (params: UserUpdateParams, cb: inkstone.Callback<User>): void => {
       newPutRequest()
         .withEndpoint(Endpoints.UserDetailResource)
         .withJson(params)
@@ -188,7 +188,7 @@ export namespace inkstone {
       authToken: MaybeAuthToken,
       params: ChangePasswordParams,
       cb: inkstone.Callback<string>,
-    ) {
+    ): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.CHANGE_PASSWORD,
         headers: {
@@ -208,7 +208,7 @@ export namespace inkstone {
       });
     }
 
-    export function confirm (token: string, cb: inkstone.Callback<Authentication>) {
+    export function confirm (token: string, cb: inkstone.Callback<Authentication>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.USER_CONFIRM.replace(':token', token),
       };
@@ -227,7 +227,7 @@ export namespace inkstone {
       ContinueUrl?: string;
     }
 
-    export function requestResetPassword (params: string|PasswordResetCreateParams, cb: inkstone.Callback<boolean>) {
+    export function requestResetPassword (params: string|PasswordResetCreateParams, cb: inkstone.Callback<boolean>): void {
       const body = {} as {email: string, continue_url: string};
       if (typeof params === 'string') {
         // Legacy: params passed as string.
@@ -258,7 +258,7 @@ export namespace inkstone {
     }
 
     export function requestConfirmEmail (
-      params: string|RequestConfirmEmailParams, cb: inkstone.Callback<Authentication>) {
+      params: string|RequestConfirmEmailParams, cb: inkstone.Callback<Authentication>): void {
       const email = typeof params === 'string' ? params : params.Email;
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.USER_REQUEST_CONFIRM.replace(':email', email),
@@ -279,7 +279,7 @@ export namespace inkstone {
     }
 
     export function claimResetPassword (
-      resetPasswordUUID: string, password: string, cb: inkstone.Callback<boolean>) {
+      resetPasswordUUID: string, password: string, cb: inkstone.Callback<boolean>): void {
 
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.RESET_PASSWORD_CLAIM.replace(':UUID', resetPasswordUUID),
@@ -304,7 +304,7 @@ export namespace inkstone {
       ContinueUrl?: string;
     }
 
-    export function create (params: UserCreateParams, cb: inkstone.Callback<boolean>) {
+    export function create (params: UserCreateParams, cb: inkstone.Callback<boolean>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.USER_CREATE,
         json: params,
@@ -337,7 +337,7 @@ export namespace inkstone {
       SUBSIDIARY_PRO = 3,
     }
 
-    export const list = (cb: inkstone.Callback<Organization[]>) => {
+    export const list = (cb: inkstone.Callback<Organization[]>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.OrganizationResourceCollection)
         .callWithCallback(cb);
@@ -358,7 +358,7 @@ export namespace inkstone {
       Organization: organization.Organization;
     }
 
-    export function getSnapshotAndProject (id: string, cb: inkstone.Callback<SnapshotAndProjectAndOrganization>) {
+    export function getSnapshotAndProject (id: string, cb: inkstone.Callback<SnapshotAndProjectAndOrganization>): void {
       const url = inkstoneConfig.baseUrl + ENDPOINTS.SNAPSHOT_GET_BY_ID.replace(':ID', encodeURIComponent(id));
       const options: request.OptionsWithUrl = {
         url,
@@ -376,7 +376,7 @@ export namespace inkstone {
     }
 
     // Notifies Inkstone that a snapshot has been syndicated.
-    export function registerSyndication (id: string, secretToken: string, cb: inkstone.Callback<string>) {
+    export function registerSyndication (id: string, secretToken: string, cb: inkstone.Callback<string>): void {
       const url = inkstoneConfig.baseUrl + ENDPOINTS.SNAPSHOT_SYNDICATED_BY_ID.replace(':ID', encodeURIComponent(id));
       const options: request.OptionsWithUrl = {
         url,
@@ -393,7 +393,7 @@ export namespace inkstone {
       });
     }
 
-    export function feature (authToken: MaybeAuthToken, uniqueId: string, cb: inkstone.Callback<boolean>) {
+    export function feature (authToken: MaybeAuthToken, uniqueId: string, cb: inkstone.Callback<boolean>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.SNAPSHOT_FEATURE_BY_ID.replace(
           ':ID', uniqueId),
@@ -412,7 +412,7 @@ export namespace inkstone {
       });
     }
 
-    export function unfeature (authToken: MaybeAuthToken, uniqueId: string, cb: inkstone.Callback<boolean>) {
+    export function unfeature (authToken: MaybeAuthToken, uniqueId: string, cb: inkstone.Callback<boolean>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.SNAPSHOT_UNFEATURE_BY_ID.replace(
           ':ID', uniqueId),
@@ -448,7 +448,7 @@ export namespace inkstone {
      * @param {string} code
      * @param {inkstone.Callback<inkstone.integrations.OAuthAccessTokenResponse>} cb
      */
-    export function getFigmaAccessToken (code: string, cb: inkstone.Callback<OAuthAccessTokenResponse>) {
+    export function getFigmaAccessToken (code: string, cb: inkstone.Callback<OAuthAccessTokenResponse>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.FIGMA_ACCCESS_TOKEN_GET + '?Code=' + encodeURIComponent(code),
         headers: baseHeaders,
@@ -468,7 +468,7 @@ export namespace inkstone {
      * @param {string} code
      * @param {inkstone.Callback<inkstone.integrations.OAuthAccessTokenResponse>} cb
      */
-    export function getCannyAccessToken (authToken: MaybeAuthToken, cb: inkstone.Callback<JSONWebTokenResponse>) {
+    export function getCannyAccessToken (authToken: MaybeAuthToken, cb: inkstone.Callback<JSONWebTokenResponse>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.CANNY_ACCCESS_TOKEN_GET,
         headers: {
@@ -542,7 +542,7 @@ export namespace inkstone {
       authToken: MaybeAuthToken,
       query: CommunityProjectsQuery,
       cb: inkstone.Callback<inkstone.PaginatedResponse<CommunityProject>>,
-    ) {
+    ): void {
       // TODO: automate this
       let queryString = '';
       queryString += `?page=${query.Pagination.Page}`;
@@ -580,7 +580,7 @@ export namespace inkstone {
     export const forkCommunityProject = (
       params: CommunityProject,
       cb: inkstone.Callback<project.Project>,
-    ) => {
+    ): void => {
       newPostRequest()
         .withEndpoint(Endpoints.ForkCommunityProject)
         .withUrlParameters({
@@ -612,7 +612,7 @@ export namespace inkstone {
       authToken: MaybeAuthToken,
       params: SetHaiKudosParams,
       cb: inkstone.Callback<boolean>,
-    ) {
+    ): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.SET_COMMUNITY_HAIKUDOS
           .replace(':ORGANIZATION_NAME', params.OrganizationName)
@@ -647,7 +647,7 @@ export namespace inkstone {
      * @param {inkstone.Callback<inkstone.community.OrganizationAndCommunityProjects>} cb
      */
     export function getProfile (
-      authToken: MaybeAuthToken, organizationName: string, cb: inkstone.Callback<OrganizationAndCommunityProjects>) {
+      authToken: MaybeAuthToken, organizationName: string, cb: inkstone.Callback<OrganizationAndCommunityProjects>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.COMMUNITY_PROFILE
           .replace(':ORGANIZATION_NAME', organizationName),
@@ -676,7 +676,7 @@ export namespace inkstone {
      */
     export function getProject (
       authToken: MaybeAuthToken, organizationName: string, projectName: string,
-      cb: inkstone.Callback<CommunityProject>) {
+      cb: inkstone.Callback<CommunityProject>): void {
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.GET_COMMUNITY_PROJECT
           .replace(':ORGANIZATION_NAME', organizationName)
@@ -729,7 +729,7 @@ export namespace inkstone {
       LottieURL: string;
     }
 
-    export const create = (params: ProjectCreateParams, cb: inkstone.Callback<Project>) => {
+    export const create = (params: ProjectCreateParams, cb: inkstone.Callback<Project>): void => {
       newPostRequest()
         .withEndpoint(Endpoints.ProjectResourceCollection)
         .withJson(params)
@@ -742,7 +742,7 @@ export namespace inkstone {
       IsPublic: boolean;
     }
 
-    export const update = (params: ProjectUpdateParams, cb: inkstone.Callback<Project>) => {
+    export const update = (params: ProjectUpdateParams, cb: inkstone.Callback<Project>): void => {
       newPutRequest()
         .withEndpoint(Endpoints.ProjectResource)
         .withUrlParameters({':project_name': params.Name})
@@ -750,7 +750,7 @@ export namespace inkstone {
         .callWithCallback(cb);
     };
 
-    export const list = (cb: inkstone.Callback<Project[]>) => {
+    export const list = (cb: inkstone.Callback<Project[]>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.ProjectResourceCollection)
         .callWithCallback(cb);
@@ -760,7 +760,7 @@ export namespace inkstone {
       Name: string;
     }
 
-    export const get = (params: ProjectGetParams, cb: inkstone.Callback<Project>) => {
+    export const get = (params: ProjectGetParams, cb: inkstone.Callback<Project>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.ProjectResource)
         .withUrlParameters({':project_name': params.Name})
@@ -771,7 +771,7 @@ export namespace inkstone {
       Name: string;
     }
 
-    export const deleteByName = (params: ProjectDeleteParams, cb: inkstone.Callback<void>) => {
+    export const deleteByName = (params: ProjectDeleteParams, cb: inkstone.Callback<void>): void => {
       newDeleteRequest()
         .withEndpoint(Endpoints.ProjectResource)
         .withUrlParameters({':project_name': params.Name})
@@ -783,7 +783,7 @@ export namespace inkstone {
       Sha: string;
     }
 
-    export const createSnapshot = (params: CreateSnapshotParams, cb: inkstone.Callback<ProjectSnapshot>) => {
+    export const createSnapshot = (params: CreateSnapshotParams, cb: inkstone.Callback<ProjectSnapshot>): void => {
       newPutRequest()
         .withEndpoint(Endpoints.ProjectSnapshotResource)
         .withUrlParameters({':project_name': params.Name, ':sha': params.Sha})
@@ -795,7 +795,7 @@ export namespace inkstone {
       Sha: string;
     }
 
-    export const getSnapshot = (params: GetSnapshotParams, cb: inkstone.Callback<ProjectSnapshot>) => {
+    export const getSnapshot = (params: GetSnapshotParams, cb: inkstone.Callback<ProjectSnapshot>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.ProjectSnapshotResource)
         .withUrlParameters({':project_name': params.Name, ':sha': params.Sha})
@@ -810,7 +810,7 @@ export namespace inkstone {
     export const markSnapshotSyndicated = (
       params: MarkSnapshotSyndicatedParams,
       cb: inkstone.Callback<void>,
-    ) => {
+    ): void => {
       newPutRequest()
         .withEndpoint(Endpoints.ProjectSnapshotSyndicated)
         .withUrlParameters({':project_name': params.Name, ':sha': params.Sha})
@@ -830,7 +830,7 @@ export namespace inkstone {
     export const createSnapshotAsset = (
       params: CreateSnapshotAssetParams,
       cb: inkstone.Callback<SnapshotPresignedURL>,
-    ) => {
+    ): void => {
       newPutRequest()
         .withEndpoint(Endpoints.ProjectSnapshotAssetResource)
         .withUrlParameters({':project_name': params.Name, ':sha': params.Sha, ':filename': params.Filename})
@@ -839,7 +839,7 @@ export namespace inkstone {
   }
 
   export namespace updates {
-    export function check (authToken: MaybeAuthToken, query: string, cb: inkstone.Callback<boolean>) {
+    export function check (authToken: MaybeAuthToken, query: string, cb: inkstone.Callback<boolean>): void {
 
       const options: request.OptionsWithUrl = {
         url: inkstoneConfig.baseUrl + ENDPOINTS.UPDATES + query,
@@ -941,7 +941,7 @@ export namespace inkstone {
      *
      * If the call is authenticated, then the IsCurrentPlan property will be populated in the list of available plans.
      */
-    export const listProducts = (cb: inkstone.Callback<Product[]>) => {
+    export const listProducts = (cb: inkstone.Callback<Product[]>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.BillingListProducts)
         .callWithCallback(cb);
@@ -954,7 +954,7 @@ export namespace inkstone {
      * Error codes:
      *   E_BILLING_CUSTOMER_NOT_FOUND - when we are unable to locate customer data.
      */
-    export const describe = (cb: inkstone.Callback<Profile>) => {
+    export const describe = (cb: inkstone.Callback<Profile>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.BillingDescribe)
         .callWithCallback(cb);
@@ -968,7 +968,7 @@ export namespace inkstone {
      *   E_BILLING_INFO_REQUIRED - when parameters are missing.
      *   E_BILLING_UNABLE_TO_UPDATE_CUSTOMER_RECORD - when the Stripe call fails.
      */
-    export const setCustomer = (customer: Customer, cb: inkstone.Callback<void>) => {
+    export const setCustomer = (customer: Customer, cb: inkstone.Callback<void>): void => {
       newPutRequest()
         .withEndpoint(Endpoints.BillingSetCustomer)
         .withJson(customer)
@@ -1001,7 +1001,7 @@ export namespace inkstone {
      *   E_BILLING_CUSTOMER_NOT_FOUND - if you have failed to call setCustomer() first.
      *   E_BILLING_CREATE_CARD_FAILED - when the Stripe call fails.
      */
-    export const addCard = (card: AddCardRequestParams, cb: inkstone.Callback<void>) => {
+    export const addCard = (card: AddCardRequestParams, cb: inkstone.Callback<void>): void => {
       newPostRequest()
         .withEndpoint(Endpoints.BillingAddCard)
         .withJson(card)
@@ -1017,7 +1017,7 @@ export namespace inkstone {
      *   E_BILLING_CUSTOMER_NOT_FOUND - if you have failed to call setCustomer() first.
      *   E_BILLING_SET_DEFAULT_CARD_FAILED - when the Stripe call fails.
      */
-    export const setCardAsDefaultById = (cardId: string, cb: inkstone.Callback<void>) => {
+    export const setCardAsDefaultById = (cardId: string, cb: inkstone.Callback<void>): void => {
       newPutRequest()
         .withEndpoint(Endpoints.BillingSetCardAsDefaultById)
         .withUrlParameters({':card_id': cardId})
@@ -1034,7 +1034,7 @@ export namespace inkstone {
      *   E_BILLING_CUSTOMER_NOT_FOUND - if you have failed to call setCustomer() first.
      *   E_BILLING_DELETE_CARD_FAILED - when the Stripe call fails.
      */
-    export const deleteCardById = (cardId: string, cb: inkstone.Callback<void>) => {
+    export const deleteCardById = (cardId: string, cb: inkstone.Callback<void>): void => {
       newDeleteRequest()
         .withEndpoint(Endpoints.BillingDeleteCardById)
         .withUrlParameters({':card_id': cardId})
@@ -1062,7 +1062,7 @@ export namespace inkstone {
     export const setPlan = (
       plan: SetPlanRequestParams,
       cb: inkstone.Callback<Subscription>,
-    ) => {
+    ): void => {
       newPutRequest()
         .withEndpoint(Endpoints.BillingPlanResource)
         .withJson(plan)
@@ -1080,7 +1080,7 @@ export namespace inkstone {
      */
     export const cancelPlan = (
       cb: inkstone.Callback<void>,
-    ) => {
+    ): void => {
       newDeleteRequest()
         .withEndpoint(Endpoints.BillingPlanResource)
         .callWithCallback(cb);
@@ -1096,7 +1096,7 @@ export namespace inkstone {
     export const getCoupon = (
       couponID: string,
       cb: inkstone.Callback<Coupon>,
-    ) => {
+    ): void => {
       newGetRequest()
         .withEndpoint(Endpoints.BillingDescribeCoupon)
         .withUrlParameters({':coupon_id': couponID})
@@ -1113,7 +1113,7 @@ export namespace inkstone {
      *   E_BILLING_CREATE_TAX_ID_INVALID_VALUE - if the vat number is invalid.
      *   E_BILLING_CREATE_TAX_ID_FAILED - when the Stripe call fails.
      */
-    export const createTaxID = (taxID: CreateTaxIDRequestParams, cb: inkstone.Callback<void>) => {
+    export const createTaxID = (taxID: CreateTaxIDRequestParams, cb: inkstone.Callback<void>): void => {
       newPostRequest()
         .withEndpoint(Endpoints.BillingTaxID)
         .withJson(taxID)
@@ -1132,7 +1132,7 @@ export namespace inkstone {
      *   E_BILLING_CUSTOMER_NOT_FOUND when the Stripe customer does not exist.
      *   E_INVALID_NUMBER_OF_SEATS when the number of seats is not valid.
      */
-    export const addSeats = (addSeatsParams: AddSeatsParams, cb: inkstone.Callback<void>) => {
+    export const addSeats = (addSeatsParams: AddSeatsParams, cb: inkstone.Callback<void>): void => {
       newPutRequest()
       .withEndpoint(Endpoints.BillingAddSeats)
       .withJson(addSeatsParams)
@@ -1153,7 +1153,7 @@ export namespace inkstone {
      * E_TEAM_INVALID_NUMBER_OF_SEATS - when the number of seats is not valid.
 	   * E_TEAM_CREATE_FAILED - when something went wrong while creating the team in the DB.
      */
-    export const createTeam = (team: CreateTeamParams, cb: inkstone.Callback<void>) => {
+    export const createTeam = (team: CreateTeamParams, cb: inkstone.Callback<void>): void => {
       newPostRequest()
       .withEndpoint(Endpoints.Team)
       .withJson(team)
@@ -1169,7 +1169,7 @@ export namespace inkstone {
      * Return the already assigned seats for a user.
      *
      */
-    export const listAssignedSeats = (cb: inkstone.Callback<SeatAssignment[]>) => {
+    export const listAssignedSeats = (cb: inkstone.Callback<SeatAssignment[]>): void => {
       newGetRequest()
         .withEndpoint(Endpoints.TeamAssignedSeats)
         .callWithCallback(cb);
@@ -1184,7 +1184,7 @@ export namespace inkstone {
      * A invited user confirms the account by reseting the password.
      *
      */
-    export const confirmSeat = (confirmSeatParams: ConfirmSeatParams, cb: inkstone.Callback<void>) => {
+    export const confirmSeat = (confirmSeatParams: ConfirmSeatParams, cb: inkstone.Callback<void>): void => {
       newPostRequest()
       .withEndpoint(Endpoints.TeamConfirmSeat)
       .withJson(confirmSeatParams)
@@ -1200,7 +1200,7 @@ export namespace inkstone {
      * Resend the invite to join a team.
      *
      */
-    export const resendConfirmSeatEmail = (resendConfirmSeatEmailParams: ResendConfirmSeatEmailParams, cb: inkstone.Callback<void>) => {
+    export const resendConfirmSeatEmail = (resendConfirmSeatEmailParams: ResendConfirmSeatEmailParams, cb: inkstone.Callback<void>): void => {
       newPostRequest()
       .withEndpoint(Endpoints.TeamResendConfirmSeatEmail)
       .withJson(resendConfirmSeatEmailParams)
@@ -1218,7 +1218,7 @@ export namespace inkstone {
      * Error codes:
      * ErrorCodeTeamNotEnoughSeats - when the team does not have enough seats to all users
      */
-    export const assignSeats = (assignSeatsParams: AssignSeatsParams[], cb: inkstone.Callback<void>) => {
+    export const assignSeats = (assignSeatsParams: AssignSeatsParams[], cb: inkstone.Callback<void>): void => {
       newPostRequest()
       .withEndpoint(Endpoints.TeamAssignSeats)
       .withJson(assignSeatsParams)

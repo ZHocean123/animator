@@ -54,7 +54,7 @@ let experimentConfig: ExperimentConfig;
 type ExperimentCache = {[key in Experiment]: boolean};
 const experimentCache = {} as ExperimentCache;
 
-export const clearExperimentCache = () => {
+export const clearExperimentCache = (): void => {
   experimentConfig = null;
   Object.keys(experimentCache).forEach((experimentId) => {
     delete (experimentCache as any)[experimentId];

@@ -15,7 +15,7 @@ export const DEFAULT_LINE_SELECTION_THRESHOLD = 5;
 // Number of segments to create when approximating a cubic bezier segment
 export const CUBIC_BEZIER_APPROXIMATION_RESOLUTION = 80;
 
-export const isClosedPath = (maybePath: CurveSpec|null) => maybePath && maybePath.closed;
+export const isClosedPath = (maybePath: CurveSpec|null): boolean => !!(maybePath && maybePath.closed);
 
 export const bezierCubic = (a: Vec2, h1: Vec2, h2: Vec2, b: Vec2, t: number): Vec2 => {
   const t2 = t * t;

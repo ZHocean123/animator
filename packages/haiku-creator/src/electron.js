@@ -16,7 +16,7 @@ import {isProxied, ProxyType} from 'haiku-common/lib/proxies';
 import TopMenu from 'haiku-common/lib/electron/TopMenu';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import {isMac, isWindows} from 'haiku-common/lib/environments/os';
 import _ from 'lodash-es';
 import { writeJSON } from 'fs-extra';

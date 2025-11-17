@@ -1,7 +1,7 @@
 
 import * as fse from 'fs-extra';
 import * as path from 'path';
-import {getResourcesPath} from './getResourcesPath';
+import {getResourcesPath} from './getResourcesPath.js';
 import {fileURLToPath} from 'node:url';
 import {dirname} from 'node:path';
 

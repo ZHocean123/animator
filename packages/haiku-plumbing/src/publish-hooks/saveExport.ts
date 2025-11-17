@@ -1,9 +1,9 @@
-import {handleExporterSaveRequest} from 'haiku-formats/lib/exporters';
-import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
+import {handleExporterSaveRequest} from 'haiku-formats/lib/exporters/index.js';
+import {ExporterFormat, type ExporterRequest} from 'haiku-sdk-creator/lib/exporter/index.js';
 // @ts-ignore
-import * as ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent';
+import ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent.js';
 // @ts-ignore
-import * as Bytecode from 'haiku-serialization/src/bll/Bytecode';
+import * as Bytecode from 'haiku-serialization/src/bll/Bytecode.js';
 
 export default (request: ExporterRequest, activeComponent: ActiveComponent, cb: (err: Error|void) => void) => {
   const bytecode = activeComponent.fetchActiveBytecodeFile().getReifiedDecycledBytecode({

@@ -12,7 +12,7 @@ export enum ProxyType {
 /**
  * Canonical method to detect if a proxy string provided by electron
  */
-export const isProxied = (proxyString: string) => {
+export const isProxied = (proxyString: string): boolean => {
   return proxyString !== ProxyType.Direct;
 };
 

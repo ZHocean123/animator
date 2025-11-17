@@ -1,87 +1,64 @@
-const path = require('path');
-const os = require('os');
-const fse = require('fs-extra');
-const async = require('async');
-
-const out = {};
+import path from 'node:path';
+import os from 'node:os';
+import fse from 'fs-extra';
+import async from 'async';
 
 let didTakeTourCache = null;
 
-const HOMEDIR_PATH = path.join(os.homedir(), '.haiku');
+export const HOMEDIR_PATH = path.join(os.homedir(), '.haiku');
+export const HOMEDIR_AUTH_PATH = path.join(HOMEDIR_PATH, 'auth');
+export const HOMEDIR_PROJECTS_PATH = path.join(HOMEDIR_PATH, 'projects');
+export const HOMEDIR_LOGS_PATH = path.join(HOMEDIR_PATH, 'logs');
+export const HOMEDIR_MODEL_STORAGE_PATH = path.join(HOMEDIR_PATH, 'model-storage');
+export const HOMEDIR_CRASH_REPORTS_PATH = path.join(HOMEDIR_PATH, 'crash-reports');
+export const HOMEDIR_MANIFEST_PATH = path.join(HOMEDIR_PATH, 'manifest.json');
+export const HOMEDIR_TOUR_PATH = path.join(HOMEDIR_PATH, 'tour.json');
+export const HOMEDIR_SKETCH_DIALOG_PATH = path.join(HOMEDIR_PATH, 'sketch-dialog');
 
-out.HOMEDIR_PATH = HOMEDIR_PATH;
-out.HOMEDIR_AUTH_PATH = path.join(HOMEDIR_PATH, 'auth');
-out.HOMEDIR_PROJECTS_PATH = path.join(HOMEDIR_PATH, 'projects');
-out.HOMEDIR_LOGS_PATH = path.join(HOMEDIR_PATH, 'logs');
-out.HOMEDIR_MODEL_STORAGE_PATH = path.join(HOMEDIR_PATH, 'model-storage');
-out.HOMEDIR_CRASH_REPORTS_PATH = path.join(HOMEDIR_PATH, 'crash-reports');
-out.HOMEDIR_MANIFEST_PATH = path.join(HOMEDIR_PATH, 'manifest.json');
-out.HOMEDIR_TOUR_PATH = path.join(HOMEDIR_PATH, 'tour.json');
-out.HOMEDIR_SKETCH_DIALOG_PATH = path.join(HOMEDIR_PATH, 'sketch-dialog');
-
-// Checks if the user has taken the tour based on the
-// existence of the HOMEDIR_TOUR_PATH.
-//
-// @returns Boolean
-out.didTakeTour = () => {
+export const didTakeTour = () => {
   if (didTakeTourCache === null) {
-    didTakeTourCache = fse.existsSync(out.HOMEDIR_TOUR_PATH);
+    didTakeTourCache = fse.existsSync(HOMEDIR_TOUR_PATH);
   }
-
   return didTakeTourCache;
 };
 
-// Creates a file to store tour options
-out.createTourFile = () => {
-  // Even if the file wasn't in fact created (imagine an error on
-  //  ensureFileSync), we want to set the cache anyway
+export const createTourFile = () => {
   didTakeTourCache = true;
-  return fse.ensureFileSync(out.HOMEDIR_TOUR_PATH);
+  return fse.ensureFileSync(HOMEDIR_TOUR_PATH);
 };
 
-// Checks if the user has taken the tour based on the
-// existence of the HOMEDIR_SKETCH_DIALOG_PATH.
-//
-// @returns Boolean
-out.didAskedForSketch = () => {
-  return fse.existsSync(out.HOMEDIR_SKETCH_DIALOG_PATH);
+export const didAskedForSketch = () => {
+  return fse.existsSync(HOMEDIR_SKETCH_DIALOG_PATH);
 };
 
-// Creates a file to store tour options
-out.createSketchDialogFile = () => {
-  return fse.ensureFileSync(out.HOMEDIR_SKETCH_DIALOG_PATH);
+export const createSketchDialogFile = () => {
+  return fse.ensureFileSync(HOMEDIR_SKETCH_DIALOG_PATH);
 };
 
-function isDir (abspath) {
+function isDir(abspath) {
   try {
     return fse.lstatSync(abspath).isDirectory();
   } catch (exception) {
-    logger.warn(exception);
+    console.warn(exception);
     return false;
   }
 }
 
-out.enumerateAllProjectsByOrganization = (cb) => {
-  return fse.readdir(out.HOMEDIR_PROJECTS_PATH, (err, orgEntries) => {
+export const enumerateAllProjectsByOrganization = (cb) => {
+  return fse.readdir(HOMEDIR_PROJECTS_PATH, (err, orgEntries) => {
     if (err) {
       return err;
     }
-
     const organizations = {};
-
     return async.each(orgEntries, (orgEntry, nextOrgEntry) => {
-      const orgAbspath = path.join(out.HOMEDIR_PROJECTS_PATH, orgEntry);
-
-      // Don't include any orgs that aren't directories
+      const orgAbspath = path.join(HOMEDIR_PROJECTS_PATH, orgEntry);
       if (!isDir(orgAbspath)) {
         return nextOrgEntry();
       }
       if (orgEntry[0] === '.') {
         return nextOrgEntry();
       }
-
       organizations[orgEntry] = [];
-
       return fse.readdir(orgAbspath, (err, projEntries) => {
         if (err) {
           return nextOrgEntry();
@@ -89,11 +66,8 @@ out.enumerateAllProjectsByOrganization = (cb) => {
         if (!projEntries) {
           return nextOrgEntry();
         }
-
         projEntries.forEach((projEntry) => {
           const projAbspath = path.join(orgAbspath, projEntry);
-
-          // Only include visible directories that aren't backups or weird files
           if (!isDir(projAbspath)) {
             return;
           }
@@ -106,13 +80,11 @@ out.enumerateAllProjectsByOrganization = (cb) => {
           if (projEntry.match(/\.bak/)) {
             return;
           }
-
           organizations[orgEntry].push({
             project: projEntry,
             abspath: projAbspath,
           });
         });
-
         return nextOrgEntry();
       });
     }, (err) => {
@@ -124,6 +96,21 @@ out.enumerateAllProjectsByOrganization = (cb) => {
   });
 };
 
-module.exports = out;
+const out = {
+  HOMEDIR_PATH,
+  HOMEDIR_AUTH_PATH,
+  HOMEDIR_PROJECTS_PATH,
+  HOMEDIR_LOGS_PATH,
+  HOMEDIR_MODEL_STORAGE_PATH,
+  HOMEDIR_CRASH_REPORTS_PATH,
+  HOMEDIR_MANIFEST_PATH,
+  HOMEDIR_TOUR_PATH,
+  HOMEDIR_SKETCH_DIALOG_PATH,
+  didTakeTour,
+  createTourFile,
+  didAskedForSketch,
+  createSketchDialogFile,
+  enumerateAllProjectsByOrganization,
+};
 
-const logger = require('./LoggerInstance');
+export default out;

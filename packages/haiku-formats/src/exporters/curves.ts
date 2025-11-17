@@ -9,7 +9,7 @@ export type InterpolationPoints = [number, number, number, number];
  * @param {Curve|InterpolationPoints} curve
  * @returns {InterpolationPoints}
  */
-export const getCurveInterpolationPoints = (curve: Curve|InterpolationPoints) => {
+export const getCurveInterpolationPoints = (curve: Curve|InterpolationPoints): InterpolationPoints => {
   if (Array.isArray(curve)) {
     // We may receive a pre-interpolated curve. Just return it as is.
     return curve;
@@ -131,7 +131,7 @@ const normalizeValue = (value: number, from: number, to: number): number =>
  */
 export const splitBezierForTimelinePropertyAtKeyframe = (
   timelineProperty: BytecodeTimelineProperty, keyframe: number,
-) => {
+): void => {
   const allKeyframes = Object.keys(timelineProperty).map(Number);
   const previousKeyframe = Math.max(...allKeyframes.filter((k) => k < keyframe));
   const nextKeyframe = Math.min(...allKeyframes.filter((k) => k > keyframe));
@@ -299,7 +299,7 @@ const isBounceCurve = (curve: Curve) => /Bounce/.test(curve);
  * @param {Curve} curve
  * @returns {boolean}
  */
-export const isDecomposableCurve = (curve: Curve) => isBounceCurve(curve) || isElasticCurve(curve);
+export const isDecomposableCurve = (curve: Curve): boolean => isBounceCurve(curve) || isElasticCurve(curve);
 
 /**
  * Decomposes a compound curve between keyframes.
@@ -312,7 +312,7 @@ export const decomposeCurveBetweenKeyframes = (
   timelineProperty: BytecodeTimelineProperty,
   inKeyframe: number,
   outKeyframe: number,
-) => {
+): void => {
   // #FIXME: this will only work correctly for numbers right now.
   // To do this correctly for e.g. paths, we would need more data.
   if (

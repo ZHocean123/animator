@@ -6,7 +6,7 @@ import {dirname} from 'node:path';
 /**
  * Retrieve the experiment config from disk.
  */
-export const getExperimentConfig = () => {
+export const getExperimentConfig = (): any => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const experimentsFolder = resolve(__dirname, '..', 'config');

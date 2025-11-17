@@ -115,7 +115,7 @@ export const composeTimelines = (
   shapeLayerSize: ThreeDimensionalLayoutProperty,
   childTimeline: any,
   parentTimeline: any,
-) => {
+): any => {
   const composedTimeline = {
     ...parentTimeline,
     ...childTimeline,

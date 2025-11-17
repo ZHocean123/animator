@@ -15,13 +15,13 @@ import {getFixedPropertyValue} from './bodymovinUtils';
  * Transforms CSS opacity in [0, 1] to Bodymovin opacity in [0, 100].
  * @param opacity
  */
-export const opacityTransformer = (opacity: number) => 100 * opacity;
+export const opacityTransformer = (opacity: number): number => 100 * opacity;
 
 /**
  * Transforms CSS scale in [0, 1] to Bodymovin scale in [0, 100].
  * @param scale
  */
-export const scaleTransformer = (scale: number) => 100 * scale;
+export const scaleTransformer = (scale: number): number => 100 * scale;
 
 /**
  * Gets a match array for a value reference, e.g. for a property value like fill="url('#foobar')".
@@ -42,7 +42,7 @@ export const getValueReferenceMatchArray = (value: string): RegExpMatchArray =>
  * @param {string} color
  * @returns {[number , number , number , number]}
  */
-export const colorTransformer = (color: string) => {
+export const colorTransformer = (color: string): [number, number, number, number] => {
   const colorModel: {value: [number, number, number, number]} = ColorUtils.parseString(color);
   if (colorModel === null || typeof colorModel === 'string') {
     return [1, 1, 1, 0];
@@ -62,14 +62,14 @@ export const colorTransformer = (color: string) => {
  * @param {number} radians
  * @returns {number}
  */
-export const rotationTransformer = (radians: number) => radians * 180 / Math.PI;
+export const rotationTransformer = (radians: number): number => radians * 180 / Math.PI;
 
 /**
  * Transforms a CSS strokeLinecap into an After Effects Line Cap.
  * @param {string} linecap
  * @returns {StrokeLinecap}
  */
-export const linecapTransformer = (linecap: string) => {
+export const linecapTransformer = (linecap: string): StrokeLinecap => {
   switch (linecap) {
     case 'butt':
       return StrokeLinecap.Butt;
@@ -85,7 +85,7 @@ export const linecapTransformer = (linecap: string) => {
  * @param {string} linejoin
  * @returns {StrokeLinejoin}
  */
-export const linejoinTransformer = (linejoin: string) => {
+export const linejoinTransformer = (linejoin: string): StrokeLinejoin => {
   switch (linejoin) {
     case 'round':
       return StrokeLinejoin.Round;
@@ -101,7 +101,7 @@ export const linejoinTransformer = (linejoin: string) => {
  * @param {string} fillrule
  * @returns {FillRule}
  */
-export const fillruleTransformer = (fillrule: string) => {
+export const fillruleTransformer = (fillrule: string): FillRule => {
   switch (fillrule) {
     case 'evenodd':
       return FillRule.Evenodd;

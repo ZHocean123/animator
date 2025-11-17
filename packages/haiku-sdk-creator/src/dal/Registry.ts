@@ -43,7 +43,7 @@ export class Registry {
     }
   }
 
-  private flushConfig () {
+  private flushConfig (): void {
     setRegistry(this.container, this.config);
   }
 
@@ -51,13 +51,13 @@ export class Registry {
     return this.config[key];
   }
 
-  setConfig<T> (key: string, value: T) {
+  setConfig<T> (key: string, value: T): void {
     this.config[key] = value;
     // TODO: should we debounce or delay writing to disk?
     this.flushConfig();
   }
 
-  deleteConfig (key: string) {
+  deleteConfig (key: string): void {
     delete this.config[key];
     // TODO: should we debounce or delay writing to disk?
     this.flushConfig();

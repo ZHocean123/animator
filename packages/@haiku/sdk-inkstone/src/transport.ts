@@ -32,7 +32,7 @@ const getInstanceWithDefaults = (defaults: request.CoreOptions): RequestInstance
   };
 };
 
-export const requestInstance = getInstanceWithDefaults({
+export const requestInstance: RequestInstance = getInstanceWithDefaults({
   // Delegate to the browser to handle "strictSSL" if we're in a browser context. We have seen some false
   // negatives with the 'request' Node dependency in certain contextx, and every modern browser has its own,
   // battle-hardened strict SSL behavior which will stop requests in preflight regardless of this setting.

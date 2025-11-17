@@ -29,7 +29,7 @@ export class TimelineHandler implements Timeline {
 
   private timelineRegistry: {};
 
-  private getTimelineDataById (timelineId: string) {
+  private getTimelineDataById (timelineId: string): TimelineData {
     if ((this.timelineRegistry as any)[timelineId]) {
       return (this.timelineRegistry as any)[timelineId];
     }
@@ -39,7 +39,7 @@ export class TimelineHandler implements Timeline {
     return newTimelineData;
   }
 
-  play (timelineId: string) {
+  play (timelineId: string): void {
     const timeline = this.getTimelineDataById(timelineId);
     // TODO: need to setTimelineTime in ActiveComponent
     // let currentTime = Math.round(currentFrame * frameInfo.mspf)
@@ -70,7 +70,7 @@ export class TimelineHandler implements Timeline {
     return timeline.currentFrame;
   }
 
-  seekToMs (timelineId: string, ms: number) {
+  seekToMs (timelineId: string, ms: number): void {
     throw new Error('unimplemented');
   }
 
@@ -78,7 +78,7 @@ export class TimelineHandler implements Timeline {
     throw new Error('unimplemented');
   }
 
-  seekToFrame (timelineId: string, frame: number) {
+  seekToFrame (timelineId: string, frame: number): void {
     const timeline = this.getTimelineDataById(timelineId);
     timeline.currentFrame = frame | 0;
     timeline.stopwatch = Date.now();
@@ -104,18 +104,18 @@ export class TimelineHandler implements Timeline {
     throw new Error('unimplemented');
   }
 
-  setFps (timelineId: string, fps: number) {
+  setFps (timelineId: string, fps: number): void {
     const timeline = this.getTimelineDataById(timelineId);
     timeline.fps = fps;
     throw new Error('unimplemented');
   }
 
-  getFps (timelineId: string) {
+  getFps (timelineId: string): number {
     const timeline = this.getTimelineDataById(timelineId);
     return timeline.fps;
   }
 
-  getCurrentFrame (timelineId: string) {
+  getCurrentFrame (timelineId: string): number {
     const timeline = this.getTimelineDataById(timelineId);
     let ret: number;
     if (timeline.playing) {

@@ -50,7 +50,7 @@
     "semver": "^7.6.0",
     "standard": "^10.0.2"
   },
-  "main": "./lib/index",
+  "main": "./lib/index.js",
   "scripts": {
     "coverage": "istanbul cover -i 'lib/**' -x '**/__tests__/**' test.js",
     "coveralls": "npm run coverage && coveralls < coverage/lcov.info",

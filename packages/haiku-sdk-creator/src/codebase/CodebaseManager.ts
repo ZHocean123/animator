@@ -17,7 +17,7 @@ export default class CodebaseManager {
     }
   }
 
-  writeHaikuToCodebase () {
+  writeHaikuToCodebase (): void {
     this.flavor.writeHaikuToCodebase();
   }
 

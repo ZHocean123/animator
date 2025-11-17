@@ -27,7 +27,7 @@ function separate (str: string) {
   };
 }
 
-export default function parseCssTransformString (inStr: string, epsilon: number = 1e3) {
+export default function parseCssTransformString (inStr: string, epsilon: number = 1e3): Record<string, any> {
   const out = {};
 
   if (!inStr) {

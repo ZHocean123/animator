@@ -1,8 +1,8 @@
-import Plumbing from 'haiku-plumbing/lib/Plumbing';
-import envInfo from 'haiku-plumbing/lib/envInfo';
-import haikuInfo from 'haiku-plumbing/lib/haikuInfo';
+import Plumbing from 'haiku-plumbing/lib/Plumbing.js';
+import envInfo from 'haiku-plumbing/lib/envInfo.js';
+import haikuInfo from 'haiku-plumbing/lib/haikuInfo.js';
 import path from 'path';
-import logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
 global.eval = function () {
   // noop: eval is forbidden

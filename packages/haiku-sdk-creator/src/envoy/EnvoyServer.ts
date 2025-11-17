@@ -132,7 +132,7 @@ export default class EnvoyServer {
     return new Promise(executor);
   }
 
-  emit (channel: string, event: EnvoyEvent) {
+  emit (channel: string, event: EnvoyEvent): void {
     this.broadcast({
       channel,
       data: JSON.stringify(event),
@@ -158,7 +158,7 @@ export default class EnvoyServer {
    * // Incoming requests will trigger methods on sparkleHandler
    * myEnvoyServer.bindHandler("Sparkles", sparkleHandler)
    */
-  bindHandler (channel: string, handlerClass: any, handlerInstance?: any) {
+  bindHandler (channel: string, handlerClass: any, handlerInstance?: any): void {
     // TODO: support spawning a new process/worker for this handler.
     const instance = handlerInstance || new handlerClass();
     this.handlerRegistry.set(channel, {
@@ -172,7 +172,7 @@ export default class EnvoyServer {
    * is a request or a response and determining how/if to fire a handler
    * @param rawData the datagram object (request or response JSON blob)
    */
-  private handleRawData (rawData: string) {
+  private handleRawData (rawData: string): void {
     const data: Datagram = JSON.parse(rawData);
     if (data.intent === DatagramIntent.REQUEST) {
       const handler = this.handlerRegistry.get(data.channel);
@@ -246,7 +246,7 @@ export default class EnvoyServer {
    * Sends provided datagram to all connected clients
    * @param datagram
    */
-  private broadcast (datagram: Datagram) {
+  private broadcast (datagram: Datagram): void {
     // TODO:  could detect which channel a client is bound to, then broadcast a given datagram only to the relevant
     // clients. For now, every client gets every response.
     for (const [_, client] of this.clientRegistry) {
@@ -265,7 +265,7 @@ export default class EnvoyServer {
    * @param datagram
    * @param client
    */
-  private rawTransmitToClient (datagram: Datagram, client: IdentifiableWebSocket) {
+  private rawTransmitToClient (datagram: Datagram, client: IdentifiableWebSocket): void {
     client.send(JSON.stringify(datagram));
   }
 
@@ -273,7 +273,7 @@ export default class EnvoyServer {
    * Loops across top-level members of handler and finds all functions, which it
    * populates into a schema object.
    */
-  private discoverSchemaOfHandlerPrototype (handlerTuple: HandlerTuple): {} {
+  private discoverSchemaOfHandlerPrototype (handlerTuple: HandlerTuple): Record<string, string> {
     const ret = {};
     const proto = handlerTuple.proto;
     const instance = handlerTuple.instance;

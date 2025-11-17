@@ -99,7 +99,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * @method closeConnection
    * @description Close the websocket connection
    */
-  closeConnection () {
+  closeConnection (): void {
     return this.socket.close();
   }
 
@@ -117,7 +117,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * Adds the `.on` method to a generated client, so consumers can subscribe to events
    * @param subject
    */
-  private addEventLogic (subject: T) {
+  private addEventLogic (subject: T): void {
     subject.on = (eventName, handler) => {
       const handlers = this.eventHandlers.get(eventName as string) || [];
       handlers.push(handler);
@@ -194,7 +194,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * and responds to it if needed
    * @param data
    */
-  private handleRawReceivedData (data: string) {
+  private handleRawReceivedData (data: string): void {
     // If this is a response & the request id is in outstanding requests, resolve the stored promise w/ data.
     const datagram = JSON.parse(data) as Datagram;
     if (datagram.intent === DatagramIntent.RESPONSE && this.outstandingRequests.get(datagram.id)) {
@@ -218,7 +218,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * Ensures connection once, then loops through queue and transmits
    * each datagram in the order enqueued
    */
-  private flushQueue () {
+  private flushQueue (): Promise<void> {
     return new Promise((accept) => {
       // this.logger.info('[haiku envoy client] flushing queue');
       while (this.datagramQueue.length) {
@@ -236,7 +236,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
    * will error if connection is broken
    * @param datagram
    */
-  private rawTransmit (datagram: Datagram) {
+  private rawTransmit (datagram: Datagram): void {
     // this.logger.info('[haiku envoy client] transmitting data', datagram);
     this.socket.send(JSON.stringify(datagram));
   }

@@ -97,7 +97,7 @@ const animatedTimelineReducer = (accumulator: any, currentValue: any) => {
  * @param currentValue
  * @returns {{}}
  */
-export const compoundTimelineReducer = (accumulator: any, currentValue: any) => {
+export const compoundTimelineReducer = (accumulator: any, currentValue: any): any => {
   if (currentValue[PropertyKey.Animated] === 1) {
     return animatedTimelineReducer(accumulator, currentValue);
   }
@@ -116,7 +116,7 @@ export const compoundTimelineReducer = (accumulator: any, currentValue: any) => 
 /**
  * Lazy getter for the Bodymovin version. Only called if the exporter is requested.
  */
-export const getBodymovinVersion = () => require('../../../package.json').devDependencies['lottie-web'];
+export const getBodymovinVersion = (): string => require('../../../package.json').devDependencies['lottie-web'];
 
 /**
  * Produce a fixed property for a transform.
@@ -211,7 +211,7 @@ export const maybeApplyMutatorToProperty = (
   property: any,
   mutator: (param: any) => any,
   disableRecursion: boolean = false,
-) => {
+): any => {
   if (mutator === undefined) {
     return property;
   }
@@ -240,7 +240,7 @@ const translateInterpolationPoints = (points: BodymovinPathComponent, vertices: 
  * @returns {[key in PathKey]: BodymovinPathComponent}
  * @param points
  */
-export const pathToInterpolationTrace = (points: CurveSpec[]) => {
+export const pathToInterpolationTrace = (points: CurveSpec[]): Record<PathKey, any> => {
   const vertices: BodymovinPathComponent = [];
   const interpolationInPoints: BodymovinPathComponent = [];
   const interpolationOutPoints: BodymovinPathComponent = [];
@@ -308,7 +308,7 @@ export const pathToInterpolationTrace = (points: CurveSpec[]) => {
  * @param {string} svgPoints
  * @returns {[key in PathKey]: BodymovinPathComponent}
  */
-export const pointsToInterpolationTrace = (svgPoints: string|[number, number][]) => {
+export const pointsToInterpolationTrace = (svgPoints: string|[number, number][]): Record<PathKey, any> => {
   const chunkedPoints = polyPointsStringToPoints(svgPoints);
 
   // To support Bodymovin export format, we have to create a "dummy curve" with null interpolation points.
@@ -396,7 +396,7 @@ export const timelineValuesAreEquivalent = (valueA: any, valueB: any): boolean =
  * That streaming parser always skips keys until it encounters the `ty` key, so we need to force it to come first.
  * @returns {Object}
  */
-export const lottieAndroidStreamSafeToJson = function () {
+export const lottieAndroidStreamSafeToJson = function (): any {
   if (!this.hasOwnProperty(ShapeKey.Type)) {
     return this;
   }
