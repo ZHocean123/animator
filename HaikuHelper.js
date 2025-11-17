@@ -1,8 +1,8 @@
-const {default: Plumbing} = require('haiku-plumbing/lib/Plumbing');
-const envInfo = require('haiku-plumbing/lib/envInfo');
-const haikuInfo = require('haiku-plumbing/lib/haikuInfo');
-const path = require('path');
-const logger = require('haiku-serialization/src/utils/LoggerInstance');
+import Plumbing from 'haiku-plumbing/lib/Plumbing';
+import envInfo from 'haiku-plumbing/lib/envInfo';
+import haikuInfo from 'haiku-plumbing/lib/haikuInfo';
+import path from 'path';
+import logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 global.eval = function () {
   // noop: eval is forbidden
