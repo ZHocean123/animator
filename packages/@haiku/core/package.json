@@ -50,7 +50,7 @@
     "express": "4.14.1",
     "filesize": "3.5.10",
     "fs-extra": "^11.2.0",
-    "haiku-testing": "5.1.2",
+    "haiku-testing": "workspace:*",
     "handlebars": "^4.0.8",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "jsdom": "^11.1.0",

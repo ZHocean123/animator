@@ -26,9 +26,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@haiku/cli": "5.1.2",
-    "@haiku/sdk-client": "5.1.2",
-    "@haiku/sdk-inkstone": "5.1.2",
+    "@haiku/cli": "workspace:*",
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
     "async": "^2.5.0",
     "chalk": "^2.4.2",
     "cli-color": "^1.2.0",
@@ -62,6 +62,6 @@
     "tsdown": "^0.5.0",
     "typescript": "^5.6.0",
     "leaked-handles": "^5.2.0",
-    "haiku-testing": "5.1.2"
+    "haiku-testing": "workspace:*"
   }
 }

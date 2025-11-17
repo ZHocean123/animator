@@ -22,17 +22,17 @@
   ],
   "license": "UNLICENSED",
   "dependencies": {
-    "@haiku/sdk-client": "5.1.2",
-    "@haiku/sdk-inkstone": "5.1.2",
-    "haiku-common": "5.1.2",
-    "haiku-serialization": "5.1.2",
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
+    "haiku-common": "workspace:*",
+    "haiku-serialization": "workspace:*",
     "qs": "^6.12.0",
     "ws": "3.2.0"
   },
   "devDependencies": {
     "@types/ws": "^3.0.2",
     "cross-env": "^7.0.3",
-    "haiku-testing": "5.1.2",
+    "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
     "nyc": "^13.0.1",
