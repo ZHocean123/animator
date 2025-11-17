@@ -3,8 +3,8 @@ import {decodeBase64} from '@sigma/rust-base64';
 import {ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
 // @ts-ignore
-import {LOCKS} from 'haiku-serialization/src/bll/Lock';
-import * as path from 'path';
+import {LOCKS} from 'haiku-serialization/src/bll/Lock.js';
+import path from 'path';
 import Watcher from '../Watcher';
 
 const decode = (value: string) => new TextDecoder().decode(

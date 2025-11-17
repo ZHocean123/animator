@@ -1,7 +1,7 @@
 import * as async from 'async';
 import * as fse from 'fs-extra';
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import * as path from 'path';
 // @ts-ignore
 import * as rollup from 'rollup';
