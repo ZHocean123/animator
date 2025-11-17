@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var camelcase = require('camelcase');
-var ReservedWords = require('@haiku/core/lib/reflection/ReservedWords').default;
+var ReservedWords = require("@haiku/core/lib/reflection/ReservedWords.js").default;
 var BaseModel = require('./BaseModel');
 /**
  * @class State

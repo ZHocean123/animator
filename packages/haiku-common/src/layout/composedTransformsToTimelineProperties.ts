@@ -4,8 +4,8 @@
  * Note: this and all related work should be moved out of @haiku/core in conjunction with xmlToMana and friends.
  */
 
-import {LayoutSpec} from '@haiku/core/lib/api';
-import Layout3D from '@haiku/core/lib/Layout3D';
+import {LayoutSpec} from '@haiku/core/lib/api.js';
+import Layout3D from '@haiku/core/lib/Layout3D.js';
 import mat4Decompose, {DecomposedMat4} from 'haiku-vendor-legacy/lib/mat4-decompose.js';
 
 export interface ComposedTransformSpec {

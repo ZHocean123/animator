@@ -2,11 +2,11 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as lodash from 'lodash-es';
 import * as path from 'path';
-import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom';
-import HaikuContext from '@haiku/core/lib/HaikuContext';
+import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom.js';
+import HaikuContext from '@haiku/core/lib/HaikuContext.js';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel.js';
 import * as Project from 'haiku-serialization/src/bll/Project.js';
-import Config from '@haiku/core/lib/Config';
+import Config from '@haiku/core/lib/Config.js';
 import * as Element from 'haiku-serialization/src/bll/Element.js';
 import * as File from 'haiku-serialization/src/bll/File.js';
 import * as Template from 'haiku-serialization/src/bll/Template.js';
@@ -31,7 +31,7 @@ import scaleCursorMana from '../overlays/scaleCursorMana';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import {isMac, isWindows} from 'haiku-common/src/environments/os.js';
 import directSelectionMana from '../overlays/directSelectionMana';
-import {calculateValue} from '@haiku/core/lib/Transitions';
+import {calculateValue} from '@haiku/core/lib/Transitions.js';
 import {
   DEFAULT_LINE_SELECTION_THRESHOLD,
   isPointInsidePrimitive,
@@ -40,8 +40,8 @@ import {
   closestNormalPointOnLineSegment,
   buildPathLUT,
 } from 'haiku-common/src/math/geometryUtils.js';
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
-import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
+import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils.js';
 import Globals from 'haiku-ui-common/lib/Globals.js';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
 import { clipboard, shell, ipcRenderer } from 'electron';

@@ -6,8 +6,8 @@ const DiskStorage = require('./storage/DiskStorage');
 const CryptoUtils = require('./../utils/CryptoUtils');
 const EmitterManager = require('./../utils/EmitterManager');
 const logger = require('./../utils/LoggerInstance');
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
-const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default;
+const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js").default;
+const reifyRO = require("@haiku/core/lib/reflection/reifyRO.js").default;
 
 const SYNC_DEBOUNCE_TIME = 100; // ms
 

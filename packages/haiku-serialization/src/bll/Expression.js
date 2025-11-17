@@ -1,5 +1,5 @@
 const BaseModel = require('./BaseModel');
-const {tokenizeDirective} = require('@haiku/core/lib/reflection/Tokenizer');
+const {tokenizeDirective} = require("@haiku/core/lib/reflection/Tokenizer.js");
 
 /**
  * @class Expression

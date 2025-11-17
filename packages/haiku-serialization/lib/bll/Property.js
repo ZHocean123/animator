@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var decamelize = require('decamelize');
 var titlecase = require('titlecase');
-var getFallback = require('@haiku/core/lib/HaikuComponent').getFallback;
+var getFallback = require("@haiku/core/lib/HaikuComponent.js").getFallback;
 var BaseModel = require('./BaseModel');
 var _a = require('haiku-common/lib/experiments'), Experiment = _a.Experiment, experimentIsEnabled = _a.experimentIsEnabled;
 function decam(s) {

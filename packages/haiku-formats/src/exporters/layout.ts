@@ -1,6 +1,6 @@
-import {BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty} from '@haiku/core/lib/api';
-import {LAYOUT_3D_VANITIES} from '@haiku/core/lib/HaikuComponent';
-import Layout3D from '@haiku/core/lib/Layout3D';
+import {BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty} from '@haiku/core/lib/api.js';
+import {LAYOUT_3D_VANITIES} from '@haiku/core/lib/HaikuComponent.js';
+import Layout3D from '@haiku/core/lib/Layout3D.js';
 import composedTransformsToTimelineProperties,
   {ComposedTransformSpec} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
 import {initialValueOr} from './timelineUtils';

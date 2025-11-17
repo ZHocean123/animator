@@ -1,4 +1,4 @@
-var LAYOUT_3D_SCHEMA = require('@haiku/core/lib/HaikuComponent').LAYOUT_3D_SCHEMA;
+var LAYOUT_3D_SCHEMA = require("@haiku/core/lib/HaikuComponent.js").LAYOUT_3D_SCHEMA;
 /**
  * We can emit a "shorthand" for bytecode timeline properties at serialization time like so:
  *   {"sizeAbsolute.x": {"0": {"value": 550}}} ->

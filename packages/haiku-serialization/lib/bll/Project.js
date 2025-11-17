@@ -34,11 +34,11 @@ var EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default;
 var GLASS_CHANNEL = require('haiku-sdk-creator/lib/glass').GLASS_CHANNEL;
 var logger = require('./../utils/LoggerInstance');
 var BaseModel = require('./BaseModel');
-var InteractionMode = require('@haiku/core/lib/helpers/interactionModes').InteractionMode;
+var InteractionMode = require("@haiku/core/lib/helpers/interactionModes.js").InteractionMode;
 var toTitleCase = require('./helpers/toTitleCase');
 var Lock = require('./Lock');
 var ActionStack = require('./ActionStack');
-var _b = require('@haiku/sdk-client/lib/ProjectDefinitions'), getSafeProjectName = _b.getSafeProjectName, getProjectNameSafeShort = _b.getProjectNameSafeShort, getDefaultIllustratorAssetPath = _b.getDefaultIllustratorAssetPath, getDefaultSketchAssetPath = _b.getDefaultSketchAssetPath, getReactProjectName = _b.getReactProjectName, getProjectNameLowerCase = _b.getProjectNameLowerCase, readPackageJson = _b.readPackageJson, getAngularSelectorName = _b.getAngularSelectorName;
+var _b = require("@haiku/sdk-client/lib/ProjectDefinitions.js"), getSafeProjectName = _b.getSafeProjectName, getProjectNameSafeShort = _b.getProjectNameSafeShort, getDefaultIllustratorAssetPath = _b.getDefaultIllustratorAssetPath, getDefaultSketchAssetPath = _b.getDefaultSketchAssetPath, getReactProjectName = _b.getReactProjectName, getProjectNameLowerCase = _b.getProjectNameLowerCase, readPackageJson = _b.readPackageJson, getAngularSelectorName = _b.getAngularSelectorName;
 var SILENT_METHODS = {
     hoverElement: true,
     unhoverElement: true,

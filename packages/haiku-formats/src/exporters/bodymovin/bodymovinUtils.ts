@@ -1,7 +1,7 @@
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
-import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
+import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types.js';
 
-import {BytecodeTimelineProperty} from '@haiku/core/lib/api';
+import {BytecodeTimelineProperty} from '@haiku/core/lib/api.js';
 import {
   AnimationKey,
   PathKey,

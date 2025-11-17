@@ -4,8 +4,8 @@
  *
  * TODO: Move this file to haiku-creator
  */
-import {BytecodeSummonable} from '@haiku/core/lib/api';
-import HaikuComponent from '@haiku/core/lib/HaikuComponent';
+import {BytecodeSummonable} from '@haiku/core/lib/api.js';
+import HaikuComponent from '@haiku/core/lib/HaikuComponent.js';
 
 export enum SustainedWarningKind {
   IdentifierNotFound,

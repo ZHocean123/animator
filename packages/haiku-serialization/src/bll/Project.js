@@ -13,7 +13,7 @@ const EnvoyLogger = require("haiku-sdk-creator/lib/envoy/EnvoyLogger").default;
 const { GLASS_CHANNEL } = require("haiku-sdk-creator/lib/glass");
 const logger = require("./../utils/LoggerInstance");
 const BaseModel = require("./BaseModel");
-const { InteractionMode } = require("@haiku/core/lib/helpers/interactionModes");
+const { InteractionMode } = require("@haiku/core/lib/helpers/interactionModes.js");
 const toTitleCase = require("./helpers/toTitleCase");
 import * as Lock from "./Lock.js";
 const ActionStack = require("./ActionStack");
@@ -26,7 +26,7 @@ const {
   getProjectNameLowerCase,
   readPackageJson,
   getAngularSelectorName
-} = require("@haiku/sdk-client/lib/ProjectDefinitions.js");
+} = require("@haiku/sdk-client/lib/ProjectDefinitions.js.js");
 
 const SILENT_METHODS = {
   hoverElement: true,

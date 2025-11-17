@@ -1,4 +1,4 @@
-import {randomString} from '@haiku/core/lib/helpers/StringUtils';
+import {randomString} from '@haiku/core/lib/helpers/StringUtils.js';
 
 export type Obfuscation = [string, string];
 

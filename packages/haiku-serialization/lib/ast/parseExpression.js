@@ -2,7 +2,7 @@ var Parser = require('cst').Parser;
 var walk = require('estree-walker').walk;
 var fsm = require('fuzzy-string-matching');
 var uniq = require('lodash').uniq;
-var FORBIDDEN_EXPRESSION_TOKENS = require('@haiku/core/lib/HaikuComponent').default.FORBIDDEN_EXPRESSION_TOKENS;
+var FORBIDDEN_EXPRESSION_TOKENS = require("@haiku/core/lib/HaikuComponent.js").default.FORBIDDEN_EXPRESSION_TOKENS;
 var logger = require('./../utils/LoggerInstance');
 var PARSER = new Parser({
     sourceType: 'script',

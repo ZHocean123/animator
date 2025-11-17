@@ -1,4 +1,4 @@
-import {BytecodeTimelineProperties, BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api';
+import {BytecodeTimelineProperties, BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api.js';
 import {LayoutPropertyType} from './layout';
 
 /**

@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var BaseModel = require('./BaseModel');
-var tokenizeDirective = require('@haiku/core/lib/reflection/Tokenizer').tokenizeDirective;
+var tokenizeDirective = require("@haiku/core/lib/reflection/Tokenizer.js").tokenizeDirective;
 /**
  * @class Expression
  * @description

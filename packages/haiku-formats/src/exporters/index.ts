@@ -1,4 +1,4 @@
-import { HaikuBytecode } from "@haiku/core/lib/api/index";
+import { HaikuBytecode } from "@haiku/core/lib/api/index.js";
 import {
   ExporterFormat,
   ExporterRequest

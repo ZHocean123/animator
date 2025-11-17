@@ -1,7 +1,7 @@
 const tape = require('tape');
 const path = require('path');
 const fse = require('haiku-fs-extra');
-const {VERSION} = require('@haiku/core/lib/HaikuComponent');
+const {VERSION} = require("@haiku/core/lib/HaikuComponent.js");
 
 const Project = require('./../../src/bll/Project');
 const File = require('./../../src/bll/File');

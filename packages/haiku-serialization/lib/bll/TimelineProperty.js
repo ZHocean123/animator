@@ -1,4 +1,4 @@
-var getFallback = require('@haiku/core/lib/HaikuComponent').getFallback;
+var getFallback = require("@haiku/core/lib/HaikuComponent.js").getFallback;
 var logger = require('haiku-serialization/src/utils/LoggerInstance');
 var TimelineProperty = {};
 TimelineProperty.getSelectorForComponentId = function (componentId) {

@@ -4,7 +4,7 @@ import * as lodash from 'lodash-es';
 import * as CodeMirror from 'codemirror';
 import {clipboard} from 'electron';
 import * as stripindent from 'strip-indent';
-import marshalParams from '@haiku/core/lib/reflection/marshalParams';
+import marshalParams from '@haiku/core/lib/reflection/marshalParams.js';
 import * as parseExpression from 'haiku-serialization/src/ast/parseExpression.js';
 import * as MathUtils from 'haiku-serialization/src/bll/MathUtils.js';
 import * as Expression from 'haiku-serialization/src/bll/Expression.js';

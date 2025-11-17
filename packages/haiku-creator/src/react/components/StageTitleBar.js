@@ -3,7 +3,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import * as ReactDOM from "react-dom";
 import { ipcRenderer, shell } from "electron";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
 import {
   Experiment,
   experimentIsEnabled

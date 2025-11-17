@@ -1,14 +1,14 @@
 import * as lodash from "lodash-es";
-const HaikuElement = require("@haiku/core/lib/HaikuElement").default;
-const Layout3D = require("@haiku/core/lib/Layout3D").default;
-const { cssQueryTree } = require("@haiku/core/lib/HaikuNode");
+const HaikuElement = require("@haiku/core/lib/HaikuElement.js").default;
+const Layout3D = require("@haiku/core/lib/Layout3D.js").default;
+const { cssQueryTree } = require("@haiku/core/lib/HaikuNode.js");
 const {
   default: composedTransformsToTimelineProperties
 } = require("haiku-common/lib/layout/composedTransformsToTimelineProperties.js");
-const functionToRFO = require("@haiku/core/lib/reflection/functionToRFO")
+const functionToRFO = require("@haiku/core/lib/reflection/functionToRFO.js")
   .default;
-const { LAYOUT_3D_SCHEMA } = require("@haiku/core/lib/HaikuComponent");
-const KnownDOMEvents = require("@haiku/core/lib/renderers/dom/Events").default;
+const { LAYOUT_3D_SCHEMA } = require("@haiku/core/lib/HaikuComponent.js");
+const KnownDOMEvents = require("@haiku/core/lib/renderers/dom/Events.js").default;
 const titlecase = require("titlecase");
 const decamelize = require("decamelize");
 const Matrix = require("gl-matrix");

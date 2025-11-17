@@ -1,7 +1,7 @@
-const HaikuComponent = require("@haiku/core/lib/HaikuComponent").default;
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO")
+const HaikuComponent = require("@haiku/core/lib/HaikuComponent.js").default;
+const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
   .default;
-const Curve = require("@haiku/core/lib/api").Curve;
+const Curve = require("@haiku/core/lib/api.js").Curve;
 const isDecomposableCurve = require("haiku-formats/lib/exporters/curves.js")
   .isDecomposableCurve;
 const getCurveInterpolationPoints = require("haiku-formats/lib/exporters/curves.js")

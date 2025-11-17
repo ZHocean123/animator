@@ -1,4 +1,4 @@
-const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
+const {LAYOUT_3D_SCHEMA} = require("@haiku/core/lib/HaikuComponent.js");
 
 /**
  * We can emit a "shorthand" for bytecode timeline properties at serialization time like so:

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
-export * from '@haiku/core/lib/helpers/interactionModes';
+export * from '@haiku/core/lib/helpers/interactionModes.js';
 
 import {
   InteractionMode as CoreInteractionMode,

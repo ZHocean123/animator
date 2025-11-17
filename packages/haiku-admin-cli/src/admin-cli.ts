@@ -4,7 +4,7 @@ import * as inquirer from "inquirer";
 
 import { adminSdk } from "./sdk";
 
-import { IContext, Nib } from "@haiku/cli/lib/nib";
+import { IContext, Nib } from "@haiku/cli/lib/nib.js";
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require("./../package.json");

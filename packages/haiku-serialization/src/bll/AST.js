@@ -1,6 +1,6 @@
 const prettier = require("prettier");
 const BaseModel = require("./BaseModel");
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO")
+const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
   .default;
 const bytecodeObjectToAST = require("./../ast/bytecodeObjectToAST");
 const normalizeBytecodeAST = require("./../ast/normalizeBytecodeAST");

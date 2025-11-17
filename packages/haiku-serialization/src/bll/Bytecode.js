@@ -3,14 +3,14 @@ import { clone } from "lodash-es";
 import { cloneDeepWith } from "lodash-es";
 import { merge } from "lodash-es";
 const BaseModel = require("./BaseModel");
-const enhance = require("@haiku/core/lib/reflection/enhance").default;
+const enhance = require("@haiku/core/lib/reflection/enhance.js").default;
 const { xmlToMana } = require("haiku-common/lib/layout/xmlUtils.js");
 const {
   default: convertManaLayout
 } = require("haiku-common/lib/layout/convertManaLayout.js");
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO")
+const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
   .default;
-const reifyRO = require("@haiku/core/lib/reflection/reifyRO").default;
+const reifyRO = require("@haiku/core/lib/reflection/reifyRO.js").default;
 const logger = require("haiku-serialization/src/utils/LoggerInstance");
 
 const HAIKU_ID_ATTRIBUTE = "haiku-id";

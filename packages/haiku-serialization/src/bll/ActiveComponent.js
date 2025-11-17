@@ -4,25 +4,25 @@ const pretty = require("pretty");
 const async = require("async");
 const jss = require("json-stable-stringify");
 const pascalcase = require("pascalcase");
-const { PlaybackFlag } = require("@haiku/core/lib/HaikuTimeline");
+const { PlaybackFlag } = require("@haiku/core/lib/HaikuTimeline.js");
 const {
   HAIKU_ID_ATTRIBUTE,
   HAIKU_LOCKED_ATTRIBUTE,
   HAIKU_TITLE_ATTRIBUTE,
   HAIKU_VAR_ATTRIBUTE
-} = require("@haiku/core/lib/HaikuElement");
+} = require("@haiku/core/lib/HaikuElement.js");
 const {
   default: HaikuComponent,
   clone
-} = require("@haiku/core/lib/HaikuComponent");
-const { LAYOUT_3D_SCHEMA } = require("@haiku/core/lib/HaikuComponent");
-const HaikuDOMAdapter = require("@haiku/core/lib/adapters/dom").default;
-const { getSortedKeyframes } = require("@haiku/core/lib/helpers/KeyframeUtils");
+} = require("@haiku/core/lib/HaikuComponent.js");
+const { LAYOUT_3D_SCHEMA } = require("@haiku/core/lib/HaikuComponent.js");
+const HaikuDOMAdapter = require("@haiku/core/lib/adapters/dom.js").default;
+const { getSortedKeyframes } = require("@haiku/core/lib/helpers/KeyframeUtils.js");
 const {
   InteractionMode,
   isPreviewMode
-} = require("@haiku/core/lib/helpers/interactionModes");
-const Layout3D = require("@haiku/core/lib/Layout3D");
+} = require("@haiku/core/lib/helpers/interactionModes.js");
+const Layout3D = require("@haiku/core/lib/Layout3D.js");
 const BaseModel = require("./BaseModel");
 const logger = require("./../utils/LoggerInstance");
 const CryptoUtils = require("./../utils/CryptoUtils");

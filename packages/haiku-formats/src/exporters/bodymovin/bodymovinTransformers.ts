@@ -1,5 +1,5 @@
 /** @file Transformers for Bodymovin quirks. */
-import ColorUtils from '@haiku/core/lib/helpers/ColorUtils';
+import ColorUtils from '@haiku/core/lib/helpers/ColorUtils.js';
 import {
   DasharrayKey,
   DasharrayRole,

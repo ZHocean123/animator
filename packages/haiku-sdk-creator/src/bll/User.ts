@@ -1,6 +1,6 @@
 import { client as sdkClient, FILE_PATHS } from "@haiku/sdk-client";
 import { inkstone } from "@haiku/sdk-inkstone";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
 import { Registry } from "../dal/Registry";
 import { MaybeAsync } from "../envoy";
 import EnvoyHandler from "../envoy/EnvoyHandler";

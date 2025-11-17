@@ -6,10 +6,10 @@ import {
   Curve,
   HaikuBytecode,
   ThreeDimensionalLayoutProperty,
-} from '@haiku/core/lib/api';
-import {synchronizePathStructure} from '@haiku/core/lib/helpers/PathUtils';
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
-import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types';
+} from '@haiku/core/lib/api.js';
+import {synchronizePathStructure} from '@haiku/core/lib/helpers/PathUtils.js';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
+import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types.js';
 import {existsSync, readFileSync, writeFile} from 'fs-extra';
 // @ts-ignore
 import * as Template from 'haiku-serialization/src/bll/Template.js';

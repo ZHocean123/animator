@@ -2,12 +2,12 @@ const path = require("path");
 import { find } from "lodash-es";
 import { merge } from "lodash-es";
 const pascalcase = require("pascalcase");
-const { ATTRS_HYPH_TO_CAMEL } = require("@haiku/core/lib/HaikuComponent");
-const SVGPoints = require("@haiku/core/lib/helpers/SVGPoints").default;
+const { ATTRS_HYPH_TO_CAMEL } = require("@haiku/core/lib/HaikuComponent.js");
+const SVGPoints = require("@haiku/core/lib/helpers/SVGPoints.js").default;
 const {
   default: convertManaLayout
 } = require("haiku-common/lib/layout/convertManaLayout.js");
-const { visitManaTree } = require("@haiku/core/lib/HaikuNode");
+const { visitManaTree } = require("@haiku/core/lib/HaikuNode.js");
 const { manaToXml } = require("haiku-common/lib/layout/xmlUtils.js");
 import { assign } from "lodash-es";
 import { defaults } from "lodash-es";

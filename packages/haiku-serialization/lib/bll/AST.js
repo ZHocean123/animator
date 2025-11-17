@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var prettier = require('prettier');
 var BaseModel = require('./BaseModel');
-var expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
+var expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js").default;
 var bytecodeObjectToAST = require('./../ast/bytecodeObjectToAST');
 var normalizeBytecodeAST = require('./../ast/normalizeBytecodeAST');
 var parseCode = require('./../ast/parseCode');

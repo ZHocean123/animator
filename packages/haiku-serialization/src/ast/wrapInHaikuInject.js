@@ -1,6 +1,6 @@
 const {
   toText,
-} = require('@haiku/core/lib/reflection/JavaScriptIdentifier');
+} = require("@haiku/core/lib/reflection/JavaScriptIdentifier.js");
 
 module.exports = function wrapInHaikuInject (node) {
   return {

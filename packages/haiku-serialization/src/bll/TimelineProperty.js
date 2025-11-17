@@ -1,4 +1,4 @@
-const {getFallback} = require('@haiku/core/lib/HaikuComponent');
+const {getFallback} = require("@haiku/core/lib/HaikuComponent.js");
 const logger = require('haiku-serialization/src/utils/LoggerInstance');
 
 const TimelineProperty = {};

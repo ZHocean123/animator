@@ -30,8 +30,8 @@ var DiskStorage = require('./storage/DiskStorage');
 var CryptoUtils = require('./../utils/CryptoUtils');
 var EmitterManager = require('./../utils/EmitterManager');
 var logger = require('./../utils/LoggerInstance');
-var expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
-var reifyRO = require('@haiku/core/lib/reflection/reifyRO').default;
+var expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js").default;
+var reifyRO = require("@haiku/core/lib/reflection/reifyRO.js").default;
 var SYNC_DEBOUNCE_TIME = 100; // ms
 /**
  * @class BaseModel

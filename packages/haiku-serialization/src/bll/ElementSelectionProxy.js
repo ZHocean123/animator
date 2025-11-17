@@ -7,8 +7,8 @@ const {
   basicallyEquals
 } = require("./MathUtils");
 const TransformCache = require("./TransformCache");
-const { default: Layout3D } = require("@haiku/core/lib/Layout3D");
-const { default: HaikuElement } = require("@haiku/core/lib/HaikuElement");
+const { default: Layout3D } = require("@haiku/core/lib/Layout3D.js");
+const { default: HaikuElement } = require("@haiku/core/lib/HaikuElement.js");
 const {
   default: composedTransformsToTimelineProperties
 } = require("haiku-common/lib/layout/composedTransformsToTimelineProperties.js");

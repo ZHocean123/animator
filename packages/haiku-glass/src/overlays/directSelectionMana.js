@@ -1,7 +1,7 @@
 import Palette from 'haiku-ui-common/lib/Palette.js';
-import Layout3D from '@haiku/core/lib/Layout3D';
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
-import {mat4_multiply_vec4} from '@haiku/core/lib/helpers/PathUtils';
+import Layout3D from '@haiku/core/lib/Layout3D.js';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
+import {mat4_multiply_vec4} from '@haiku/core/lib/helpers/PathUtils.js';
 import transpose from 'haiku-vendor-legacy/lib/gl-mat4/transpose.js';
 
 const anchorPoint = (index, meta, selected, scale, {x, y}) => ({

@@ -13,9 +13,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var HaikuComponent = require('@haiku/core/lib/HaikuComponent').default;
-var expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
-var Curve = require('@haiku/core/lib/api').Curve;
+var HaikuComponent = require("@haiku/core/lib/HaikuComponent.js").default;
+var expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js").default;
+var Curve = require("@haiku/core/lib/api.js").Curve;
 var isDecomposableCurve = require('haiku-formats/lib/exporters/curves').isDecomposableCurve;
 var getCurveInterpolationPoints = require('haiku-formats/lib/exporters/curves').getCurveInterpolationPoints;
 var BaseModel = require('./BaseModel');

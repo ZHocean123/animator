@@ -1,6 +1,6 @@
 const decamelize = require("decamelize");
 const titlecase = require("titlecase");
-const { getFallback } = require("@haiku/core/lib/HaikuComponent");
+const { getFallback } = require("@haiku/core/lib/HaikuComponent.js");
 const BaseModel = require("./BaseModel");
 const {
   Experiment,

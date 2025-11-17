@@ -1,4 +1,4 @@
-var toText = require('@haiku/core/lib/reflection/JavaScriptIdentifier').toText;
+var toText = require("@haiku/core/lib/reflection/JavaScriptIdentifier.js").toText;
 module.exports = function wrapInHaikuInject(node) {
     return {
         type: 'CallExpression',

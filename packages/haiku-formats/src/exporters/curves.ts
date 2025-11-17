@@ -1,4 +1,4 @@
-import {BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api';
+import {BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api.js';
 import * as BezierEasing from 'bezier-easing';
 import {flatten} from 'lodash-es';
 

@@ -17,13 +17,13 @@ var fse = require('fs-extra');
 var debounce = require('lodash').debounce;
 var path = require('path');
 var xmlToMana = require('haiku-common/lib/layout/xmlUtils').xmlToMana;
-var expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
+var expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js").default;
 var BaseModel = require('./BaseModel');
 var logger = require('./../utils/LoggerInstance');
 var getSvgOptimizer = require('./../svg/getSvgOptimizer');
 var Lock = require('./Lock');
 var Cache = require('./Cache');
-var bootstrapSceneFilesSync = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync').bootstrapSceneFilesSync;
+var bootstrapSceneFilesSync = require("@haiku/sdk-client/lib/bootstrapSceneFilesSync.js").bootstrapSceneFilesSync;
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
 // ^^ Leave this message in this file so we can grep for it if necessary

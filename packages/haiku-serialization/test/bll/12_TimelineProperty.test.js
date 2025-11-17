@@ -1,6 +1,6 @@
 const tape = require('tape');
 const TimelineProperty = require('./../../src/bll/TimelineProperty');
-const HaikuComponent = require('@haiku/core/lib/HaikuComponent').default;
+const HaikuComponent = require("@haiku/core/lib/HaikuComponent.js").default;
 
 const findElementsByHaikuId = () => {
   return {elementName: 'svg', attributes: {}, children: []};

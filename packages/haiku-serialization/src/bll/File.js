@@ -2,7 +2,7 @@ const fse = require("fs-extra");
 import { debounce } from "lodash-es";
 const path = require("path");
 const { xmlToMana } = require("haiku-common/lib/layout/xmlUtils");
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO")
+const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
   .default;
 const BaseModel = require("./BaseModel");
 const logger = require("./../utils/LoggerInstance");
@@ -11,7 +11,7 @@ import * as Lock from "./Lock.js";
 const Cache = require("./Cache");
 const {
   bootstrapSceneFilesSync
-} = require("@haiku/sdk-client/lib/bootstrapSceneFilesSync.js");
+} = require("@haiku/sdk-client/lib/bootstrapSceneFilesSync.js.js");
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
