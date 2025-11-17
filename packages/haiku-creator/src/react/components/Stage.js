@@ -4,18 +4,18 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 import * as assign from 'lodash.assign';
 import * as path from 'path';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import StageTitleBar from './StageTitleBar';
 import ComponentMenu from './ComponentMenu/ComponentMenu';
 import CodeEditor from './CodeEditor/CodeEditor';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments.js';
+import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour.js';
 import {
   isPreviewMode,
   isEditMode,
   showGlassOnStage,
-} from 'haiku-ui-common/lib/interactionModes';
+} from 'haiku-ui-common/lib/interactionModes.js';
 
 const STAGE_BOX_STYLE = {
   overflow: 'hidden',

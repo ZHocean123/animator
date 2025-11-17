@@ -23,8 +23,8 @@ export const getStub = () => sinon.stub();
  *
  * `haiku-stuff/test/something.test.js`
  *
- *   import {stubProperties} from 'haiku-testing/lib/mock';
- *   import {a} from 'haiku-stuff/lib/something';
+ *   import {stubProperties} from 'haiku-testing/lib/mock.js';
+ *   import {a} from 'haiku-stuff/lib/something.js';
  *
  *   const [fooStub, unstub] = stubProperties(a, 'foo');
  *   fooStub.returns('baz');

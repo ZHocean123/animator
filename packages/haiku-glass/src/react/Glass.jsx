@@ -4,23 +4,23 @@ import * as lodash from 'lodash-es';
 import * as path from 'path';
 import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom';
 import HaikuContext from '@haiku/core/lib/HaikuContext';
-import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
-import * as Project from 'haiku-serialization/src/bll/Project';
+import * as BaseModel from 'haiku-serialization/src/bll/BaseModel.js';
+import * as Project from 'haiku-serialization/src/bll/Project.js';
 import Config from '@haiku/core/lib/Config';
-import * as Element from 'haiku-serialization/src/bll/Element';
-import * as File from 'haiku-serialization/src/bll/File';
-import * as Template from 'haiku-serialization/src/bll/Template';
-import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
-import * as Asset from 'haiku-serialization/src/bll/Asset';
-import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
-import {isCoordInsideBoxPoints} from 'haiku-serialization/src/bll/MathUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import * as Element from 'haiku-serialization/src/bll/Element.js';
+import * as File from 'haiku-serialization/src/bll/File.js';
+import * as Template from 'haiku-serialization/src/bll/Template.js';
+import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy.js';
+import * as Asset from 'haiku-serialization/src/bll/Asset.js';
+import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager.js';
+import {isCoordInsideBoxPoints} from 'haiku-serialization/src/bll/MathUtils.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import Preview from './Preview';
 import CreateComponentModal from './modals/CreateComponentModal';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments.js';
 import originMana from '../overlays/originMana';
 import controlPointMana from '../overlays/controlPointMana';
 import boxMana from '../overlays/boxMana';
@@ -28,8 +28,8 @@ import lineMana from '../overlays/lineMana';
 import defsMana from '../overlays/defsMana';
 import rotationCursorMana from '../overlays/rotationCursorMana';
 import scaleCursorMana from '../overlays/scaleCursorMana';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/src/environments/os';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
+import {isMac, isWindows} from 'haiku-common/src/environments/os.js';
 import directSelectionMana from '../overlays/directSelectionMana';
 import {calculateValue} from '@haiku/core/lib/Transitions';
 import {
@@ -39,11 +39,11 @@ import {
   transform2DPoint,
   closestNormalPointOnLineSegment,
   buildPathLUT,
-} from 'haiku-common/src/math/geometryUtils';
+} from 'haiku-common/src/math/geometryUtils.js';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
-import Globals from 'haiku-ui-common/lib/Globals';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
+import Globals from 'haiku-ui-common/lib/Globals.js';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
 import { clipboard, shell, ipcRenderer } from 'electron';
 import * as remote from '@electron/remote';
 
@@ -53,8 +53,8 @@ remote.initialize();
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
 import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir.js';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
+import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient.js';
+import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error.js';
 
 // #FIXME: Why is this the responsibility of Glass???
 fse.mkdirpSync(HOMEDIR_PATH);

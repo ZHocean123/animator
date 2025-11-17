@@ -5,7 +5,7 @@ import * as Module from "module";
 import * as React from "react";
 import PropTypes from "prop-types";
 import HaikuDOMAdapter from "@haiku/core/lib/adapters/dom/HaikuDOMAdapter";
-import { InteractionMode } from "haiku-ui-common/lib/interactionModes";
+import { InteractionMode } from "haiku-ui-common/lib/interactionModes.js";
 import { TourUtils } from "haiku-common/lib/types/enums.js";
 
 /**

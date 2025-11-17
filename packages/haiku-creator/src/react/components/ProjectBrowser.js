@@ -3,25 +3,25 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import * as Radium from "radium";
 import * as Popover from "react-popover";
-import { ProjectError } from "haiku-sdk-creator/lib/bll/Project";
-import Palette from "haiku-ui-common/lib/Palette";
-import * as mixpanel from "haiku-serialization/src/utils/Mixpanel";
+import { ProjectError } from "haiku-sdk-creator/lib/bll/Project.js";
+import Palette from "haiku-ui-common/lib/Palette.js";
+import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import NotificationExplorer from "./notifications/NotificationExplorer";
 import ProjectThumbnail from "./ProjectThumbnail";
 import { TourUtils } from "haiku-common/lib/types/enums.js";
-import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour.js";
 import {
   UserIconSVG,
   LogOutSVG,
   PresentIconSVG
-} from "haiku-ui-common/lib/react/OtherIcons";
-import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG";
-import ExternalLinkSVG from "haiku-ui-common/lib/react/icons/ExternalLinkIconSVG";
+} from "haiku-ui-common/lib/react/OtherIcons.js";
+import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG.js";
+import ExternalLinkSVG from "haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.js";
 import { DASH_STYLES } from "../styles/dashShared";
 import { BTN_STYLES } from "../styles/btnShared";
 import LockoutModal from "./LockoutModal";
-import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink";
-import { Paginator } from "haiku-ui-common/lib/react/Paginator";
+import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink.js";
+import { Paginator } from "haiku-ui-common/lib/react/Paginator.js";
 import * as NoCon from "@haiku/taylor-nocon/react"; // Actual Ku Credit: Ms Tina!
 
 const STYLES = {

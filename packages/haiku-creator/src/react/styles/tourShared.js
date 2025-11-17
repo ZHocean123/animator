@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import {BTN_STYLES} from './btnShared.js';
 import {DASH_STYLES} from './dashShared.js';
 

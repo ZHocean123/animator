@@ -1,19 +1,24 @@
 // @ts-ignore
-import {decodeBase64} from '@sigma/rust-base64';
-import {ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
-import {Experiment, experimentIsEnabled} from 'haiku-common';
+import { decodeBase64 } from "@sigma/rust-base64";
+import {
+  ensureFileSync,
+  existsSync,
+  mkdirpSync,
+  readFileSync,
+  writeFileSync
+} from "fs-extra";
+import { Experiment, experimentIsEnabled } from "haiku-common";
 // @ts-ignore
-import {LOCKS} from 'haiku-serialization/src/bll/Lock.js';
-import path from 'path';
-import Watcher from '../Watcher';
+import { LOCKS } from "haiku-serialization/src/bll/Lock.js";
+import path from "path";
+import Watcher from "../Watcher";
 
-const decode = (value: string) => new TextDecoder().decode(
-  decodeBase64(new TextEncoder().encode(value)),
-);
-const IMAGE_DATA_INDICATOR = 'data:image/';
-const BASE64_DELIMITER = ';base64,';
-const UNICODE_ENCODING = 'utf-8';
-const BASE64_ENCODING = 'base64';
+const decode = (value: string) =>
+  new TextDecoder().decode(decodeBase64(new TextEncoder().encode(value)));
+const IMAGE_DATA_INDICATOR = "data:image/";
+const BASE64_DELIMITER = ";base64,";
+const UNICODE_ENCODING = "utf-8";
+const BASE64_ENCODING = "base64";
 
 const doDumpBase64Images = experimentIsEnabled(Experiment.DumpBase64Images);
 
@@ -22,10 +27,10 @@ export const dumpBase64Images = (
   relpath: string,
   folder: string,
   watcher: Watcher,
-  force = false,
+  force = false
 ) => {
   // Nothing to do if we're not looking at an SVG file.
-  if (!doDumpBase64Images || path.extname(relpath) !== '.svg') {
+  if (!doDumpBase64Images || path.extname(relpath) !== ".svg") {
     return;
   }
 
@@ -40,20 +45,17 @@ export const dumpBase64Images = (
   const buffer = readFileSync(abspath);
   let cursor = 0;
   let imageStart = 0;
-  let xml = '';
+  let xml = "";
   let imageCounter = 0;
   let changed = false;
 
   // With the output paths below, we will essentially hoist the first image in ./designs/foo.svg to
   // ./assets/designs/foo_image_1.png.
-  const outputDirectory = path.join(
-    'assets',
-    path.dirname(relpath),
-  );
+  const outputDirectory = path.join("assets", path.dirname(relpath));
 
   const outputPrefix = path.join(
     outputDirectory,
-    `${path.basename(relpath, path.extname(relpath))}_image_`,
+    `${path.basename(relpath, path.extname(relpath))}_image_`
   );
 
   do {
@@ -66,15 +68,23 @@ export const dumpBase64Images = (
     // Stop if we can't find the corresponding ;base64, delimiter after this mark.
     const encodingMarkStart = buffer.indexOf(BASE64_DELIMITER, imageStart + 1);
     // Ensure we support both single and double quotes by pulling out the first character *before* the data URL.
-    const quotation = buffer.toString(UNICODE_ENCODING, imageStart - 1, imageStart);
-    if (encodingMarkStart === -1 || (quotation !== '\'' && quotation !== '"')) {
+    const quotation = buffer.toString(
+      UNICODE_ENCODING,
+      imageStart - 1,
+      imageStart
+    );
+    if (encodingMarkStart === -1 || (quotation !== "'" && quotation !== '"')) {
       break;
     }
 
     changed = true;
 
     // Pull out the extension; e.g. from data:image/png;base64,… extract "png".
-    const extension = buffer.toString(UNICODE_ENCODING, imageStart + IMAGE_DATA_INDICATOR.length, encodingMarkStart);
+    const extension = buffer.toString(
+      UNICODE_ENCODING,
+      imageStart + IMAGE_DATA_INDICATOR.length,
+      encodingMarkStart
+    );
     const outputFilename = `${outputPrefix}${++imageCounter}.${extension}`;
     mkdirpSync(path.join(folder, outputDirectory));
 
@@ -82,11 +92,18 @@ export const dumpBase64Images = (
     xml += buffer.toString(UNICODE_ENCODING, cursor, imageStart);
     cursor = buffer.indexOf(quotation, imageStart + 1) + 1;
     {
-      const b64 = buffer.toString(UNICODE_ENCODING, encodingMarkStart + BASE64_DELIMITER.length, cursor - 1);
+      const b64 = buffer.toString(
+        UNICODE_ENCODING,
+        encodingMarkStart + BASE64_DELIMITER.length,
+        cursor - 1
+      );
       const decoded = decode(b64);
-      writeFileSync(path.join(folder, outputFilename), Buffer.from(decoded as any));
+      writeFileSync(
+        path.join(folder, outputFilename),
+        Buffer.from(decoded as any)
+      );
     }
-    xml += 'web+haikuroot://' + path.posix.normalize(outputFilename);
+    xml += "web+haikuroot://" + path.posix.normalize(outputFilename);
     xml += quotation;
   } while (cursor !== -1);
   if (changed) {

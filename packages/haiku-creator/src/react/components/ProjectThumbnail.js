@@ -2,11 +2,11 @@ import {shell} from 'electron';
 import * as path from 'path';
 import * as Radium from 'radium';
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import ProjectPreview from './ProjectPreview';
-import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
 import {DASH_STYLES} from '../styles/dashShared';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common/lib/environments/os.js';
 
 class ProjectThumbnail extends React.Component {
   constructor (props) {

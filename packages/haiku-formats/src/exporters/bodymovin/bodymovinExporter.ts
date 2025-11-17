@@ -12,9 +12,9 @@ import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types';
 import {existsSync, readFileSync, writeFile} from 'fs-extra';
 // @ts-ignore
-import * as Template from 'haiku-serialization/src/bll/Template';
+import * as Template from 'haiku-serialization/src/bll/Template.js';
 // @ts-ignore
-import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance';
+import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance.js';
 import * as imageSize from 'image-size';
 import {difference, flatten, mapKeys} from 'lodash-es';
 import {extname, join} from 'path';

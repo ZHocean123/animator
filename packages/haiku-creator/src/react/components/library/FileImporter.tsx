@@ -1,7 +1,7 @@
 import * as Color from 'color';
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import * as React from 'react';
 // @ts-ignore
 import * as Popover from 'react-popover';

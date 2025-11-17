@@ -1,8 +1,8 @@
 import * as React from 'react';
 import autoUpdate from '../../utils/autoUpdate';
 import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
+import {isMac, isWindows} from 'haiku-common/lib/environments/os.js';
 
 const statuses = {
   IDLE: 'Idle',

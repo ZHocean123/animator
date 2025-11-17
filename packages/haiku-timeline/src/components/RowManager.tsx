@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import * as React from 'react';
 import ClusterRow from './ClusterRow';
 import ComponentHeadingRow from './ComponentHeadingRow';

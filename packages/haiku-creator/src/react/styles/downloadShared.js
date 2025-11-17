@@ -1,5 +1,5 @@
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import {BTN_STYLES} from './btnShared.js';
 
 export const DOWNLOAD_STYLES = {

@@ -1,8 +1,8 @@
 import fsExtra = require('fs-extra');
 import tape = require('tape');
 
-import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
-import {getStub, stubProperties} from 'haiku-testing/lib/mock';
+import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter.js';
+import {getStub, stubProperties} from 'haiku-testing/lib/mock.js';
 
 import {handleExporterSaveRequest} from '@formats/exporters';
 import * as bodymovinExporter from '@formats/exporters/bodymovin/bodymovinExporter';

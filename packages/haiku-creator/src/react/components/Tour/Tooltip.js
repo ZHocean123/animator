@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Draggable from 'react-draggable';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import {TOUR_STYLES} from '../../styles/tourShared';
 import Spotlight from './Spotlight';
 

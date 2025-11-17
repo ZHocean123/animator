@@ -6,7 +6,7 @@
 
 import {LayoutSpec} from '@haiku/core/lib/api';
 import Layout3D from '@haiku/core/lib/Layout3D';
-import mat4Decompose, {DecomposedMat4} from 'haiku-vendor-legacy/lib/mat4-decompose';
+import mat4Decompose, {DecomposedMat4} from 'haiku-vendor-legacy/lib/mat4-decompose.js';
 
 export interface ComposedTransformSpec {
   'translation.x'?: number;

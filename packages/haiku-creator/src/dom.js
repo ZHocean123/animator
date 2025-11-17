@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import * as Websocket from "haiku-serialization/src/ws/Websocket";
-import * as MockWebsocket from "haiku-serialization/src/ws/MockWebsocket";
+import * as Websocket from "haiku-serialization/src/ws/Websocket.js";
+import * as MockWebsocket from "haiku-serialization/src/ws/MockWebsocket.js";
 import Creator from "./react/Creator";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
 

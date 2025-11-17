@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ChevronLeftMenuIconSVG, StateInspectorIconSVG, LibraryIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import {ChevronLeftMenuIconSVG, StateInspectorIconSVG, LibraryIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
 import {BTN_STYLES} from '../styles/btnShared';
 
 const STYLES = {

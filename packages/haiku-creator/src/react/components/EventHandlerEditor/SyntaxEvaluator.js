@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import {parse} from '@babel/parser';
 import {EVALUATOR_STATES} from './constants';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 
 class SyntaxEvaluator extends React.PureComponent {
   constructor (props) {

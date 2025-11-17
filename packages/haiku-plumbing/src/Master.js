@@ -4,8 +4,8 @@ import * as path from "path";
 import * as os from "os";
 import { debounce } from "lodash-es";
 import * as fse from "haiku-fs-extra";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
-import HaikuComponent from "@haiku/core/lib/HaikuComponent.js";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors";
+import HaikuComponent from "@haiku/core/lib/HaikuComponent";
 import * as walkFiles from "haiku-serialization/src/utils/walkFiles.js";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
 import * as File from "haiku-serialization/src/bll/File.js";
@@ -26,7 +26,7 @@ import MasterModuleProject from "./MasterModuleProject";
 import getExporterListener from "./envoy/getExporterListener";
 import Raven from "./Raven";
 import saveExport from "./publish-hooks/saveExport";
-import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles";
 import {
   ExporterFormat,
   EXPORTER_CHANNEL

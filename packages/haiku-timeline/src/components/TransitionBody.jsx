@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import * as Color from 'color';
 import * as lodash from 'lodash-es';
 import zIndex from './styles/zIndex';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import TimelineDraggable from './TimelineDraggable';
-import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG';
-import Globals from 'haiku-ui-common/lib/Globals';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
-import BezierDerivativeGraph from 'haiku-ui-common/lib/react/Bezier/BezierDerivativeGraph';
+import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG.js';
+import Globals from 'haiku-ui-common/lib/Globals.js';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments.js';
+import BezierDerivativeGraph from 'haiku-ui-common/lib/react/Bezier/BezierDerivativeGraph.js';
 
 import {
   EaseInElasticSVG,
@@ -18,7 +18,7 @@ import {
   EaseInBounceSVG,
   EaseInOutBounceSVG,
   EaseOutBounceSVG,
-} from 'haiku-ui-common/lib/react/icons/CurveSVGS';
+} from 'haiku-ui-common/lib/react/icons/CurveSVGS.js';
 
 const CURVESVGS = {
   EaseInElasticSVG,

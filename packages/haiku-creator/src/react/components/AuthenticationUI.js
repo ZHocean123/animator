@@ -4,10 +4,10 @@ import * as Color from 'color';
 import {shell} from 'electron';
 import {shake} from 'react-animations';
 import {FadingCircle} from 'better-react-spinkit';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {UserIconSVG, PasswordIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
-import {getAccountUrl, getUrl} from 'haiku-common/lib/environments';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import {UserIconSVG, PasswordIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG.js';
+import {getAccountUrl, getUrl} from 'haiku-common/lib/environments.js';
 
 const STYLES = {
   container: {

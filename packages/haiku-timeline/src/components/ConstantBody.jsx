@@ -1,10 +1,10 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
-import Globals from 'haiku-ui-common/lib/Globals';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import Globals from 'haiku-ui-common/lib/Globals.js';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments.js';
 
 export default class ConstantBody extends React.Component {
   constructor (props) {

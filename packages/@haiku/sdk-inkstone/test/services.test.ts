@@ -1,6 +1,6 @@
 import {newGetRequest, newPutRequest} from '@sdk-inkstone/services';
 import {requestInstance} from '@sdk-inkstone/transport';
-import {stubProperties} from 'haiku-testing/lib/mock';
+import {stubProperties} from 'haiku-testing/lib/mock.js';
 import * as tape from 'tape';
 
 tape('services', (suite: tape.Test) => {

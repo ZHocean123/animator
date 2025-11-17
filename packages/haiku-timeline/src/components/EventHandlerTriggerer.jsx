@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
+import Bolt from 'haiku-ui-common/lib/react/icons/Bolt.js';
 
 const STYLES = {
   wrapper: {

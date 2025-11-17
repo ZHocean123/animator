@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as lodash from 'lodash-es';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 
 const CELL_WIDTH = 82;
 

@@ -1,7 +1,7 @@
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import Globals from 'haiku-ui-common/lib/Globals';
-import Palette from 'haiku-ui-common/lib/Palette';
-import RightCarrotSVG from 'haiku-ui-common/lib/react/icons/RightCarrotSVG';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import Globals from 'haiku-ui-common/lib/Globals.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import RightCarrotSVG from 'haiku-ui-common/lib/react/icons/RightCarrotSVG.js';
 import * as React from 'react';
 import ClusterInputField from './ClusterInputField';
 import ClusterRowHeading from './ClusterRowHeading';

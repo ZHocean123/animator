@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Bolt from 'haiku-ui-common/lib/react/icons/Bolt.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 
 const STYLE = {
   base: {

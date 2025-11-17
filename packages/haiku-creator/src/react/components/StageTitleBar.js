@@ -3,15 +3,18 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import * as ReactDOM from "react-dom";
 import { ipcRenderer, shell } from "electron";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
-import { Experiment, experimentIsEnabled } from "haiku-common/src/experiments";
-import { EXPORTER_CHANNEL } from "haiku-sdk-creator/lib/exporter";
-import Palette from "haiku-ui-common/lib/Palette";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors";
+import {
+  Experiment,
+  experimentIsEnabled
+} from "haiku-common/src/experiments.js";
+import { EXPORTER_CHANNEL } from "haiku-sdk-creator/lib/exporter.js";
+import Palette from "haiku-ui-common/lib/Palette.js";
 import * as Color from "color";
 import { BTN_STYLES } from "../styles/btnShared";
 import Toggle from "./Toggle";
 import { PublicPrivateOptInModal } from "./PublicPrivateOptInModal";
-import { ShareModal } from "haiku-ui-common/lib/react/ShareModal";
+import { ShareModal } from "haiku-ui-common/lib/react/ShareModal.js";
 import {
   EyeIconSVG,
   ComponentIconSVG,
@@ -20,17 +23,17 @@ import {
   EventsBoltIcon,
   PublishSnapshotSVG,
   WarningIconSVG
-} from "haiku-ui-common/lib/react/OtherIcons";
-import * as Element from "haiku-serialization/src/bll/Element";
-import * as ElementSelectionProxy from "haiku-serialization/src/bll/ElementSelectionProxy";
-import * as logger from "haiku-serialization/src/utils/LoggerInstance";
-import { ProjectError } from "haiku-sdk-creator/lib/bll/Project";
+} from "haiku-ui-common/lib/react/OtherIcons.js";
+import * as Element from "haiku-serialization/src/bll/Element.js";
+import * as ElementSelectionProxy from "haiku-serialization/src/bll/ElementSelectionProxy.js";
+import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
+import { ProjectError } from "haiku-sdk-creator/lib/bll/Project.js";
 import {
   isPreviewMode,
   isEditMode,
   isCodeEditorMode,
   showGlassOnStage
-} from "haiku-ui-common/lib/interactionModes";
+} from "haiku-ui-common/lib/interactionModes.js";
 import AlignToolBox from "./AlignToolBox";
 
 const mixpanel = require("haiku-serialization/src/utils/Mixpanel");

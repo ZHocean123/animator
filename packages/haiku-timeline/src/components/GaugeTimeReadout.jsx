@@ -1,10 +1,10 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as lodash from 'lodash-es';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
-import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds';
-import * as Timeline from 'haiku-serialization/src/bll/Timeline';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds.js';
+import * as Timeline from 'haiku-serialization/src/bll/Timeline.js';
 
 export default class GaugeTimeReadout extends React.Component {
   constructor (props) {

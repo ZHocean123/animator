@@ -1,8 +1,8 @@
 // @ts-ignore
-import {Figma} from 'haiku-serialization/src/bll/Figma';
+import {Figma} from 'haiku-serialization/src/bll/Figma.js';
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import * as React from 'react';
 import {BTN_STYLES} from '../../../styles/btnShared';
 import {DASH_STYLES} from '../../../styles/dashShared';

@@ -4,7 +4,7 @@ import tape = require('tape');
 import {VERSION} from '@core/HaikuComponent';
 import {VideoExporter} from '@formats/exporters/video/videoExporter';
 import * as ffmpeg from '@formats/exporters/ffmpeg';
-import {getStub, stubProperties} from 'haiku-testing/lib/mock';
+import {getStub, stubProperties} from 'haiku-testing/lib/mock.js';
 
 const basicBytecode = {
   timelines: {

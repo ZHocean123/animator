@@ -2,7 +2,7 @@ import {dumpBase64Images} from '@plumbing/project-folder/AssetUtils';
 import Watcher from '@plumbing/Watcher';
 import * as dedent from 'dedent';
 import {existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
-import {getStub} from 'haiku-testing/lib/mock';
+import {getStub} from 'haiku-testing/lib/mock.js';
 import {join} from 'path';
 import * as tape from 'tape';
 import TestHelpers from '../TestHelpers';

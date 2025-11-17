@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as Radium from 'radium';
 import onClickOutside from 'react-onclickoutside';
 import * as Color from 'color';
-import * as State from 'haiku-serialization/src/bll/State';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import * as State from 'haiku-serialization/src/bll/State.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
 
 const STYLES = {
   stateWrapper: {

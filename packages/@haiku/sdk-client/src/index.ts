@@ -1,20 +1,24 @@
 // tslint:disable:no-namespace class-name
-import {inkstone} from '@haiku/sdk-inkstone';
-import {execSync} from 'child_process';
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as _ from 'lodash-es';
-import * as mkdirp from 'mkdirp';
-import * as os from 'os';
-import * as path from 'path';
-import {bootstrapSceneFilesSync} from './bootstrapSceneFilesSync';
+import { inkstone } from "@haiku/sdk-inkstone";
+import { execSync } from "child_process";
+import * as dotenv from "dotenv";
+import * as fs from "fs";
+import * as _ from "lodash-es";
+import * as mkdirp from "mkdirp";
+import * as os from "os";
+import * as path from "path";
+import { bootstrapSceneFilesSync } from "./bootstrapSceneFilesSync";
 
-const HAIKU_HOME = path.join(os.homedir(), '.haiku');
+const HAIKU_HOME = path.join(os.homedir(), ".haiku");
 
-export const FILE_PATHS: { HAIKU_HOME: string; AUTH_TOKEN: string; DOTENV: string } = {
+export const FILE_PATHS: {
+  HAIKU_HOME: string;
+  AUTH_TOKEN: string;
+  DOTENV: string;
+} = {
   HAIKU_HOME,
-  AUTH_TOKEN: path.join(HAIKU_HOME, 'auth'),
-  DOTENV: path.join(HAIKU_HOME, '.env'),
+  AUTH_TOKEN: path.join(HAIKU_HOME, "auth"),
+  DOTENV: path.join(HAIKU_HOME, ".env")
 };
 
 export const ensureFolder = (folder: string): void => {
@@ -32,13 +36,12 @@ export type HaikuDotEnv = {
 const applyEnv = (env: HaikuDotEnv): void => {
   Object.assign(global.process.env, env);
   if (env.HAIKU_API) {
-    inkstone.setConfig({baseUrl: env.HAIKU_API});
+    inkstone.setConfig({ baseUrl: env.HAIKU_API });
   }
 };
 
 export namespace client {
-
-  export const verboselyLog =  (message: string, ...args: any[]): void => {
+  export const verboselyLog = (message: string, ...args: any[]): void => {
     if (clientConfig.verbose) {
       console.log(message, ...args);
     }
@@ -49,27 +52,35 @@ export namespace client {
   };
 
   export class npm {
-    static readPackageJson (pathIn: string = global.process.cwd() + '/package.json'): any {
-      return JSON.parse(fs.readFileSync(pathIn, 'utf8'));
+    static readPackageJson(
+      pathIn: string = global.process.cwd() + "/package.json"
+    ): any {
+      return JSON.parse(fs.readFileSync(pathIn, "utf8"));
     }
 
-    static writePackageJson (jsonObject: any, pathIn: string = global.process.cwd() + '/package.json'): void {
+    static writePackageJson(
+      jsonObject: any,
+      pathIn: string = global.process.cwd() + "/package.json"
+    ): void {
       fs.writeFileSync(pathIn, JSON.stringify(jsonObject, undefined, 2));
     }
   }
 
   export class git {
-    static cloneRepo (remote: string, pathIn: string, cb: (error?: any) => any): void {
+    static cloneRepo(
+      remote: string,
+      pathIn: string,
+      cb: (error?: any) => any
+    ): void {
       let err;
       try {
         execSync(`git clone ${remote} ${pathIn}`);
       } catch (e) {
         err = e;
-        client.verboselyLog('error cloning repository', e);
+        client.verboselyLog("error cloning repository", e);
       }
       cb(err);
     }
-
   }
 
   export interface ClientConfig {
@@ -77,16 +88,15 @@ export namespace client {
   }
 
   const clientConfig: ClientConfig = {
-    verbose: false,
+    verbose: false
   };
 
-  export function setConfig (newVals: ClientConfig): void {
+  export function setConfig(newVals: ClientConfig): void {
     _.extend(clientConfig, newVals);
   }
 
   export class config {
-
-    static getenv (): HaikuDotEnv {
+    static getenv(): HaikuDotEnv {
       if (!fs.existsSync(FILE_PATHS.DOTENV)) {
         return {};
       }
@@ -96,22 +106,24 @@ export namespace client {
       return env;
     }
 
-    static setenv (environmentVariables: HaikuDotEnv): HaikuDotEnv {
-      const newenv = Object.assign(client.config.getenv(), environmentVariables);
+    static setenv(environmentVariables: HaikuDotEnv): HaikuDotEnv {
+      const newenv = Object.assign(
+        client.config.getenv(),
+        environmentVariables
+      );
       applyEnv(newenv);
       fs.writeFileSync(
         FILE_PATHS.DOTENV,
-        Object.entries(newenv)
-          .reduce(
-            (accumulator, [key, value]) => accumulator + `${key}="${value}"\n`,
-            '',
-          ),
+        Object.entries(newenv).reduce(
+          (accumulator, [key, value]) => accumulator + `${key}="${value}"\n`,
+          ""
+        )
       );
 
       return newenv;
     }
 
-    static getAuthToken (): string | undefined {
+    static getAuthToken(): string | undefined {
       if (fs.existsSync(FILE_PATHS.AUTH_TOKEN)) {
         const token = fs.readFileSync(FILE_PATHS.AUTH_TOKEN).toString();
         return token;
@@ -119,7 +131,7 @@ export namespace client {
       return undefined;
     }
 
-    static setAuthToken (newToken: string): void {
+    static setAuthToken(newToken: string): void {
       ensureHomeFolder();
       fs.writeFileSync(FILE_PATHS.AUTH_TOKEN, newToken);
     }
@@ -127,4 +139,4 @@ export namespace client {
 }
 
 // Export bootstrapSceneFilesSync function
-export {bootstrapSceneFilesSync};
+export { bootstrapSceneFilesSync };

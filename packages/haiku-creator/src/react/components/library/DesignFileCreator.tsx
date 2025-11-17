@@ -1,15 +1,15 @@
 import {shell} from 'electron';
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common/lib/environments/os.js';
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
 // @ts-ignore
-import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import {
   FigmaIconSVG,
   IllustratorIconSVG,
   SketchIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common/lib/react/OtherIcons.js';
 import * as path from 'path';
 import * as React from 'react';
 // @ts-ignore

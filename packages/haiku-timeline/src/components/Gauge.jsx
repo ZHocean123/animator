@@ -1,10 +1,10 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds';
-import Palette from 'haiku-ui-common/lib/Palette';
-import * as Timeline from 'haiku-serialization/src/bll/Timeline';
+import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import * as Timeline from 'haiku-serialization/src/bll/Timeline.js';
 import zIndex from './styles/zIndex';
-import {experimentIsEnabled, Experiment} from 'haiku-common/lib/experiments';
+import {experimentIsEnabled, Experiment} from 'haiku-common/lib/experiments.js';
 
 export default class Gauge extends React.Component {
   constructor (props) {

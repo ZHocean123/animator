@@ -1,9 +1,9 @@
 import {BytecodeNode, BytecodeSummonable} from '@haiku/core/lib/api';
 import {writeFile} from 'fs-extra';
 // @ts-ignore
-import * as Template from 'haiku-serialization/src/bll/Template';
+import * as Template from 'haiku-serialization/src/bll/Template.js';
 // @ts-ignore
-import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance';
+import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance.js';
 import {ExporterInterface} from '..';
 import BaseExporter from '../BaseExporter';
 import {evaluateInjectedFunctionInExportContext} from '../injectables';

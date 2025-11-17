@@ -1,7 +1,7 @@
 import * as tape from "tape";
 
 import composedTransformsToTimelineProperties from "@common/layout/composedTransformsToTimelineProperties";
-import Layout3D from "@haiku/core/lib/Layout3D.js";
+import Layout3D from "@haiku/core/lib/Layout3D";
 
 tape("composedTransformsToTimelineProperties", suite => {
   suite.test("normalizeRotationsInQuadrants", test => {

@@ -4,9 +4,9 @@ import Tooltip from "./Tooltip";
 import { shell } from "electron";
 import { TOUR_STYLES } from "../../styles/tourShared";
 import * as steps from "./Steps";
-import * as mixpanel from "haiku-serialization/src/utils/Mixpanel";
+import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import { TourUtils } from "haiku-common/lib/types/enums.js";
-import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour.js";
 
 class Tour extends React.Component {
   constructor() {

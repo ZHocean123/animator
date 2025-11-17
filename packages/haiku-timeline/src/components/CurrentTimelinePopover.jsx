@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import DuplicateIconSVG from 'haiku-ui-common/lib/react/icons/DuplicateIconSVG';
-import EditsIconSVG from 'haiku-ui-common/lib/react/icons/EditsIconSVG';
-import DeleteIconSVG from 'haiku-ui-common/lib/react/icons/DeleteIconSVG';
-import CheckmarkIconSVG from 'haiku-ui-common/lib/react/icons/CheckmarkIconSVG';
-import ChevronLeftIconSVG from 'haiku-ui-common/lib/react/icons/ChevronLeftIconSVG';
-import Palette from 'haiku-ui-common/lib/Palette';
+import DuplicateIconSVG from 'haiku-ui-common/lib/react/icons/DuplicateIconSVG.js';
+import EditsIconSVG from 'haiku-ui-common/lib/react/icons/EditsIconSVG.js';
+import DeleteIconSVG from 'haiku-ui-common/lib/react/icons/DeleteIconSVG.js';
+import CheckmarkIconSVG from 'haiku-ui-common/lib/react/icons/CheckmarkIconSVG.js';
+import ChevronLeftIconSVG from 'haiku-ui-common/lib/react/icons/ChevronLeftIconSVG.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 
 const popoverWidth = 170;
 const popoverHeight = '200px';

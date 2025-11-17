@@ -1,8 +1,8 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Palette from 'haiku-ui-common/lib/Palette';
-import StatesSVG from 'haiku-ui-common/lib/react/icons/StatesSVG';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import Palette from 'haiku-ui-common/lib/Palette.js';
+import StatesSVG from 'haiku-ui-common/lib/react/icons/StatesSVG.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments.js';
 
 export default class PropertyRowHeading extends React.Component {
   constructor (props) {

@@ -6,7 +6,7 @@ import {BytecodeNode, PrimitiveType} from '@haiku/core/lib/api';
 import {visitManaTree} from '@haiku/core/lib/HaikuNode';
 import {SVG_SIZEABLES} from '@haiku/core/lib/layout/applyCssLayout';
 import Layout3D, {AUTO_SIZING_TOKEN} from '@haiku/core/lib/Layout3D';
-import cssValue from 'haiku-vendor-legacy/lib/css-value';
+import cssValue from 'haiku-vendor-legacy/lib/css-value.js';
 import parseCssTransformString from './parseCssTransformString';
 
 const ROOT_LOCATOR = '0';

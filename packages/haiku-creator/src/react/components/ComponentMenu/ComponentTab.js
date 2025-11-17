@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import toTitleCase from '../../helpers/toTitleCase';
-import logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
 const STYLES = {
   container: {

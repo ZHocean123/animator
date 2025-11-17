@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import {throttle} from 'lodash-es';
 import * as React from 'react';
 import RowManager from './RowManager';

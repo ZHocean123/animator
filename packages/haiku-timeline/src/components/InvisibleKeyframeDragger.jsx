@@ -2,9 +2,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as lodash from 'lodash-es';
 import TimelineDraggable from './TimelineDraggable';
-import Globals from 'haiku-ui-common/lib/Globals';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import * as Property from 'haiku-serialization/src/bll/Property';
+import Globals from 'haiku-ui-common/lib/Globals.js';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import * as Property from 'haiku-serialization/src/bll/Property.js';
 
 const THROTTLE_TIME = 17; // ms
 

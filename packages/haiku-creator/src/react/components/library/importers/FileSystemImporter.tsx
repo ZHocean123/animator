@@ -1,7 +1,7 @@
 import * as remote from '@electron/remote';
 
-import {isMac} from 'haiku-common/src/environments/os';
-import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
+import {isMac} from 'haiku-common/src/environments/os.js';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments.js';
 import * as React from 'react';
 
 export interface FileSystemImporterProps {

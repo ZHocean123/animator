@@ -1,4 +1,4 @@
-import {stubProperties} from 'haiku-testing/lib/mock';
+import {stubProperties} from 'haiku-testing/lib/mock.js';
 import * as tape from 'tape';
 import {createRenderTest} from '../../TestHelpers';
 

@@ -3,13 +3,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import * as qs from 'qs';
-import * as Websocket from 'haiku-serialization/src/ws/Websocket';
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
+import * as Websocket from 'haiku-serialization/src/ws/Websocket.js';
+import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket.js';
 import Timeline from './components/Timeline';
-import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error.js';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
-import {shouldEmitErrors} from 'haiku-common/src/environments';
+import {shouldEmitErrors} from 'haiku-common/src/environments.js';
 
 // We are in a webview; use query string parameters for boot-up configuration
 const search = (window.location.search || '').split('?')[1] || '';

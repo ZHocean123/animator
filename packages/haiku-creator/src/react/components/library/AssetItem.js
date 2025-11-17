@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Color from 'color';
 import * as lodash from 'lodash-es';
-import * as Asset from 'haiku-serialization/src/bll/Asset';
-import {Figma} from 'haiku-serialization/src/bll/Figma';
+import * as Asset from 'haiku-serialization/src/bll/Asset.js';
+import {Figma} from 'haiku-serialization/src/bll/Figma.js';
 import {Draggable} from 'react-drag-and-drop';
 import AssetList from './AssetList';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
-import Palette from 'haiku-ui-common/lib/Palette';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import {isMac, isWindows} from 'haiku-common/lib/environments/os.js';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import * as Popover from 'react-popover';
 import {
   CollapseChevronRightSVG,
@@ -22,14 +22,14 @@ import {
   ComponentIconSVG,
   SyncIconSVG,
   FontIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common/lib/react/OtherIcons.js';
 
-import ControlImage from 'haiku-ui-common/lib/react/icons/ControlImage';
-import ControlText from 'haiku-ui-common/lib/react/icons/ControlText';
-import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML';
-// import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput'
+import ControlImage from 'haiku-ui-common/lib/react/icons/ControlImage.js';
+import ControlText from 'haiku-ui-common/lib/react/icons/ControlText.js';
+import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML.js';
+// import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput.js'
 import FigmaPopover from './importers/FigmaPopover';
-import {experimentIsEnabled, Experiment} from 'haiku-common/src/experiments';
+import {experimentIsEnabled, Experiment} from 'haiku-common/src/experiments.js';
 
 const ASSET_ICONS = {
   ControlImage: () => {

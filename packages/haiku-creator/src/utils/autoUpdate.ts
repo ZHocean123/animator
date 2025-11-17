@@ -1,9 +1,9 @@
 import * as electron from 'electron';
 import * as fs from 'fs';
 // @ts-ignore
-import {ditto, download, unzip} from 'haiku-serialization/src/utils/fileManipulation';
+import {ditto, download, unzip} from 'haiku-serialization/src/utils/fileManipulation.js';
 // @ts-ignore
-import logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import nodeFetch from 'node-fetch';
 import * as os from 'os';
 import * as path from 'path';

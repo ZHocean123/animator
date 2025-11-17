@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal';
+import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal.js';
 import {BTN_STYLES} from '../../styles/btnShared';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 
 const STYLES = {
   wrapper: {

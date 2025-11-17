@@ -2,7 +2,7 @@ import * as React from 'react';
 import {parse} from '@babel/parser';
 import * as prettier from 'prettier';
 import functionToRFO from '@haiku/core/lib/reflection/functionToRFO';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 

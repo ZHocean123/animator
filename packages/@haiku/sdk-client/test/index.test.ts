@@ -1,7 +1,7 @@
 import {inkstone} from '@haiku/sdk-inkstone';
 import {client, FILE_PATHS} from '@sdk-client/index';
 import * as fs from 'fs';
-import {stubProperties} from 'haiku-testing/lib/mock';
+import {stubProperties} from 'haiku-testing/lib/mock.js';
 import * as tape from 'tape';
 
 tape('index', (suite: tape.Test) => {

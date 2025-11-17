@@ -1,7 +1,7 @@
 /* global monaco */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/lib/Palette.js';
 import SyntaxEvaluator from './SyntaxEvaluator';
 import Snippets from './Snippets';
 

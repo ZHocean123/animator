@@ -1,8 +1,8 @@
-import * as fs from 'haiku-fs-extra';
-import * as git from 'isomorphic-git';
-import {FsClient} from 'isomorphic-git';
-import * as http from 'isomorphic-git/http/node';
-import * as path from 'path';
+import * as fs from "haiku-fs-extra";
+import * as git from "isomorphic-git";
+import { FsClient } from "isomorphic-git";
+import * as http from "isomorphic-git/http/node";
+import * as path from "path";
 
 // Re-export isomorphic-git for direct access if needed
 export { git, http };
@@ -33,9 +33,9 @@ export interface GitCommit {
 export interface GitReference {
   name: string;
   target: string;
-  isSymbolic (): boolean;
-  isTag (): boolean;
-  isBranch (): boolean;
+  isSymbolic(): boolean;
+  isTag(): boolean;
+  isBranch(): boolean;
 }
 
 export interface GitRemote {
@@ -51,14 +51,14 @@ export interface GitStatus {
 }
 
 export interface GitDiffDelta {
-  status (): number;
-  oldFile (): { path (): string };
-  newFile (): { path (): string };
+  status(): number;
+  oldFile(): { path(): string };
+  newFile(): { path(): string };
 }
 
 export interface GitDiff {
-  numDeltas (): number;
-  getDelta (i: number): GitDiffDelta;
+  numDeltas(): number;
+  getDelta(i: number): GitDiffDelta;
 }
 
 // Status constants mapping compatible with isomorphic-git status matrix
@@ -73,7 +73,7 @@ export const DELTA_STATUS = {
   UNTRACKED: 7,
   TYPECHANGE: 8,
   UNREADABLE: 9,
-  CONFLICTED: 10,
+  CONFLICTED: 10
 };
 
 // Merge file favor mapping
@@ -81,34 +81,44 @@ export const FILE_FAVOR = {
   NORMAL: 0,
   OURS: 1,
   THEIRS: 2,
-  UNION: 3,
+  UNION: 3
 };
 
 // Repository operations
-export async function open (pwd: string): Promise<GitRepository> {
+export async function open(pwd: string): Promise<GitRepository> {
   // Check if it's a git repository
   try {
-    await (fs as any).stat(path.join(pwd, '.git'));
+    await (fs as any).stat(path.join(pwd, ".git"));
     return { workdir: pwd } as GitRepository;
   } catch (error) {
     throw new Error(`could not find repository at ${pwd}`);
   }
 }
 
-export async function forceOpen (pwd: string): Promise<GitRepository> {
+export async function forceOpen(pwd: string): Promise<GitRepository> {
   return open(pwd);
 }
 
-export async function init (pwd: string): Promise<GitRepository> {
-  await git.init({ fs: fs as any as FsClient, dir: pwd });
+export async function init(pwd: string): Promise<GitRepository> {
+  await git.init({ fs: (fs as any) as FsClient, dir: pwd });
   return { workdir: pwd } as GitRepository;
 }
 
-export async function status (pwd: string): Promise<{ [path: string]: GitStatus }> {
-  const statusMatrix = await git.statusMatrix({ fs: fs as any as FsClient, dir: pwd });
+export async function status(
+  pwd: string
+): Promise<{ [path: string]: GitStatus }> {
+  const statusMatrix = await git.statusMatrix({
+    fs: (fs as any) as FsClient,
+    dir: pwd
+  });
   const changes: { [path: string]: GitStatus } = {};
 
-  for (const [filepath, headStatus, workdirStatus, stageStatus] of statusMatrix) {
+  for (const [
+    filepath,
+    headStatus,
+    workdirStatus,
+    stageStatus
+  ] of statusMatrix) {
     let statusNum: number;
 
     if (headStatus === 0 && workdirStatus === 2 && stageStatus === 0) {
@@ -126,23 +136,32 @@ export async function status (pwd: string): Promise<{ [path: string]: GitStatus 
     changes[filepath] = {
       path: filepath,
       status: statusNum.toString(),
-      num: statusNum,
+      num: statusNum
     };
   }
 
   return changes;
 }
 
-export async function hardReset (pwd: string, targetRef: string): Promise<void> {
+export async function hardReset(pwd: string, targetRef: string): Promise<void> {
   // In isomorphic-git, we use checkout to reset to a specific commit
-  const commitOid = await git.resolveRef({ fs: fs as any as FsClient, dir: pwd, ref: targetRef });
-  await git.checkout({ fs: fs as any as FsClient, dir: pwd, ref: commitOid, force: true });
+  const commitOid = await git.resolveRef({
+    fs: (fs as any) as FsClient,
+    dir: pwd,
+    ref: targetRef
+  });
+  await git.checkout({
+    fs: (fs as any) as FsClient,
+    dir: pwd,
+    ref: commitOid,
+    force: true
+  });
 }
 
-export async function removeUntrackedFiles (pwd: string): Promise<void> {
+export async function removeUntrackedFiles(pwd: string): Promise<void> {
   const statuses = await status(pwd);
-  const untrackedFiles = Object.keys(statuses).filter(path =>
-    statuses[path].num === DELTA_STATUS.UNTRACKED,
+  const untrackedFiles = Object.keys(statuses).filter(
+    path => statuses[path].num === DELTA_STATUS.UNTRACKED
   );
 
   for (const file of untrackedFiles) {
@@ -150,10 +169,10 @@ export async function removeUntrackedFiles (pwd: string): Promise<void> {
   }
 }
 
-export async function upsertRemoteDirectly (
+export async function upsertRemoteDirectly(
   pwd: string,
   name: string,
-  url: string,
+  url: string
 ): Promise<GitRemote> {
   // isomorphic-git doesn't have a direct remote management API
   // We'll store remote info in a simple way for compatibility
@@ -171,7 +190,7 @@ export async function upsertRemoteDirectly (
   }
 }
 
-export async function listRemotes (pwd: string): Promise<GitRemote[]> {
+export async function listRemotes(pwd: string): Promise<GitRemote[]> {
   try {
     // For compatibility, return empty array as isomorphic-git remote management is different
     const remotes: GitRemote[] = [];
@@ -181,46 +200,52 @@ export async function listRemotes (pwd: string): Promise<GitRemote[]> {
   }
 }
 
-export async function getCurrentBranchName (pwd: string): Promise<string> {
+export async function getCurrentBranchName(pwd: string): Promise<string> {
   try {
-    const ref = await git.currentBranch({ fs: fs as any as FsClient, dir: pwd });
-    return ref || 'master';
+    const ref = await git.currentBranch({
+      fs: (fs as any) as FsClient,
+      dir: pwd
+    });
+    return ref || "master";
   } catch (error) {
-    return 'master';
+    return "master";
   }
 }
 
-export async function cloneRepoDirectly (
+export async function cloneRepoDirectly(
   gitRemoteUrl: string,
-  abspath: string,
+  abspath: string
 ): Promise<void> {
   await git.clone({
-    fs: fs as any as FsClient,
+    fs: (fs as any) as FsClient,
     http,
     dir: abspath,
     url: gitRemoteUrl,
     singleBranch: false,
-    depth: 1,
+    depth: 1
   });
 }
 
-export async function addAllPathsToIndex (pwd: string): Promise<string> {
-  await git.add({ fs: fs as any as FsClient, dir: pwd, filepath: '.' });
+export async function addAllPathsToIndex(pwd: string): Promise<string> {
+  await git.add({ fs: (fs as any) as FsClient, dir: pwd, filepath: "." });
   // Write tree requires the tree object, but we'll handle this differently
   // Return a placeholder for now
-  return '';
+  return "";
 }
 
-export async function addPathsToIndex (pwd: string, relpaths: string[]): Promise<string> {
+export async function addPathsToIndex(
+  pwd: string,
+  relpaths: string[]
+): Promise<string> {
   for (const filepath of relpaths) {
-    await git.add({ fs: fs as any as FsClient, dir: pwd, filepath });
+    await git.add({ fs: (fs as any) as FsClient, dir: pwd, filepath });
   }
   // Write tree requires the tree object, but we'll handle this differently
   // Return a placeholder for now
-  return '';
+  return "";
 }
 
-export function createSignature (name: string, email: string): GitSignature {
+export function createSignature(name: string, email: string): GitSignature {
   const timestamp = Math.floor(Date.now() / 1000);
   const timezoneOffset = 0; // minutes
 
@@ -228,26 +253,30 @@ export function createSignature (name: string, email: string): GitSignature {
     name,
     email,
     timestamp,
-    timezoneOffset,
+    timezoneOffset
   };
 }
 
-export async function buildCommit (
+export async function buildCommit(
   pwd: string,
   username: string,
   email: string,
   message: string,
   oid: string,
   updateRef: string,
-  parentRef: string | null,
+  parentRef: string | null
 ): Promise<string> {
   const author = createSignature(username, email);
-  const committer = createSignature('Haiku Plumbing', 'contact@haiku.ai');
+  const committer = createSignature("Haiku Plumbing", "contact@haiku.ai");
 
   const parents: string[] = [];
   if (parentRef) {
     try {
-      const parentOid = await git.resolveRef({ fs: fs as any as FsClient, dir: pwd, ref: parentRef });
+      const parentOid = await git.resolveRef({
+        fs: (fs as any) as FsClient,
+        dir: pwd,
+        ref: parentRef
+      });
       parents.push(parentOid);
     } catch (error) {
       // Parent ref might not exist for initial commit
@@ -255,30 +284,30 @@ export async function buildCommit (
   }
 
   const commitOid = await git.commit({
-    fs: fs as any as FsClient,
+    fs: (fs as any) as FsClient,
     dir: pwd,
     message,
     author,
     committer,
     parent: parents,
-    tree: oid,
+    tree: oid
   });
 
-  if (updateRef && updateRef !== 'undefined') {
+  if (updateRef && updateRef !== "undefined") {
     try {
       await (git as any).updateRef({
-        fs: fs as any as FsClient,
+        fs: (fs as any) as FsClient,
         dir: pwd,
         ref: `refs/heads/${updateRef}`,
-        value: commitOid,
+        value: commitOid
       });
     } catch (error) {
       // Fallback: use writeRef if updateRef is not available
       await (git as any).writeRef({
-        fs: fs as any as FsClient,
+        fs: (fs as any) as FsClient,
         dir: pwd,
         ref: `refs/heads/${updateRef}`,
-        value: commitOid,
+        value: commitOid
       });
     }
   }
@@ -286,92 +315,109 @@ export async function buildCommit (
   return commitOid;
 }
 
-export async function pushToRemoteDirectly (
+export async function pushToRemoteDirectly(
   pwd: string,
   remoteName: string,
   fullBranchName: string,
-  doForcePush: boolean,
+  doForcePush: boolean
 ): Promise<void> {
   try {
     await git.push({
-      fs: fs as any as FsClient,
+      fs: (fs as any) as FsClient,
       http,
       dir: pwd,
       remote: remoteName,
       ref: fullBranchName,
-      force: doForcePush,
+      force: doForcePush
     });
   } catch (error) {
     throw new Error(`Failed to push to remote: ${error.message}`);
   }
 }
 
-export async function getCurrentCommit (pwd: string): Promise<{ sha: string; commit: any }> {
+export async function getCurrentCommit(
+  pwd: string
+): Promise<{ sha: string; commit: any }> {
   try {
-    const sha = await git.resolveRef({ fs: fs as any as FsClient, dir: pwd, ref: 'HEAD' });
-    const commit = await git.readCommit({ fs: fs as any as FsClient, dir: pwd, oid: sha });
+    const sha = await git.resolveRef({
+      fs: (fs as any) as FsClient,
+      dir: pwd,
+      ref: "HEAD"
+    });
+    const commit = await git.readCommit({
+      fs: (fs as any) as FsClient,
+      dir: pwd,
+      oid: sha
+    });
     return { sha, commit: commit.commit };
   } catch (error) {
-    throw new Error('Failed to get current commit');
+    throw new Error("Failed to get current commit");
   }
 }
 
-export async function createTag (
+export async function createTag(
   pwd: string,
   tagName: string,
   commitId: string,
-  tagMessage: string,
+  tagMessage: string
 ): Promise<string> {
   // annotatedTag expects ref parameter, not tag
   await (git as any).annotatedTag({
-    fs: fs as any as FsClient,
+    fs: (fs as any) as FsClient,
     dir: pwd,
     ref: tagName,
     message: tagMessage,
-    object: commitId,
+    object: commitId
   });
 
   return commitId;
 }
 
-export async function listTags (pwd: string): Promise<string[]> {
+export async function listTags(pwd: string): Promise<string[]> {
   try {
-    const tags = await git.listTags({ fs: fs as any as FsClient, dir: pwd });
+    const tags = await git.listTags({ fs: (fs as any) as FsClient, dir: pwd });
     return tags;
   } catch (error) {
     return [];
   }
 }
 
-export async function fetchFromRemoteDirectly (pwd: string, remoteName: string): Promise<void> {
+export async function fetchFromRemoteDirectly(
+  pwd: string,
+  remoteName: string
+): Promise<void> {
   await git.fetch({
-    fs: fs as any as FsClient,
+    fs: (fs as any) as FsClient,
     http,
     dir: pwd,
-    remote: remoteName,
+    remote: remoteName
   });
 }
 
-export async function mergeProject (
+export async function mergeProject(
   pwd: string,
   projectName: string,
   partialBranchName: string,
-  fileFavorName: string = 'normal',
+  fileFavorName: string = "normal"
 ): Promise<{ didHaveConflicts: boolean; shaOrIndex?: string }> {
   try {
     const remoteRef = `refs/remotes/${projectName}/${partialBranchName}`;
     const localRef = `refs/heads/${partialBranchName}`;
 
     // Fetch the remote branch
-    await git.checkout({ fs: fs as any as FsClient, dir: pwd, ref: localRef });
+    await git.checkout({
+      fs: (fs as any) as FsClient,
+      dir: pwd,
+      ref: localRef
+    });
 
     // Merge remote into local
     const mergeResult = await git.merge({
-      fs: fs as any as FsClient,
+      fs: (fs as any) as FsClient,
       dir: pwd,
       ours: localRef,
       theirs: remoteRef,
-      fastForwardOnly: false,
+      fastForwardOnly: false
     });
 
     if (mergeResult.alreadyMerged || mergeResult.fastForward) {
@@ -379,10 +425,15 @@ export async function mergeProject (
     }
 
     // Check for conflicts
-    const status = await git.statusMatrix({ fs: fs as any as FsClient, dir: pwd });
+    const status = await git.statusMatrix({
+      fs: (fs as any) as FsClient,
+      dir: pwd
+    });
     const hasConflicts = status.some(
       ([_, headStatus, workdirStatus, stageStatus]) =>
-        headStatus === 1 && (workdirStatus as any) === 3 && (stageStatus as any) === 3,
+        headStatus === 1 &&
+        (workdirStatus as any) === 3 &&
+        (stageStatus as any) === 3
     );
 
     if (hasConflicts) {
@@ -390,10 +441,10 @@ export async function mergeProject (
     }
 
     const commitOid = await git.commit({
-      fs: fs as any as FsClient,
+      fs: (fs as any) as FsClient,
       dir: pwd,
       message: `Merge ${remoteRef} into ${localRef}`,
-      parent: [localRef, remoteRef],
+      parent: [localRef, remoteRef]
     });
 
     return { didHaveConflicts: false, shaOrIndex: commitOid };
@@ -402,23 +453,31 @@ export async function mergeProject (
   }
 }
 
-export async function hardResetFromSHA (pwd: string, sha: string): Promise<void> {
-  await git.checkout({ fs: fs as any as FsClient, dir: pwd, ref: sha, force: true });
+export async function hardResetFromSHA(
+  pwd: string,
+  sha: string
+): Promise<void> {
+  await git.checkout({
+    fs: (fs as any) as FsClient,
+    dir: pwd,
+    ref: sha,
+    force: true
+  });
 }
 
-export async function commitProject (
+export async function commitProject(
   pwd: string,
   username: string,
   useHeadAsParent: boolean,
   message: string,
-  pathsToAdd: string | string[],
+  pathsToAdd: string | string[]
 ): Promise<string> {
   // Add paths to index
-  if (pathsToAdd === '.') {
+  if (pathsToAdd === ".") {
     await addAllPathsToIndex(pwd);
   } else if (Array.isArray(pathsToAdd)) {
     await addPathsToIndex(pwd, pathsToAdd);
-  } else if (typeof pathsToAdd === 'string') {
+  } else if (typeof pathsToAdd === "string") {
     await addPathsToIndex(pwd, [pathsToAdd]);
   }
 
@@ -428,60 +487,60 @@ export async function commitProject (
     username,
     `${username}@haiku.ai`,
     message,
-    '', // oid will be created in buildCommit
-    'HEAD',
-    useHeadAsParent ? 'HEAD' : null,
+    "", // oid will be created in buildCommit
+    "HEAD",
+    useHeadAsParent ? "HEAD" : null
   );
 
   return commitOid;
 }
 
-export function statusToText (statusNum: number): string {
+export function statusToText(statusNum: number): string {
   const words = [];
   const statusMap: { [key: number]: string } = {
-    [DELTA_STATUS.UNMODIFIED]: 'UNMODIFIED',
-    [DELTA_STATUS.ADDED]: 'ADDED',
-    [DELTA_STATUS.DELETED]: 'DELETED',
-    [DELTA_STATUS.MODIFIED]: 'MODIFIED',
-    [DELTA_STATUS.RENAMED]: 'RENAMED',
-    [DELTA_STATUS.COPIED]: 'COPIED',
-    [DELTA_STATUS.IGNORED]: 'IGNORED',
-    [DELTA_STATUS.UNTRACKED]: 'UNTRACKED',
-    [DELTA_STATUS.TYPECHANGE]: 'TYPECHANGE',
-    [DELTA_STATUS.UNREADABLE]: 'UNREADABLE',
-    [DELTA_STATUS.CONFLICTED]: 'CONFLICTED',
+    [DELTA_STATUS.UNMODIFIED]: "UNMODIFIED",
+    [DELTA_STATUS.ADDED]: "ADDED",
+    [DELTA_STATUS.DELETED]: "DELETED",
+    [DELTA_STATUS.MODIFIED]: "MODIFIED",
+    [DELTA_STATUS.RENAMED]: "RENAMED",
+    [DELTA_STATUS.COPIED]: "COPIED",
+    [DELTA_STATUS.IGNORED]: "IGNORED",
+    [DELTA_STATUS.UNTRACKED]: "UNTRACKED",
+    [DELTA_STATUS.TYPECHANGE]: "TYPECHANGE",
+    [DELTA_STATUS.UNREADABLE]: "UNREADABLE",
+    [DELTA_STATUS.CONFLICTED]: "CONFLICTED"
   };
 
-  return statusMap[statusNum] || 'UNKNOWN';
+  return statusMap[statusNum] || "UNKNOWN";
 }
 
-export function saveStrategyToFileFavorName (saveStrategy?: any): string {
+export function saveStrategyToFileFavorName(saveStrategy?: any): string {
   if (!saveStrategy || !saveStrategy.strategy) {
-    return 'normal';
+    return "normal";
   }
 
-  if (saveStrategy.strategy === 'recursive') {
-    return 'normal';
+  if (saveStrategy.strategy === "recursive") {
+    return "normal";
   }
-  if (saveStrategy.strategy === 'ours') {
-    return 'ours';
+  if (saveStrategy.strategy === "ours") {
+    return "ours";
   }
-  if (saveStrategy.strategy === 'theirs') {
-    return 'theirs';
+  if (saveStrategy.strategy === "theirs") {
+    return "theirs";
   }
 
-  return 'normal';
+  return "normal";
 }
 
 // Clean all changes - reset and remove untracked
-export async function cleanAllChanges (pwd: string): Promise<void> {
-  await hardReset(pwd, 'HEAD');
+export async function cleanAllChanges(pwd: string): Promise<void> {
+  await hardReset(pwd, "HEAD");
   await removeUntrackedFiles(pwd);
 }
 
 // Destroy index lock (compatibility function)
-export function destroyIndexLockSync (pwd: string): void {
-  const lockPath = path.join(pwd, '.git', 'index.lock');
+export function destroyIndexLockSync(pwd: string): void {
+  const lockPath = path.join(pwd, ".git", "index.lock");
   try {
     if ((fs as any).existsSync(lockPath)) {
       (fs as any).removeSync(lockPath);

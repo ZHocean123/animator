@@ -3,7 +3,7 @@ import * as async from 'async';
 import * as cp from 'child_process';
 import * as path from 'path';
 import TestHelpers from '../TestHelpers';
-import {stubProperties} from 'haiku-testing/lib/mock';
+import {stubProperties} from 'haiku-testing/lib/mock.js';
 import {fileURLToPath} from 'node:url';
 import {dirname} from 'node:path';
 
