@@ -880,8 +880,8 @@ export namespace inkstone {
     }
 
     export interface Tier {
-      Price: number,
-      UpTo: number
+      Price: number;
+      UpTo: number;
     }
 
     export interface Plan {
@@ -890,8 +890,8 @@ export namespace inkstone {
       Interval: 'year'|'quarter'|'month';
       Price: number;
       IsCurrentPlan: boolean;
-      BillingScheme: string,
-      Tiers: Tier[]
+      BillingScheme: string;
+      Tiers: Tier[];
     }
 
     export interface Subscription {
@@ -980,13 +980,13 @@ export namespace inkstone {
     }
 
     export interface CreateTaxIDRequestParams {
-      Email:       string;
-      VatNumber:   string;
+      Email: string;
+      VatNumber: string;
       CompanyName: string;
       AddressLine: string;
-      Country:     string;
-      City:        string;
-      ZipCode:     string;
+      Country: string;
+      City: string;
+      ZipCode: string;
     }
 
     /**
@@ -1137,7 +1137,7 @@ export namespace inkstone {
       .withEndpoint(Endpoints.BillingAddSeats)
       .withJson(addSeatsParams)
       .callWithCallback(cb, 200);
-    }
+    };
   }
 
   export namespace team {
@@ -1158,7 +1158,7 @@ export namespace inkstone {
       .withEndpoint(Endpoints.Team)
       .withJson(team)
       .callWithCallback(cb, 201);
-    }
+    };
 
     export interface SeatAssignment {
       Username: string;
@@ -1173,7 +1173,7 @@ export namespace inkstone {
       newGetRequest()
         .withEndpoint(Endpoints.TeamAssignedSeats)
         .callWithCallback(cb);
-    }
+    };
 
     export interface ConfirmSeatParams {
       VerificationUniqueID: string;
@@ -1189,7 +1189,7 @@ export namespace inkstone {
       .withEndpoint(Endpoints.TeamConfirmSeat)
       .withJson(confirmSeatParams)
       .callWithCallback(cb, 200);
-    }
+    };
 
     export interface ResendConfirmSeatEmailParams {
       Email: string;
@@ -1205,7 +1205,7 @@ export namespace inkstone {
       .withEndpoint(Endpoints.TeamResendConfirmSeatEmail)
       .withJson(resendConfirmSeatEmailParams)
       .callWithCallback(cb, 200);
-    }
+    };
 
     export interface AssignSeatsParams {
       Email: string;
@@ -1223,6 +1223,6 @@ export namespace inkstone {
       .withEndpoint(Endpoints.TeamAssignSeats)
       .withJson(assignSeatsParams)
       .callWithCallback(cb, 200);
-    }
+    };
   }
 }

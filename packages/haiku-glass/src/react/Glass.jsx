@@ -885,7 +885,6 @@ export class Glass extends React.Component {
     });
     this._renderCount++;
 
-
 overlays.push({
       elementName: 'g',
       attributes: {
@@ -896,9 +895,8 @@ overlays.push({
       },
       children,
     });
-    
-  }
 
+  }
 
   interpolateAttributesAtKeyframes (el, attributes) {
     const curKeys = {};

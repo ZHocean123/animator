@@ -7,10 +7,16 @@ import async from "async";
 import cp from "child_process";
 import fs from "fs";
 import path from "path";
-import { argv } from "yargs";
+import yargs from "yargs";
 import glob from "glob";
 import allPackages from "./helpers/packages.js";
 import log from "./helpers/log.js";
+
+/**
+ * 解析命令行参数
+ * 兼容旧版 yargs（CommonJS 导出），在 ESM 环境下通过 default 导出访问
+ */
+const argv = yargs.argv;
 
 
 // Define build order to ensure dependencies are built first
@@ -31,7 +37,7 @@ const buildOrder = [
 ];
 
 // Sort packages according to build order
-const sortedPackages = allPackages.sort((a, b) => {
+const sortedPackages = allPackages().sort((a, b) => {
   const aIndex = buildOrder.indexOf(a.shortname);
   const bIndex = buildOrder.indexOf(b.shortname);
   
@@ -48,24 +54,30 @@ const sortedPackages = allPackages.sort((a, b) => {
   return 0;
 });
 
+/**
+ * 设置默认运行环境，避免某些构建工具在未设置 NODE_ENV 时行为异常
+ */
 if (!process.env.NODE_ENV) {
-  // babel-cli requires this to be set for reasons I don't know
   process.env.NODE_ENV = 'development';
 }
 
+/**
+ * 获取文件修改时间
+ */
 const getModificationTime = (file) => new Date(fs.statSync(file).mtime);
 
 async.each(sortedPackages, (pack, done) => {
   if (pack.pkg && pack.pkg.scripts && pack.pkg.scripts.compile) {
     const lastCompileFilename = path.join(pack.abspath, '.last-compile');
 
-    /* Load last compile time from file */
+    /**
+     * 读取上次编译时间标记
+     * 文件格式：export default { "lastCompileTime": "ISO_STRING" };
+     */
     let lastCompileTime = null;
     if (!argv.force && fs.existsSync(lastCompileFilename)) {
       try {
-        // 动态导入文件内容
         const lastCompileContent = fs.readFileSync(lastCompileFilename, 'utf8');
-        // 简单解析 export default 对象
         const jsonMatch = lastCompileContent.match(/export default\s+(\{.*\});/s);
         if (jsonMatch) {
           const lastCompile = JSON.parse(jsonMatch[1]);
@@ -74,29 +86,45 @@ async.each(sortedPackages, (pack, done) => {
           }
         }
       } catch (e) {
-        // 如果解析失败，继续编译
+        // 解析失败则认为需要重新编译
         lastCompileTime = null;
       }
     }
 
-    /* Get modified file since last compilation */
+    /**
+     * 计算自上次编译以来修改的文件数量
+     */
     const files = glob.sync(`${pack.abspath}/src/**`, {});
     const modifiedFiles = files.filter((file) => getModificationTime(file) > lastCompileTime);
 
-    /* Compile package if it has any modified file */
-    // if (modifiedFiles.length > 0) {
-      log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
-      try {
-        cp.execSync('pnpm run compile', {cwd: pack.abspath, stdio: 'inherit'});
-      } catch (error) {
-        log.warn(`Compilation failed for ${pack.shortname}, but continuing...`);
-        // Continue with next package even if compilation fails
+    /**
+     * 有变更则编译；失败时记录详细错误并继续后续包
+     */
+    log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
+    try {
+      cp.execSync('pnpm run compile', { cwd: pack.abspath, stdio: 'inherit' });
+    } catch (error) {
+      const errMsg = `Compilation failed for ${pack.shortname}`;
+      log.err(errMsg);
+      if (error && error.stack) {
+        log.err(error.stack);
+      } else if (error && error.message) {
+        log.err(error.message);
       }
-    // } else {
-    //   log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);
-    // }
+      try {
+        const logPath = path.join(pack.abspath, '.compile-error.log');
+        const payload = {
+          package: pack.shortname,
+          error: String(error && error.stack ? error.stack : error && error.message ? error.message : error),
+          when: new Date().toISOString(),
+        };
+        fs.writeFileSync(logPath, JSON.stringify(payload, null, 2));
+      } catch (_) {}
+    }
 
-    /* Update last compile time */
+    /**
+     * 更新上次编译时间标记
+     */
     lastCompileTime = new Date();
     fs.writeFileSync(lastCompileFilename, `export default ${JSON.stringify({lastCompileTime})};`);
 

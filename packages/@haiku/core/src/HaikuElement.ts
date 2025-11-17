@@ -59,11 +59,11 @@ export default class HaikuElement extends HaikuBase implements IHaikuElement {
   }
 
   // Add public getters for protected properties to satisfy interface requirements
-  getConfig(): any {
+  getConfig (): any {
     return (this as any).config;
   }
 
-  getParent(): any {
+  getParent (): any {
     return (this as any).parent;
   }
 

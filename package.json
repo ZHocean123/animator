@@ -41,11 +41,16 @@
       "@types/react": "^18.0.0",
       "@types/node": "^22.0.0"
     },
-    "ignoredBuiltDependencies": [
-      "electron"
-    ],
+    "ignoredBuiltDependencies": [],
     "onlyBuiltDependencies": [
-      "fsevents"
+      "@ronomon/base64",
+      "aws-sdk",
+      "core-js",
+      "electron-chromedriver",
+      "es5-ext",
+      "fsevents",
+      "lzma-native",
+      "radium"
     ]
   },
   "dependencies": {

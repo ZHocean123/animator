@@ -13,7 +13,7 @@ const DEFAULT_GIT_USERNAME = 'Haiku-Plumbing';
 const DEFAULT_GIT_EMAIL = 'contact@haiku.ai';
 const DEFAULT_GIT_COMMIT_MESSAGE = 'Edited project with Haiku Desktop';
 
-function globalExceptionCatcher (exception) {
+function globalExceptionCatcher(exception) {
   logger.error(exception);
   throw exception;
 }
@@ -30,7 +30,7 @@ export const globalCloneOpts = {
   fetchOpts: globalFetchOpts,
 };
 
-if (global.process.env.NODE_ENV !== Environment.Production) {
+if(global.process.env.NODE_ENV !== Environment.Production) {
   // Don't enforce strict SSL in dev mode.
   globalCallbacks.certificateCheck = () => 1;
 }
@@ -39,8 +39,8 @@ if (global.process.env.NODE_ENV !== Environment.Production) {
 const LOCKED_INDEXES = {};
 const INDEX_LOCK_INTERVAL = 0;
 
-function _gimmeIndex (pwd, cb) {
-  if (!LOCKED_INDEXES[pwd]) {
+function _gimmeIndex(pwd, cb) {
+  if(!LOCKED_INDEXES[pwd]) {
     LOCKED_INDEXES[pwd] = true;
     // eslint-disable-next-line
     return cb(() => {
@@ -52,16 +52,16 @@ function _gimmeIndex (pwd, cb) {
   }, INDEX_LOCK_INTERVAL);
 }
 
-export function open (pwd, cb) {
+export function open(pwd, cb) {
   return forceOpen(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return cb(null, repository || undefined);
   });
 }
 
-export function forceOpen (pwd, cb) {
+export function forceOpen(pwd, cb) {
   GitAdapter.open(pwd)
     .then((repository) => {
       return cb(null, repository);
@@ -69,7 +69,7 @@ export function forceOpen (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function init (pwd, cb) {
+export function init(pwd, cb) {
   GitAdapter.init(pwd)
     .then((repository) => {
       return cb(null, repository);
@@ -77,15 +77,15 @@ export function init (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function status (pwd, opts, cb) {
+export function status(pwd, opts, cb) {
   return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
+    function done(err, out) {
       freeIndex();
       return cb(err, out);
     }
 
     return open(pwd, (err, repository) => {
-      if (err) {
+      if(err) {
         return done(err);
       }
       GitAdapter.status(pwd)
@@ -97,7 +97,7 @@ export function status (pwd, opts, cb) {
   });
 }
 
-export function hardReset (pwd, targetRef, cb) {
+export function hardReset(pwd, targetRef, cb) {
   GitAdapter.hardReset(pwd, targetRef)
     .then(() => {
       return cb(null);
@@ -105,7 +105,7 @@ export function hardReset (pwd, targetRef, cb) {
     .catch((error) => cb(error));
 }
 
-export function removeUntrackedFiles (pwd, cb) {
+export function removeUntrackedFiles(pwd, cb) {
   GitAdapter.removeUntrackedFiles(pwd)
     .then(() => {
       return cb();
@@ -113,7 +113,7 @@ export function removeUntrackedFiles (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function upsertRemoteDirectly (pwd, name, url, cb) {
+export function upsertRemoteDirectly(pwd, name, url, cb) {
   GitAdapter.upsertRemoteDirectly(pwd, name, url)
     .then((remote) => {
       return cb(null, remote);
@@ -121,40 +121,40 @@ export function upsertRemoteDirectly (pwd, name, url, cb) {
     .catch((error) => cb(error));
 }
 
-function findExistingRemote (remotes, name) {
-  if (remotes.length < 1) {
+function findExistingRemote(remotes, name) {
+  if(remotes.length < 1) {
     return null;
   }
   let found = null;
   remotes.forEach((remote) => {
-    if (typeof remote === 'string' && remote === name) {
+    if(typeof remote === 'string' && remote === name) {
       found = remote;
-    } else if (remote.name && remote.name === name) {
+    } else if(remote.name && remote.name === name) {
       found = remote;
     }
   });
   return found;
 }
 
-export function maybeInit (pwd, cb) {
+export function maybeInit(pwd, cb) {
   GitAdapter.open(pwd)
     .then((repository) => {
       return cb(null, repository, true);
     })
     .catch((error) => {
-      if (error.message && /could not find repository/i.test(error.message)) {
+      if(error.message && /could not find repository/i.test(error.message)) {
         return init(pwd, cb);
       }
       return cb(error);
     });
 }
 
-export function getIndexLockAgnostic (pwd, cb) {
+export function getIndexLockAgnostic(pwd, cb) {
   // This function is no longer needed with isomorphic-git, but kept for compatibility
   return cb(null, { workdir: pwd });
 }
 
-export function writeIndexLockAgnostic (index, pwd, cb) {
+export function writeIndexLockAgnostic(index, pwd, cb) {
   // This function is no longer needed with isomorphic-git, but kept for compatibility
   GitAdapter.addAllPathsToIndex(pwd)
     .then((oid) => {
@@ -164,20 +164,20 @@ export function writeIndexLockAgnostic (index, pwd, cb) {
 }
 
 // HACK: This assumes we are only running one thread against this repo
-export function destroyIndexLockSync (pwd) {
+export function destroyIndexLockSync(pwd) {
   const lockPath = path.join(pwd, '.git', 'index.lock');
   delete LOCKED_INDEXES[pwd]; // Remove the in-memory mutex too in case one is hanging around
   try {
-    if (fs.existsSync(lockPath)) {
+    if(fs.existsSync(lockPath)) {
       fs.removeSync(lockPath);
     }
-  } catch (exception) {
+  } catch(exception) {
     logger.info('[git]', exception);
   }
 }
 
-export function addPathsToIndex (pwd, relpaths = [], cb) {
-  if (relpaths.length < 1) {
+export function addPathsToIndex(pwd, relpaths = [], cb) {
+  if(relpaths.length < 1) {
     return cb(new Error('Empty paths list given'));
   }
   GitAdapter.addPathsToIndex(pwd, relpaths)
@@ -187,7 +187,7 @@ export function addPathsToIndex (pwd, relpaths = [], cb) {
     .catch((error) => cb(error));
 }
 
-export function addAllPathsToIndex (pwd, cb) {
+export function addAllPathsToIndex(pwd, cb) {
   GitAdapter.addAllPathsToIndex(pwd)
     .then((oid) => {
       return cb(null, oid);
@@ -195,7 +195,7 @@ export function addAllPathsToIndex (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function referenceNameToId (pwd, name, cb) {
+export function referenceNameToId(pwd, name, cb) {
   GitAdapter.open(pwd)
     .then(() => {
       // isomorphic-git doesn't use reference objects the same way
@@ -204,11 +204,11 @@ export function referenceNameToId (pwd, name, cb) {
     .catch((error) => cb(error));
 }
 
-export function createSignature (name, email) {
+export function createSignature(name, email) {
   return GitAdapter.createSignature(name, email);
 }
 
-export function buildCommit (pwd, username, email, message, oid, updateRef, parentRef, cb) {
+export function buildCommit(pwd, username, email, message, oid, updateRef, parentRef, cb) {
   GitAdapter.buildCommit(
     pwd,
     username || DEFAULT_COMMITTER_NAME,
@@ -216,7 +216,7 @@ export function buildCommit (pwd, username, email, message, oid, updateRef, pare
     message,
     oid,
     updateRef,
-    parentRef
+    parentRef,
   )
     .then((commitId) => {
       return cb(null, commitId);
@@ -224,7 +224,7 @@ export function buildCommit (pwd, username, email, message, oid, updateRef, pare
     .catch((error) => cb(error));
 }
 
-function getRepositoryHeadReference (pwd, cb) {
+function getRepositoryHeadReference(pwd, cb) {
   GitAdapter.getCurrentBranchName(pwd)
     .then((branchName) => {
       return cb(null, { name: branchName }, 'direct', { workdir: pwd });
@@ -232,7 +232,7 @@ function getRepositoryHeadReference (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function getCurrentBranchName (pwd, cb) {
+export function getCurrentBranchName(pwd, cb) {
   GitAdapter.getCurrentBranchName(pwd)
     .then((branchName) => {
       const full = `refs/heads/${branchName}`;
@@ -241,7 +241,7 @@ export function getCurrentBranchName (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function cloneRepoDirectly (gitRemoteUrl, abspath, cb) {
+export function cloneRepoDirectly(gitRemoteUrl, abspath, cb) {
   GitAdapter.cloneRepoDirectly(gitRemoteUrl, abspath)
     .then(() => {
       return cb(null, { workdir: abspath }, abspath);
@@ -249,7 +249,7 @@ export function cloneRepoDirectly (gitRemoteUrl, abspath, cb) {
     .catch((error) => cb(error));
 }
 
-export function pushToRemoteDirectly (pwd, remoteName, fullBranchName, doForcePush, cb) {
+export function pushToRemoteDirectly(pwd, remoteName, fullBranchName, doForcePush, cb) {
   GitAdapter.pushToRemoteDirectly(pwd, remoteName, fullBranchName, doForcePush)
     .then(() => {
       return cb();
@@ -257,7 +257,7 @@ export function pushToRemoteDirectly (pwd, remoteName, fullBranchName, doForcePu
     .catch((error) => cb(error));
 }
 
-export function lookupRemote (pwd, remoteName, cb) {
+export function lookupRemote(pwd, remoteName, cb) {
   GitAdapter.listRemotes(pwd)
     .then((remotes) => {
       const remote = remotes.find(r => r.name === remoteName);
@@ -266,7 +266,7 @@ export function lookupRemote (pwd, remoteName, cb) {
     .catch((error) => cb(error));
 }
 
-export function listRemotes (pwd, cb) {
+export function listRemotes(pwd, cb) {
   GitAdapter.listRemotes(pwd)
     .then((remotes) => {
       return cb(null, remotes);
@@ -274,7 +274,7 @@ export function listRemotes (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function doesRemoteExist (pwd, remoteName, cb) {
+export function doesRemoteExist(pwd, remoteName, cb) {
   GitAdapter.listRemotes(pwd)
     .then((remotes) => {
       const found = findExistingRemote(remotes, remoteName);
@@ -283,7 +283,7 @@ export function doesRemoteExist (pwd, remoteName, cb) {
     .catch((error) => cb(error));
 }
 
-export function getCurrentCommit (pwd, cb) {
+export function getCurrentCommit(pwd, cb) {
   GitAdapter.getCurrentCommit(pwd)
     .then(({ sha, commit }) => {
       return cb(null, sha, commit, { workdir: pwd });
@@ -291,7 +291,7 @@ export function getCurrentCommit (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function hardResetFromSHA (pwd, sha, cb) {
+export function hardResetFromSHA(pwd, sha, cb) {
   GitAdapter.hardResetFromSHA(pwd, sha)
     .then(() => {
       return cb();
@@ -299,7 +299,7 @@ export function hardResetFromSHA (pwd, sha, cb) {
     .catch((error) => cb(error));
 }
 
-export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
+export function fetchFromRemoteDirectly(pwd, remoteName, cb) {
   GitAdapter.fetchFromRemoteDirectly(pwd, remoteName)
     .then(() => {
       return cb();
@@ -307,14 +307,14 @@ export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
     .catch((error) => cb(error));
 }
 
-export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
+export function mergeBranches(pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
   // Note: isomorphic-git merge API implementation
   // Using simplified branch merge approach
   logger.info('[git] merging branches from', branchNameTheirs, 'to', branchNameOurs);
-  
+
   GitAdapter.mergeProject(pwd, 'origin', branchNameOurs, fileFavorName)
     .then(({ didHaveConflicts, shaOrIndex }) => {
-      if (didHaveConflicts) {
+      if(didHaveConflicts) {
         return cb(null, true, shaOrIndex);
       }
       return cb(null, false, shaOrIndex);
@@ -322,7 +322,7 @@ export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorN
     .catch((error) => cb(error));
 }
 
-export function cleanAllChanges (pwd, cb) {
+export function cleanAllChanges(pwd, cb) {
   GitAdapter.cleanAllChanges(pwd)
     .then(() => {
       return cb();
@@ -330,27 +330,27 @@ export function cleanAllChanges (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function rebaseBranches (folder, upstreamName, branchName, ontoStr, cb) {
+export function rebaseBranches(folder, upstreamName, branchName, ontoStr, cb) {
   // isomorphic-git doesn't have rebaseBranches, return error
   logger.warn('[git] rebaseBranches not implemented in isomorphic-git');
   return cb(new Error('rebaseBranches not supported'));
 }
 
-export function getCommitHistoryForFile (folder, filePath, maxEntries = 1000, cb) {
+export function getCommitHistoryForFile(folder, filePath, maxEntries = 1000, cb) {
   // isomorphic-git doesn't have fileHistoryWalk, return empty
   logger.warn('[git] getCommitHistoryForFile not implemented in isomorphic-git');
   return cb(null, []);
 }
 
-export function getMasterCommitHistory (folder, cb) {
+export function getMasterCommitHistory(folder, cb) {
   // isomorphic-git doesn't have getMasterCommit, return empty
   logger.warn('[git] getMasterCommitHistory not implemented in isomorphic-git');
   return cb(null, []);
 }
 
-export function mergeBranchesWithoutBase (folder, toName, fromName, signature, mergePreference, fileFavorName, cb) {
+export function mergeBranchesWithoutBase(folder, toName, fromName, signature, mergePreference, fileFavorName, cb) {
   logger.info('[git] merging branches (without base) from', fromName, 'to', toName);
-  
+
   GitAdapter.mergeProject(folder, 'origin', toName, fileFavorName)
     .then(({ didHaveConflicts, shaOrIndex }) => {
       return cb(null, didHaveConflicts, shaOrIndex);
@@ -358,7 +358,7 @@ export function mergeBranchesWithoutBase (folder, toName, fromName, signature, m
     .catch((error) => cb(error));
 }
 
-export function createTag (pwd, tagNameProbablySemver, commitId, tagMessage, cb) {
+export function createTag(pwd, tagNameProbablySemver, commitId, tagMessage, cb) {
   GitAdapter.createTag(pwd, tagNameProbablySemver, commitId, tagMessage)
     .then((tagOid) => {
       return cb(null, tagOid);
@@ -366,14 +366,14 @@ export function createTag (pwd, tagNameProbablySemver, commitId, tagMessage, cb)
     .catch((error) => cb(error));
 }
 
-export function pushTagToRemoteDirectly (pwd, remoteName, tagName, cb) {
+export function pushTagToRemoteDirectly(pwd, remoteName, tagName, cb) {
   // isomorphic-git push doesn't handle tags the same way
   // For now, just call regular push
   logger.info('[git] pushing tags - calling regular push');
   pushToRemoteDirectly(pwd, remoteName, tagName, true, cb);
 }
 
-export function listTags (pwd, cb) {
+export function listTags(pwd, cb) {
   GitAdapter.listTags(pwd)
     .then((tags) => {
       return cb(null, tags);
@@ -381,19 +381,19 @@ export function listTags (pwd, cb) {
     .catch((error) => cb(error));
 }
 
-export function commitProject (folder, username, useHeadAsParent, saveOptions = {}, pathsToAdd, cb) {
-  function pathAdder (done) {
-    if (pathsToAdd === '.') {
+export function commitProject(folder, username, useHeadAsParent, saveOptions = {}, pathsToAdd, cb) {
+  function pathAdder(done) {
+    if(pathsToAdd === '.') {
       logger.info(`[git] adding all paths to index`);
       return addAllPathsToIndex(folder, done);
     }
 
-    if (typeof pathsToAdd === 'string') {
+    if(typeof pathsToAdd === 'string') {
       logger.info(`[git] adding path ${pathsToAdd} to index`);
       return addPathsToIndex(folder, [pathsToAdd], done);
     }
 
-    if (Array.isArray(pathsToAdd) && pathsToAdd.length > 0) {
+    if(Array.isArray(pathsToAdd) && pathsToAdd.length > 0) {
       logger.info(`[git] adding paths ${pathsToAdd.join(', ')} to index`);
       return addPathsToIndex(folder, pathsToAdd, done);
     }
@@ -403,11 +403,11 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
   }
 
   return pathAdder((err, oid) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
-    if (!oid) {
+    if(!oid) {
       logger.info(`[git] blank oid so cannot commit`);
     }
 
@@ -421,7 +421,7 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
     logger.info(`[git] committing ${JSON.stringify(message)} in ${folder} [${updateRef} onto ${parentRef}] ...`);
 
     return buildCommit(folder, user, email, message, oid, updateRef, parentRef, (err, commitId) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
@@ -432,7 +432,7 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
   });
 }
 
-export function fetchProjectDirectly (folder, projectName, repositoryUrl, cb) {
+export function fetchProjectDirectly(folder, projectName, repositoryUrl, cb) {
   GitAdapter.upsertRemoteDirectly(folder, projectName, repositoryUrl)
     .then(() => {
       logger.info(`[git] fetching ${projectName} from remote ${repositoryUrl}`);
@@ -445,7 +445,7 @@ export function fetchProjectDirectly (folder, projectName, repositoryUrl, cb) {
     .catch((error) => cb(error));
 }
 
-export function pushProjectDirectly (folder, projectName, cb) {
+export function pushProjectDirectly(folder, projectName, cb) {
   GitAdapter.getCurrentBranchName(folder)
     .then((partialBranchName) => {
       const fullBranchName = `refs/heads/${partialBranchName}`;
@@ -460,7 +460,7 @@ export function pushProjectDirectly (folder, projectName, cb) {
     .catch((error) => cb(error));
 }
 
-export function combineHistories (folder, projectName, ourBranchName, theirBranchName, saveOptions = {}, cb) {
+export function combineHistories(folder, projectName, ourBranchName, theirBranchName, saveOptions = {}, cb) {
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
 
   GitAdapter.mergeProject(folder, projectName, ourBranchName, fileFavorName)
@@ -470,7 +470,7 @@ export function combineHistories (folder, projectName, ourBranchName, theirBranc
     .catch((error) => cb(error));
 }
 
-export function getReference (folder, name, cb) {
+export function getReference(folder, name, cb) {
   // Simplified for isomorphic-git compatibility
   GitAdapter.open(folder)
     .then(() => {
@@ -479,22 +479,22 @@ export function getReference (folder, name, cb) {
     .catch((error) => cb(error));
 }
 
-export function getRemoteBranchRefName (projectName, partialBranchName) {
+export function getRemoteBranchRefName(projectName, partialBranchName) {
   return `remotes/${projectName}/${partialBranchName}`;
 }
 
-export function mergeProject (folder, projectName, partialBranchName, saveOptions = {}, cb) {
+export function mergeProject(folder, projectName, partialBranchName, saveOptions = {}, cb) {
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
   const doFindRenames = false;
 
   logger.info(`[git] merging '${partialBranchName}' with remote via '${fileFavorName}' (${folder})`);
 
   return mergeBranches(folder, partialBranchName, `remotes/${projectName}/${partialBranchName}`, fileFavorName, doFindRenames, (err, didHaveConflicts, shaOrIndex) => {
-    if (!err) {
+    if(!err) {
       return cb(null, didHaveConflicts, shaOrIndex);
     }
 
-    if (err.message && err.message.match(/No merge base found/i)) {
+    if(err.message && err.message.match(/No merge base found/i)) {
       logger.info(`[git] histories lack common ancestor; trying to combine`);
 
       return combineHistories(folder, projectName, partialBranchName, `remotes/${projectName}/${partialBranchName}`, saveOptions, cb);
@@ -504,17 +504,17 @@ export function mergeProject (folder, projectName, partialBranchName, saveOption
   });
 }
 
-export function logStatuses (statuses) {
-  for (const key in statuses) {
+export function logStatuses(statuses) {
+  for(const key in statuses) {
     const status = statuses[key];
     logger.info('[git] git status:' + status.path + ' ' + statusToText(status));
   }
 }
 
-export function statusToText (status) {
+export function statusToText(status) {
   return GitAdapter.statusToText(status.num);
 }
 
-export function saveStrategyToFileFavorName (saveStrategy) {
+export function saveStrategyToFileFavorName(saveStrategy) {
   return GitAdapter.saveStrategyToFileFavorName(saveStrategy);
 }

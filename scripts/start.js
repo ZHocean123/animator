@@ -4,7 +4,7 @@ import { createRequire } from 'module';
 import fse from 'fs-extra';
 
 const require = createRequire(import.meta.url);
-const cp = require('child_process').execSync;
+const cp = require('child_process');
 import inquirer from 'inquirer';
 import path from 'path';
 import yargs from 'yargs';
@@ -41,12 +41,13 @@ const DEFAULTS = {
   skipInitialBuild: false,
 };
 
-const inputs = assign({}, DEFAULTS, yargs.argv);
+const argv = yargs.argv;
+const inputs = assign({}, DEFAULTS, argv);
 delete inputs._;
 delete inputs.$0;
 
 // List of arguments following the command
-const args = yargs.argv._;
+const args = argv._;
 
 const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim();
 log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`);

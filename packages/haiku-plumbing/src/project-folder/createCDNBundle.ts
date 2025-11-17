@@ -94,7 +94,7 @@ export const createCDNBundles = (
         path.join(project.projectPath, 'code/main/dom-embed.js'),
         embedName,
         (bundleErr: any, bundledContents: any) => {
-          if (bundleErr) {
+          if(bundleErr) {
             return cb(bundleErr);
           }
           logger.info('[project folder] bundling succeeded for', embedName);
@@ -111,7 +111,7 @@ export const createCDNBundles = (
         path.join(project.projectPath, 'code/main/dom-standalone.js'),
         standaloneName,
         (bundleErr: any, bundledContents: any) => {
-          if (bundleErr) {
+          if(bundleErr) {
             return cb(bundleErr);
           }
           logger.info('[project folder] bundling succeeded for', standaloneName);
@@ -122,7 +122,7 @@ export const createCDNBundles = (
       );
     },
   ], (asyncErr) => {
-    if (asyncErr) {
+    if(asyncErr) {
       return finish(asyncErr);
     }
     return finish(null);

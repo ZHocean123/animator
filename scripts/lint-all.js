@@ -4,6 +4,7 @@ import log from "./helpers/log.js";
 import gitStatusInfo from "./helpers/gitStatusInfo.js";
 import allPackages from "./helpers/packages.js";
 import unbuildables from "./helpers/unbuildables.js";
+import clc from "cli-color";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,9 +15,8 @@ const lintProcesses = [];
 
 // 将整个逻辑包装在异步函数中以便使用顶级 await
 async function runLintProcesses() {
-  let clc = await import("cli-color");
 
-  for (const pack of allPackages) {
+  for (const pack of allPackages()) {
     const lintProcess = {pkgName: pack.name};
 
     if (unbuildables.includes(lintProcess.pkgName)) {

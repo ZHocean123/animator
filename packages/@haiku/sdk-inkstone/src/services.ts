@@ -44,7 +44,7 @@ export const enum Endpoints {
   TeamAssignedSeats = '/team/seats',
   TeamConfirmSeat = '/team/seats/confirm/:verification_unique_id',
   TeamResendConfirmSeatEmail = '/team/seats/resend-confirmation',
-  TeamAssignSeats = '/team/seats'
+  TeamAssignSeats = '/team/seats',
 }
 
 export interface UriParams {
