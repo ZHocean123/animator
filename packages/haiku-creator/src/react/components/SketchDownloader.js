@@ -1,9 +1,9 @@
-import * as React from 'react';
-import {createSketchDialogFile} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
+import * as React from "react";
+import { createSketchDialogFile } from "haiku-serialization/src/utils/HaikuHomeDir.js";
+import { DOWNLOAD_STYLES as STYLES } from "../styles/downloadShared";
+import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink";
 
-const DOWNLOAD_URL = 'https://download.sketchapp.com/sketch.zip';
+const DOWNLOAD_URL = "https://download.sketchapp.com/sketch.zip";
 
 class SketchDownloader extends React.PureComponent {
   dismiss = () => {
@@ -14,7 +14,7 @@ class SketchDownloader extends React.PureComponent {
     this.props.onDismiss(!this.checkInput.checked);
   };
 
-  render () {
+  render() {
     return (
       <div>
         <div style={STYLES.container}>
@@ -30,9 +30,10 @@ class SketchDownloader extends React.PureComponent {
               name="not-show-again"
               id="not-show-again"
               style={STYLES.checkInput}
-              ref={(input) => {
+              ref={input => {
                 this.checkInput = input;
-              }} />
+              }}
+            />
             <label htmlFor="not-show-again">Don't show this again.</label>
           </form>
 
@@ -40,7 +41,11 @@ class SketchDownloader extends React.PureComponent {
             Not now
           </button>
 
-          <ExternalLink href={DOWNLOAD_URL} style={STYLES.btn} onClick={this.dismiss}>
+          <ExternalLink
+            href={DOWNLOAD_URL}
+            style={STYLES.btn}
+            onClick={this.dismiss}
+          >
             Get Sketch
           </ExternalLink>
         </div>

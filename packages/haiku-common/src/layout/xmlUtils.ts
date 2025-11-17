@@ -1,57 +1,62 @@
-import {BytecodeNode, BytecodeNodeAttributes, BytecodeNodeStyle} from '@haiku/core/lib/api';
-import toStyle from 'haiku-vendor-legacy/lib/to-style';
-import xmlParser from 'haiku-vendor-legacy/lib/xml-parser';
+import {
+  BytecodeNode,
+  BytecodeNodeAttributes,
+  BytecodeNodeStyle
+} from "@haiku/core/lib/api.js";
+import toStyle from "haiku-vendor-legacy/lib/to-style.js";
+import xmlParser from "haiku-vendor-legacy/lib/xml-parser.js";
 
 const styleStringToObject = toStyle.object;
 
-const COLON = ':';
-const SEMI = ';';
-const CLASS = 'class';
-const CLASS_NAME = 'className';
-const CLOSE_TAG = '>';
+const COLON = ":";
+const SEMI = ";";
+const CLASS = "class";
+const CLASS_NAME = "className";
+const CLOSE_TAG = ">";
 const DQUOTE = '"';
-const EMPTY = '';
-const EQ = '=';
-const OPEN_TAG = '<';
-const SLASH = '/';
-const SPACE = ' ';
-const STYLE = 'style';
+const EMPTY = "";
+const EQ = "=";
+const OPEN_TAG = "<";
+const SLASH = "/";
+const SPACE = " ";
+const STYLE = "style";
 
 const SELF_CLOSING_TAG_NAMES = [
-  'area',
-  'base',
-  'br',
-  'col',
-  'command',
-  'embed',
-  'hr',
-  'img',
-  'input',
-  'keygen',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr',
+  "area",
+  "base",
+  "br",
+  "col",
+  "command",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "keygen",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr"
 ];
 
 const isNumeric = (n: any) => !isNaN(parseFloat(n)) && isFinite(n);
 
-const isEmptyObject = (object: any): boolean => object === null || object === undefined;
+const isEmptyObject = (object: any): boolean =>
+  object === null || object === undefined;
 
 const styleToString = (style: BytecodeNodeStyle): string => {
-  let out = '';
+  let out = "";
 
   if (!style) {
     return out;
   }
 
-  if (typeof style === 'string') {
+  if (typeof style === "string") {
     return style;
   }
 
-  if (typeof style !== 'object') {
+  if (typeof style !== "object") {
     return out;
   }
 
@@ -59,8 +64,8 @@ const styleToString = (style: BytecodeNodeStyle): string => {
     const styleValue = style[styleKey];
 
     if (
-      typeof styleValue === 'string' ||
-      typeof styleValue === 'boolean' ||
+      typeof styleValue === "string" ||
+      typeof styleValue === "boolean" ||
       isNumeric(styleValue)
     ) {
       // TODO: Add correct spacing instead of this compact format?
@@ -75,10 +80,10 @@ interface ParsedXmlNode {
   name: string;
   content?: string;
   attributes?: BytecodeNodeAttributes;
-  children: ParsedXmlNode[]|ParsedXmlNode;
+  children: ParsedXmlNode[] | ParsedXmlNode;
 }
 
-const fixChildren = (kids: ParsedXmlNode[]|ParsedXmlNode): BytecodeNode[] => {
+const fixChildren = (kids: ParsedXmlNode[] | ParsedXmlNode): BytecodeNode[] => {
   if (Array.isArray(kids)) {
     return kids.map(fixNode);
   }
@@ -88,19 +93,24 @@ const fixChildren = (kids: ParsedXmlNode[]|ParsedXmlNode): BytecodeNode[] => {
 
 const fixAttributes = (attributes: BytecodeNodeAttributes) => {
   if (attributes.style) {
-    if (typeof attributes.style === 'string') {
-      attributes.style = styleStringToObject(attributes.style, null, null, null);
+    if (typeof attributes.style === "string") {
+      attributes.style = styleStringToObject(
+        attributes.style,
+        null,
+        null,
+        null
+      );
     }
   }
   return attributes;
 };
 
-const fixNode = (obj?: ParsedXmlNode): BytecodeNode|undefined => {
+const fixNode = (obj?: ParsedXmlNode): BytecodeNode | undefined => {
   if (!obj) {
     return undefined;
   }
 
-  if (typeof obj === 'string') {
+  if (typeof obj === "string") {
     return obj;
   }
 
@@ -115,19 +125,24 @@ const fixNode = (obj?: ParsedXmlNode): BytecodeNode|undefined => {
   return {
     elementName: obj.name,
     attributes: fixAttributes(obj.attributes || {}),
-    children: fixChildren(children),
+    children: fixChildren(children)
   };
 };
 
 const cannotUse = (object: any) => {
-  return object === false || object === null || object === undefined || typeof object === 'function';
+  return (
+    object === false ||
+    object === null ||
+    object === undefined ||
+    typeof object === "function"
+  );
 };
 
 const alreadySerial = (object: any): object is string => {
-  return typeof object === 'string' || typeof object === 'number';
+  return typeof object === "string" || typeof object === "number";
 };
 
-const manaChildToHtml = (child: BytecodeNode|string) => {
+const manaChildToHtml = (child: BytecodeNode | string) => {
   if (cannotUse(child)) {
     return EMPTY;
   }
@@ -144,7 +159,10 @@ export const xmlToMana = (xml: string): BytecodeNode | undefined => {
   return fixNode(obj);
 };
 
-export const manaToXml = (accumulator: string, object: BytecodeNode): string => {
+export const manaToXml = (
+  accumulator: string,
+  object: BytecodeNode
+): string => {
   let out = accumulator;
 
   if (alreadySerial(object)) {

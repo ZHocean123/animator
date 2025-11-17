@@ -18,7 +18,7 @@
     "compile": "tsdown",
     "compile-declarations": "tsdown --tsconfig tsconfig.declarations.json",
     "develop": "tsdown --watch",
-    "start": "electron ./lib/electron.js"
+    "start": "electron ./lib/electron.mjs"
   },
   "dependencies": {
     "@babel/parser": "7.0.0",

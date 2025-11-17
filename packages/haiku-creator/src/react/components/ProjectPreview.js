@@ -1,12 +1,12 @@
-import * as path from 'path';
-import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
-import * as fs from 'fs';
-import * as Module from 'module';
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
-import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
-import {TourUtils} from 'haiku-common/lib/types/enums';
+import * as path from "path";
+import * as ensureTrailingSlash from "haiku-serialization/src/utils/ensureTrailingSlash.js";
+import * as fs from "fs";
+import * as Module from "module";
+import * as React from "react";
+import PropTypes from "prop-types";
+import HaikuDOMAdapter from "@haiku/core/lib/adapters/dom/HaikuDOMAdapter";
+import { InteractionMode } from "haiku-ui-common/lib/interactionModes";
+import { TourUtils } from "haiku-common/lib/types/enums.js";
 
 /**
  * This is the _original_ way we loaded component modules from a filename.
@@ -16,13 +16,13 @@ import {TourUtils} from 'haiku-common/lib/types/enums';
  * back. If you want to attempt to DRY up this code, make sure to test it against
  * modules that load from @haiku/core/components/*.
  */
-const requireModuleFromFilename = (filename) => {
-  const mod = new Module('', module.parent);
+const requireModuleFromFilename = filename => {
+  const mod = new Module("", module.parent);
 
   // Module._resolveLookupPaths will use this...
   mod.paths = [].concat(
     path.dirname(filename),
-    Module._nodeModulePaths(__dirname),
+    Module._nodeModulePaths(__dirname)
   );
 
   // ...if and only if both these properties have been set.
@@ -41,33 +41,41 @@ const renderMissingLocalProjectMessage = () => {
 };
 
 class ProjectPreview extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.bytecode = null;
     this.mount = null;
     this.component = null;
   }
 
-  componentDidMount () {
+  componentDidMount() {
     try {
       // TODO: Try to get the bytecode from CDN or eager clone if not yet available.
       this.bytecode = requireModuleFromFilename(this.props.bytecodePath);
     } catch (exception) {
       console.warn(exception);
-      if (['Move', 'Moto', 'percy', TourUtils.ProjectName].indexOf(this.props.projectName) !== -1) {
-        this.bytecode = require(path.join('..', 'bytecode-fixtures', this.props.projectName));
+      if (
+        ["Move", "Moto", "percy", TourUtils.ProjectName].indexOf(
+          this.props.projectName
+        ) !== -1
+      ) {
+        this.bytecode = require(path.join(
+          "..",
+          "bytecode-fixtures",
+          this.props.projectName
+        ));
       }
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.stopComponentClock(); // Avoid wasted CPU rendering for unseen DOM nodes
     if (this.component) {
       this.component.context.destroy();
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.bytecode && this.mount) {
       try {
         this.mountHaikuComponent();
@@ -78,10 +86,10 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  playAllTimelines () {
+  playAllTimelines() {
     if (this.component) {
-      this.component.visitGuestHierarchy((component) => {
-        Object.values(component.getTimelines()).forEach((timeline) => {
+      this.component.visitGuestHierarchy(component => {
+        Object.values(component.getTimelines()).forEach(timeline => {
           timeline.unfreeze();
           timeline.play();
         });
@@ -89,10 +97,10 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  pauseAllTimelines () {
+  pauseAllTimelines() {
     if (this.component) {
-      this.component.visitGuestHierarchy((component) => {
-        Object.values(component.getTimelines()).forEach((timeline) => {
+      this.component.visitGuestHierarchy(component => {
+        Object.values(component.getTimelines()).forEach(timeline => {
           // Freezing is necessary to override host components' `playback` output from
           // unsetting the paused value during updates, as well as to prevent timelines
           // from expressions from updating as well
@@ -103,7 +111,7 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (!this.component || this.props.playing === this.props.playing) {
       return;
     }
@@ -115,11 +123,11 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return true;
   }
 
-  stopComponentClock () {
+  stopComponentClock() {
     if (!this.component) {
       return;
     }
@@ -127,24 +135,21 @@ class ProjectPreview extends React.Component {
     this.component.getClock().stop();
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     const factory = HaikuDOMAdapter(this.bytecode);
 
     this.stopComponentClock(); // Shuts down previous one prevent wasted CPU
 
-    this.component = factory(
-      this.mount,
-      {
-        folder: ensureTrailingSlash(this.props.projectPath),
-        sizing: 'cover',
-        alwaysComputeSizing: false,
-        loop: true,
-        interactionMode: InteractionMode.GLASS_EDIT,
-        autoplay: false,
-        mixpanel: false,
-        contextMenu: 'disabled',
-      },
-    );
+    this.component = factory(this.mount, {
+      folder: ensureTrailingSlash(this.props.projectPath),
+      sizing: "cover",
+      alwaysComputeSizing: false,
+      loop: true,
+      interactionMode: InteractionMode.GLASS_EDIT,
+      autoplay: false,
+      mixpanel: false,
+      contextMenu: "disabled"
+    });
 
     // Since we're about to pause timelines, we must re-render to ensure migration-related changes are shown
     this.component.render(this.component.config);
@@ -153,14 +158,14 @@ class ProjectPreview extends React.Component {
     this.pauseAllTimelines();
   }
 
-  render () {
+  render() {
     if (!this.bytecode) {
       return (
         <div
           style={{
-            margin: '85px auto 0',
-            width: '100%',
-            textAlign: 'center',
+            margin: "85px auto 0",
+            width: "100%",
+            textAlign: "center"
           }}
         >
           {renderMissingLocalProjectMessage()}
@@ -170,17 +175,17 @@ class ProjectPreview extends React.Component {
 
     return (
       <div
-        style={{width: '100%', height: '100%', margin: '0 auto'}}
-        ref={(mount) => {
+        style={{ width: "100%", height: "100%", margin: "0 auto" }}
+        ref={mount => {
           this.mount = mount;
         }}
-     />
+      />
     );
   }
 }
 
 ProjectPreview.propTypes = {
-  bytecodePath: PropTypes.string.isRequired,
+  bytecodePath: PropTypes.string.isRequired
 };
 
 export default ProjectPreview;

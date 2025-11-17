@@ -52,7 +52,7 @@ remote.initialize();
 
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
-import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';
+import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir.js';
 import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
 import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
 

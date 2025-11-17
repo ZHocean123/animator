@@ -1,8 +1,8 @@
-import {isMac} from 'haiku-common/lib/environments/os';
+import { isMac } from "haiku-common/lib/environments/os.js";
 
 /* tslint:disable:variable-name */
 const Globals = {
-  mouse: {x: 0, y: 0},
+  mouse: { x: 0, y: 0 },
   // Control and shift keys are managed from Timeline.js
   isShiftKeyDown: false,
   isControlKeyDown: false,
@@ -24,15 +24,15 @@ const Globals = {
       return Globals.isCommandKeyDown;
     }
     return Globals.isControlKeyDown;
-  },
+  }
 };
 
-window.addEventListener('mousemove', (mouseMoveEvent) => {
+window.addEventListener("mousemove", mouseMoveEvent => {
   Globals.mouse.x = mouseMoveEvent.clientX;
   Globals.mouse.y = mouseMoveEvent.clientY;
 });
 
-window.addEventListener('keyup', (keyupEvent) => {
+window.addEventListener("keyup", keyupEvent => {
   if (keyupEvent.which === 16) {
     Globals.isShiftKeyDown = false;
   }
@@ -56,7 +56,7 @@ window.addEventListener('keyup', (keyupEvent) => {
   }
 });
 
-window.addEventListener('keydown', (keydownEvent) => {
+window.addEventListener("keydown", keydownEvent => {
   if (keydownEvent.which === 16) {
     Globals.isShiftKeyDown = true;
   }
@@ -80,14 +80,14 @@ window.addEventListener('keydown', (keydownEvent) => {
   }
 });
 
-window.addEventListener('click', (clickEvent) => {
+window.addEventListener("click", clickEvent => {
   // When entering the context menu via control-click, unset all key states to off
   if (Globals.isControlKeyDown) {
     Globals.allKeysUp();
   }
 });
 
-window.addEventListener('contextmenu', (clickEvent) => {
+window.addEventListener("contextmenu", clickEvent => {
   // When entering the context menu via control-click, unset all key states to off
   Globals.allKeysUp();
 });

@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsdown'
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: ['src/**/*.(ts|tsx|jsx)'],
@@ -6,13 +6,13 @@ export default defineConfig({
   format: ['esm'],
   clean: true,
   dts: false,
-  target: 'ES2022',
+  target: "ES2022",
   external: [
     // '@haiku/core',
-    'haiku-common',
-    'haiku-formats',
-    'haiku-fs-extra',
-    'haiku-serialization',
-    'haiku-ui-common'
-  ],
-})
+    "haiku-common",
+    "haiku-formats",
+    "haiku-fs-extra",
+    "haiku-serialization",
+    "haiku-ui-common"
+  ]
+});

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import {ErrorCallback, queue} from 'async';
-import {BrowserWindow, ipcMain} from 'electron';
-import {existsSync, mkdirpSync, removeSync, writeFile} from 'fs-extra';
+import * as React from "react";
+import { ErrorCallback, queue } from "async";
+import { BrowserWindow, ipcMain } from "electron";
+import { existsSync, mkdirpSync, removeSync, writeFile } from "fs-extra";
 // @ts-ignore
-import LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance';
-import * as path from 'path';
+import LoggerInstance from "haiku-serialization/src/utils/LoggerInstance.js";
+import * as path from "path";
 
 let browserWindow: BrowserWindow;
 let outputDirectory: string;
@@ -31,11 +31,8 @@ const snapshotCache = new Map<string, string>();
 
 const bakeryQueue = queue<QueuedRecipe, Error>(
   (
-    {
-      recipe: {abspath, framerate, width, height, still, sha1},
-      cb,
-    },
-    next: ErrorCallback<Error>,
+    { recipe: { abspath, framerate, width, height, still, sha1 }, cb },
+    next: ErrorCallback<Error>
   ) => {
     const cacheValue = `${sha1}:${framerate}`;
     const cacheKey = `${abspath}:${still}`;
@@ -47,7 +44,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
 
       calledFinish = true;
       snapshotCache.set(cacheKey, cacheValue);
-      ipcMain.removeAllListeners('bakery');
+      ipcMain.removeAllListeners("bakery");
       cb();
       next();
     };
@@ -55,8 +52,8 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
     let alreadyBaked = false;
     if (snapshotCache.has(cacheKey)) {
       alreadyBaked = still
-        // If only capturing a still, any match containing the sha1 will do (i.e. framerate does not matter)
-        ? (new RegExp(sha1)).test(snapshotCache.get(cacheKey))
+        ? // If only capturing a still, any match containing the sha1 will do (i.e. framerate does not matter)
+          new RegExp(sha1).test(snapshotCache.get(cacheKey))
         : snapshotCache.get(cacheKey) === cacheValue;
     }
 
@@ -72,7 +69,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
         height: Math.round(height),
         frame: false,
         show: false,
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent"
       });
     }
 
@@ -80,7 +77,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
     // Stills should go two levels above the abspath of the component bytecode;
     // PNG sequences should be saved in parallel.
     outputDirectory = still
-      ? path.resolve(path.dirname(abspath), '..', '..')
+      ? path.resolve(path.dirname(abspath), "..", "..")
       : path.join(path.dirname(abspath), `png-${framerate}`);
     if (!still && existsSync(outputDirectory)) {
       removeSync(outputDirectory);
@@ -92,7 +89,7 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
         return finish();
       }
 
-      browserWindow.capturePage().then((image) => {
+      browserWindow.capturePage().then(image => {
         const data = image.toPNG();
         if (data.byteLength === 0) {
           // Try again…within reason.
@@ -106,8 +103,11 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
 
         writeFile(
           still
-            ? path.join(outputDirectory, 'still.png')
-            : path.join(outputDirectory, `frame-${frame.toString().padStart(7, '0')}.png`),
+            ? path.join(outputDirectory, "still.png")
+            : path.join(
+                outputDirectory,
+                `frame-${frame.toString().padStart(7, "0")}.png`
+              ),
           data,
           (err: NodeJS.ErrnoException | null) => {
             if (err) {
@@ -119,35 +119,41 @@ const bakeryQueue = queue<QueuedRecipe, Error>(
             if (payload.last || browserWindow.isDestroyed() || still) {
               return finish();
             }
-            sender.send('bakery', {type: 'tick'});
-          },
+            sender.send("bakery", { type: "tick" });
+          }
         );
       });
     };
 
-    const bakeryHandler = ({sender}: any, payload: any) => {
+    const bakeryHandler = ({ sender }: any, payload: any) => {
       switch (payload.type) {
-        case 'snap':
+        case "snap":
           snap(sender, payload, 0);
           break;
-        case 'closeShop':
+        case "closeShop":
           finish();
           break;
       }
     };
 
-    ipcMain.on('bakery', bakeryHandler);
+    ipcMain.on("bakery", bakeryHandler);
 
-    browserWindow.webContents.once('did-finish-load', () => {
-      browserWindow.webContents.send('bakery', {framerate, still, type: 'init'});
+    browserWindow.webContents.once("did-finish-load", () => {
+      browserWindow.webContents.send("bakery", {
+        framerate,
+        still,
+        type: "init"
+      });
     });
-    browserWindow.loadURL(`file://${path.join(__dirname, '..', '..', 'oven.html')}#${abspath}`);
-  },
+    browserWindow.loadURL(
+      `file://${path.join(__dirname, "..", "..", "oven.html")}#${abspath}`
+    );
+  }
 );
 
 /**
  * Point of entry for request a PNG sequence from a bytecode file from the PNG bakery.
  */
 export default (recipe: BakeryRecipe, cb: () => void) => {
-  bakeryQueue.push({recipe, cb});
+  bakeryQueue.push({ recipe, cb });
 };

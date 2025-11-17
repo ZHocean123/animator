@@ -1,15 +1,15 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tooltip from './Tooltip';
-import {shell} from 'electron';
-import {TOUR_STYLES} from '../../styles/tourShared';
-import * as steps from './Steps';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {TourUtils} from 'haiku-common/lib/types/enums';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Tooltip from "./Tooltip";
+import { shell } from "electron";
+import { TOUR_STYLES } from "../../styles/tourShared";
+import * as steps from "./Steps";
+import * as mixpanel from "haiku-serialization/src/utils/Mixpanel";
+import { TourUtils } from "haiku-common/lib/types/enums.js";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour";
 
 class Tour extends React.Component {
-  constructor () {
+  constructor() {
     super();
 
     this.next = this.next.bind(this);
@@ -23,29 +23,29 @@ class Tour extends React.Component {
       coordinates: null,
       stepData: {
         current: 0,
-        total: undefined,
-      },
+        total: undefined
+      }
     };
 
     this.hasTriggeredTourRender = false;
   }
 
-  componentDidMount () {
-    this.props.envoyClient.get(TOUR_CHANNEL).then((tourChannel) => {
+  componentDidMount() {
+    this.props.envoyClient.get(TOUR_CHANNEL).then(tourChannel => {
       this.tourChannel = tourChannel;
-      this.tourChannel.on('tour:requestShowStep', this.showStep);
-      this.tourChannel.on('tour:hide', this.hide);
-      this.tourChannel.on('tour:requestFinish', this.hide);
+      this.tourChannel.on("tour:requestShowStep", this.showStep);
+      this.tourChannel.on("tour:hide", this.hide);
+      this.tourChannel.on("tour:requestFinish", this.hide);
     });
   }
 
-  componentWillUnmount () {
-    this.tourChannel.off('tour:requestShowStep', this.showStep);
-    this.tourChannel.off('tour:hide', this.hide);
-    this.tourChannel.off('tour:requestFinish', this.hide);
+  componentWillUnmount() {
+    this.tourChannel.off("tour:requestShowStep", this.showStep);
+    this.tourChannel.off("tour:hide", this.hide);
+    this.tourChannel.off("tour:requestFinish", this.hide);
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (
       this.props.startTourOnMount &&
       this.hasNecessaryProject() &&
@@ -55,11 +55,11 @@ class Tour extends React.Component {
     }
   }
 
-  tryStartTour () {
+  tryStartTour() {
     if (this.tourChannel) {
       this.tourChannel.start();
       this.hasTriggeredTourRender = true;
-      mixpanel.haikuTrack('tour', {state: 'started'});
+      mixpanel.haikuTrack("tour", { state: "started" });
     } else {
       // If envoy it's taking more than expected to return the tourChannel,
       // try again in 500 ms
@@ -69,23 +69,24 @@ class Tour extends React.Component {
     }
   }
 
-  hasNecessaryProject () {
+  hasNecessaryProject() {
     if (!this.props.projectsList) {
       return false;
     }
     if (this.props.projectsList.length < 1) {
       return false;
     }
-    const projectIdx = this.props.projectsList.findIndex((project) => {
+    const projectIdx = this.props.projectsList.findIndex(project => {
       return project.projectName === TourUtils.ProjectName;
     });
     return projectIdx !== -1;
   }
 
-  next () {
+  next() {
     if (this.state.stepData.current === 1) {
-      const tutorialOpener =
-        document.querySelector(`${this.state.selector} .js-utility-project-launcher`);
+      const tutorialOpener = document.querySelector(
+        `${this.state.selector} .js-utility-project-launcher`
+      );
 
       if (tutorialOpener) {
         tutorialOpener.click();
@@ -95,41 +96,41 @@ class Tour extends React.Component {
     }
   }
 
-  prev () {
+  prev() {
     this.tourChannel.prev();
   }
 
-  finish (createFile, skipped) {
+  finish(createFile, skipped) {
     this.tourChannel.finish(createFile);
-    mixpanel.haikuTrack('tour', {
-      state: 'skipped',
+    mixpanel.haikuTrack("tour", {
+      state: "skipped",
       step: this.state.stepData.current,
-      title: this.state.component,
+      title: this.state.component
     });
   }
 
-  hide () {
-    this.setState({component: null});
+  hide() {
+    this.setState({ component: null });
   }
 
-  showStep (newState) {
+  showStep(newState) {
     if (this.state.stepData.current < newState.stepData.current) {
-      mixpanel.haikuTrack('tour', {
-        state: 'step completed',
+      mixpanel.haikuTrack("tour", {
+        state: "step completed",
         step: this.state.stepData.current,
-        title: this.state.component,
+        title: this.state.component
       });
     }
 
     this.setState(newState);
   }
 
-  openLink (e) {
+  openLink(e) {
     e.preventDefault();
     shell.openExternal(e.target.href);
   }
 
-  render () {
+  render() {
     if (!this.state.component || !this.props.show) {
       return null;
     }
@@ -144,7 +145,7 @@ class Tour extends React.Component {
       size,
       isOverlayHideable,
       showPreviousButton,
-      modalOffset,
+      modalOffset
     } = this.state;
 
     // tslint:disable-next-line:variable-name
@@ -178,7 +179,7 @@ class Tour extends React.Component {
 
 Tour.propTypes = {
   envoyClient: PropTypes.object.isRequired,
-  show: PropTypes.bool,
+  show: PropTypes.bool
 };
 
 export default Tour;
