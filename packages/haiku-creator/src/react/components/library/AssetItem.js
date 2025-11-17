@@ -1,16 +1,17 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import * as Radium from 'radium';
-import * as Color from 'color';
-import * as lodash from 'lodash-es';
-import * as Asset from 'haiku-serialization/src/bll/Asset.js';
-import {Figma} from 'haiku-serialization/src/bll/Figma.js';
-import {Draggable} from 'react-drag-and-drop';
-import AssetList from './AssetList';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import * as Popover from 'react-popover';
+import * as React from "react";
+import PropTypes from "prop-types";
+import * as Radium from "radium";
+import * as Color from "color";
+import * as lodash from "lodash-es";
+import * as Asset from "haiku-serialization/src/bll/Asset.js";
+import figmaModule from "haiku-serialization/src/bll/Figma.js";
+const { Figma } = figmaModule;
+import { Draggable } from "react-drag-and-drop";
+import AssetList from "./AssetList";
+import PopoverMenu from "haiku-ui-common/lib/electron/PopoverMenu.js";
+import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
+import Palette from "haiku-ui-common/lib/Palette.js";
+import * as Popover from "react-popover";
 import {
   CollapseChevronRightSVG,
   CollapseChevronDownSVG,
@@ -21,15 +22,18 @@ import {
   TrashIconSVG,
   ComponentIconSVG,
   SyncIconSVG,
-  FontIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons.js';
+  FontIconSVG
+} from "haiku-ui-common/lib/react/OtherIcons.js";
 
-import ControlImage from 'haiku-ui-common/lib/react/icons/ControlImage.js';
-import ControlText from 'haiku-ui-common/lib/react/icons/ControlText.js';
-import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML.js';
+import ControlImage from "haiku-ui-common/lib/react/icons/ControlImage.js";
+import ControlText from "haiku-ui-common/lib/react/icons/ControlText.js";
+import ControlHTML from "haiku-ui-common/lib/react/icons/ControlHTML.js";
 // import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput.js'
-import FigmaPopover from './importers/FigmaPopover';
-import {experimentIsEnabled, Experiment} from 'haiku-common/src/experiments.js';
+import FigmaPopover from "./importers/FigmaPopover";
+import {
+  experimentIsEnabled,
+  Experiment
+} from "haiku-common/src/experiments.js";
 
 const ASSET_ICONS = {
   ControlImage: () => {
@@ -40,284 +44,287 @@ const ASSET_ICONS = {
   },
   ControlHTML: () => {
     return <ControlHTML />;
-  },
+  }
   // ControlInput
 };
 
-const {shell} = require('electron');
+const { shell } = require("electron");
 
 const STYLES = {
   container: {
-    position: 'relative',
+    position: "relative"
   },
   sublevel: {
-    position: 'relative',
+    position: "relative"
   },
   row: {
-    position: 'relative',
+    position: "relative",
     paddingLeft: 13,
-    userSelect: 'none',
-    cursor: 'default',
+    userSelect: "none",
+    cursor: "default",
     paddingTop: 2,
     paddingBottom: 2,
     marginTop: 2,
     marginBottom: 2,
     fontSize: 13,
-    ':hover': {
-      backgroundColor: Palette.DARKER_GRAY,
-    },
+    ":hover": {
+      backgroundColor: Palette.DARKER_GRAY
+    }
   },
   header: {
-    position: 'relative',
+    position: "relative"
   },
   chevy: {
     marginRight: 8,
-    cursor: 'pointer',
+    cursor: "pointer"
   },
   cardIcon: {
-    position: 'relative',
+    position: "relative",
     top: 3,
     width: 18,
     height: 18,
-    marginRight: 8,
+    marginRight: 8
   },
   displayName: {
-    display: 'inline-block',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    width: 'calc(100% - 85px)',
-    whiteSpace: 'nowrap',
-    verticalAlign: 'middle',
+    display: "inline-block",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    width: "calc(100% - 85px)",
+    whiteSpace: "nowrap",
+    verticalAlign: "middle",
     active: {
-      color: Palette.BLUE,
-    },
+      color: Palette.BLUE
+    }
   },
   message: {
     marginLeft: 55,
     marginRight: 30,
-    lineHeight: '16px',
-    color: Palette.DARKER_ROCK2,
+    lineHeight: "16px",
+    color: Palette.DARKER_ROCK2
   },
   draggableCardWrapper: {
-    cursor: 'move',
+    cursor: "move"
   },
   cardImage: {
-    pointerEvents: 'none',
+    pointerEvents: "none",
     height: 14,
-    width: 14,
+    width: 14
   },
   cardPreview: {
-    position: 'absolute',
+    position: "absolute",
     opacity: 0,
     top: 3,
     left: 22,
     zIndex: 2000,
     padding: 8,
     backgroundColor: Color(Palette.COAL).fade(0.4),
-    border: '1px solid rgba(0,0,0,.2)',
+    border: "1px solid rgba(0,0,0,.2)",
     width: 180,
     height: 180,
-    alignItems: 'center',
-    justifyContent: 'center',
-    pointerEvents: 'none',
-    transform: 'translateY(50%)',
-    transition: 'transform 270ms ease',
+    alignItems: "center",
+    justifyContent: "center",
+    pointerEvents: "none",
+    transform: "translateY(50%)",
+    transition: "transform 270ms ease",
     shown: {
       opacity: 1,
-      display: 'flex',
-      transform: 'translateX(0)',
-    },
+      display: "flex",
+      transform: "translateX(0)"
+    }
   },
   threeDotMenu: {
-    position: 'absolute',
-    cursor: 'pointer',
+    position: "absolute",
+    cursor: "pointer",
     right: 10,
-    transform: 'translateY(-50%) rotate(90deg)',
-    top: '50%',
-    ':hover': {
-      opacity: 1,
-    },
-  },
+    transform: "translateY(-50%) rotate(90deg)",
+    top: "50%",
+    ":hover": {
+      opacity: 1
+    }
+  }
 };
 
 class AssetItem extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isThumbnailOpen: false,
-      isOpened: true,
+      isOpened: true
     };
 
     this.handleCollapseToggle = this.handleCollapseToggle.bind(this);
-    this.handleAssetDoubleClick = lodash.debounce(this.handleAssetDoubleClick.bind(this), 500, {leading: true, trailing: false});
+    this.handleAssetDoubleClick = lodash.debounce(
+      this.handleAssetDoubleClick.bind(this),
+      500,
+      { leading: true, trailing: false }
+    );
     this.launchPopoverMenu = this.launchPopoverMenu.bind(this);
   }
 
-  endDragInCaseItWasStartedInadvertently () {
+  endDragInCaseItWasStartedInadvertently() {
     this.props.onDragEnd();
   }
 
-  handleDeleteAsset () {
+  handleDeleteAsset() {
     this.props.deleteAsset(this.props.asset);
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  handleAssetDoubleClick () {
+  handleAssetDoubleClick() {
     this.props.onAssetDoubleClick(this.props.asset);
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  handleCollapseToggle () {
-    this.setState({isOpened: !this.state.isOpened});
+  handleCollapseToggle() {
+    this.setState({ isOpened: !this.state.isOpened });
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  handleOpenAsset () {
+  handleOpenAsset() {
     shell.openPath(this.props.asset.getAbspath());
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  handleOpenOnlineAsset (link) {
+  handleOpenOnlineAsset(link) {
     shell.openExternal(link);
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  considerSketch () {
+  considerSketch() {
     return isMac() && this.props.asset.isSketchFile();
   }
 
-  handleShowAsset () {
+  handleShowAsset() {
     shell.showItemInFolder(this.props.asset.getAbspath());
     this.endDragInCaseItWasStartedInadvertently();
   }
 
-  isLeafAsset () {
+  isLeafAsset() {
     return this.props.asset.getChildAssets().length < 1;
   }
 
-  get indent () {
+  get indent() {
     return this.isLeafAsset() ? this.props.indent + 1 : this.props.indent;
   }
 
-  renderChevy () {
+  renderChevy() {
     if (this.isLeafAsset()) {
       return null;
     }
 
     if (this.state.isOpened) {
       return (
-        <span
-          onClick={this.handleCollapseToggle}
-          style={STYLES.chevy}>
+        <span onClick={this.handleCollapseToggle} style={STYLES.chevy}>
           <CollapseChevronDownSVG />
         </span>
       );
     }
 
     return (
-      <span
-        onClick={this.handleCollapseToggle}
-        style={STYLES.chevy}>
+      <span onClick={this.handleCollapseToggle} style={STYLES.chevy}>
         <CollapseChevronRightSVG />
       </span>
     );
   }
 
-  launchPopoverMenu (event) {
+  launchPopoverMenu(event) {
     PopoverMenu.launch({
       event,
-      items: this.getAssetMenuItems(),
+      items: this.getAssetMenuItems()
     });
   }
 
-  getAssetMenuItems () {
+  getAssetMenuItems() {
     const items = [];
 
     if (this.props.asset.isComponentsHostFolder()) {
       items.push({
-        label: 'Create Component',
+        label: "Create Component",
         icon: ComponentIconSVG,
         onClick: () => {
           this.props.conglomerateComponent({
             isBlankComponent: true,
-            skipInstantiateInHost: true,
+            skipInstantiateInHost: true
           });
-        },
+        }
       });
     }
 
     // Only display Open In Sketch on mac
     if (this.considerSketch()) {
       items.push({
-        label: 'Open In Sketch',
+        label: "Open In Sketch",
         icon: SketchIconSVG,
-        onClick: this.handleOpenAsset.bind(this),
+        onClick: this.handleOpenAsset.bind(this)
       });
     }
 
     if (this.isFigmaAndCanBeOpened()) {
       items.push({
-        label: 'Open In Figma',
+        label: "Open In Figma",
         icon: FigmaIconSVG,
         onClick: () => {
-          this.handleOpenOnlineAsset(Figma.buildFigmaLink(this.props.asset.figmaID));
-        },
+          this.handleOpenOnlineAsset(
+            Figma.buildFigmaLink(this.props.asset.figmaID)
+          );
+        }
       });
     }
 
     if (this.props.asset.isIllustratorFile()) {
       items.push({
-        label: 'Open In Illustrator',
+        label: "Open In Illustrator",
         icon: IllustratorIconSVG,
-        onClick: this.handleOpenAsset.bind(this),
+        onClick: this.handleOpenAsset.bind(this)
       });
     }
 
     // Things like built-in components can't be deleted or shown in finder
     if (!this.props.asset.isRemoteAsset() && !this.props.asset.isFigmaFile()) {
       items.push({
-        label: isWindows() ? 'Show in File Explorer' : 'Show In Finder',
+        label: isWindows() ? "Show in File Explorer" : "Show In Finder",
         icon: FolderIconSVG,
-        onClick: this.handleShowAsset.bind(this),
+        onClick: this.handleShowAsset.bind(this)
       });
     }
 
-    if (
-      !this.props.asset.isRemoteAsset() &&
-      !this.props.asset.isComponent()
-    ) {
+    if (!this.props.asset.isRemoteAsset() && !this.props.asset.isComponent()) {
       items.push({
-        label: 'Delete',
+        label: "Delete",
         icon: TrashIconSVG,
-        onClick: this.handleDeleteAsset.bind(this),
+        onClick: this.handleDeleteAsset.bind(this)
       });
     }
 
     return items;
   }
 
-  isFigmaAndCanBeOpened () {
+  isFigmaAndCanBeOpened() {
     return this.props.asset.isFigmaFile();
   }
 
   refreshFigmaAsset = () => {
-    const url = Figma.buildFigmaLink(this.props.asset.figmaID, this.props.asset.displayName);
+    const url = Figma.buildFigmaLink(
+      this.props.asset.figmaID,
+      this.props.asset.displayName
+    );
     this.props.onRefreshFigmaAsset(url);
   };
 
-  renderSyncMenu () {
+  renderSyncMenu() {
     if (this.isFigmaAndCanBeOpened()) {
       return (
         <span
-          style={{...STYLES.threeDotMenu, right: '30px', transform: 'none'}}
+          style={{ ...STYLES.threeDotMenu, right: "30px", transform: "none" }}
         >
           <button
             onClick={this.refreshFigmaAsset}
             style={{
-              padding: '3px',
+              padding: "3px",
               backgroundColor: Palette.DARK_GRAY,
-              color: Palette.ROCK,
-            }}>
+              color: Palette.ROCK
+            }}
+          >
             <SyncIconSVG />
           </button>
         </span>
@@ -327,10 +334,10 @@ class AssetItem extends React.Component {
     return null;
   }
 
-  renderThreeDotMenu () {
+  renderThreeDotMenu() {
     // For now, don't show any menu for built-in components
     if (this.props.asset.isRemoteAsset()) {
-      return '';
+      return "";
     }
 
     if (
@@ -346,47 +353,51 @@ class AssetItem extends React.Component {
           className="three-dot-menu-container"
           style={{
             ...STYLES.threeDotMenu,
-            opacity: this.props.asset.type === Asset.TYPES.CONTAINER || Radium.getState(this.state, 'asset-item-row', ':hover') ? 1 : 0,
+            opacity:
+              this.props.asset.type === Asset.TYPES.CONTAINER ||
+              Radium.getState(this.state, "asset-item-row", ":hover")
+                ? 1
+                : 0
           }}
         >
           <button
             onClick={this.launchPopoverMenu}
             style={{
-              padding: '0 5px',
+              padding: "0 5px",
               backgroundColor: Palette.DARK_GRAY,
-              color: Palette.ROCK,
-            }}>
+              color: Palette.ROCK
+            }}
+          >
             &#5867;&#5867;&#5867;
           </button>
         </span>
       );
     }
 
-    return '';
+    return "";
   }
 
-  renderIcon () {
+  renderIcon() {
     if (this.props.asset.kind === Asset.KINDS.COMPONENT) {
       return (
         <span
           className="component-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={
-            lodash.assign(
-              {},
-              STYLES.cardIcon,
-              (this.props.asset.isControl)
-                ? null
-                : {transform: 'scale(1.35)', left: 2, display: 'inline-block'},
-            )}>
-
-          {(this.props.asset.icon)
-            ? ASSET_ICONS[this.props.asset.icon]()
-            : <ComponentIconSVG
-              color={(this.isAssetOfActiveComponent())
-                ? Palette.BLUE
-                : void (0)}
-              />}
+          style={lodash.assign(
+            {},
+            STYLES.cardIcon,
+            this.props.asset.isControl
+              ? null
+              : { transform: "scale(1.35)", left: 2, display: "inline-block" }
+          )}
+        >
+          {this.props.asset.icon ? (
+            ASSET_ICONS[this.props.asset.icon]()
+          ) : (
+            <ComponentIconSVG
+              color={this.isAssetOfActiveComponent() ? Palette.BLUE : void 0}
+            />
+          )}
         </span>
       );
     }
@@ -396,7 +407,8 @@ class AssetItem extends React.Component {
         <span
           className="sketch-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <SketchIconSVG />
         </span>
       );
@@ -407,7 +419,8 @@ class AssetItem extends React.Component {
         <span
           className="figma-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <FigmaIconSVG />
         </span>
       );
@@ -418,7 +431,8 @@ class AssetItem extends React.Component {
         <span
           className="illustrator-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <IllustratorIconSVG />
         </span>
       );
@@ -426,9 +440,7 @@ class AssetItem extends React.Component {
 
     if (this.props.asset.kind === Asset.KINDS.FOLDER) {
       return (
-        <span
-          className="folder-icon-container"
-          style={STYLES.cardIcon}>
+        <span className="folder-icon-container" style={STYLES.cardIcon}>
           <FolderIconSVG />
         </span>
       );
@@ -436,9 +448,7 @@ class AssetItem extends React.Component {
 
     if (this.props.asset.kind === Asset.KINDS.FONT) {
       return (
-        <span
-          className="font-icon-container"
-          style={STYLES.cardIcon}>
+        <span className="font-icon-container" style={STYLES.cardIcon}>
           <FontIconSVG />
         </span>
       );
@@ -452,84 +462,104 @@ class AssetItem extends React.Component {
       // Windows platform paths needs transformation to display correct icon and preview
       // eg. C:\test\a.svg -> /C:/test/a.svg
       if (isWindows()) {
-        imageSrc = `/${escape(this.props.asset.getAbspath().replace(/\\/g, '/'))}?t=${this.props.asset.dtModified}`;
+        imageSrc = `/${escape(
+          this.props.asset.getAbspath().replace(/\\/g, "/")
+        )}?t=${this.props.asset.dtModified}`;
       } else {
-        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${this.props.asset.dtModified}`;
+        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${
+          this.props.asset.dtModified
+        }`;
       }
       return (
         <span
-        key={`wrap:${imageSrc}`}
+          key={`wrap:${imageSrc}`}
           className="thumbnail-icon-container"
           style={STYLES.cardIcon}
           onDoubleClick={this.handleAssetDoubleClick}
           onMouseOver={this.showThumbnailPreview}
           onMouseOut={this.hideThumbnailPreview}
-          onMouseDown={this.hideThumbnailPreview}>
+          onMouseDown={this.hideThumbnailPreview}
+        >
           <Popover
             isOpen={this.state.isThumbnailOpen}
             style={STYLES.cardPreview}
-            preferPlace={'right'}
-            body={<embed key={`popover:${imageSrc}`} src={`file://${imageSrc}`} style={{width: '170px', height: '170px'}} />}
+            preferPlace={"right"}
+            body={
+              <embed
+                key={`popover:${imageSrc}`}
+                src={`file://${imageSrc}`}
+                style={{ width: "170px", height: "170px" }}
+              />
+            }
             tipSize={0.01}
           >
-            <embed key={imageSrc} style={STYLES.cardImage} src={`file://${imageSrc}`} />
+            <embed
+              key={imageSrc}
+              style={STYLES.cardImage}
+              src={`file://${imageSrc}`}
+            />
           </Popover>
         </span>
       );
     }
 
-    return '';
+    return "";
   }
 
   showThumbnailPreview = () => {
-    this.setState({isThumbnailOpen: true});
+    this.setState({ isThumbnailOpen: true });
   };
 
   hideThumbnailPreview = () => {
-    this.setState({isThumbnailOpen: false});
+    this.setState({ isThumbnailOpen: false });
   };
 
-  isAssetOfActiveComponent () {
-    return this.props.asset.getRelpath() === this.props.projectModel.getCurrentActiveComponentRelpath();
+  isAssetOfActiveComponent() {
+    return (
+      this.props.asset.getRelpath() ===
+      this.props.projectModel.getCurrentActiveComponentRelpath()
+    );
   }
 
-  getAssetHoverTitleText () {
+  getAssetHoverTitleText() {
     if (this.props.asset.isIllustratorFile()) {
-      return 'Double click to open in Illustrator';
+      return "Double click to open in Illustrator";
     }
 
     if (this.considerSketch()) {
-      return 'Double click to open in Sketch';
+      return "Double click to open in Sketch";
     }
 
     if (this.props.asset.isComponentsHostFolder()) {
-      return 'Your components — create using the + button above the Stage';
+      return "Your components — create using the + button above the Stage";
     }
 
     if (this.props.asset.isDesignsHostFolder()) {
       if (isMac()) {
-        return 'Your design assets — import from Sketch, Figma, or Illustrator';
-      } 
-        return 'Your design assets — import from Figma or Illustrator';
-      
-
+        return "Your design assets — import from Sketch, Figma, or Illustrator";
+      }
+      return "Your design assets — import from Figma or Illustrator";
     }
 
     if (this.props.asset.isDraggable()) {
-      return 'Drag and drop to place on Stage';
+      return "Drag and drop to place on Stage";
     }
 
     return null;
   }
 
-  renderDisplayName () {
+  renderDisplayName() {
     const displayName = (
       <span
         className="display-name-container"
         title={this.getAssetHoverTitleText()}
         onDoubleClick={this.handleAssetDoubleClick}
         onContextMenu={this.launchPopoverMenu}
-        style={[STYLES.displayName, this.isAssetOfActiveComponent() && STYLES.displayName.active]}>
+        style={[
+          STYLES.displayName,
+          this.isAssetOfActiveComponent() && STYLES.displayName.active
+        ]}
+      >
         {this.props.asset.displayName}
       </span>
     );
@@ -550,7 +580,7 @@ class AssetItem extends React.Component {
     return displayName;
   }
 
-  get messageForAsset () {
+  get messageForAsset() {
     if (this.props.asset.isIllustratorFile()) {
       return `
         ⇧ Double click to open this file in Illustrator.
@@ -575,7 +605,7 @@ class AssetItem extends React.Component {
     return null;
   }
 
-  renderSubLevel () {
+  renderSubLevel() {
     if (!this.state.isOpened) {
       return <div />;
     }
@@ -583,15 +613,15 @@ class AssetItem extends React.Component {
     if (this.props.asset.getChildAssets().length === 0) {
       const message = this.messageForAsset;
 
-      return message && (
-        <div
-          className="asset-item-container"
-          style={[STYLES.container, STYLES.message]}>
-          <span
-            className="asset-message-container">
-            {message}
-          </span>
-        </div>
+      return (
+        message && (
+          <div
+            className="asset-item-container"
+            style={[STYLES.container, STYLES.message]}
+          >
+            <span className="asset-message-container">{message}</span>
+          </div>
+        )
       );
     }
 
@@ -622,17 +652,17 @@ class AssetItem extends React.Component {
     this.props.onDragEnd(this.props.asset);
   };
 
-  render () {
+  render() {
     if (
       this.props.asset.isPhonyOrOnlyHasPhonyChildrens() ||
-      this.props.asset.isDesignsHostFolder() && this.props.asset.getChildAssets().length === 0
+      (this.props.asset.isDesignsHostFolder() &&
+        this.props.asset.getChildAssets().length === 0)
     ) {
       return null;
     }
 
     let draggablePart = (
-      <span
-        className="draggable-interior">
+      <span className="draggable-interior">
         {this.renderIcon()}
         {this.renderDisplayName()}
       </span>
@@ -643,11 +673,13 @@ class AssetItem extends React.Component {
         <Draggable
           className="library-draggable" /* <~ do not remove this */
           onDragEnd={this.onDragEnd}
-          onDragStart={this.onDragStart}>
+          onDragStart={this.onDragStart}
+        >
           <span
             className="draggable-interior-wrap"
             style={STYLES.draggableCardWrapper}
-            onDoubleClick={this.handleAssetDoubleClick}>
+            onDoubleClick={this.handleAssetDoubleClick}
+          >
             {draggablePart}
           </span>
         </Draggable>
@@ -655,16 +687,16 @@ class AssetItem extends React.Component {
     }
 
     return (
-      <div
-        className="asset-item-container"
-        style={[STYLES.container]}>
+      <div className="asset-item-container" style={[STYLES.container]}>
         <div
           key="asset-item-row"
           className="asset-item-row"
-          style={[STYLES.row]}>
+          style={[STYLES.row]}
+        >
           <div
             className="asset-item-header"
-            style={[STYLES.header, {paddingLeft: this.indent * 23}]}>
+            style={[STYLES.header, { paddingLeft: this.indent * 23 }]}
+          >
             {this.renderChevy()}
             {draggablePart}
             {this.renderSyncMenu()}
@@ -673,7 +705,8 @@ class AssetItem extends React.Component {
         </div>
         <div
           className="asset-item-sublevel-container"
-          style={[STYLES.sublevel]}>
+          style={[STYLES.sublevel]}
+        >
           {this.renderSubLevel()}
         </div>
       </div>
@@ -689,7 +722,7 @@ AssetItem.propTypes = {
   onAssetDoubleClick: PropTypes.func.isRequired,
   deleteAsset: PropTypes.func.isRequired,
   projectModel: PropTypes.object.isRequired,
-  onRefreshFigmaAsset: PropTypes.func.isRequired,
+  onRefreshFigmaAsset: PropTypes.func.isRequired
 };
 
 export default Radium(AssetItem);

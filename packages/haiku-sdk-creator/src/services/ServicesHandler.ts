@@ -1,5 +1,6 @@
 // @ts-ignore
-import { Figma } from "haiku-serialization/src/bll/Figma.js";
+import figmaModule from "haiku-serialization/src/bll/Figma.js";
+const { Figma } = figmaModule;
 import { ImportSpec, MaybeAsync, TokenExchange } from ".";
 
 export interface Services {
