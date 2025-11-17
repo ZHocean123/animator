@@ -1,22 +1,28 @@
-import {getAngularSelectorName} from '@haiku/sdk-client/lib/ProjectDefinitions';
-import * as dedent from 'dedent';
+import { getAngularSelectorName } from "@haiku/sdk-client/lib/ProjectDefinitions.js";
+import * as dedent from "dedent";
 // @ts-ignore
-import * as React from 'react';
-import {CodeBox} from '../../CodeBox';
-import {NpmInstallable} from './NpmInstallable';
+import * as React from "react";
+import { CodeBox } from "../../CodeBox";
+import { NpmInstallable } from "./NpmInstallable";
 
 export interface AngularHaikuProps {
   projectName: string;
   organizationName: string;
 
-  children?: React.ReactNode;}
+  children?: React.ReactNode;
+}
 
-export default class AngularHaiku extends React.PureComponent<AngularHaikuProps> {
-  render () {
-    const {projectName, organizationName} = this.props;
+export default class AngularHaiku extends React.PureComponent<
+  AngularHaikuProps
+> {
+  render() {
+    const { projectName, organizationName } = this.props;
     const angularSelectorName = getAngularSelectorName(projectName);
     return (
-      <NpmInstallable projectName={projectName} organizationName={organizationName}>
+      <NpmInstallable
+        projectName={projectName}
+        organizationName={organizationName}
+      >
         <CodeBox>
           {dedent`
           import ${projectName}Module from '@haiku/${organizationName.toLowerCase()}-${projectName.toLowerCase()}/angular-module';

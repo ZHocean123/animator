@@ -1,111 +1,112 @@
 /* tslint:disable:no-shadowed-variable */
-import * as async from 'async';
-import * as path from 'path';
-import * as os from 'os';
-import {debounce} from 'lodash-es';
-import * as fse from 'haiku-fs-extra';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
-import HaikuComponent from '@haiku/core/lib/HaikuComponent';
-import * as walkFiles from 'haiku-serialization/src/utils/walkFiles';
-import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
-import * as File from 'haiku-serialization/src/bll/File';
-import * as Project from 'haiku-serialization/src/bll/Project';
-import * as Sketch from 'haiku-serialization/src/bll/Sketch';
-import * as Asset from 'haiku-serialization/src/bll/Asset';
-import {Figma} from 'haiku-serialization/src/bll/Figma';
-import * as Illustrator from 'haiku-serialization/src/bll/Illustrator';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
-import * as Websocket from 'haiku-serialization/src/ws/Websocket';
-import * as WebSocket from 'ws';
-import {EventEmitter} from 'events';
-import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
-import Watcher from './Watcher';
-import MasterGitProject from './MasterGitProject';
-import MasterModuleProject from './MasterModuleProject';
-import getExporterListener from './envoy/getExporterListener';
-import Raven from './Raven';
-import saveExport from './publish-hooks/saveExport';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles.js';
-import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter/index.js';
-import {createCDNBundles} from './project-folder/createCDNBundle.js';
+import * as async from "async";
+import * as path from "path";
+import * as os from "os";
+import { debounce } from "lodash-es";
+import * as fse from "haiku-fs-extra";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
+import HaikuComponent from "@haiku/core/lib/HaikuComponent.js";
+import * as walkFiles from "haiku-serialization/src/utils/walkFiles.js";
+import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
+import * as File from "haiku-serialization/src/bll/File.js";
+import * as Project from "haiku-serialization/src/bll/Project.js";
+import * as Sketch from "haiku-serialization/src/bll/Sketch.js";
+import * as Asset from "haiku-serialization/src/bll/Asset.js";
+import { Figma } from "haiku-serialization/src/bll/Figma.js";
+import * as Illustrator from "haiku-serialization/src/bll/Illustrator.js";
+import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
+import * as MockWebsocket from "haiku-serialization/src/ws/MockWebsocket.js";
+import * as Websocket from "haiku-serialization/src/ws/Websocket.js";
+import * as WebSocket from "ws";
+import { EventEmitter } from "events";
+import * as EmitterManager from "haiku-serialization/src/utils/EmitterManager.js";
+import Watcher from "./Watcher";
+import MasterGitProject from "./MasterGitProject";
+import MasterModuleProject from "./MasterModuleProject";
+import getExporterListener from "./envoy/getExporterListener";
+import Raven from "./Raven";
+import saveExport from "./publish-hooks/saveExport";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
+import {
+  ExporterFormat,
+  EXPORTER_CHANNEL
+} from "haiku-sdk-creator/lib/exporter/index.js";
+import { createCDNBundles } from "./project-folder/createCDNBundle.js";
 import {
   getHaikuCoreVersion,
-  fetchProjectConfigInfo,
-} from './project-folder/ProjectDefinitions.js';
-import {dumpBase64Images} from './project-folder/AssetUtils.js';
-import {isMac} from 'haiku-common';
+  fetchProjectConfigInfo
+} from "./project-folder/ProjectDefinitions.js";
+import { dumpBase64Images } from "./project-folder/AssetUtils.js";
+import { isMac } from "haiku-common";
 
-if(isMac()) {
+if (isMac()) {
   Sketch.findAndUpdateInstallPath();
 }
 const UNLOGGABLE_METHODS = {
-  masterHeartbeat: true,
+  masterHeartbeat: true
 };
 
 const METHODS_TO_RUN_IMMEDIATELY = {
   startProject: true,
   initializeFolder: true,
-  masterHeartbeat: true,
+  masterHeartbeat: true
 };
 
 const FORBIDDEN_METHODS = {
   logMethodMessage: true,
   handleMethodMessage: true,
-  callMethodWithMessage: true,
+  callMethodWithMessage: true
 };
 
 const METHOD_QUEUE_INTERVAL = 64;
 const SAVE_AWAIT_TIME = 64 * 2;
 
 const WATCHABLE_EXTNAMES = {
-  '.js': true,
-  '.svg': true,
-  '.sketch': true,
-  '.ai': true,
+  ".js": true,
+  ".svg": true,
+  ".sketch": true,
+  ".ai": true
 };
 
 const DESIGN_EXTNAMES = {
-  '.sketch': true,
-  '.ai': true,
-  '.svg': true,
+  ".sketch": true,
+  ".ai": true,
+  ".svg": true
 };
 
 const UNWATCHABLE_RELPATHS = {
-  'index.js': true,
-  'react-bare.js': true,
-  'react.js': true,
-  'vue.js': true,
+  "index.js": true,
+  "react-bare.js": true,
+  "react.js": true,
+  "vue.js": true
 };
 
 const UNWATCHABLE_BASENAMES = {
-  'angular-dom.js': true,
-  'index.standalone.js': true,
-  'index.embed.js': true,
-  'dom-embed.js': true,
-  'dom-standalone.js': true,
-  'react-dom.js': true,
-  'vue-dom.js': true,
-  '~.sketch': true, // Ephemeral file generated by sketch during file writes
+  "angular-dom.js": true,
+  "index.standalone.js": true,
+  "index.embed.js": true,
+  "dom-embed.js": true,
+  "dom-standalone.js": true,
+  "react-dom.js": true,
+  "vue-dom.js": true,
+  "~.sketch": true // Ephemeral file generated by sketch during file writes
 };
 
 const GITIGNORED_BASENAMES = {
-  'animation.gif': true,
-  'still.png': true,
+  "animation.gif": true,
+  "still.png": true
 };
 
-const DESIGN_ASSETS_RELPATH_STEM = path.join('assets', 'designs');
+const DESIGN_ASSETS_RELPATH_STEM = path.join("assets", "designs");
 
-const isFileSignificant = (relpath) => (
+const isFileSignificant = relpath =>
   !UNWATCHABLE_RELPATHS[relpath] &&
   !UNWATCHABLE_BASENAMES[path.basename(relpath)] &&
-  WATCHABLE_EXTNAMES[path.extname(relpath).toLowerCase()]
-);
+  WATCHABLE_EXTNAMES[path.extname(relpath).toLowerCase()];
 
-const doSkipFile = (relpath) => (
+const doSkipFile = relpath =>
   GITIGNORED_BASENAMES[relpath] ||
-  relpath.startsWith(DESIGN_ASSETS_RELPATH_STEM)
-);
+  relpath.startsWith(DESIGN_ASSETS_RELPATH_STEM);
 
 export default class Master extends EventEmitter {
   constructor(folder, fileOptions = {}, envoyOptions = {}, envoyHandlers) {
@@ -117,8 +118,8 @@ export default class Master extends EventEmitter {
 
     this.envoyHandlers = envoyHandlers;
 
-    if(!this.folder) {
-      throw new Error('[master] Master cannot launch without a folder defined');
+    if (!this.folder) {
+      throw new Error("[master] Master cannot launch without a folder defined");
     }
 
     this.fileOptions = fileOptions;
@@ -138,18 +139,18 @@ export default class Master extends EventEmitter {
     // Encapsulation of project actions that relate to git or cloud saving in some way
     this._git = new MasterGitProject(this.folder);
 
-    this._git.on('semver-bumped', (tag, cb) => {
+    this._git.on("semver-bumped", (tag, cb) => {
       this.handleSemverTagChange(tag, cb);
     });
 
     // Encapsulation of project actions that concern the live module in other views
     this._mod = new MasterModuleProject(this.folder);
 
-    this._mod.on('component:reload', (file) => {
+    this._mod.on("component:reload", file => {
       // Our bytecode and models have to be up to date before we can receive actions
       // We update ours first since we need to reflect what will get committed to disk
       this.getActiveComponent().moduleReplace(() => {
-        this.emit('component:reload', this, file);
+        this.emit("component:reload", this, file);
       });
     });
 
@@ -164,9 +165,9 @@ export default class Master extends EventEmitter {
 
     // Worker that handles processing any methods that have accumulated in our queue
     this._methodQueueInterval = setInterval(() => {
-      if(this._isReadyToReceiveMethods) {
+      if (this._isReadyToReceiveMethods) {
         const methods = this._methodQueue.splice(0);
-        methods.forEach(({message: {method, params}, cb}) => {
+        methods.forEach(({ message: { method, params }, cb }) => {
           this.callMethodWithMessage(method, params, cb);
         });
         clearInterval(this._methodQueueInterval);
@@ -189,23 +190,28 @@ export default class Master extends EventEmitter {
     this._wereAssetsInitiallyLoaded = false;
 
     // We end up oversaturating the sockets unless we debounce this
-    this.debouncedEmitAssetsChanged = debounce(this.emitAssetsChanged.bind(this), 100, {trailing: true});
+    this.debouncedEmitAssetsChanged = debounce(
+      this.emitAssetsChanged.bind(this),
+      100,
+      { trailing: true }
+    );
     this.debouncedEmitDesignNeedsMergeRequest = debounce(
       this.emitDesignNeedsMergeRequest.bind(this),
       500,
-      {trailing: true},
+      { trailing: true }
     );
 
-    this.websocket = (global.process.env.NODE_ENV === 'test')
-      ? new MockWebsocket()
-      : new Websocket(
-      `ws://${process.env.HAIKU_PLUMBING_HOST}:${process.env.HAIKU_PLUMBING_PORT}`,
-      this.folder,
-      'controllee',
-      'master',
-      WebSocket,
-      process.env.HAIKU_WS_SECURITY_TOKEN,
-    );
+    this.websocket =
+      global.process.env.NODE_ENV === "test"
+        ? new MockWebsocket()
+        : new Websocket(
+            `ws://${process.env.HAIKU_PLUMBING_HOST}:${process.env.HAIKU_PLUMBING_PORT}`,
+            this.folder,
+            "controllee",
+            "master",
+            WebSocket,
+            process.env.HAIKU_WS_SECURITY_TOKEN
+          );
 
     fetchProjectConfigInfo(this.folder, (_, userconfig) => {
       this.initialUserconfig = userconfig;
@@ -213,12 +219,12 @@ export default class Master extends EventEmitter {
   }
 
   handleBroadcast(message) {
-    switch(message.name) {
-      case 'remote-model:receive-sync':
+    switch (message.name) {
+      case "remote-model:receive-sync":
         BaseModel.receiveSync(message);
         break;
 
-      case 'component:reload:complete':
+      case "component:reload:complete":
         this._mod.handleReloadComplete(message);
         break;
     }
@@ -229,7 +235,7 @@ export default class Master extends EventEmitter {
   }
 
   watchOff() {
-    if(this._watcher) {
+    if (this._watcher) {
       this._watcher.stop();
     }
   }
@@ -239,37 +245,43 @@ export default class Master extends EventEmitter {
     this.watchOff();
     this._knownLibraryAssets = {};
     this._wereAssetsInitiallyLoaded = false;
-    if(this.project) {
-      this.project.getAllActiveComponents().forEach((ac) => {
-        if(ac.$instance) {
+    if (this.project) {
+      this.project.getAllActiveComponents().forEach(ac => {
+        if (ac.$instance) {
           ac.$instance.context.destroy();
         }
       });
     }
 
-    this.envoyHandlers.exporter.off(`${EXPORTER_CHANNEL}:save`, this.exporterListener);
+    this.envoyHandlers.exporter.off(
+      `${EXPORTER_CHANNEL}:save`,
+      this.exporterListener
+    );
     this.exporterListener = undefined;
   }
 
   watchOn() {
     this._watcher = new Watcher();
     this._watcher.watch(this.folder);
-    this._watcher.on('change', this.handleFileChange.bind(this));
-    this._watcher.on('change-blacklisted', this.handleFileChangeBlacklisted.bind(this));
-    this._watcher.on('add', this.handleFileAdd.bind(this));
-    this._watcher.on('remove', this.handleFileRemove.bind(this));
+    this._watcher.on("change", this.handleFileChange.bind(this));
+    this._watcher.on(
+      "change-blacklisted",
+      this.handleFileChangeBlacklisted.bind(this)
+    );
+    this._watcher.on("add", this.handleFileAdd.bind(this));
+    this._watcher.on("remove", this.handleFileRemove.bind(this));
   }
 
   teardown(cb) {
     clearInterval(this._methodQueueInterval);
     clearInterval(this._mod._modificationsInterval);
-    if(this.project) {
+    if (this.project) {
       this.project.teardown();
     }
-    if(this._watcher) {
+    if (this._watcher) {
       this._watcher.stop();
     }
-    if(this._git) {
+    if (this._git) {
       return this._git.teardown(cb);
     }
 
@@ -277,18 +289,18 @@ export default class Master extends EventEmitter {
   }
 
   logMethodMessage(method, params) {
-    if(!UNLOGGABLE_METHODS[method]) {
-      logger.info('[master]', 'calling', method, params);
+    if (!UNLOGGABLE_METHODS[method]) {
+      logger.info("[master]", "calling", method, params);
     }
   }
 
   recordChange(method, params, metadata) {
-    this.changes.push({method, params, metadata, timestamp: Date.now()});
+    this.changes.push({ method, params, metadata, timestamp: Date.now() });
   }
 
   handleMethodMessage(method, params, cb) {
     // We stop using the queue once we're up and running; no point keeping the queue
-    if(METHODS_TO_RUN_IMMEDIATELY[method] || this._isReadyToReceiveMethods) {
+    if (METHODS_TO_RUN_IMMEDIATELY[method] || this._isReadyToReceiveMethods) {
       return this.callMethodWithMessage(method, params, cb);
     }
 
@@ -296,13 +308,13 @@ export default class Master extends EventEmitter {
       cb,
       message: {
         method,
-        params,
-      },
+        params
+      }
     });
   }
 
   callMethodWithMessage(method, params, cb) {
-    if(FORBIDDEN_METHODS[method]) {
+    if (FORBIDDEN_METHODS[method]) {
       return cb(new Error(`Method ${method} forbidden`));
     }
 
@@ -310,7 +322,7 @@ export default class Master extends EventEmitter {
     const metadata = params.pop();
 
     const finish = (err, out) => {
-      if(err) {
+      if (err) {
         return cb(err);
       }
 
@@ -319,17 +331,24 @@ export default class Master extends EventEmitter {
       return cb(null, out);
     };
 
-    if(typeof this[method] === 'function') {
+    if (typeof this[method] === "function") {
       this.logMethodMessage(method, params);
       // Our own API does not expect the metadata object; leave it off
       return this[method].apply(this, params.concat(finish));
     }
 
-    return this.project.receiveMethodCall(method, params.concat(metadata), {/* message */}, finish);
+    return this.project.receiveMethodCall(
+      method,
+      params.concat(metadata),
+      {
+        /* message */
+      },
+      finish
+    );
   }
 
   waitForSaveToComplete(cb) {
-    if(this._isSaving) {
+    if (this._isSaving) {
       return setTimeout(() => {
         return this.waitForSaveToComplete(cb);
       }, SAVE_AWAIT_TIME);
@@ -340,22 +359,18 @@ export default class Master extends EventEmitter {
 
   emitAssetsChanged(assets) {
     File.cache.clear();
-    return this.emit('assets-changed', this, assets);
+    return this.emit("assets-changed", this, assets);
   }
 
   emitDesignNeedsMergeRequest() {
     const designs = this._designsPendingMerge;
-    if(Object.keys(designs).length > 0) {
-      logger.info('[master] merge designs requested');
-      if(this.project && this.project.getCurrentActiveComponent()) {
+    if (Object.keys(designs).length > 0) {
+      logger.info("[master] merge designs requested");
+      if (this.project && this.project.getCurrentActiveComponent()) {
         this._designsPendingMerge = {};
-        this.project.mergeDesigns(
-          designs,
-          {from: 'master'},
-          () => {
-            logger.info(`[master] finished merge designs`);
-          },
-        );
+        this.project.mergeDesigns(designs, { from: "master" }, () => {
+          logger.info(`[master] finished merge designs`);
+        });
       }
     }
   }
@@ -366,16 +381,16 @@ export default class Master extends EventEmitter {
   }
 
   emitComponentChange(relpath) {
-    logger.info('[master] component changed', relpath);
+    logger.info("[master] component changed", relpath);
     this.debouncedEmitAssetsChanged(this._knownLibraryAssets);
   }
 
   emitDesignChange(relpath) {
     const extname = path.extname(relpath);
     const abspath = path.join(this.folder, relpath);
-    logger.info('[master] design changed', relpath);
+    logger.info("[master] design changed", relpath);
     this.debouncedEmitAssetsChanged(this._knownLibraryAssets);
-    if(extname === '.svg') {
+    if (extname === ".svg") {
       this.batchDesignMergeRequest(relpath, abspath);
       this.debouncedEmitDesignNeedsMergeRequest();
     }
@@ -386,14 +401,16 @@ export default class Master extends EventEmitter {
 
     let message = `Changed ${relpath}`;
 
-    const changes = this.changes.splice(0).filter(({method}) => {
+    const changes = this.changes.splice(0).filter(({ method }) => {
       return !!COMMITTABLE_METHODS[method];
     });
 
-    if(changes.length > 0) {
-      message = changes.map((change) => {
-        return changeToCommitMessage(relpath, change);
-      }).join('; ');
+    if (changes.length > 0) {
+      message = changes
+        .map(change => {
+          return changeToCommitMessage(relpath, change);
+        })
+        .join("; ");
     }
 
     return this.normalizeCommitMessage(message);
@@ -411,153 +428,195 @@ export default class Master extends EventEmitter {
    */
   handleFileChangeBlacklisted(abspath) {
     const relpath = path.relative(this.folder, abspath);
-    if(doSkipFile(relpath)) {
+    if (doSkipFile(relpath)) {
       return;
     }
     return this.waitForSaveToComplete(() => {
-      return this._git.commitFileIfChanged(relpath, this.buildCommitMessage(relpath), () => {});
+      return this._git.commitFileIfChanged(
+        relpath,
+        this.buildCommitMessage(relpath),
+        () => {}
+      );
     });
   }
 
   handleFileChange(abspath) {
     const relpath = path.relative(this.folder, abspath);
-    if(doSkipFile(relpath)) {
+    if (doSkipFile(relpath)) {
       return;
     }
     const extname = path.extname(relpath);
     const basename = path.basename(relpath, extname);
 
-    if(Asset.isDesignAsset(abspath)) {
+    if (Asset.isDesignAsset(abspath)) {
       dumpBase64Images(abspath, relpath, this.folder, this._watcher, true);
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = {
+        relpath,
+        abspath,
+        dtModified: Date.now()
+      };
       this.emitDesignChange(relpath);
-    } else if(path.basename(relpath) === 'code.js') { // Local component file
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+    } else if (path.basename(relpath) === "code.js") {
+      // Local component file
+      this._knownLibraryAssets[relpath] = {
+        relpath,
+        abspath,
+        dtModified: Date.now()
+      };
       this.emitComponentChange(relpath);
     }
 
     return this.waitForSaveToComplete(() => {
-      return this._git.commitFileIfChanged(relpath, this.buildCommitMessage(relpath), () => {
-        if(!isFileSignificant(relpath)) {
-          return;
-        }
+      return this._git.commitFileIfChanged(
+        relpath,
+        this.buildCommitMessage(relpath),
+        () => {
+          if (!isFileSignificant(relpath)) {
+            return;
+          }
 
-        if(Sketch.isSketchFile(abspath)) {
-          logger.info('[master] sketchtool pipeline running; please wait');
-          Sketch.sketchtoolPipeline(abspath);
-          logger.info('[master] sketchtool done');
-          return;
-        }
+          if (Sketch.isSketchFile(abspath)) {
+            logger.info("[master] sketchtool pipeline running; please wait");
+            Sketch.sketchtoolPipeline(abspath);
+            logger.info("[master] sketchtool done");
+            return;
+          }
 
-        if(Illustrator.isIllustratorFile(abspath)) {
-          logger.info('[master] illustrator pipeline running; please wait');
-          Illustrator.importSVG({abspath});
-          logger.info('[master] illustrator import done');
-          return;
-        }
+          if (Illustrator.isIllustratorFile(abspath)) {
+            logger.info("[master] illustrator pipeline running; please wait");
+            Illustrator.importSVG({ abspath });
+            logger.info("[master] illustrator import done");
+            return;
+          }
 
-        if(extname === '.js' && basename === 'code') {
-          const file = this.getActiveComponent() && this.getActiveComponent().fetchActiveBytecodeFile();
+          if (extname === ".js" && basename === "code") {
+            const file =
+              this.getActiveComponent() &&
+              this.getActiveComponent().fetchActiveBytecodeFile();
 
-          if(file && file.relpath === relpath) {
-            this._mod.handleModuleChange(file);
+            if (file && file.relpath === relpath) {
+              this._mod.handleModuleChange(file);
+            }
           }
         }
-      });
+      );
     });
   }
 
   handleFileAdd(abspath) {
     const relpath = path.relative(this.folder, abspath);
-    if(doSkipFile(relpath)) {
+    if (doSkipFile(relpath)) {
       return;
     }
 
     const extname = path.extname(relpath);
 
-    if(Asset.isDesignAsset(abspath)) {
+    if (Asset.isDesignAsset(abspath)) {
       dumpBase64Images(abspath, relpath, this.folder, this._watcher, true);
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = {
+        relpath,
+        abspath,
+        dtModified: Date.now()
+      };
       this.emitDesignChange(relpath);
-    } else if(path.basename(relpath) === 'code.js') { // Local component file
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+    } else if (path.basename(relpath) === "code.js") {
+      // Local component file
+      this._knownLibraryAssets[relpath] = {
+        relpath,
+        abspath,
+        dtModified: Date.now()
+      };
       this.emitComponentChange(relpath);
     }
 
     return this.waitForSaveToComplete(() => {
-      return this._git.commitFileIfChanged(relpath, this.normalizeCommitMessage(`Added ${relpath}`), () => {
-        if(!isFileSignificant(relpath)) {
-          return;
-        }
+      return this._git.commitFileIfChanged(
+        relpath,
+        this.normalizeCommitMessage(`Added ${relpath}`),
+        () => {
+          if (!isFileSignificant(relpath)) {
+            return;
+          }
 
-        if(extname === '.sketch') {
-          logger.info('[master] sketchtool pipeline running; please wait');
-          Sketch.sketchtoolPipeline(abspath);
-          logger.info('[master] sketchtool done');
-          return;
-        }
+          if (extname === ".sketch") {
+            logger.info("[master] sketchtool pipeline running; please wait");
+            Sketch.sketchtoolPipeline(abspath);
+            logger.info("[master] sketchtool done");
+            return;
+          }
 
-        if(Illustrator.isIllustratorFile(abspath)) {
-          logger.info('[master] illustrator pipeline running; please wait');
-          Illustrator.importSVG({abspath, tryToOpenFile: isMac()});
-          logger.info('[master] illustrator import done');
+          if (Illustrator.isIllustratorFile(abspath)) {
+            logger.info("[master] illustrator pipeline running; please wait");
+            Illustrator.importSVG({ abspath, tryToOpenFile: isMac() });
+            logger.info("[master] illustrator import done");
+          }
         }
-      });
+      );
     });
   }
 
   handleFileRemove(abspath) {
     const relpath = path.relative(this.folder, abspath);
-    if(this._knownLibraryAssets[relpath]) {
+    if (this._knownLibraryAssets[relpath]) {
       delete this._knownLibraryAssets[relpath];
       this.debouncedEmitAssetsChanged(this._knownLibraryAssets);
     }
 
     return this.waitForSaveToComplete(() => {
-      return this._git.commitFileIfChanged(relpath, this.normalizeCommitMessage(`Removed ${relpath}`), () => undefined);
+      return this._git.commitFileIfChanged(
+        relpath,
+        this.normalizeCommitMessage(`Removed ${relpath}`),
+        () => undefined
+      );
     });
   }
 
   handleSemverTagChange(tag, cb) {
     // Just in case this happens to get called before we initialize
-    if(!this.project) {
+    if (!this.project) {
       return cb(null, tag);
     }
 
     // Just in case we haven't initialized our active component yet
     const acs = this.project.getAllActiveComponents();
 
-    if(acs.length < 1) {
+    if (acs.length < 1) {
       return cb();
     }
 
     // Loop through all components and bump their bytecode metadata semver
-    return async.eachSeries(acs, (ac, next) => {
-      // Since we might be tagging components that we have never initially loaded,
-      // we do so here otherwise the reified bytecode is going to be null
-      return ac.moduleReload('basicReload', (err) => {
-        if(err) {
-          return next(err);
-        }
+    return async.eachSeries(
+      acs,
+      (ac, next) => {
+        // Since we might be tagging components that we have never initially loaded,
+        // we do so here otherwise the reified bytecode is going to be null
+        return ac.moduleReload("basicReload", err => {
+          if (err) {
+            return next(err);
+          }
 
-        return ac.writeMetadata(
-          {version: tag},
-          this.project.getMetadata(),
-          (err) => {
-            if(err) {
-              return next(err);
+          return ac.writeMetadata(
+            { version: tag },
+            this.project.getMetadata(),
+            err => {
+              if (err) {
+                return next(err);
+              }
+              logger.info(
+                `[master-git] bumped bytecode semver on ${ac.getSceneName()} to ${tag}`
+              );
+              return next(null, tag);
             }
-            logger.info(`[master-git] bumped bytecode semver on ${ac.getSceneName()} to ${tag}`);
-            return next(null, tag);
-          },
-        );
-      });
-    }, (err) => {
-      if(err) {
-        return cb(err);
+          );
+        });
+      },
+      err => {
+        if (err) {
+          return cb(err);
+        }
+        return cb(null, tag);
       }
-      return cb(null, tag);
-    });
+    );
   }
 
   masterHeartbeat(cb) {
@@ -565,7 +624,7 @@ export default class Master extends EventEmitter {
       folder: this.folder,
       isReady: this._isReadyToReceiveMethods,
       isSaving: this._isSaving,
-      isCommitting: this._git.hasAnyPendingCommits(),
+      isCommitting: this._git.hasAnyPendingCommits()
     };
 
     return cb(null, state);
@@ -577,22 +636,31 @@ export default class Master extends EventEmitter {
 
   loadAssets(cb) {
     return walkFiles(this.folder, (err, entries) => {
-      if(err) {
+      if (err) {
         return cb(err);
       }
-      entries.forEach((entry) => {
+      entries.forEach(entry => {
         const relpath = path.normalize(path.relative(this.folder, entry.path));
-        if(doSkipFile(relpath)) {
+        if (doSkipFile(relpath)) {
           return;
         }
         const extname = path.extname(entry.path);
         const basename = path.basename(entry.path);
         const parts = relpath.split(path.sep);
-        if(DESIGN_EXTNAMES[extname]) {
+        if (DESIGN_EXTNAMES[extname]) {
           dumpBase64Images(entry.path, relpath, this.folder, this._watcher);
-          this._knownLibraryAssets[relpath] = {relpath, abspath: entry.path, dtModified: Date.now()};
-        } else if(parts[0] === 'code' && basename === 'code.js') { // Component bytecode file
-          this._knownLibraryAssets[relpath] = {relpath, abspath: entry.path, dtModified: Date.now()};
+          this._knownLibraryAssets[relpath] = {
+            relpath,
+            abspath: entry.path,
+            dtModified: Date.now()
+          };
+        } else if (parts[0] === "code" && basename === "code.js") {
+          // Component bytecode file
+          this._knownLibraryAssets[relpath] = {
+            relpath,
+            abspath: entry.path,
+            dtModified: Date.now()
+          };
         }
       });
       return this.getAssets(cb);
@@ -600,7 +668,7 @@ export default class Master extends EventEmitter {
   }
 
   fetchAssets(cb) {
-    if(this._wereAssetsInitiallyLoaded) {
+    if (this._wereAssetsInitiallyLoaded) {
       return this.getAssets(cb);
     }
 
@@ -611,17 +679,17 @@ export default class Master extends EventEmitter {
   getBaseFolder(abspath) {
     const extname = path.extname(abspath).toLowerCase();
 
-    if(
-      extname === '.svg' ||
-      extname === '.ai' ||
-      extname === '.sketch' ||
-      extname === '.figma'
+    if (
+      extname === ".svg" ||
+      extname === ".ai" ||
+      extname === ".sketch" ||
+      extname === ".figma"
     ) {
-      return 'designs';
+      return "designs";
     }
 
     // Bitmap images, fonts, etc.
-    return 'assets';
+    return "assets";
   }
 
   linkAsset(abspath, cb) {
@@ -629,11 +697,15 @@ export default class Master extends EventEmitter {
     const base = this.getBaseFolder(abspath);
     const relpath = path.join(base, basename);
     const destination = path.join(this.folder, relpath);
-    return fse.copy(abspath, destination, (copyErr) => {
-      if(copyErr) {
+    return fse.copy(abspath, destination, copyErr => {
+      if (copyErr) {
         return cb(copyErr);
       }
-      this._knownLibraryAssets[relpath] = {relpath, abspath: destination, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = {
+        relpath,
+        abspath: destination,
+        dtModified: Date.now()
+      };
       return cb(null, this._knownLibraryAssets);
     });
   }
@@ -643,76 +715,90 @@ export default class Master extends EventEmitter {
       abspaths,
       (path, next) => {
         return this.linkAsset(path, (error, assets) => {
-          if(error) {
+          if (error) {
             return next(error);
           }
           return next();
         });
       },
       (error, results) => {
-        if(error) {
+        if (error) {
           return cb(error);
         }
         return cb(results);
-      },
+      }
     );
   }
 
   unlinkAsset(relpath, cb) {
-    if(!relpath || relpath.length < 2) {
-      return cb(new Error('Relative path too short'));
+    if (!relpath || relpath.length < 2) {
+      return cb(new Error("Relative path too short"));
     }
 
     const abspath = path.join(this.folder, relpath);
 
     /* Remove the file and all associated assets from the in-memory registry */
     Object.keys(this._knownLibraryAssets)
-      .filter((path) => path.indexOf(relpath) !== -1)
-      .forEach((path) => delete this._knownLibraryAssets[path]);
+      .filter(path => path.indexOf(relpath) !== -1)
+      .forEach(path => delete this._knownLibraryAssets[path]);
 
     return async.series(
       [
         /* Remove associated asset contents from disk */
-        (cb) => {
-          Sketch.isSketchFile(abspath) || Figma.isFigmaFile(abspath) || Illustrator.isIllustratorFile(abspath)
+        cb => {
+          Sketch.isSketchFile(abspath) ||
+          Figma.isFigmaFile(abspath) ||
+          Illustrator.isIllustratorFile(abspath)
             ? fse.remove(`${abspath}.contents`, cb)
             : cb();
         },
         /* Remove the file itself */
-        (cb) => {
+        cb => {
           fse.remove(abspath, cb);
-        },
+        }
       ],
-      (error) => cb(error, this._knownLibraryAssets),
+      error => cb(error, this._knownLibraryAssets)
     );
   }
 
   readAllStateValues(relpath, cb) {
-    if(!this.project || !relpath) {
+    if (!this.project || !relpath) {
       logger.warn(`[master] cannot read states ${!!this.project}/${!!relpath}`);
       return cb(null, {});
     }
 
     const ac = this.project.findActiveComponentBySourceIfPresent(relpath);
-    if(!ac) {
+    if (!ac) {
       return cb(null, {});
     }
 
-    return ac.readAllStateValues({/* unused metadata */}, cb);
+    return ac.readAllStateValues(
+      {
+        /* unused metadata */
+      },
+      cb
+    );
   }
 
   readAllEventHandlers(relpath, cb) {
-    if(!this.project || !relpath) {
-      logger.warn(`[master] cannot read actions ${!!this.project}/${!!relpath}`);
+    if (!this.project || !relpath) {
+      logger.warn(
+        `[master] cannot read actions ${!!this.project}/${!!relpath}`
+      );
       return cb(null, {});
     }
 
     const ac = this.project.findActiveComponentBySourceIfPresent(relpath);
-    if(!ac) {
+    if (!ac) {
       return cb(null, {});
     }
 
-    return ac.readAllEventHandlers({/* unused metadata */}, cb);
+    return ac.readAllEventHandlers(
+      {
+        /* unused metadata */
+      },
+      cb
+    );
   }
 
   /**
@@ -725,43 +811,50 @@ export default class Master extends EventEmitter {
     this._git.restart(project);
 
     const ravenContext = {
-      user: {email: project.authorName},
+      user: { email: project.authorName },
       extra: {
         projectName: project.projectName,
         projectPath: this.folder,
-        organizationName: project.organizationName,
-      },
+        organizationName: project.organizationName
+      }
     };
     Raven.setContext(ravenContext);
 
     // Note: 'ensureProjectFolder' should already have run by this point.
-    return async.series([
-      (cb) => {
-        return this._git.initializeFolder(project, this.envoyHandlers.user.checkOfflinePrivileges(), cb);
-      },
+    return async.series(
+      [
+        cb => {
+          return this._git.initializeFolder(
+            project,
+            this.envoyHandlers.user.checkOfflinePrivileges(),
+            cb
+          );
+        },
 
-      // Now that we've (maybe) cloned content, we need to create any other necessary files that _might not_ yet
-      // exist in the folder. You may note that we run this method _before_ this process, and ask yourself: why twice?
-      // Well, don't be fooled. Both methods are necessary due to the way git pulling is handled: if a project has
-      // never had remote content pulled, but has changes, we move those changes away them copy them back in on top of
-      // the cloned content. Which means we have to be sparing with what we create on the first run, but also need
-      // to create any missing remainders on the second run.
-      (cb) => {
-        project.skipContentCreation = false;
-        return createProjectFiles(project, cb);
-      },
+        // Now that we've (maybe) cloned content, we need to create any other necessary files that _might not_ yet
+        // exist in the folder. You may note that we run this method _before_ this process, and ask yourself: why twice?
+        // Well, don't be fooled. Both methods are necessary due to the way git pulling is handled: if a project has
+        // never had remote content pulled, but has changes, we move those changes away them copy them back in on top of
+        // the cloned content. Which means we have to be sparing with what we create on the first run, but also need
+        // to create any missing remainders on the second run.
+        cb => {
+          project.skipContentCreation = false;
+          return createProjectFiles(project, cb);
+        },
 
-      (cb) => {
-        return this._git.commitProjectIfChanged('Initialized folder', cb);
-      },
-    ], done);
+        cb => {
+          return this._git.commitProjectIfChanged("Initialized folder", cb);
+        }
+      ],
+      done
+    );
   }
 
   /**
    * @method startProject
    */
   startProject(done) {
-    const loggingPrefix = (done.restart) ? 'restart project' : 'start project';
+    const loggingPrefix = done.restart ? "restart project" : "start project";
 
     logger.info(`[master] ${loggingPrefix}: ${this.folder}`);
 
@@ -769,61 +862,70 @@ export default class Master extends EventEmitter {
     this._git.restart();
 
     return fetchProjectConfigInfo(this.folder, (err, userconfig) => {
-      if(err) {
+      if (err) {
         throw err;
       }
 
       const response = {
-        projectName: userconfig.project,
+        projectName: userconfig.project
       };
 
-      return async.series([
-        // Initialize the ActiveComponent and file models
-        (cb) => {
-          logger.info(`[master] ${loggingPrefix}: setting up project`);
-          return Project.setup(
-            this.folder,
-            'master', // alias
-            this.websocket,
-            {}, // platform
-            userconfig,
-            this.fileOptions,
-            this.envoyOptions,
-            (err, project) => {
-              if(err) {
-                return cb(err);
+      return async.series(
+        [
+          // Initialize the ActiveComponent and file models
+          cb => {
+            logger.info(`[master] ${loggingPrefix}: setting up project`);
+            return Project.setup(
+              this.folder,
+              "master", // alias
+              this.websocket,
+              {}, // platform
+              userconfig,
+              this.fileOptions,
+              this.envoyOptions,
+              (err, project) => {
+                if (err) {
+                  return cb(err);
+                }
+                this.handleProjectReady(project);
+                return cb();
               }
-              this.handleProjectReady(project);
-              return cb();
-            },
-          );
-        },
+            );
+          },
 
-        // Take an initial commit of the starting state so we have a baseline
-        (cb) => {
-          return this._git.commitProjectIfChanged('Project setup', cb);
-        },
+          // Take an initial commit of the starting state so we have a baseline
+          cb => {
+            return this._git.commitProjectIfChanged("Project setup", cb);
+          },
 
-        // Start watching the file system for changes
-        (cb) => {
-          logger.info(`[master] ${loggingPrefix}: initializing file watcher`, this.folder);
-          this.watchOn();
-          logger.info(`[master] ${loggingPrefix}: file watcher is now watching`, this.folder);
-          return cb();
-        },
+          // Start watching the file system for changes
+          cb => {
+            logger.info(
+              `[master] ${loggingPrefix}: initializing file watcher`,
+              this.folder
+            );
+            this.watchOn();
+            logger.info(
+              `[master] ${loggingPrefix}: file watcher is now watching`,
+              this.folder
+            );
+            return cb();
+          },
 
-        // Finish up and signal that we are ready
-        (cb) => {
-          this._isReadyToReceiveMethods = true;
-          logger.info(`[master] ${loggingPrefix}: ready`);
-          return cb(null, response);
-        },
-      ], (err, results) => {
-        if(err) {
-          return done(err);
+          // Finish up and signal that we are ready
+          cb => {
+            this._isReadyToReceiveMethods = true;
+            logger.info(`[master] ${loggingPrefix}: ready`);
+            return cb(null, response);
+          }
+        ],
+        (err, results) => {
+          if (err) {
+            return done(err);
+          }
+          return done(null, results[results.length - 1]);
         }
-        return done(null, results[results.length - 1]);
-      });
+      );
     });
   }
 
@@ -836,266 +938,342 @@ export default class Master extends EventEmitter {
       return done(err, out);
     };
 
-    if(this._isSaving) {
-      logger.info('[master] project save: already in progress! short circuiting');
+    if (this._isSaving) {
+      logger.info(
+        "[master] project save: already in progress! short circuiting"
+      );
       return done();
     }
 
     this._isSaving = true;
 
-    logger.info('[master] project save');
+    logger.info("[master] project save");
 
     // #FIXME: This should be already done (requires moving Master and MasterGitProject into Project handler).
     // Note that we will need to ensure the updates from Creator#updateProjectObject are also synced down.
     this.envoyHandlers.project.setCurrentProject(project);
 
-    return async.series([
-      // Check to see if a save is even necessary, and return early if not
-      (cb) => {
-        return this._git.doesGitHaveChanges((err, doesGitHaveChanges) => {
-          if(err) {
-            return cb(err);
-          }
-          if(doesGitHaveChanges) {
+    return async.series(
+      [
+        // Check to see if a save is even necessary, and return early if not
+        cb => {
+          return this._git.doesGitHaveChanges((err, doesGitHaveChanges) => {
+            if (err) {
+              return cb(err);
+            }
+            if (doesGitHaveChanges) {
+              return cb();
+            }
+
+            this._git.resolveSha().then(sha => {
+              this.envoyHandlers.project
+                .setCurrentSha(sha, /*skipSaveSnapshot=*/ true)
+                .then(() => {
+                  this.envoyHandlers.project
+                    .getSnapshotInfo()
+                    .then(info => {
+                      // If we have info and it indicates publishing entirely succeeded, we can exit early.
+                      if (info.snapshotSyndicated) {
+                        return cb(true, info);
+                      }
+
+                      // Else, we should proceed as if this is the first publish. We might get here if a user tears down
+                      // Master in the middle of publishing, lost connectivity, etc.
+                      cb();
+                    })
+                    .catch(error => {
+                      if (error.message === ErrorCode.ErrorOffline) {
+                        return cb(error);
+                      }
+
+                      // As long as we're online, no worries—just continue saving as usual.
+                      cb();
+                    });
+                });
+            });
+          });
+        },
+
+        cb => {
+          // At this point, we cannot proceed with an inkstone representation of the project.
+          if (!project.local) {
             return cb();
           }
 
-          this._git.resolveSha().then((sha) => {
-            this.envoyHandlers.project.setCurrentSha(
-              sha,
-              /*skipSaveSnapshot=*/true,
-              ).then(() => {
-                this.envoyHandlers.project.getSnapshotInfo().then((info) => {
-                  // If we have info and it indicates publishing entirely succeeded, we can exit early.
-                  if(info.snapshotSyndicated) {
-                    return cb(true, info);
+          this.envoyHandlers.project
+            .createProject(
+              project.projectName,
+              /*allowOffline=*/ false,
+              /*deferCaudexBacking=*/ false
+            )
+            .then(() => cb())
+            .catch(cb);
+        },
+
+        cb => {
+          this.envoyHandlers.project
+            .updateProject(
+              // The user may have opted in to specific privacy settings prior to this step. Calling update
+              // ensures those settings stick on the first publish.
+              project,
+              /*ensureCaudexBacking=*/ true
+            )
+            .then(() => {
+              this._git.reload(project);
+              cb();
+            })
+            .catch(cb);
+        },
+
+        // Write out any enabled exported formats.
+        cb => {
+          // Just in case this ran somehow before the project was initialized
+          if (!this.project) {
+            return cb();
+          }
+
+          // Just in case we haven't initialized any active components yet
+          const acs = this.project.getAllActiveComponents();
+          if (acs.length < 1) {
+            return cb();
+          }
+
+          // Create a fault-tolerant async series to process all requested formats for all components
+          return async.eachSeries(
+            acs,
+            (ac, nextComponent) => {
+              logger.info(
+                `[master] project save: writing exported formats for ${ac.getSceneName()}`
+              );
+              return async.series(
+                [ExporterFormat.Bodymovin, ExporterFormat.HaikuStatic].map(
+                  format => nextFormat => {
+                    let filename;
+                    switch (format) {
+                      case ExporterFormat.Bodymovin:
+                        filename = ac.getAbsoluteLottieFilePath();
+                        break;
+                      case ExporterFormat.HaikuStatic:
+                        filename = ac.getAbsoluteHaikuStaticFilePath();
+                        break;
+                    }
+
+                    return saveExport(
+                      { format, filename, outlet: "cdn" },
+                      ac,
+                      err => {
+                        if (err) {
+                          logger.warn(
+                            `[master] error during export for ${ac.getSceneName()}: ${err.toString()}`
+                          );
+                        }
+
+                        return nextFormat();
+                      }
+                    );
+                  }
+                ),
+                nextComponent
+              );
+            },
+            err => {
+              if (err) {
+                return cb(err);
+              }
+              return cb();
+            }
+          );
+        },
+
+        // Ensure we bump the semver before proceeding.
+        cb => {
+          return this._git.bumpSemverAppropriately(cb);
+        },
+
+        // Populate the bytecode's metadata. This may be a no-op if the file has already been saved
+        cb => {
+          // Just in case this ran somehow before we initialized the project
+          if (!this.project) {
+            return cb();
+          }
+
+          // Just in case we haven't initialized any active components yet
+          const acs = this.project.getAllActiveComponents();
+          if (acs.length < 1) {
+            return cb();
+          }
+
+          return async.eachSeries(
+            acs,
+            (ac, next) => {
+              logger.info(
+                `[master] project save: assigning metadata to ${ac.getSceneName()}`
+              );
+
+              return fetchProjectConfigInfo(
+                ac.fetchActiveBytecodeFile().folder,
+                (err, userconfig) => {
+                  if (err) {
+                    return next(err);
                   }
 
-                  // Else, we should proceed as if this is the first publish. We might get here if a user tears down
-                  // Master in the middle of publishing, lost connectivity, etc.
-                  cb();
-                }).catch((error) => {
-                  if(error.message === ErrorCode.ErrorOffline) {
-                    return cb(error);
+                  // Hack: we shouldn't have to do this. This fixes an odd issue where a forked project with no changes
+                  // does not persist changes from bytecode migration on first publish.
+                  if (
+                    ac.$instance &&
+                    ac.$instance.bytecode !== ac.getReifiedBytecode()
+                  ) {
+                    ac.handleUpdatedBytecode(ac.$instance.bytecode);
                   }
 
-                  // As long as we're online, no worries—just continue saving as usual.
-                  cb();
-                });
+                  return ac.writeMetadata(
+                    userconfig,
+                    this.project.getMetadata(),
+                    err => {
+                      if (err) {
+                        return next(err);
+                      }
+                      return ac
+                        .fetchActiveBytecodeFile()
+                        .awaitNoFurtherContentFlushes(next);
+                    }
+                  );
+                }
+              );
+            },
+            err => {
+              if (err) {
+                return cb(err);
+              }
+              return cb();
+            }
+          );
+        },
+
+        // Build the rest of the content of the folder,
+        cb => {
+          logger.info("[master] project save: populating content");
+          createProjectFiles(project, cb);
+        },
+
+        // Build CDN bundles
+        cb => {
+          logger.info("[master] project save: creating cdn bundle");
+          createCDNBundles(project, cb);
+        },
+
+        cb => {
+          this._git.commitProjectIfChanged("Updated metadata", cb);
+        },
+
+        // Now do all of the git/share/publish/fs operations required for the real save
+        cb => {
+          logger.info("[master] project save: creating snapshot");
+          this._git.saveProject(project, saveOptions, cb);
+        },
+
+        cb => {
+          this._git.resolveSha().then(sha => {
+            this.envoyHandlers.project.setSemver(
+              this._git.folderState.semverVersion
+            );
+            this.envoyHandlers.project
+              .setCurrentSha(sha)
+              .then(() => {
+                // Write out any enabled exported assets.
+                const requests = this.envoyHandlers.project.getExporterAssetRequests(
+                  project
+                );
+                let processedRequests = 0;
+                async.eachSeries(
+                  requests,
+                  (request, next) => {
+                    const savedListener = finishedRequest => {
+                      if (finishedRequest === request) {
+                        this.envoyHandlers.project
+                          .syndicateExporterRequest(request)
+                          .then(() => {
+                            processedRequests++;
+                            if (processedRequests === requests.length) {
+                              this.envoyHandlers.project.markSyndicated();
+                            }
+                          })
+                          .catch(err => {
+                            logger.warn(
+                              "[master] project save: asset syndication failed"
+                            );
+                            logger.warn(err.message);
+                          });
+
+                        removeOneTimeListeners();
+                      }
+                    };
+
+                    const abortListener = abortedRequest => {
+                      if (abortedRequest === request) {
+                        removeOneTimeListeners();
+                      }
+                    };
+
+                    const removeOneTimeListeners = () => {
+                      this.envoyHandlers.exporter.off(
+                        `${EXPORTER_CHANNEL}:saved`,
+                        savedListener
+                      );
+                      this.envoyHandlers.exporter.off(
+                        `${EXPORTER_CHANNEL}:abort`,
+                        abortListener
+                      );
+                    };
+
+                    this.envoyHandlers.exporter.on(
+                      `${EXPORTER_CHANNEL}:saved`,
+                      savedListener
+                    );
+                    this.envoyHandlers.exporter.on(
+                      `${EXPORTER_CHANNEL}:abort`,
+                      abortListener
+                    );
+                    this.envoyHandlers.exporter.save(request);
+                    next();
+                  },
+                  cb
+                );
+              })
+              .catch(err => {
+                return cb(err);
               });
           });
-        });
-      },
+        },
 
-      (cb) => {
-        // At this point, we cannot proceed with an inkstone representation of the project.
-        if(!project.local) {
-          return cb();
+        cb => {
+          this.envoyHandlers.project
+            .getSnapshotInfo()
+            .then(info => {
+              cb(null, info);
+            })
+            .catch(cb);
+        }
+      ],
+      (err, results) => {
+        // async gives back _all_ results from each step
+        if (err && err !== true) {
+          finish(err);
+          return;
         }
 
-        this.envoyHandlers.project.createProject(
-          project.projectName,
-          /*allowOffline=*/false,
-          /*deferCaudexBacking=*/false,
-        ).then(() => cb()).catch(cb);
-      },
+        finish(null, results[results.length - 1]);
 
-      (cb) => {
-        this.envoyHandlers.project.updateProject(
-          // The user may have opted in to specific privacy settings prior to this step. Calling update
-          // ensures those settings stick on the first publish.
-          project,
-          /*ensureCaudexBacking=*/true,
-        ).then(() => {
-          this._git.reload(project);
-          cb();
-        }).catch(cb);
-      },
-
-      // Write out any enabled exported formats.
-      (cb) => {
-        // Just in case this ran somehow before the project was initialized
-        if(!this.project) {
-          return cb();
-        }
-
-        // Just in case we haven't initialized any active components yet
-        const acs = this.project.getAllActiveComponents();
-        if(acs.length < 1) {
-          return cb();
-        }
-
-        // Create a fault-tolerant async series to process all requested formats for all components
-        return async.eachSeries(acs, (ac, nextComponent) => {
-          logger.info(`[master] project save: writing exported formats for ${ac.getSceneName()}`);
-          return async.series([ExporterFormat.Bodymovin, ExporterFormat.HaikuStatic].map((format) => (nextFormat) => {
-            let filename;
-            switch(format) {
-              case ExporterFormat.Bodymovin:
-                filename = ac.getAbsoluteLottieFilePath();
-                break;
-              case ExporterFormat.HaikuStatic:
-                filename = ac.getAbsoluteHaikuStaticFilePath();
-                break;
+        // Silently push results to the remote, unless no push was needed.
+        if (err !== true) {
+          this._git.pushToRemote(err => {
+            if (err) {
+              logger.warn("[master] silent project push failed");
             }
-
-            return saveExport({format, filename, outlet: 'cdn'}, ac, (err) => {
-              if(err) {
-                logger.warn(`[master] error during export for ${ac.getSceneName()}: ${err.toString()}`);
-              }
-
-              return nextFormat();
-            });
-          }), nextComponent);
-        }, (err) => {
-          if(err) {
-            return cb(err);
-          }
-          return cb();
-        });
-      },
-
-      // Ensure we bump the semver before proceeding.
-      (cb) => {
-        return this._git.bumpSemverAppropriately(cb);
-      },
-
-      // Populate the bytecode's metadata. This may be a no-op if the file has already been saved
-      (cb) => {
-        // Just in case this ran somehow before we initialized the project
-        if(!this.project) {
-          return cb();
-        }
-
-        // Just in case we haven't initialized any active components yet
-        const acs = this.project.getAllActiveComponents();
-        if(acs.length < 1) {
-          return cb();
-        }
-
-        return async.eachSeries(acs, (ac, next) => {
-          logger.info(`[master] project save: assigning metadata to ${ac.getSceneName()}`);
-
-          return fetchProjectConfigInfo(ac.fetchActiveBytecodeFile().folder, (err, userconfig) => {
-            if(err) {
-              return next(err);
-            }
-
-            // Hack: we shouldn't have to do this. This fixes an odd issue where a forked project with no changes
-            // does not persist changes from bytecode migration on first publish.
-            if(ac.$instance && ac.$instance.bytecode !== ac.getReifiedBytecode()) {
-              ac.handleUpdatedBytecode(ac.$instance.bytecode);
-            }
-
-            return ac.writeMetadata(
-              userconfig,
-              this.project.getMetadata(),
-              (err) => {
-                if(err) {
-                  return next(err);
-                }
-                return ac.fetchActiveBytecodeFile().awaitNoFurtherContentFlushes(next);
-              },
-            );
           });
-        }, (err) => {
-          if(err) {
-            return cb(err);
-          }
-          return cb();
-        });
-      },
-
-      // Build the rest of the content of the folder,
-      (cb) => {
-        logger.info('[master] project save: populating content');
-        createProjectFiles(project, cb);
-      },
-
-      // Build CDN bundles
-      (cb) => {
-        logger.info('[master] project save: creating cdn bundle');
-        createCDNBundles(project, cb);
-      },
-
-      (cb) => {
-        this._git.commitProjectIfChanged('Updated metadata', cb);
-      },
-
-      // Now do all of the git/share/publish/fs operations required for the real save
-      (cb) => {
-        logger.info('[master] project save: creating snapshot');
-        this._git.saveProject(project, saveOptions, cb);
-      },
-
-      (cb) => {
-        this._git.resolveSha().then((sha) => {
-          this.envoyHandlers.project.setSemver(this._git.folderState.semverVersion);
-          this.envoyHandlers.project.setCurrentSha(sha).then(() => {
-            // Write out any enabled exported assets.
-            const requests = this.envoyHandlers.project.getExporterAssetRequests(project);
-            let processedRequests = 0;
-            async.eachSeries(requests, (request, next) => {
-              const savedListener = (finishedRequest) => {
-                if(finishedRequest === request) {
-                  this.envoyHandlers.project.syndicateExporterRequest(request).then(() => {
-                    processedRequests++;
-                    if(processedRequests === requests.length) {
-                      this.envoyHandlers.project.markSyndicated();
-                    }
-                  }).catch((err) => {
-                    logger.warn('[master] project save: asset syndication failed');
-                    logger.warn(err.message);
-                  });
-
-                  removeOneTimeListeners();
-                }
-              };
-
-              const abortListener = (abortedRequest) => {
-                if(abortedRequest === request) {
-                  removeOneTimeListeners();
-                }
-              };
-
-              const removeOneTimeListeners = () => {
-                this.envoyHandlers.exporter.off(`${EXPORTER_CHANNEL}:saved`, savedListener);
-                this.envoyHandlers.exporter.off(`${EXPORTER_CHANNEL}:abort`, abortListener);
-              };
-
-              this.envoyHandlers.exporter.on(`${EXPORTER_CHANNEL}:saved`, savedListener);
-              this.envoyHandlers.exporter.on(`${EXPORTER_CHANNEL}:abort`, abortListener);
-              this.envoyHandlers.exporter.save(request);
-              next();
-            }, cb);
-          }).catch((err) => {
-            return cb(err);
-          });
-        });
-      },
-
-      (cb) => {
-        this.envoyHandlers.project.getSnapshotInfo().then((info) => {
-          cb(null, info);
-        }).catch(cb);
-      },
-    ], (err, results) => { // async gives back _all_ results from each step
-      if(err && err !== true) {
-        finish(err);
-        return;
+        }
       }
-
-      finish(null, results[results.length - 1]);
-
-      // Silently push results to the remote, unless no push was needed.
-      if(err !== true) {
-        this._git.pushToRemote((err) => {
-          if(err) {
-            logger.warn('[master] silent project push failed');
-          }
-        });
-      }
-    });
+    );
   }
 
   handleProjectReady(project) {
@@ -1110,48 +1288,72 @@ export default class Master extends EventEmitter {
     // and ensure that the action stack is no longer in a 'stopped' state
     this.project.actionStack.resetData();
 
-    this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'update', (what, ...args) => {
-      // logger.info(`[master] local update ${what}`)
+    this.addEmitterListenerIfNotAlreadyRegistered(
+      this.project,
+      "update",
+      (what, ...args) => {
+        // logger.info(`[master] local update ${what}`)
 
-      switch(what) {
-        case 'setCurrentActiveComponent': return this.handleActiveComponentReady();
-        case 'application-mounted': return this.handleHaikuComponentMounted();
-        default: return null;
-      }
-    });
-
-    this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'remote-update', (what, ...args) => {
-      // logger.info(`[master] remote update ${what}`)
-
-      switch(what) {
-        case 'setCurrentActiveComponent': return this.handleActiveComponentReady();
-        default: return null;
-      }
-    });
-
-    this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'envoy:timelineClientReady', (timelineChannel) => {
-      timelineChannel.on('didSeek', ({frame}) => {
-        const ac = this.project.getCurrentActiveComponent();
-        if(ac) {
-          ac.setCurrentTimelineFrameValue(frame);
+        switch (what) {
+          case "setCurrentActiveComponent":
+            return this.handleActiveComponentReady();
+          case "application-mounted":
+            return this.handleHaikuComponentMounted();
+          default:
+            return null;
         }
-      });
-    });
+      }
+    );
+
+    this.addEmitterListenerIfNotAlreadyRegistered(
+      this.project,
+      "remote-update",
+      (what, ...args) => {
+        // logger.info(`[master] remote update ${what}`)
+
+        switch (what) {
+          case "setCurrentActiveComponent":
+            return this.handleActiveComponentReady();
+          default:
+            return null;
+        }
+      }
+    );
+
+    this.addEmitterListenerIfNotAlreadyRegistered(
+      this.project,
+      "envoy:timelineClientReady",
+      timelineChannel => {
+        timelineChannel.on("didSeek", ({ frame }) => {
+          const ac = this.project.getCurrentActiveComponent();
+          if (ac) {
+            ac.setCurrentTimelineFrameValue(frame);
+          }
+        });
+      }
+    );
 
     this.project.broadcastPayload({
-      name: 'project-state-change',
-      what: 'project:ready',
+      name: "project-state-change",
+      what: "project:ready"
     });
   }
 
   handleActiveComponentReady() {
-    if(!this.exporterListener) {
+    if (!this.exporterListener) {
       this.awaitActiveComponent((_, ac) => {
-        if(ac.getSceneName() !== 'main') {
+        if (ac.getSceneName() !== "main") {
           return;
         }
-        this.exporterListener = getExporterListener(this.envoyHandlers.exporter, ac, this._git);
-        this.envoyHandlers.exporter.on(`${EXPORTER_CHANNEL}:save`, this.exporterListener);
+        this.exporterListener = getExporterListener(
+          this.envoyHandlers.exporter,
+          ac,
+          this._git
+        );
+        this.envoyHandlers.exporter.on(
+          `${EXPORTER_CHANNEL}:save`,
+          this.exporterListener
+        );
         this.mountHaikuComponent();
       });
     }
@@ -1159,13 +1361,13 @@ export default class Master extends EventEmitter {
 
   mountHaikuComponent() {
     this.getActiveComponent().mountApplication(null, {
-      freeze: true,
+      freeze: true
     });
   }
 
   awaitActiveComponent(cb) {
     const ac = this.getActiveComponent();
-    if(!ac) {
+    if (!ac) {
       return setTimeout(() => this.awaitActiveComponent(cb), 100);
     }
     return cb(null, ac);
@@ -1174,13 +1376,13 @@ export default class Master extends EventEmitter {
   handleHaikuComponentMounted() {
     return this.awaitActiveComponent(() => {
       // Since we aren't running in the DOM cancel the raf to avoid leaked handles
-      HaikuComponent.all().forEach((instance) => {
+      HaikuComponent.all().forEach(instance => {
         instance.context.clock.GLOBAL_ANIMATION_HARNESS.cancel();
       });
 
       this.project.broadcastPayload({
-        name: 'project-state-change',
-        what: 'component:mounted',
+        name: "project-state-change",
+        what: "component:mounted"
       });
     });
   }
@@ -1188,10 +1390,12 @@ export default class Master extends EventEmitter {
 
 const COMMITTABLE_METHODS = {
   deleteComponents: (relpath, [_, componentIds]) => {
-    return `Deleted ${componentIds.join(', ')} from ${relpath}`;
+    return `Deleted ${componentIds.join(", ")} from ${relpath}`;
   },
   conglomerateComponent: (relpath, [_, componentIds, name]) => {
-    return `Created component ${name} from ${componentIds.join(', ')} in ${relpath}`;
+    return `Created component ${name} from ${componentIds.join(
+      ", "
+    )} in ${relpath}`;
   },
   instantiateComponent: (relpath, [_, componentRelpath]) => {
     return `Instantiated ${componentRelpath} in ${relpath}`;
@@ -1199,25 +1403,49 @@ const COMMITTABLE_METHODS = {
   batchUpsertEventHandlers: (relpath, [_, selectorName]) => {
     return `Edited ${selectorName} actions in ${relpath}`;
   },
-  changeKeyframeValue: (relpath, [_, componentId, timelineName, propertyName, keyframeMs]) => {
+  changeKeyframeValue: (
+    relpath,
+    [_, componentId, timelineName, propertyName, keyframeMs]
+  ) => {
     return `Changed keyframe ${componentId} ${propertyName} ${keyframeMs} in ${relpath}`;
   },
-  changeSegmentCurve: (relpath, [_, componentId, timelineName, propertyName, keyframeMs, curve]) => {
+  changeSegmentCurve: (
+    relpath,
+    [_, componentId, timelineName, propertyName, keyframeMs, curve]
+  ) => {
     return `Changed curve on ${componentId} ${propertyName} ${keyframeMs} to ${curve} in ${relpath}`;
   },
-  createKeyframe: (relpath, [_, componentId, timelineName, elementName, propertyName, keyframeMs]) => {
+  createKeyframe: (
+    relpath,
+    [_, componentId, timelineName, elementName, propertyName, keyframeMs]
+  ) => {
     return `Created keyframe for ${componentId} ${propertyName} ${keyframeMs}`;
   },
-  deleteKeyframe: (relpath, [_, componentId, timelineName, propertyName, keyframeMs]) => {
+  deleteKeyframe: (
+    relpath,
+    [_, componentId, timelineName, propertyName, keyframeMs]
+  ) => {
     return `Deleted keyframe ${componentId} ${propertyName} ${keyframeMs} from ${relpath}`;
   },
   deleteStateValue: (relpath, [_, stateName]) => {
     return `Deleted state ${stateName} from ${relpath}`;
   },
   groupElements: (relpath, [_, componentIds]) => {
-    return `Grouped ${componentIds.join(', ')} in ${relpath}`;
+    return `Grouped ${componentIds.join(", ")} in ${relpath}`;
   },
-  joinKeyframes: (relpath, [_, componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurve]) => {
+  joinKeyframes: (
+    relpath,
+    [
+      _,
+      componentId,
+      timelineName,
+      elementName,
+      propertyName,
+      keyframeMsLeft,
+      keyframeMsRight,
+      newCurve
+    ]
+  ) => {
     return `Added ${newCurve} tween to ${componentId} ${propertyName} ${keyframeMsLeft} in ${relpath}`;
   },
   moveKeyframes: (relpath, [_]) => {
@@ -1226,13 +1454,16 @@ const COMMITTABLE_METHODS = {
   pasteThings: (relpath, [_]) => {
     return `Pasted content in ${relpath}`;
   },
-  popBytecodeSnapshot: (relpath) => {
+  popBytecodeSnapshot: relpath => {
     return `Reloaded code snapshot for ${relpath}`;
   },
   setTitleForComponent: (relpath, [_, componentId, newTitle]) => {
     return `Set title for ${componentId} to ${newTitle} in ${relpath}`;
   },
-  splitSegment: (relpath, [_, componentId, timelineName, elementName, propertyName, keyframeMs]) => {
+  splitSegment: (
+    relpath,
+    [_, componentId, timelineName, elementName, propertyName, keyframeMs]
+  ) => {
     return `Removed tween from ${componentId} ${propertyName} ${keyframeMs} in ${relpath}`;
   },
   ungroupElements: (relpath, [_, componentId]) => {
@@ -1256,11 +1487,17 @@ const COMMITTABLE_METHODS = {
   zMoveToFront: (relpath, [_, componentId]) => {
     return `Moved ${componentId} to the front in ${relpath}`;
   },
-  zShiftIndices: (relpath, [_, componentId, timelineName, timelineTime, newIndex]) => {
+  zShiftIndices: (
+    relpath,
+    [_, componentId, timelineName, timelineTime, newIndex]
+  ) => {
     return `Shifted z-index of ${componentId} to ${newIndex} in ${relpath}`;
-  },
+  }
 };
 
-const changeToCommitMessage = (relpath, {method, params, metadata, timestamp}) => {
+const changeToCommitMessage = (
+  relpath,
+  { method, params, metadata, timestamp }
+) => {
   return COMMITTABLE_METHODS[method](relpath, params);
 };

@@ -1,16 +1,23 @@
-import {HaikuBytecode} from '@haiku/core/lib/api';
-import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
+import { HaikuBytecode } from "@haiku/core/lib/api/index.js";
+import {
+  ExporterFormat,
+  ExporterRequest
+} from "haiku-sdk-creator/lib/exporter/index.js";
 
-import {BodymovinExporter} from './bodymovin/bodymovinExporter';
-import {GifExporter} from './gif/gifExporter';
-import {HaikuStaticExporter} from './haikuStatic/haikuStaticExporter';
-import {VideoExporter} from './video/videoExporter';
+import { BodymovinExporter } from "./bodymovin/bodymovinExporter";
+import { GifExporter } from "./gif/gifExporter";
+import { HaikuStaticExporter } from "./haikuStatic/haikuStaticExporter";
+import { VideoExporter } from "./video/videoExporter";
 
 export interface ExporterInterface {
-  writeToFile (filename: string|Buffer, framerate?: number): Promise<void>;
+  writeToFile(filename: string | Buffer, framerate?: number): Promise<void>;
 }
 
-const getExporter = (request: ExporterRequest, bytecode: HaikuBytecode, componentFolder: string): ExporterInterface => {
+const getExporter = (
+  request: ExporterRequest,
+  bytecode: HaikuBytecode,
+  componentFolder: string
+): ExporterInterface => {
   switch (request.format) {
     case ExporterFormat.Bodymovin:
       return new BodymovinExporter(bytecode, componentFolder);
@@ -26,7 +33,9 @@ const getExporter = (request: ExporterRequest, bytecode: HaikuBytecode, componen
 };
 
 export const handleExporterSaveRequest = async (
-  request: ExporterRequest, bytecode: HaikuBytecode, componentFolder: string,
+  request: ExporterRequest,
+  bytecode: HaikuBytecode,
+  componentFolder: string
 ): Promise<void> => {
   const exporter = getExporter(request, bytecode, componentFolder);
   return exporter.writeToFile(request.filename, request.framerate);

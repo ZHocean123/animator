@@ -1,16 +1,16 @@
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import { shouldEmitErrors } from "haiku-common/lib/environments/index.js";
 // @ts-ignore
-import {HOMEDIR_CRASH_REPORTS_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import {basename, join} from 'path';
-import {crashReportFork} from '../dal/Carbonite';
-import {MaybeAsync} from '../envoy';
-import EnvoyHandler from '../envoy/EnvoyHandler';
-import generateUUIDv4 from '../utils/generateUUIDv4';
+import { HOMEDIR_CRASH_REPORTS_PATH } from "haiku-serialization/src/utils/HaikuHomeDir.js";
+import { basename, join } from "path";
+import { crashReportFork } from "../dal/Carbonite";
+import { MaybeAsync } from "../envoy";
+import EnvoyHandler from "../envoy/EnvoyHandler";
+import generateUUIDv4 from "../utils/generateUUIDv4";
 
-export const ERROR_CHANNEL = 'error';
+export const ERROR_CHANNEL = "error";
 
 const UPLOAD_INTERVAL = 10;
-const AWS_S3_HOST = 'http://support.haiku.ai.s3-us-west-2.amazonaws.com';
+const AWS_S3_HOST = "http://support.haiku.ai.s3-us-west-2.amazonaws.com";
 
 export interface CrashMetadata {
   zipPath: string;
@@ -35,13 +35,20 @@ export interface SentryCallbackData {
   culprit?: string;
 }
 
-const getErrorMetadata = (data: SentryCallbackData): {message: string; culprit?: string} => ({
-  message: (data.exception && (data.exception as any)[0] && (data.exception as any)[0].value) || 'Unknown',
-  culprit: data.culprit,
+const getErrorMetadata = (
+  data: SentryCallbackData
+): { message: string; culprit?: string } => ({
+  message:
+    (data.exception &&
+      (data.exception as any)[0] &&
+      (data.exception as any)[0].value) ||
+    "Unknown",
+  culprit: data.culprit
 });
 
 // Returns true iff a culprit is from a local component file.
-export const isUserlandCulprit = (culprit: string): boolean => !!culprit && basename(culprit) === 'code.js';
+export const isUserlandCulprit = (culprit: string): boolean =>
+  !!culprit && basename(culprit) === "code.js";
 
 export class SentryReporter {
   /**
@@ -54,8 +61,8 @@ export class SentryReporter {
   /**
    * Attaches carbonite data to an SentryExtraData payload and freezes the data.
    */
-  freezeInCarbonite (data: SentryCallbackData, emit = true): string | undefined {
-    const {organizationName, projectName, projectPath} = data.extra;
+  freezeInCarbonite(data: SentryCallbackData, emit = true): string | undefined {
+    const { organizationName, projectName, projectPath } = data.extra;
     if (organizationName && projectName && projectPath) {
       const timestamp = generateUUIDv4();
       const zipName = `${projectName}-${timestamp}.zip`;
@@ -71,8 +78,8 @@ export class SentryReporter {
           zipName,
           zipPath,
           uniqueId,
-          finalUrl,
-        ),
+          finalUrl
+        )
       );
 
       return finalUrl;
@@ -83,7 +90,7 @@ export class SentryReporter {
    * Sentry callback for Node and JS clients. If an error handler is bound, attach a carbonite URL (if appropriate)
    * and emit.
    */
-  callback (data: SentryCallbackData, emit = true): SentryCallbackData {
+  callback(data: SentryCallbackData, emit = true): SentryCallbackData {
     if (!this.envoy) {
       return data;
     }
@@ -105,22 +112,25 @@ export class SentryReporter {
 export class ErrorHandler extends EnvoyHandler {
   private lastUploadTime: number;
 
-  get shouldSendCrashReport (): boolean {
-    return !this.lastUploadTime || Date.now() >= UPLOAD_INTERVAL * 60000 + this.lastUploadTime;
+  get shouldSendCrashReport(): boolean {
+    return (
+      !this.lastUploadTime ||
+      Date.now() >= UPLOAD_INTERVAL * 60000 + this.lastUploadTime
+    );
   }
 
-  clearLastUploadTime (): MaybeAsync<void> {
+  clearLastUploadTime(): MaybeAsync<void> {
     this.lastUploadTime = undefined;
   }
 
-  crashReport (
+  crashReport(
     emit: boolean,
     data: SentryCallbackData,
     projectPath?: string,
     zipName?: string,
     zipPath?: string,
     uniqueId?: string,
-    finalUrl?: string,
+    finalUrl?: string
   ): MaybeAsync<void> {
     if (projectPath && this.shouldSendCrashReport) {
       this.lastUploadTime = Date.now();
@@ -128,8 +138,8 @@ export class ErrorHandler extends EnvoyHandler {
       crashReportFork(projectPath, zipName, zipPath, finalUrl);
       if (emit) {
         this.server.emit(ERROR_CHANNEL, {
-          payload: {uniqueId, ...getErrorMetadata(data)},
-          name: `${ERROR_CHANNEL}:error`,
+          payload: { uniqueId, ...getErrorMetadata(data) },
+          name: `${ERROR_CHANNEL}:error`
         });
       }
 
@@ -139,7 +149,7 @@ export class ErrorHandler extends EnvoyHandler {
     if (emit) {
       this.server.emit(ERROR_CHANNEL, {
         payload: getErrorMetadata(data),
-        name: `${ERROR_CHANNEL}:error`,
+        name: `${ERROR_CHANNEL}:error`
       });
     }
   }
