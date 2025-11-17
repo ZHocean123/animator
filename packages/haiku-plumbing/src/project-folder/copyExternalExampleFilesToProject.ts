@@ -2,12 +2,16 @@
 import * as fse from 'fs-extra';
 import * as path from 'path';
 import {getResourcesPath} from './getResourcesPath';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
 const getTemplateDesignFilesPath = () => {
   if (process.env.NODE_ENV === 'production') {
     return path.join(getResourcesPath(), 'template-design-files');
   }
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
   return path.join(__dirname, '../../', 'bins');
 };
 

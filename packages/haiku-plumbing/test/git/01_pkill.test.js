@@ -2,11 +2,15 @@ import * as tape from 'tape';
 import * as path from 'path';
 import * as cp from 'child_process';
 import TestHelpers from '../TestHelpers';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
 tape('git.pkill', (t) => {
   t.plan(1);
   TestHelpers.tmpdir((folder, teardown) => {
     process.env.GIT_PKILL_DIR = folder;
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
     const PROC_FILE = path.join(__dirname, 'git1.js');
     const proc = cp.fork(
       './node_modules/.bin/ts-node',

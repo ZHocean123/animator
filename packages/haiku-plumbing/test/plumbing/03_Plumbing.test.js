@@ -4,7 +4,11 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import TestHelpers from '../TestHelpers';
 import {stubProperties} from 'haiku-testing/lib/mock';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const DEF_SVG_1 = path.join(__dirname, '..', 'fixtures', 'files', 'designs', 'bef', 'Default.svg');
 tape('Plumbing', (test) => {
   TestHelpers.setup((folder, creator, glass, timeline, teardown, plumbing) => {

@@ -6,6 +6,7 @@ import {parse} from 'url';
 import {inherits} from 'util';
 
 import {BrowserWindow, app, ipcMain, protocol, systemPreferences, session} from 'electron';
+import {dialog} from 'electron';
 import * as ElectronProxyAgent from 'electron-proxy-agent';
 import * as qs from 'qs';
 
@@ -19,6 +20,9 @@ import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {isMac, isWindows} from 'haiku-common/lib/environments/os';
 import _ from 'lodash-es';
 import { writeJSON } from 'fs-extra';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
+import {autoUpdater} from 'electron-updater';
 
 if (!app) {
   throw new Error('You can only run electron.js from an electron process');
@@ -27,7 +31,8 @@ if (!app) {
 app.setName('Haiku Animator');
 app.setAsDefaultProtocolClient('haiku');
 
-const {dialog} = require('electron');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 //////////
 //BEGIN HACK:  take over the electron process, patch user through a sequence of dialogs to
@@ -306,7 +311,6 @@ function windowsCheckForUpdates () {
     return;
   }
 
-  const {autoUpdater} = require('electron-updater');
   autoUpdater.setFeedURL('https://releases.haiku.ai/releases/');
   autoUpdater.checkForUpdates().then(({downloadPromise}) => {
     if (downloadPromise == null) {
@@ -315,7 +319,6 @@ function windowsCheckForUpdates () {
 
     downloadPromise
       .then(() => {
-        const dialog = require('electron').dialog;
         const userResponse = dialog.showMessageBox({
           type: 'none',
           message:
@@ -349,6 +352,4 @@ if (app.isReady()) {
 
 // Hacky: When plumbing launches inside an Electron process it expects an EventEmitter-like
 // object as the export, so we expose this here even though it doesn't do much
-module.exports = {
-  default: creator,
-};
+export default creator;

@@ -10,7 +10,11 @@ import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as Git from './Git';
 import * as Lock from 'haiku-serialization/src/bll/Lock';
 import {semverBumpPackageJson} from './project-folder/semverBumpPackageJson';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const PLUMBING_PKG_PATH = path.join(__dirname, '..');
 const PLUMBING_PKG_JSON_PATH = path.join(PLUMBING_PKG_PATH, 'package.json');
 const MAX_SEMVER_TAG_ATTEMPTS = 100;

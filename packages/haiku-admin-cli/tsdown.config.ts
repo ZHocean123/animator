@@ -3,8 +3,8 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   entry: ['src/**/*.(t|j)s'],
   outDir: 'lib',
-  format: ['cjs'],
+  format: ['esm'],
   clean: true,
   dts: false,
-  target: 'ES2020'
+  target: 'ES2022'
 })

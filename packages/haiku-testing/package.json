@@ -2,6 +2,7 @@
   "name": "haiku-testing",
   "version": "5.1.2",
   "description": "Testing utilities for Haiku.",
+  "type": "module",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib"

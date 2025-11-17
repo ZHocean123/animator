@@ -3,12 +3,16 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import * as path from 'path';
 import TopMenu from 'haiku-common/lib/electron/TopMenu';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
 /**
  * This file is bypassed when loaded in the full app.
  * This is only used as a harness for developin on glass standalone.
  */
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 let url = `file://${path.join(__dirname, '..', 'index.html')}`;
 
 const params = {

@@ -2,6 +2,8 @@ import * as path from 'path';
 
 import * as qs from 'qs';
 import {app, BrowserWindow, ipcMain} from 'electron';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
 import TopMenu from 'haiku-common/lib/electron/TopMenu';
 
@@ -26,6 +28,8 @@ if (process.env.MOCK_ENVOY) {
 
 const query = qs.stringify(params);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const url = `file://${path.join(__dirname, '..', 'index.html')}?${query}`;
 
 let mainWindow = null;

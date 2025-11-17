@@ -2,6 +2,7 @@
   "name": "haiku-admin-cli",
   "version": "5.1.2",
   "description": "Haiku Admin CLI",
+  "type": "module",
   "main": "lib/index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.all.json -t stylish",

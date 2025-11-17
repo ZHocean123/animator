@@ -1,7 +1,11 @@
 import * as os from 'os';
 import * as path from 'path';
 import {Application} from 'spectron';
+import {fileURLToPath} from 'node:url';
+import {dirname} from 'node:path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const PLUMBING_ROOT = path.resolve(path.join(__dirname, '..'));
 const MONO_ROOT = path.resolve(path.join(PLUMBING_ROOT, '..', '..'));
 const BLANK_PROJECT_ROOT = path.join(PLUMBING_ROOT, 'test/fixtures/projects/blank-project');

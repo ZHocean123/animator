@@ -1,6 +1,7 @@
 {
   "name": "haiku-timeline",
   "version": "5.1.2",
+  "type": "module",
   "private": true,
   "license": "UNLICENSED",
   "authors": [

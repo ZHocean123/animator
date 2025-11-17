@@ -8,6 +8,7 @@
     "Taylor Poe <taylor@haiku.ai>"
   ],
   "license": "UNLICENSED",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.all.json -t stylish",

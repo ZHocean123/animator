@@ -2,6 +2,7 @@
   "name": "@haiku/sdk-client",
   "version": "5.1.2",
   "description": "Haiku SDK for Client",
+  "type": "module",
   "main": "lib/index.js",
   "scripts": {
     "lint": "tslint -p tsconfig.all.json -t stylish",
@@ -19,6 +20,13 @@
   "author": "Zack Brown <zack@haiku.ai>",
   "license": "UNLICENSED",
   "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./lib/*": "./lib/*"
+  },
   "dependencies": {
     "@haiku/sdk-inkstone": "workspace:*",
     "dedent": "^0.7.0",

@@ -3,10 +3,10 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   entry: ['src/**/*.(ts|tsx|jsx)'],
   outDir: 'lib',
-  format: ['cjs'],
+  format: ['esm'],
   clean: true,
   dts: false,
-  target: 'ES2020',
+  target: 'ES2022',
   external: [
     // '@haiku/core',
     'haiku-common',

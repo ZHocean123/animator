@@ -4,6 +4,7 @@
   "private": true,
   "version": "5.1.2",
   "description": "Haiku Creator UI",
+  "type": "module",
   "main": "index.js",
   "author": "Matthew Trost <matthew@haiku.ai>",
   "license": "PROPRIETARY",

@@ -2,6 +2,7 @@
   "name": "haiku-serialization",
   "version": "5.1.2",
   "description": "Serialization utilities",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "pnpm test:all",

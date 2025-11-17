@@ -2,6 +2,7 @@
   "name": "haiku-formats",
   "version": "5.1.2",
   "description": "Formatting-related utilities for Haiku.",
+  "type": "module",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib"

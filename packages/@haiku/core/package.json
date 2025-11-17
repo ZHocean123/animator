@@ -20,6 +20,7 @@
     "engine"
   ],
   "repository": "https://github.com/HaikuTeam/core",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "lint": "tslint --exclude 'src/vendor/**' -p tsconfig.all.json -t stylish",

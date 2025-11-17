@@ -9,6 +9,7 @@ import * as net from 'net';
 import * as qs from 'qs';
 import * as WebSocket from 'ws';
 import {EventEmitter} from 'events';
+import {fileURLToPath} from 'node:url';
 import EnvoyServer from 'haiku-sdk-creator/lib/envoy/EnvoyServer';
 import EnvoyLogger from 'haiku-sdk-creator/lib/envoy/EnvoyLogger';
 import {EXPORTER_CHANNEL, ExporterHandler} from 'haiku-sdk-creator/lib/exporter';
@@ -85,6 +86,7 @@ const HAIKU_DEFAULTS = {
   },
 };
 
+const __filename = fileURLToPath(import.meta.url);
 const PINFO = `${process.pid} ${path.basename(__filename)} ${path.basename(process.execPath)}`;
 
 const PLUMBING_INSTANCES = [];
