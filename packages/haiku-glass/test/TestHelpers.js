@@ -1,11 +1,11 @@
-import {JSDOM} from 'jsdom';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { createRoot } from 'react-dom/client';
-import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
+import { JSDOM } from "jsdom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
+import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.js";
 
 export default class TestHelpers {
-  static awaitElementById (window, id, cb) {
+  static awaitElementById(window, id, cb) {
     const found = window.document.getElementById(id);
     if (found) {
       return cb(null, found);
@@ -13,7 +13,7 @@ export default class TestHelpers {
     return setTimeout(() => TestHelpers.awaitElementById(window, id, cb), 1000);
   }
 
-  static createDOM (folder, cb) {
+  static createDOM(folder, cb) {
     const html = `
       <!doctype html>
       <html style="width: 100%; height: 100%;">
@@ -23,7 +23,7 @@ export default class TestHelpers {
         </body>
       </html>`;
     const dom = new JSDOM(html, {
-      url: 'http://localhost:3000?folder=' + folder,
+      url: "http://localhost:3000?folder=" + folder
     });
     const win = dom.window;
     global.window = win;
@@ -39,7 +39,7 @@ export default class TestHelpers {
       }
       global[key] = window[key];
     }
-    win.requestAnimationFrame = function requestAnimationFrame (fn) {
+    win.requestAnimationFrame = function requestAnimationFrame(fn) {
       return setTimeout(fn, 32);
     };
     const teardown = () => {
@@ -50,26 +50,34 @@ export default class TestHelpers {
     return cb(null, win, teardown);
   }
 
-  static createApp (folder, cb) {
+  static createApp(folder, cb) {
     return TestHelpers.createDOM(folder, (err, win, teardown) => {
       if (err) {
         throw err;
       }
       // tslint:disable-next-line:variable-name
-      const Glass = require('@glass/react/Glass').default;
+      const Glass = require("@glass/react/Glass").default;
       return fetchProjectConfigInfo(folder, (fetchErr, userconfig) => {
         if (fetchErr) {
           throw fetchErr;
         }
-        const websocket = {on: () => {}, send: () => {}, method: () => {}, request: () => {}, action: () => {}, connect: () => {}};
+        const websocket = {
+          on: () => {},
+          send: () => {},
+          method: () => {},
+          request: () => {},
+          action: () => {},
+          connect: () => {}
+        };
         const root = createRoot({
-            userconfig,
-            websocket,
-            folder,
-            envoy: {mock: true},
-          });
-  root.render(React.createElement(Glass),
-          document.getElementById('root'),
+          userconfig,
+          websocket,
+          folder,
+          envoy: { mock: true }
+        });
+        root.render(
+          React.createElement(Glass),
+          document.getElementById("root")
         );
         return cb(window.timeline, window, teardown);
       });

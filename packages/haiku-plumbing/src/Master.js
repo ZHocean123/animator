@@ -26,7 +26,7 @@ import MasterModuleProject from "./MasterModuleProject";
 import getExporterListener from "./envoy/getExporterListener";
 import Raven from "./Raven";
 import saveExport from "./publish-hooks/saveExport";
-import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
 import {
   ExporterFormat,
   EXPORTER_CHANNEL

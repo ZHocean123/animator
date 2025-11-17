@@ -5,7 +5,7 @@ import {
   getSafeProjectName,
   UNDERSCORE,
   WHITESPACE_REGEX
-} from "@haiku/sdk-client/lib/ProjectDefinitions";
+} from "@haiku/sdk-client/lib/ProjectDefinitions.js";
 import { inkstone } from "@haiku/sdk-inkstone";
 import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors";
 import { requestInstance } from "@haiku/sdk-inkstone/lib/transport";

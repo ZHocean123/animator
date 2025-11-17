@@ -43,7 +43,7 @@ import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
 import { awaitAllLocksFree } from "haiku-serialization/src/bll/Lock.js";
 import Master from "./Master.js";
-import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
 import {
   copyDefaultSketchFile,
   copyDefaultIllustratorFile
@@ -383,7 +383,7 @@ export default class Plumbing extends EventEmitter {
             } else if (process.versions && !!process.versions.electron) {
               // We are in electron main (e.g. in a test context).
               global.process.env.HAIKU_ENV = JSON.stringify(haiku);
-              import("haiku-creator/lib/electron");
+              import("haiku-creator/src/electron.js");
             }
           }
 

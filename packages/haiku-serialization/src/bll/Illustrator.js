@@ -1,15 +1,15 @@
-const {execSync} = require('child_process');
-const fse = require('haiku-fs-extra');
-const {isMac, isWindows} = require('haiku-common/lib/environments/os');
-const logger = require('../utils/LoggerInstance');
-const {stringifyPath} = require('../utils/fileManipulation');
-const os = require('os');
-const uuid = require('uuid');
-const path = require('path');
+const { execSync } = require("child_process");
+const fse = require("haiku-fs-extra");
+const { isMac, isWindows } = require("haiku-common/lib/environments/os.js");
+const logger = require("../utils/LoggerInstance");
+const { stringifyPath } = require("../utils/fileManipulation");
+const os = require("os");
+const uuid = require("uuid");
+const path = require("path");
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/;
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/;
-let cachedWindowsInstallPath =  null;
+let cachedWindowsInstallPath = null;
 
 /**
  * This template script runs inside Illustrator and perform the export of the
@@ -60,7 +60,7 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static isIllustratorFile (abspath) {
+  static isIllustratorFile(abspath) {
     return abspath.match(IS_ILLUSTRATOR_FILE_RE);
   }
 
@@ -70,7 +70,7 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static isIllustratorFolder (abspath) {
+  static isIllustratorFolder(abspath) {
     return !!abspath && abspath.match(IS_ILLUSTRATOR_FOLDER_RE);
   }
 
@@ -79,32 +79,32 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static importSVG ({abspath, tryToOpenFile}) {
+  static importSVG({ abspath, tryToOpenFile }) {
     if (!Illustrator.isIllustratorFile(abspath)) {
       return false;
     }
 
-    logger.info('[illustrator] got', abspath);
+    logger.info("[illustrator] got", abspath);
 
     const assetBaseFolder = `${abspath}.contents`;
-    const artboardFolder = path.join(assetBaseFolder, 'artboards/');
+    const artboardFolder = path.join(assetBaseFolder, "artboards/");
 
     fse.emptyDirSync(assetBaseFolder);
     fse.mkdirpSync(artboardFolder);
 
-    logger.info('[illustrator] running commands');
+    logger.info("[illustrator] running commands");
 
     // We need to create a temporary Illustrator script file with the contents of
     // EXPORTER_SCRIPT to perform the export, this is an attempt to obscure the
     // file name to reduce the chances of an attacker modifying the contents of this
     // file before being executed.
     const tmpdir = os.tmpdir();
-    const fileName = uuid.v4() + '.jsx';
+    const fileName = uuid.v4() + ".jsx";
     const exportScriptPath = path.join(tmpdir, fileName);
-    const exportScript =
-      EXPORTER_SCRIPT
-        .replace('DESTINATION_PATH', stringifyPath(artboardFolder))
-        .replace('SOURCE_PATH', stringifyPath(abspath));
+    const exportScript = EXPORTER_SCRIPT.replace(
+      "DESTINATION_PATH",
+      stringifyPath(artboardFolder)
+    ).replace("SOURCE_PATH", stringifyPath(abspath));
 
     fse.writeFileSync(exportScriptPath, exportScript);
 
@@ -120,7 +120,7 @@ class Illustrator {
     return true;
   }
 
-  static openIllustratorFile (file) {
+  static openIllustratorFile(file) {
     if (isMac()) {
       return `open -g -b com.adobe.Illustrator ${file}`;
     }
@@ -130,7 +130,7 @@ class Illustrator {
     }
   }
 
-  static getWindowsIllustratorPath () {
+  static getWindowsIllustratorPath() {
     if (cachedWindowsInstallPath) {
       return cachedWindowsInstallPath;
     }
@@ -138,21 +138,23 @@ class Illustrator {
     let illustratorPath;
 
     try {
-      const installedApplications =
-        execSync('reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s')
-        .toString();
+      const installedApplications = execSync(
+        'reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s'
+      ).toString();
 
       illustratorPath = installedApplications
-        .split('\n')
-        .find((record) => record.includes('Illustrator') && record.includes('Default'))
+        .split("\n")
+        .find(
+          record => record.includes("Illustrator") && record.includes("Default")
+        )
         .match(/([a-zA-Z]\:.+)/g)[0];
     } catch (error) {
-      logger.info('[illustrator] error finding Illustrator: ', error);
+      logger.info("[illustrator] error finding Illustrator: ", error);
       return;
     }
 
     if (!illustratorPath) {
-      logger.info('[illustrator] unable to find an Illustrator installation');
+      logger.info("[illustrator] unable to find an Illustrator installation");
       return;
     }
 

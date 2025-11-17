@@ -1,19 +1,22 @@
-const fse = require('haiku-fs-extra');
-const path = require('path');
-const async = require('async');
-const WebSocket = require('ws');
-import * as lodash from 'lodash-es';
-const jss = require('json-stable-stringify');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
-const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default;
-const EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default;
-const {GLASS_CHANNEL} = require('haiku-sdk-creator/lib/glass');
-const logger = require('./../utils/LoggerInstance');
-const BaseModel = require('./BaseModel');
-const {InteractionMode} = require('@haiku/core/lib/helpers/interactionModes');
-const toTitleCase = require('./helpers/toTitleCase');
-import * as Lock from './Lock.js';
-const ActionStack = require('./ActionStack');
+const fse = require("haiku-fs-extra");
+const path = require("path");
+const async = require("async");
+const WebSocket = require("ws");
+import * as lodash from "lodash-es";
+const jss = require("json-stable-stringify");
+const {
+  Experiment,
+  experimentIsEnabled
+} = require("haiku-common/lib/experiments");
+const EnvoyClient = require("haiku-sdk-creator/lib/envoy/EnvoyClient").default;
+const EnvoyLogger = require("haiku-sdk-creator/lib/envoy/EnvoyLogger").default;
+const { GLASS_CHANNEL } = require("haiku-sdk-creator/lib/glass");
+const logger = require("./../utils/LoggerInstance");
+const BaseModel = require("./BaseModel");
+const { InteractionMode } = require("@haiku/core/lib/helpers/interactionModes");
+const toTitleCase = require("./helpers/toTitleCase");
+import * as Lock from "./Lock.js";
+const ActionStack = require("./ActionStack");
 const {
   getSafeProjectName,
   getProjectNameSafeShort,
@@ -22,12 +25,12 @@ const {
   getReactProjectName,
   getProjectNameLowerCase,
   readPackageJson,
-  getAngularSelectorName,
-} = require('@haiku/sdk-client/lib/ProjectDefinitions');
+  getAngularSelectorName
+} = require("@haiku/sdk-client/lib/ProjectDefinitions.js");
 
 const SILENT_METHODS = {
   hoverElement: true,
-  unhoverElement: true,
+  unhoverElement: true
 };
 
 /**
@@ -44,14 +47,14 @@ const SILENT_METHODS = {
  *  TODO: A nice next step would be to Envoy-ize all of this.
  */
 class Project extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     // Super hack, but it turns out we need to have this in a LOT of places in order for routing to work
     // and not end up with infinite loops of events emitted, captured, and emitted again. Beware!
     this.metadata = {
       from: this.alias, // #FIXME, dumb name?
-      alias: this.alias,
+      alias: this.alias
     };
 
     this.ensurePlatformHaikuRegistry();
@@ -59,15 +62,20 @@ class Project extends BaseModel {
     // Batched collections of methods to send through the websocket
     this.actionStack = new ActionStack({
       uid: this.getPrimaryKey(),
-      project: this,
+      project: this
     });
 
-    this.actionStack.on('next', (method, params, done) => {
+    this.actionStack.on("next", (method, params, done) => {
       logger.info(`[project (${this.getAlias()})] sending action: ${method}`);
 
-      this.websocket.action(method, params, (err, out) => {
-        done(err, out);
-      }, this.getFolder());
+      this.websocket.action(
+        method,
+        params,
+        (err, out) => {
+          done(err, out);
+        },
+        this.getFolder()
+      );
     });
 
     // Setup the Plumbing websocket and Envoy connections if necessary
@@ -77,8 +85,8 @@ class Project extends BaseModel {
     // In multi-component editing, this controls what the current active component is
     this._activeComponentSceneName = null;
 
-    ActiveComponent.on('update', (ac, what, entity) => {
-      this.emit('update', what, entity, ac, this.getMetadata());
+    ActiveComponent.on("update", (ac, what, entity) => {
+      this.emit("update", what, entity, ac, this.getMetadata());
     });
 
     // List of components we are tracking as part of the component tabs
@@ -97,7 +105,7 @@ class Project extends BaseModel {
     this.actionStackIndex = 0;
   }
 
-  teardown () {
+  teardown() {
     this.stopHandlingMethods();
     this.getEnvoyClient().closeConnection();
     if (this.websocket) {
@@ -106,15 +114,15 @@ class Project extends BaseModel {
     this.actionStack.stop();
   }
 
-  stopHandlingMethods () {
+  stopHandlingMethods() {
     this.isHandlingMethods = false;
   }
 
-  startHandlingMethods () {
+  startHandlingMethods() {
     this.isHandlingMethods = true;
   }
 
-  connectClients () {
+  connectClients() {
     this.startHandlingMethods();
 
     if (this.websocket) {
@@ -123,9 +131,13 @@ class Project extends BaseModel {
 
       if (!this._didStartWebsocketListeners) {
         // Upon receipt of a method, route to the correct ActiveComponent
-        this.websocket.on('method', this.receiveMethodCall.bind(this));
-        this.websocket.on('close', () => logger.info(`[project (${this.getAlias()})] websocket closed`));
-        this.websocket.on('error', () => logger.info(`[project (${this.getAlias()})] websocket error`));
+        this.websocket.on("method", this.receiveMethodCall.bind(this));
+        this.websocket.on("close", () =>
+          logger.info(`[project (${this.getAlias()})] websocket closed`)
+        );
+        this.websocket.on("error", () =>
+          logger.info(`[project (${this.getAlias()})] websocket error`)
+        );
 
         this._didStartWebsocketListeners = true;
       }
@@ -134,46 +146,54 @@ class Project extends BaseModel {
     if (this._envoyClient) {
       // no-op; the client should already be connected to the server
     } else {
-      const websocketClient = (
+      const websocketClient =
         this.WebSocket ||
-        ((typeof window !== 'undefined') && window.WebSocket) ||
-        WebSocket
+        (typeof window !== "undefined" && window.WebSocket) ||
+        WebSocket;
+
+      this._envoyClient = new EnvoyClient(
+        Object.assign(
+          {
+            WebSocket: websocketClient,
+            logger: new EnvoyLogger("warn")
+          },
+          this.getEnvoyOptions()
+        )
       );
 
-      this._envoyClient = new EnvoyClient(Object.assign({
-        WebSocket: websocketClient,
-        logger: new EnvoyLogger('warn'),
-      }, this.getEnvoyOptions()));
-
-      this._envoyClient.get('timeline').then((timelineChannel) => {
+      this._envoyClient.get("timeline").then(timelineChannel => {
         this._envoyTimelineChannel = timelineChannel;
-        this.emit('envoy:timelineClientReady', this._envoyTimelineChannel);
+        this.emit("envoy:timelineClientReady", this._envoyTimelineChannel);
       });
 
-      this._envoyClient.get(GLASS_CHANNEL).then((glassChannel) => {
+      this._envoyClient.get(GLASS_CHANNEL).then(glassChannel => {
         this._envoyGlassChannel = glassChannel;
-        this.emit('envoy:glassClientReady', this._envoyGlassChannel);
+        this.emit("envoy:glassClientReady", this._envoyGlassChannel);
       });
 
-      this._envoyClient.get('tour').then((tourChannel) => {
+      this._envoyClient.get("tour").then(tourChannel => {
         this._envoyTourChannel = tourChannel;
         if (!this._envoyClient.isInMockMode()) {
           this._envoyTourChannel.requestWebviewCoordinates().then(() => {
-            this.emit('envoy:tourClientReady', this._envoyTourChannel);
+            this.emit("envoy:tourClientReady", this._envoyTourChannel);
           });
         }
       });
     }
   }
 
-  isIgnoringMethodRequestsForMethod (method) {
+  isIgnoringMethodRequestsForMethod(method) {
     // HACK: This probably doesn't/shouldn't belong as a part of 'fileOptions'
     // It's a hacky way for MasterProcess to handle certain methods it cares about
     const fileOptions = this.getFileOptions();
-    return fileOptions && fileOptions.methodsToIgnore && fileOptions.methodsToIgnore[method];
+    return (
+      fileOptions &&
+      fileOptions.methodsToIgnore &&
+      fileOptions.methodsToIgnore[method]
+    );
   }
 
-  receiveMethodCall (method, params, message, cb) {
+  receiveMethodCall(method, params, message, cb) {
     if (!this.isHandlingMethods) {
       return cb();
     }
@@ -185,39 +205,53 @@ class Project extends BaseModel {
     return this.handleMethodCall(method, params, message, cb);
   }
 
-  handleMethodCall (method, params, message, cb) {
-    return Lock.request(Lock.LOCKS.ProjectMethodHandler, false, (release) => {
+  handleMethodCall(method, params, message, cb) {
+    return Lock.request(Lock.LOCKS.ProjectMethodHandler, false, release => {
       // Try matching a method on a given active component
-      if (typeof params[0] === 'string' && ActiveComponent.prototype[method] instanceof Function) {
-        return this.findActiveComponentBySource(params[0], (findAcError, ac) => {
-          if (findAcError) {
-            release();
-            return cb(findAcError);
-          }
+      if (
+        typeof params[0] === "string" &&
+        ActiveComponent.prototype[method] instanceof Function
+      ) {
+        return this.findActiveComponentBySource(
+          params[0],
+          (findAcError, ac) => {
+            if (findAcError) {
+              release();
+              return cb(findAcError);
+            }
 
-          if (!SILENT_METHODS[method]) {
-            logger.info(
-              `[project (${this.getAlias()})] component handling method ${method}`,
+            if (!SILENT_METHODS[method]) {
+              logger.info(
+                `[project (${this.getAlias()})] component handling method ${method}`
+              );
+            }
+
+            return ac[method].apply(
+              ac,
+              params.slice(1).concat(err => {
+                release();
+                return cb(err);
+              })
             );
           }
-
-          return ac[method].apply(ac, params.slice(1).concat((err) => {
-            release();
-            return cb(err);
-          }));
-        });
+        );
       }
 
       // If we have a method here at the top, call it
       if (this[method] instanceof Function) {
         if (!SILENT_METHODS) {
-          logger.info(`[project (${this.getAlias()})] project handling method ${method}`);
+          logger.info(
+            `[project (${this.getAlias()})] project handling method ${method}`
+          );
         }
 
-        return this[method].apply(this, params.concat((err) => {
-          release();
-          return cb(err);
-        }));
+        return this[method].apply(
+          this,
+          params.concat(err => {
+            release();
+            return cb(err);
+          })
+        );
       }
 
       release();
@@ -225,7 +259,7 @@ class Project extends BaseModel {
     });
   }
 
-  ensurePlatformHaikuRegistry () {
+  ensurePlatformHaikuRegistry() {
     if (!this.platform) {
       this.platform = {};
     }
@@ -237,42 +271,42 @@ class Project extends BaseModel {
     }
   }
 
-  getName () {
+  getName() {
     const parts = this.folder.split(path.sep);
     const last = parts[parts.length - 1];
     return last;
   }
 
-  getNameVariations () {
+  getNameVariations() {
     return Project.getProjectNameVariations(this.getFolder());
   }
 
-  getFriendlyName (maybeProjectName) {
+  getFriendlyName(maybeProjectName) {
     return maybeProjectName || toTitleCase(this.getName());
   }
 
-  getCurrentActiveComponentSceneName () {
+  getCurrentActiveComponentSceneName() {
     const ac = this.getCurrentActiveComponent();
     return ac && ac.getSceneName();
   }
 
-  getCurrentActiveComponentRelpath () {
+  getCurrentActiveComponentRelpath() {
     const ac = this.getCurrentActiveComponent();
     return ac && ac.getRelpath();
   }
 
-  getCurrentActiveComponent () {
+  getCurrentActiveComponent() {
     if (!this._activeComponentSceneName) {
       return null;
     }
     return this.findActiveComponentBySceneName(this._activeComponentSceneName);
   }
 
-  getAllActiveComponents () {
-    return ActiveComponent.where({project: this});
+  getAllActiveComponents() {
+    return ActiveComponent.where({ project: this });
   }
 
-  addActiveComponentToMultiComponentTabs (scenename, active = false) {
+  addActiveComponentToMultiComponentTabs(scenename, active = false) {
     // Update the active tabs in memory used for displaying in the UI
     for (const tab of this._multiComponentTabs) {
       if (tab.scenename === scenename) {
@@ -281,122 +315,127 @@ class Project extends BaseModel {
       }
     }
 
-    this._multiComponentTabs.push({scenename, active});
+    this._multiComponentTabs.push({ scenename, active });
   }
 
-  removeActiveComponentFromMultiComponentTabs (scenename) {
-    const index = this._multiComponentTabs.findIndex((tab) => tab.scenename === scenename);
+  removeActiveComponentFromMultiComponentTabs(scenename) {
+    const index = this._multiComponentTabs.findIndex(
+      tab => tab.scenename === scenename
+    );
     if (index !== -1) {
       this._multiComponentTabs.splice(index, 1);
     }
   }
 
-  describeSubComponents () {
-    return this._multiComponentTabs.map(({scenename, active}) => {
+  describeSubComponents() {
+    return this._multiComponentTabs.map(({ scenename, active }) => {
       return {
         isActive: !!active,
         scenename,
-        title: toTitleCase(scenename),
+        title: toTitleCase(scenename)
       };
     });
   }
 
-  describeUndoState () {
+  describeUndoState() {
     const ac = this.getCurrentActiveComponent();
-    const filter = (doable) => !doable.ac || doable.ac === ac;
+    const filter = doable => !doable.ac || doable.ac === ac;
     return {
       canUndo: this.actionStack.getUndoables().filter(filter).length > 0,
-      canRedo: this.actionStack.getRedoables().filter(filter).length > 0,
+      canRedo: this.actionStack.getRedoables().filter(filter).length > 0
     };
   }
 
-  describeTopMenu () {
+  describeTopMenu() {
     return {
       subComponents: this.describeSubComponents(),
-      undoState: this.describeUndoState(),
+      undoState: this.describeUndoState()
     };
   }
 
-  getExistingComponentNames () {
+  getExistingComponentNames() {
     const names = {
-      main: true, // Never allow 'main'
+      main: true // Never allow 'main'
     };
 
-    this._multiComponentTabs.forEach((tab) => {
+    this._multiComponentTabs.forEach(tab => {
       names[tab.scenename] = true;
     });
 
     return names;
   }
 
-  getNextAvailableSceneNameWithPrefix (prefix, num = 0) {
+  getNextAvailableSceneNameWithPrefix(prefix, num = 0) {
     // myName, myName_2, myName_3, ...
-    const full = `${prefix}${(num < 2) ? '' : `_${num}`}`;
+    const full = `${prefix}${num < 2 ? "" : `_${num}`}`;
     if (!this.findActiveComponentBySceneName(full)) {
       return full;
     }
     return this.getNextAvailableSceneNameWithPrefix(prefix, num + 1);
   }
 
-  getMultiComponentTabs () {
+  getMultiComponentTabs() {
     return this._multiComponentTabs;
   }
 
-  getMetadata () {
+  getMetadata() {
     return this.metadata;
   }
 
-  getFileOptions () {
+  getFileOptions() {
     return this.fileOptions;
   }
 
-  getEnvoyOptions () {
+  getEnvoyOptions() {
     return this.envoyOptions;
   }
 
-  getFolder () {
+  getFolder() {
     return this.folder;
   }
 
-  getAlias () {
+  getAlias() {
     return this.alias;
   }
 
-  buildFileUid (relpath) {
+  buildFileUid(relpath) {
     return path.join(this.getFolder(), relpath);
   }
 
-  getEnvoyChannel (name) {
+  getEnvoyChannel(name) {
     switch (name) {
-      case 'timeline': return this._envoyTimelineChannel;
-      case 'glass': return this._envoyGlassChannel;
-      case 'tour': return this._envoyTourChannel;
+      case "timeline":
+        return this._envoyTimelineChannel;
+      case "glass":
+        return this._envoyGlassChannel;
+      case "tour":
+        return this._envoyTourChannel;
       default:
-        throw new Error('Envoy channel name required');
+        throw new Error("Envoy channel name required");
     }
   }
 
-  getEnvoyClient () {
+  getEnvoyClient() {
     return this._envoyClient;
   }
 
-  getPlatform () {
+  getPlatform() {
     return this.platform;
   }
 
-  undo (options, metadata, cb) {
+  undo(options, metadata, cb) {
     this.actionStack.undo(options, metadata, cb);
   }
 
-  redo (options, metadata, cb) {
+  redo(options, metadata, cb) {
     this.actionStack.redo(options, metadata, cb);
   }
 
-  advanceActionStackIndex () {
+  advanceActionStackIndex() {
     this.actionStackIndex++;
   }
 
-  updateHook (...args) {
+  updateHook(...args) {
     const method = args.shift();
     const tx = args.pop();
     // Make our own copy of metadata to munge on, to ensure that we don't pass actionStackIndex along to dependent
@@ -410,216 +449,245 @@ class Project extends BaseModel {
       method,
       args,
       metadata,
-      (handleActionResolution) => tx((err, out) => {
-        // Should only called if there is *not* an error, but sticking with err-first convention anyway.
-        if (experimentIsEnabled(Experiment.IpcIntegrityCheck) && metadata.integrity !== false) {
-          const integrity = this.describeIntegrity();
+      handleActionResolution =>
+        tx((err, out) => {
+          // Should only called if there is *not* an error, but sticking with err-first convention anyway.
+          if (
+            experimentIsEnabled(Experiment.IpcIntegrityCheck) &&
+            metadata.integrity !== false
+          ) {
+            const integrity = this.describeIntegrity();
 
-          if (metadata.integrity && this.isRemoteRequest(metadata)) {
-            const mismatch = integritiesMismatched(metadata.integrity, integrity);
-            if (mismatch) {
-              logger.error(`
+            if (metadata.integrity && this.isRemoteRequest(metadata)) {
+              const mismatch = integritiesMismatched(
+                metadata.integrity,
+                integrity
+              );
+              if (mismatch) {
+                logger.error(`
                 Integrity mismatch due to ${method} in ${this.getAlias()}:
                   ${metadata.from} (their result):
                     ${mismatch[0]}
                   ${this.getAlias()} (our result):
                     ${mismatch[1]}
               `);
-              if (experimentIsEnabled(Experiment.CrashOnIpcIntegrityCheckFailure)) {
-                let message = `Unable to update component (${method} in ${this.getAlias()})`;
+                if (
+                  experimentIsEnabled(
+                    Experiment.CrashOnIpcIntegrityCheckFailure
+                  )
+                ) {
+                  let message = `Unable to update component (${method} in ${this.getAlias()})`;
 
-                if (process.env.NODE_ENV !== 'production') {
-                  message = `CRASH! Stop editing now and open dev tools (Cmd+Option+I). ${message}`;
+                  if (process.env.NODE_ENV !== "production") {
+                    message = `CRASH! Stop editing now and open dev tools (Cmd+Option+I). ${message}`;
+                  }
+
+                  throw new Error(message);
                 }
-
-                throw new Error(message);
               }
             }
+
+            Object.assign(metadata, { integrity });
           }
 
-          Object.assign(metadata, {integrity});
-        }
-
-        // If we originated the action, notify all other views
-        if (!this.isRemoteRequest(metadata)) {
-          this.emit('update', method, ...args);
-          this.actionStack.enqueueAction(method, [this.getFolder()].concat(args), () => {
-            // Only assign the actionStackIndex before we're actually going to fire the action. This ensures we don't
-            // prematurely increment our dispatch counter when we're only going to accumulate and defer a remote update.
-            metadata.actionStackIndex = this.actionStackIndex;
-            this.advanceActionStackIndex();
+          // If we originated the action, notify all other views
+          if (!this.isRemoteRequest(metadata)) {
+            this.emit("update", method, ...args);
+            this.actionStack.enqueueAction(
+              method,
+              [this.getFolder()].concat(args),
+              () => {
+                // Only assign the actionStackIndex before we're actually going to fire the action. This ensures we don't
+                // prematurely increment our dispatch counter when we're only going to accumulate and defer a remote update.
+                metadata.actionStackIndex = this.actionStackIndex;
+                this.advanceActionStackIndex();
+                handleActionResolution(err, out);
+              }
+            );
+          } else {
+            // Otherwise we received an update and may need to update ourselves
+            this.emit("remote-update", method, ...args);
             handleActionResolution(err, out);
-          });
-        } else {
-          // Otherwise we received an update and may need to update ourselves
-          this.emit('remote-update', method, ...args);
-          handleActionResolution(err, out);
-        }
-      }),
+          }
+        })
     );
   }
 
-  getWebsocketBroadcastDefaults () {
+  getWebsocketBroadcastDefaults() {
     return {
       time: Date.now(),
-      type: 'broadcast',
+      type: "broadcast",
       folder: this.getFolder(),
-      from: this.getMetadata().alias,
+      from: this.getMetadata().alias
     };
   }
 
-  broadcastPayload (mainPayload) {
-    const fullPayloadWithMetadata = Object.assign(this.getWebsocketBroadcastDefaults(), mainPayload);
+  broadcastPayload(mainPayload) {
+    const fullPayloadWithMetadata = Object.assign(
+      this.getWebsocketBroadcastDefaults(),
+      mainPayload
+    );
     this.websocket.send(fullPayloadWithMetadata);
   }
 
-  upsertFile ({relpath, type}) {
+  upsertFile({ relpath, type }) {
     const spec = Object.assign({}, File.DEFAULT_ATTRIBUTES, {
       uid: this.buildFileUid(relpath),
       folder: this.getFolder(),
       dtModified: Date.now(),
       project: this,
       relpath,
-      type,
+      type
     });
 
     return File.upsert(spec, this.getFileOptions());
   }
 
-  isRemoteRequest (metadata) {
+  isRemoteRequest(metadata) {
     return metadata && metadata.from !== this.getAlias();
   }
 
-  isLocalUpdate (metadata) {
+  isLocalUpdate(metadata) {
     return metadata && metadata.from === this.getAlias();
   }
 
-  masterHeartbeat (cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'masterHeartbeat',
-      params: [this.getFolder()],
-    }, cb);
+  masterHeartbeat(cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "masterHeartbeat",
+        params: [this.getFolder()]
+      },
+      cb
+    );
   }
 
-  saveProject (project, saveOptions = {}, cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'saveProject',
-      params: [
-        project,
-        saveOptions,
-      ],
-    }, cb);
+  saveProject(project, saveOptions = {}, cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "saveProject",
+        params: [project, saveOptions]
+      },
+      cb
+    );
   }
 
-  setInteractionMode (interactionMode, metadata, cb) {
-    const components = ActiveComponent.where({project: this});
+  setInteractionMode(interactionMode, metadata, cb) {
+    const components = ActiveComponent.where({ project: this });
 
-    return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
-      return async.eachSeries(components, (component, next) => {
-        // If we toggle preview mode before any subcomponents are bootstrapped,
-        // the bytecode for those subcomponents will be null
-        return component.moduleFindOrCreate('basicReload', {}, (err) => {
+    return Lock.request(Lock.LOCKS.ActiveComponentWork, false, release => {
+      return async.eachSeries(
+        components,
+        (component, next) => {
+          // If we toggle preview mode before any subcomponents are bootstrapped,
+          // the bytecode for those subcomponents will be null
+          return component.moduleFindOrCreate("basicReload", {}, err => {
+            if (err) {
+              return next(err);
+            }
+
+            return component.setInteractionMode(interactionMode, next);
+          });
+        },
+        err => {
           if (err) {
-            return next(err);
+            release();
+            return cb(err);
           }
 
-          return component.setInteractionMode(interactionMode, next);
-        });
-      }, (err) => {
-        if (err) {
+          // Only set interaction mode once it's been completely assigned to the in-mem components
+          this.interactionMode = interactionMode;
+
           release();
-          return cb(err);
+          this.updateHook(
+            "setInteractionMode",
+            interactionMode,
+            metadata,
+            fire => fire()
+          );
+          return cb();
         }
-
-        // Only set interaction mode once it's been completely assigned to the in-mem components
-        this.interactionMode = interactionMode;
-
-        release();
-        this.updateHook('setInteractionMode', interactionMode, metadata, (fire) => fire());
-        return cb();
-      });
+      );
     });
   }
 
-  getInteractionMode () {
+  getInteractionMode() {
     return this.interactionMode;
   }
 
-  toggleInteractionMode (metadata, cb) {
-    const interactionMode = this.interactionMode === InteractionMode.EDIT
-      ? InteractionMode.LIVE
-      : InteractionMode.EDIT;
+  toggleInteractionMode(metadata, cb) {
+    const interactionMode =
+      this.interactionMode === InteractionMode.EDIT
+        ? InteractionMode.LIVE
+        : InteractionMode.EDIT;
 
     this.setInteractionMode(interactionMode, metadata, cb);
   }
 
-  linkAsset (assetAbspath, cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'linkAsset',
-      params: [
-        assetAbspath,
-        this.getFolder(),
-      ],
-    }, cb);
-  }
-
-  unlinkAsset (assetRelpath, cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'unlinkAsset',
-      params: [
-        assetRelpath,
-        this.getFolder(),
-      ],
-    }, cb);
-  }
-
-  bulkLinkAssets (assetAbspaths, cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'bulkLinkAssets',
-      params: [
-        assetAbspaths,
-        this.getFolder(),
-      ],
-    }, cb);
-  }
-
-  listAssets (cb) {
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'listAssets',
-      params: [this.getFolder()],
-    }, cb);
-  }
-
-  readAllStateValues (cb) {
-    return this.websocket.method(
-      'readAllStateValues',
-      [
-        this.getFolder(),
-        this.getCurrentActiveComponentRelpath(),
-      ],
-      cb,
+  linkAsset(assetAbspath, cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "linkAsset",
+        params: [assetAbspath, this.getFolder()]
+      },
+      cb
     );
   }
 
-  queryImageSize (abspath, cb) {
-    return this.websocket.method(
-      'queryImageSize',
-      [abspath],
-      cb,
+  unlinkAsset(assetRelpath, cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "unlinkAsset",
+        params: [assetRelpath, this.getFolder()]
+      },
+      cb
     );
   }
 
-  mergeDesigns (designs, metadata, cb) {
+  bulkLinkAssets(assetAbspaths, cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "bulkLinkAssets",
+        params: [assetAbspaths, this.getFolder()]
+      },
+      cb
+    );
+  }
+
+  listAssets(cb) {
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "listAssets",
+        params: [this.getFolder()]
+      },
+      cb
+    );
+  }
+
+  readAllStateValues(cb) {
+    return this.websocket.method(
+      "readAllStateValues",
+      [this.getFolder(), this.getCurrentActiveComponentRelpath()],
+      cb
+    );
+  }
+
+  queryImageSize(abspath, cb) {
+    return this.websocket.method("queryImageSize", [abspath], cb);
+  }
+
+  mergeDesigns(designs, metadata, cb) {
     const ac = this.getCurrentActiveComponent();
 
     if (!ac) {
-      logger.warn(`[project] skipping design merge since no component is active`);
+      logger.warn(
+        `[project] skipping design merge since no component is active`
+      );
       return cb();
     }
 
@@ -628,63 +696,81 @@ class Project extends BaseModel {
     // populated. To fix this, we wait to do any rendering until this whole process has finished
     ac.codeReloadingOn();
 
-    return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
-      return this.updateHook('mergeDesigns', designs, metadata || this.getMetadata(), (fire) => {
-        const components = ActiveComponent.where({project: this});
+    return Lock.request(Lock.LOCKS.ActiveComponentWork, false, release => {
+      return this.updateHook(
+        "mergeDesigns",
+        designs,
+        metadata || this.getMetadata(),
+        fire => {
+          const components = ActiveComponent.where({ project: this });
 
-        return async.eachSeries(components, (component, next) => {
-          return component.moduleFindOrCreate('basicReload', {}, (err) => {
-            if (err) {
-              return next(err);
-            }
+          return async.eachSeries(
+            components,
+            (component, next) => {
+              return component.moduleFindOrCreate("basicReload", {}, err => {
+                if (err) {
+                  return next(err);
+                }
 
-            return component.mergeDesignFiles(designs, next);
-          });
-        }, (err) => {
-          if (err) {
-            ac.codeReloadingOff();
-            release();
-            logger.error(`[project (${this.getAlias()})]`, err);
-            return cb(err);
-          }
-
-          return ac.reload({
-            hardReload: true,
-            clearCacheOptions: {
-              doClearEntityCaches: true,
+                return component.mergeDesignFiles(designs, next);
+              });
             },
-          }, null, () => {
-            ac.codeReloadingOff();
-            release();
-            fire();
-            return cb();
-          });
-        });
-      });
+            err => {
+              if (err) {
+                ac.codeReloadingOff();
+                release();
+                logger.error(`[project (${this.getAlias()})]`, err);
+                return cb(err);
+              }
+
+              return ac.reload(
+                {
+                  hardReload: true,
+                  clearCacheOptions: {
+                    doClearEntityCaches: true
+                  }
+                },
+                null,
+                () => {
+                  ac.codeReloadingOff();
+                  release();
+                  fire();
+                  return cb();
+                }
+              );
+            }
+          );
+        }
+      );
     });
   }
 
-  addActiveComponentToRegistry (activeComponent) {
+  addActiveComponentToRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
-      activeComponent.getRelpath(),
+      activeComponent.getRelpath()
     );
     this.ensurePlatformHaikuRegistry(); // Make sure we have this.platform.haiku; race condition
     this.platform.haiku.registry[activeComponentKey] = activeComponent;
-    this.addActiveComponentToMultiComponentTabs(activeComponent.getSceneName(), false);
+    this.addActiveComponentToMultiComponentTabs(
+      activeComponent.getSceneName(),
+      false
+    );
   }
 
-  removeActiveComponentFromRegistry (activeComponent) {
+  removeActiveComponentFromRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
-      activeComponent.getRelpath(),
+      activeComponent.getRelpath()
     );
     this.ensurePlatformHaikuRegistry(); // Make sure we have this.platform.haiku; race condition
     delete this.platform.haiku.registry[activeComponentKey];
-    this.removeActiveComponentFromMultiComponentTabs(activeComponent.getSceneName());
+    this.removeActiveComponentFromMultiComponentTabs(
+      activeComponent.getSceneName()
+    );
   }
 
-  deleteSceneByName (scenename, cb) {
+  deleteSceneByName(scenename, cb) {
     // Note: this is a VERY ROUGH implementation of subcomponent destruction that is only meant to be used to undo
     // subcomponent creation in its current form. If planning to use this for proper subcomponent deletion in any context,
     // we would also need to find/destroy any subcomponent instances that would have require(...) broken by these actions.
@@ -697,7 +783,7 @@ class Project extends BaseModel {
 
     // First unregister it from the UI.
     this.removeActiveComponentFromRegistry(ac);
-    this.emit('update', 'updateMenu');
+    this.emit("update", "updateMenu");
 
     // Next actually destroy the corresponding BLL entities.
     ac.destroy(true);
@@ -705,19 +791,19 @@ class Project extends BaseModel {
     return cb();
   }
 
-  upsertSceneByName (scenename, cb) {
-    const relpath = path.join('code', scenename, 'code.js');
+  upsertSceneByName(scenename, cb) {
+    const relpath = path.join("code", scenename, "code.js");
     return this.upsertComponentBytecodeToModule(relpath, cb);
   }
 
-  findOrCreateActiveComponent (scenename, cb) {
+  findOrCreateActiveComponent(scenename, cb) {
     const ac = this.findActiveComponentBySceneName(scenename);
 
     if (ac) {
       return cb(null, ac);
     }
 
-    return this.upsertSceneByName(scenename, (err) => {
+    return this.upsertSceneByName(scenename, err => {
       if (err) {
         return cb(err);
       }
@@ -726,42 +812,57 @@ class Project extends BaseModel {
     });
   }
 
-  setCurrentActiveComponent (scenename, metadata, cb) {
+  setCurrentActiveComponent(scenename, metadata, cb) {
     metadata.integrity = false;
-    return Lock.request(Lock.LOCKS.SetCurrentActiveComponent, false, (release) => {
-      // If not in read only mode, create the component entity for the scene in question
-      this.findOrCreateActiveComponent(scenename, (err, ac) => {
-        if (err) {
-          release();
-          return cb(err);
-        }
-
-        this.addActiveComponentToMultiComponentTabs(scenename, true);
-        this._multiComponentTabs.forEach((tab) => {
-          // Deactivate all other components held in memory
-          tab.active = tab.scenename === scenename;
-        });
-
-        return Lock.awaitAllLocksFreeExcept([Lock.LOCKS.SetCurrentActiveComponent, Lock.LOCKS.ProjectMethodHandler], () => {
-          // Useful to stop haiku-creator listeners when deactivating ActiveComponent
-          const currentActiveComponent = this.getCurrentActiveComponent();
-          if (currentActiveComponent) {
-            currentActiveComponent.emit('update', 'componentDeactivating');
+    return Lock.request(
+      Lock.LOCKS.SetCurrentActiveComponent,
+      false,
+      release => {
+        // If not in read only mode, create the component entity for the scene in question
+        this.findOrCreateActiveComponent(scenename, (err, ac) => {
+          if (err) {
+            release();
+            return cb(err);
           }
 
-          this._activeComponentSceneName = scenename;
-
-          this.updateHook('setCurrentActiveComponent', scenename, metadata || this.getMetadata(), (fire) => {
-            fire();
-            release();
-            return cb(null, ac);
+          this.addActiveComponentToMultiComponentTabs(scenename, true);
+          this._multiComponentTabs.forEach(tab => {
+            // Deactivate all other components held in memory
+            tab.active = tab.scenename === scenename;
           });
+
+          return Lock.awaitAllLocksFreeExcept(
+            [
+              Lock.LOCKS.SetCurrentActiveComponent,
+              Lock.LOCKS.ProjectMethodHandler
+            ],
+            () => {
+              // Useful to stop haiku-creator listeners when deactivating ActiveComponent
+              const currentActiveComponent = this.getCurrentActiveComponent();
+              if (currentActiveComponent) {
+                currentActiveComponent.emit("update", "componentDeactivating");
+              }
+
+              this._activeComponentSceneName = scenename;
+
+              this.updateHook(
+                "setCurrentActiveComponent",
+                scenename,
+                metadata || this.getMetadata(),
+                fire => {
+                  fire();
+                  release();
+                  return cb(null, ac);
+                }
+              );
+            }
+          );
         });
-      });
-    });
+      }
+    );
   }
 
-  closeNamedActiveComponent (scenename, metadata, cb) {
+  closeNamedActiveComponent(scenename, metadata, cb) {
     for (let i = this._multiComponentTabs.length - 1; i >= 0; i--) {
       const tab = this._multiComponentTabs[i];
       if (tab.scenename === scenename) {
@@ -772,18 +873,23 @@ class Project extends BaseModel {
     }
     // TODO: Make smarter instead of just choosing the first one in the list
     this._activeComponentSceneName = this._multiComponentTabs[0];
-    this.updateHook('closeNamedActiveComponent', scenename, metadata || this.getMetadata(), (fire) => fire());
+    this.updateHook(
+      "closeNamedActiveComponent",
+      scenename,
+      metadata || this.getMetadata(),
+      fire => fire()
+    );
     if (cb) {
       return cb();
     }
   }
 
-  renameComponent (scenenameOld, scenenameNew, metadata, cb) {
+  renameComponent(scenenameOld, scenenameNew, metadata, cb) {
     // TODO, important for multi-component, launching straight to editing, etc.
     // Need to change all in-memory references to the name,
     // all existing file-system references to the name including other components
     // within the project that may have instantiated this :/
-    throw new Error('not yet implemented');
+    throw new Error("not yet implemented");
     // if (cb) return cb()
   }
 
@@ -794,7 +900,7 @@ class Project extends BaseModel {
    * - Filtering files that are not supported
    * - Linking the assets via plumbing
    */
-  linkExternalAssetOnDrop (event, cb) {
+  linkExternalAssetOnDrop(event, cb) {
     if (Asset.isInternalDrop(event)) {
       return cb();
     }
@@ -803,13 +909,16 @@ class Project extends BaseModel {
 
     const files = Array.from(event.dataTransfer.items)
       .filter(Asset.isValidFile) /* Allow only svg and sketch files */
-      .map((item) => item.getAsFile().path);
+      .map(item => item.getAsFile().path);
 
-    return this.websocket.request({
-      folder: this.getFolder(),
-      method: 'bulkLinkAssets',
-      params: [files, this.getFolder()],
-    }, cb);
+    return this.websocket.request(
+      {
+        folder: this.getFolder(),
+        method: "bulkLinkAssets",
+        params: [files, this.getFolder()]
+      },
+      cb
+    );
   }
 
   /**
@@ -821,34 +930,34 @@ class Project extends BaseModel {
    * @param relpath {String} Relative path to destination code file within project
    * @param cb {Function}
    */
-  upsertComponentBytecodeToModule (relpath, cb) {
+  upsertComponentBytecodeToModule(relpath, cb) {
     // Note: This assumes that the basic bytecode file *has already been created*
     this.upsertActiveComponentInstance(relpath, (err, ac) => {
       if (err) {
         return cb(err);
       }
 
-      return ac.mountApplication(null, {}, (err) => {
+      return ac.mountApplication(null, {}, err => {
         if (err) {
           return cb(err);
         }
-        this.emit('active-component:upserted');
+        this.emit("active-component:upserted");
         return cb(null, ac);
       });
     });
   }
 
-  relpathToSceneName (relpath) {
+  relpathToSceneName(relpath) {
     // Must normalize so ./foo/bar/baz becomes foo/bar/baz (note number of slashes)
     return path.normalize(relpath).split(path.sep)[1];
   }
 
-  upsertActiveComponentInstance (relpath, cb) {
+  upsertActiveComponentInstance(relpath, cb) {
     const abspath = path.join(this.getFolder(), relpath);
-    return Lock.request(Lock.LOCKS.FileReadWrite(abspath), false, (release) => {
+    return Lock.request(Lock.LOCKS.FileReadWrite(abspath), false, release => {
       const file = this.upsertFile({
         relpath,
-        type: File.TYPES.code,
+        type: File.TYPES.code
       });
 
       release();
@@ -856,42 +965,45 @@ class Project extends BaseModel {
     });
   }
 
-  findActiveComponentBySource (relpath, cb) {
+  findActiveComponentBySource(relpath, cb) {
     const scenename = ModuleWrapper.getScenenameFromRelpath(relpath);
     return this.findOrCreateActiveComponent(scenename, cb);
   }
 
-  findActiveComponentBySourceIfPresent (relpath) {
+  findActiveComponentBySourceIfPresent(relpath) {
     const scenename = ModuleWrapper.getScenenameFromRelpath(relpath);
     return this.findActiveComponentBySceneName(scenename);
   }
 
-  findActiveComponentBySceneName (scenename) {
-    return ActiveComponent.findById(ActiveComponent.buildPrimaryKey(this.getFolder(), scenename));
+  findActiveComponentBySceneName(scenename) {
+    return ActiveComponent.findById(
+      ActiveComponent.buildPrimaryKey(this.getFolder(), scenename)
+    );
   }
 
-  getPackageJsonPath () {
-    return path.join(this.getFolder(), 'package.json');
+  getPackageJsonPath() {
+    return path.join(this.getFolder(), "package.json");
   }
 
-  getDefaultComponentInfo () {
+  getDefaultComponentInfo() {}
 
-  }
-
-  readPackageJsonSafe (cb) {
+  readPackageJsonSafe(cb) {
     let pkg;
 
     try {
-      pkg = fse.readJsonSync(this.getPackageJsonPath(), {throws: false});
+      pkg = fse.readJsonSync(this.getPackageJsonPath(), { throws: false });
     } catch (exception) {
-      logger.warn(`[project (${this.getAlias()})] package.json error:`, exception);
+      logger.warn(
+        `[project (${this.getAlias()})] package.json error:`,
+        exception
+      );
       pkg = {};
     }
 
     return cb(pkg);
   }
 
-  writePackageJson (pkg, cb) {
+  writePackageJson(pkg, cb) {
     try {
       fse.outputJsonSync(this.getPackageJsonPath(), pkg);
     } catch (exception) {
@@ -901,11 +1013,11 @@ class Project extends BaseModel {
     return cb();
   }
 
-  readComponentInfo (scenename, cb) {
-    return this.readPackageJsonSafe((pkg) => {
+  readComponentInfo(scenename, cb) {
+    return this.readPackageJsonSafe(pkg => {
       const info = lodash.get(pkg, `haiku.${scenename}`) || {};
 
-      const getMetadata = (cb) => {
+      const getMetadata = cb => {
         const ac = this.findActiveComponentBySceneName(scenename);
 
         if (!ac) {
@@ -914,44 +1026,48 @@ class Project extends BaseModel {
 
         return ac.readMetadata((err, metadata) => {
           if (err) {
-            logger.warn(`[project (${this.getAlias()})] component metadata error:`, err);
+            logger.warn(
+              `[project (${this.getAlias()})] component metadata error:`,
+              err
+            );
           }
 
           return cb(metadata || {});
         });
       };
 
-      return getMetadata((metadata) => {
+      return getMetadata(metadata => {
         const final = lodash.assign({}, metadata, info);
         return cb(null, final);
       });
     });
   }
 
-  getCodeFolderAbspath () {
-    return path.join(this.getFolder(), 'code');
+  getCodeFolderAbspath() {
+    return path.join(this.getFolder(), "code");
   }
 
-  rehydrate () {
-    fse.readdirSync(this.getCodeFolderAbspath()).filter((entry) => {
-      // Ignore hidden files that may appear here such as everyone's favorite .DS_Store
-      return entry && entry[0] !== '.';
-    }).forEach((scenename) => {
-      this.addActiveComponentToMultiComponentTabs(scenename);
-    });
+  rehydrate() {
+    fse
+      .readdirSync(this.getCodeFolderAbspath())
+      .filter(entry => {
+        // Ignore hidden files that may appear here such as everyone's favorite .DS_Store
+        return entry && entry[0] !== ".";
+      })
+      .forEach(scenename => {
+        this.addActiveComponentToMultiComponentTabs(scenename);
+      });
   }
 
-  describeIntegrity () {
+  describeIntegrity() {
     const descriptor = {};
 
-    this.getAllActiveComponents().forEach((ac) => {
+    this.getAllActiveComponents().forEach(ac => {
       const relpath = ac.getRelpath();
 
-      const {
-        hash,
-      } = ac.getInsertionPointInfo();
+      const { hash } = ac.getInsertionPointInfo();
 
-      descriptor[relpath] = {hash};
+      descriptor[relpath] = { hash };
     });
 
     return descriptor;
@@ -967,8 +1083,8 @@ Project.DEFAULT_OPTIONS = {
     websocket: true, // Websocket for plumbing connection - Expected to be initialized already
     platform: true, // E.g. window or global
     fileOptions: true,
-    envoyOptions: true,
-  },
+    envoyOptions: true
+  }
 };
 
 BaseModel.extend(Project);
@@ -977,7 +1093,7 @@ module.exports = Project;
 
 Project.awaitOneUpdateFromActiveComponent = (activeComponent, channel, fn) => {
   let once = true;
-  activeComponent.on('update', (what, a, b, c, d, e, f, g, h) => {
+  activeComponent.on("update", (what, a, b, c, d, e, f, g, h) => {
     if (once && what === channel) {
       once = false;
       fn(a, b, c, d, e, f, g, h);
@@ -993,9 +1109,9 @@ Project.setup = (
   userconfig = {},
   fileOptions = {},
   envoyOptions = {},
-  cb,
+  cb
 ) => {
-  fse.mkdirpSync(path.join(folder, 'code'));
+  fse.mkdirpSync(path.join(folder, "code"));
 
   const project = Project.upsert({
     uid: folder,
@@ -1005,22 +1121,32 @@ Project.setup = (
     userconfig,
     platform,
     fileOptions,
-    envoyOptions,
+    envoyOptions
   });
 
   project.rehydrate();
   return cb(null, project);
 };
 
-Project.getProjectNameVariations = (folder) => {
+Project.getProjectNameVariations = folder => {
   const projectHaikuConfig = readPackageJson(folder).haiku;
   const projectNameSafe = getSafeProjectName(projectHaikuConfig.project);
-  const projectNameSafeShort = getProjectNameSafeShort(projectHaikuConfig.project);
-  const projectNameLowerCase = getProjectNameLowerCase(projectHaikuConfig.project);
+  const projectNameSafeShort = getProjectNameSafeShort(
+    projectHaikuConfig.project
+  );
+  const projectNameLowerCase = getProjectNameLowerCase(
+    projectHaikuConfig.project
+  );
   const reactProjectName = getReactProjectName(projectHaikuConfig.project);
-  const angularSelectorName = getAngularSelectorName(projectHaikuConfig.project);
-  const primaryAssetPath = getDefaultSketchAssetPath(projectHaikuConfig.project);
-  const defaultIllustratorAssetPath = getDefaultIllustratorAssetPath(projectHaikuConfig.project);
+  const angularSelectorName = getAngularSelectorName(
+    projectHaikuConfig.project
+  );
+  const primaryAssetPath = getDefaultSketchAssetPath(
+    projectHaikuConfig.project
+  );
+  const defaultIllustratorAssetPath = getDefaultIllustratorAssetPath(
+    projectHaikuConfig.project
+  );
 
   return {
     projectNameSafe,
@@ -1029,23 +1155,27 @@ Project.getProjectNameVariations = (folder) => {
     reactProjectName,
     angularSelectorName,
     primaryAssetPath,
-    defaultIllustratorAssetPath,
+    defaultIllustratorAssetPath
   };
 };
 
 const integritiesMismatched = (i1, i2) => {
-  const s1 = jss(Object.keys(i1).reduce((accumulator, key) => {
-    if (i2[key]) {
-      accumulator[key] = i1[key];
-    }
-    return accumulator;
-  }, {}));
-  const s2 = jss(Object.keys(i1).reduce((accumulator, key) => {
-    if (i1[key]) {
-      accumulator[key] = i2[key];
-    }
-    return accumulator;
-  }, {}));
+  const s1 = jss(
+    Object.keys(i1).reduce((accumulator, key) => {
+      if (i2[key]) {
+        accumulator[key] = i1[key];
+      }
+      return accumulator;
+    }, {})
+  );
+  const s2 = jss(
+    Object.keys(i1).reduce((accumulator, key) => {
+      if (i1[key]) {
+        accumulator[key] = i2[key];
+      }
+      return accumulator;
+    }, {})
+  );
   if (s1 !== s2) {
     return [s1, s2];
   }
@@ -1057,11 +1187,11 @@ const integritiesMismatched = (i1, i2) => {
 Project.PUBLIC_METHODS = {
   setCurrentActiveComponent: true,
   closeNamedActiveComponent: true,
-  renameComponent: true,
+  renameComponent: true
 };
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const ActiveComponent = require('./ActiveComponent');
-const Asset = require('./Asset');
-const File = require('./File');
-const ModuleWrapper = require('./ModuleWrapper');
+const ActiveComponent = require("./ActiveComponent");
+const Asset = require("./Asset");
+const File = require("./File");
+const ModuleWrapper = require("./ModuleWrapper");
