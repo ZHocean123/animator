@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const BaseModel = require('./BaseModel');
 const overrideModulesLoaded = require('./../utils/overrideModulesLoaded');
-const Lock = require('./Lock');
+import * as Lock from './Lock.js';
 const logger = require('./../utils/LoggerInstance');
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';

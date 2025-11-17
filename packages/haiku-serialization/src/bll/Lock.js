@@ -1,4 +1,4 @@
-const {EventEmitter} = require('events');
+import { EventEmitter } from 'node:events';
 
 const ACTIVE_LOCKS = {};
 
@@ -6,9 +6,7 @@ const LOCKS = {
   ActiveComponentWork: 'ActiveComponentWork',
   ActiveComponentReload: 'ActiveComponentReload',
   FilePerformComponentWork: 'FilePerformComponentWork',
-  FileReadWrite: (abspath) => {
-    return `FileReadWrite:${abspath}`;
-  },
+  FileReadWrite: (abspath) => `FileReadWrite:${abspath}`,
   ProjectMethodHandler: 'ProjectMethodHandler',
   ActionStackUndoRedo: 'ActionStackUndoRedo',
   SetCurrentActiveComponent: 'SetCurrentActiveComponent',
@@ -22,7 +20,6 @@ const request = (key, emit, cb) => {
   }
 
   if (ACTIVE_LOCKS[key]) {
-    // Push to the end of the stack
     return setTimeout(() => request(key, emit, cb), 0);
   }
 
@@ -64,12 +61,5 @@ const awaitAllLocksFreeExcept = (keys, cb) => {
   return awaitFree(allKeys, cb);
 };
 
-module.exports = {
-  request,
-  emitter,
-  awaitFree,
-  awaitAllLocksFree,
-  awaitAllLocksFreeExcept,
-  LOCKS,
-  ACTIVE_LOCKS,
-};
+export { request, emitter, awaitFree, awaitAllLocksFree, awaitAllLocksFreeExcept, LOCKS, ACTIVE_LOCKS };
+export default { request, emitter, awaitFree, awaitAllLocksFree, awaitAllLocksFreeExcept, LOCKS, ACTIVE_LOCKS };

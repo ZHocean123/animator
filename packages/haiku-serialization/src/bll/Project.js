@@ -12,7 +12,7 @@ const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
 const {InteractionMode} = require('@haiku/core/lib/helpers/interactionModes');
 const toTitleCase = require('./helpers/toTitleCase');
-const Lock = require('./Lock');
+import * as Lock from './Lock.js';
 const ActionStack = require('./ActionStack');
 const {
   getSafeProjectName,

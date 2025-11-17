@@ -9,7 +9,7 @@ const experimentIsEnabled = (experiment) => {
 };
 
 const BaseModel = require('./BaseModel');
-const Lock = require('./Lock');
+import * as Lock from './Lock.js';
 const logger = require('./../utils/LoggerInstance');
 
 // No-op callback for arbitrary fire-and-forget actions

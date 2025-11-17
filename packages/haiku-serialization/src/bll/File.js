@@ -6,7 +6,7 @@ const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').defa
 const BaseModel = require('./BaseModel');
 const logger = require('./../utils/LoggerInstance');
 const getSvgOptimizer = require('./../svg/getSvgOptimizer');
-const Lock = require('./Lock');
+import * as Lock from './Lock.js';
 const Cache = require('./Cache');
 const {bootstrapSceneFilesSync} = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync');
 
