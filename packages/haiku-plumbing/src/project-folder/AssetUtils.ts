@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as Base64 from '@ronomon/base64';
+import {decodeBase64} from '@sigma/rust-base64';
 import {ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync} from 'fs-extra';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
 // @ts-ignore
@@ -7,6 +7,9 @@ import {LOCKS} from 'haiku-serialization/src/bll/Lock';
 import * as path from 'path';
 import Watcher from '../Watcher';
 
+const decode = (value: string) => new TextDecoder().decode(
+  decodeBase64(new TextEncoder().encode(value)),
+);
 const IMAGE_DATA_INDICATOR = 'data:image/';
 const BASE64_DELIMITER = ';base64,';
 const UNICODE_ENCODING = 'utf-8';
@@ -78,10 +81,11 @@ export const dumpBase64Images = (
     // Add the content up until data:image/ as is.
     xml += buffer.toString(UNICODE_ENCODING, cursor, imageStart);
     cursor = buffer.indexOf(quotation, imageStart + 1) + 1;
-    writeFileSync(
-      path.join(folder, outputFilename),
-      Base64.decode(buffer.slice(encodingMarkStart + BASE64_DELIMITER.length, cursor - 1)),
-    );
+    {
+      const b64 = buffer.toString(UNICODE_ENCODING, encodingMarkStart + BASE64_DELIMITER.length, cursor - 1);
+      const decoded = decode(b64);
+      writeFileSync(path.join(folder, outputFilename), Buffer.from(decoded as any));
+    }
     xml += 'web+haikuroot://' + path.posix.normalize(outputFilename);
     xml += quotation;
   } while (cursor !== -1);

@@ -43,7 +43,6 @@
     },
     "ignoredBuiltDependencies": [],
     "onlyBuiltDependencies": [
-      "@ronomon/base64",
       "aws-sdk",
       "core-js",
       "electron-chromedriver",

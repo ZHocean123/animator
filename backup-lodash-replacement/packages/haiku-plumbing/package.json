@@ -26,7 +26,7 @@
     "@haiku/core": "workspace:*",
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
-    "@ronomon/base64": "^2.4.1",
+    "@sigma/rust-base64": "npm:@jsr/sigma__rust-base64@^0.2.7",
     "async": "^2.5.0",
     "chokidar": "^1.7.0",
     "dedent": "^0.7.0",
