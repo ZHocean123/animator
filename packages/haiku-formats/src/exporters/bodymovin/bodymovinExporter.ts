@@ -10,7 +10,8 @@ import {
 import { synchronizePathStructure } from "@haiku/core/lib/helpers/PathUtils.js";
 import SVGPoints from "@haiku/core/lib/helpers/SVGPoints.js";
 import { CurveSpec } from "@haiku/core/lib/vendor/svg-points/types.js";
-import { existsSync, readFileSync, writeFile } from "fs-extra";
+import fse from "fs-extra";
+const { existsSync, readFileSync, writeFile } = fse;
 // @ts-ignore
 import * as Template from "haiku-serialization/src/bll/Template.js";
 // @ts-ignore

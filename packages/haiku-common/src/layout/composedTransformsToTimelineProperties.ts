@@ -4,11 +4,12 @@
  * Note: this and all related work should be moved out of @haiku/core in conjunction with xmlToMana and friends.
  */
 
-import { LayoutSpec } from "@haiku/core/lib/api.js";
+import { LayoutSpec } from "@haiku/core/lib/api/index.js";
 import Layout3D from "@haiku/core/lib/Layout3D.js";
-import mat4Decompose, {
-  DecomposedMat4
-} from "haiku-vendor-legacy/lib/mat4-decompose/index.js";
+import * as mat4DecomposeModule from "haiku-vendor-legacy/lib/mat4-decompose/index.js";
+import { DecomposedMat4 } from "haiku-vendor-legacy/lib/mat4-decompose/index.js";
+
+const mat4Decompose = mat4DecomposeModule.default;
 
 export interface ComposedTransformSpec {
   "translation.x"?: number;

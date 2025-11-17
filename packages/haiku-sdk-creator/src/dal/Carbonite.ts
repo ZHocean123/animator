@@ -1,7 +1,8 @@
 import { client } from "@haiku/sdk-client";
 import { inkstone } from "@haiku/sdk-inkstone";
 import { exec, fork } from "child_process";
-import { mkdirp, readFile } from "fs-extra";
+import fse from "fs-extra";
+const { mkdirp, readFile } = fse;
 import {
   HOMEDIR_CRASH_REPORTS_PATH,
   HOMEDIR_LOGS_PATH,

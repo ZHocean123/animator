@@ -1,21 +1,22 @@
-import {existsSync} from 'fs-extra';
-import {HaikuShareUrls} from 'haiku-sdk-creator/lib/bll/Project.js';
-import {join} from 'path';
-import * as React from 'react';
-import Palette from '../../../Palette';
-import {LinkHolster} from '../LinkHolster';
+import fse from "fs-extra";
+const { existsSync } = fse;
+import { HaikuShareUrls } from "haiku-sdk-creator/lib/bll/Project.js";
+import { join } from "path";
+import * as React from "react";
+import Palette from "../../../Palette";
+import { LinkHolster } from "../LinkHolster";
 
 const STYLES = {
   imgWrapper: {
-    width: 'calc(100% + 20px)',
-    minHeight: '200px',
+    width: "calc(100% + 20px)",
+    minHeight: "200px",
     backgroundColor: Palette.GRAY,
-    overflow: 'hidden',
+    overflow: "hidden"
   } as React.CSSProperties,
   image: {
-    maxWidth: 'calc(100% + 20px)',
-    maxHeight: '440px',
-  },
+    maxWidth: "calc(100% + 20px)",
+    maxHeight: "440px"
+  }
 };
 
 export interface GifProps {
@@ -25,23 +26,26 @@ export interface GifProps {
   folder: string;
   urls: HaikuShareUrls;
 
-  children?: React.ReactNode;}
+  children?: React.ReactNode;
+}
 
 export default class Gif extends React.PureComponent<GifProps> {
-  get gifUrl () {
+  get gifUrl() {
     // Hack until we are simply subscribing to Envoy ExporterHandler.
-    const maybeLocalFile = join(this.props.folder, 'animation.gif');
+    const maybeLocalFile = join(this.props.folder, "animation.gif");
     // If serving a local file, we append ?<current timestamp> to cache-bust.
-    return existsSync(maybeLocalFile) ? `${maybeLocalFile}?${Date.now()}` : this.props.urls.gif;
+    return existsSync(maybeLocalFile)
+      ? `${maybeLocalFile}?${Date.now()}`
+      : this.props.urls.gif;
   }
 
-  render () {
+  render() {
     return (
-      <div style={{textAlign: "center" as const }}>
+      <div style={{ textAlign: "center" as const }}>
         <div style={STYLES.imgWrapper}>
           <img src={this.gifUrl} style={STYLES.image} />
         </div>
-        <div style={{width: 'calc(100% + 20px)'}}>
+        <div style={{ width: "calc(100% + 20px)" }}>
           <LinkHolster
             linkAddress={this.props.urls.gif}
             showLoadingBar={false}

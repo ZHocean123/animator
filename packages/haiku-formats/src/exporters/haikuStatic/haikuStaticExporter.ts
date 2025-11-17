@@ -1,5 +1,6 @@
 import { BytecodeNode, BytecodeSummonable } from "@haiku/core/lib/api/index.js";
-import { writeFile } from "fs-extra";
+import fse from "fs-extra";
+const { writeFile } = fse;
 // @ts-ignore
 import * as Template from "haiku-serialization/src/bll/Template.js";
 // @ts-ignore

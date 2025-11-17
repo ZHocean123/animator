@@ -26,7 +26,8 @@ import * as ensureTrailingSlash from "haiku-serialization/src/utils/ensureTraili
 import logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
 import _ from "lodash-es";
-import { writeJSON } from "fs-extra";
+import fse from "fs-extra";
+const { writeJSON } = fse;
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { autoUpdater } from "electron-updater";

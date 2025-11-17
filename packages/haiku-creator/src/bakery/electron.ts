@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ErrorCallback, queue } from "async";
 import { BrowserWindow, ipcMain } from "electron";
-import { existsSync, mkdirpSync, removeSync, writeFile } from "fs-extra";
+import fse from "fs-extra";
+const { existsSync, mkdirpSync, removeSync, writeFile } = fse;
 // @ts-ignore
 import LoggerInstance from "haiku-serialization/src/utils/LoggerInstance.js";
 import * as path from "path";

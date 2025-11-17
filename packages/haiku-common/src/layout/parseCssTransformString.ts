@@ -4,7 +4,9 @@
 
 import parseCssValueString from "@haiku/core/lib/helpers/parseCssValueString.js";
 import Layout3D from "@haiku/core/lib/Layout3D.js";
-import cssMat4 from "haiku-vendor-legacy/lib/css-mat4/index.js";
+import * as cssMat4Module from "haiku-vendor-legacy/lib/css-mat4/index.js";
+
+const cssMat4 = cssMat4Module.default;
 import composedTransformsToTimelineProperties from "./composedTransformsToTimelineProperties";
 
 function degreesToRadians(d: number): number {

@@ -1,21 +1,22 @@
-import {existsSync} from 'fs-extra';
-import {HaikuShareUrls} from 'haiku-sdk-creator/lib/bll/Project.js';
-import {join} from 'path';
-import * as React from 'react';
-import Palette from '../../../Palette';
-import {LinkHolster} from '../LinkHolster';
+import fse from "fs-extra";
+const { existsSync } = fse;
+import { HaikuShareUrls } from "haiku-sdk-creator/lib/bll/Project.js";
+import { join } from "path";
+import * as React from "react";
+import Palette from "../../../Palette";
+import { LinkHolster } from "../LinkHolster";
 
 const STYLES = {
   videoWrapper: {
-    width: 'calc(100% + 20px)',
-    minHeight: '200px',
+    width: "calc(100% + 20px)",
+    minHeight: "200px",
     backgroundColor: Palette.GRAY,
-    overflow: 'hidden',
+    overflow: "hidden"
   } as React.CSSProperties,
   video: {
-    maxWidth: '100%',
-    maxHeight: 440,
-  },
+    maxWidth: "100%",
+    maxHeight: 440
+  }
 };
 
 export interface VideoProps {
@@ -25,24 +26,27 @@ export interface VideoProps {
   urls: HaikuShareUrls;
   folder: string;
 
-  children?: React.ReactNode;}
+  children?: React.ReactNode;
+}
 
 export default class Video extends React.PureComponent<VideoProps> {
-  get videoUrl () {
+  get videoUrl() {
     // Hack until we are simply subscribing to Envoy ExporterHandler.
-    const maybeLocalFile = join(this.props.folder, 'animation.mp4');
-    return existsSync(maybeLocalFile) ? `${maybeLocalFile}?${Date.now()}` : this.props.urls.video;
+    const maybeLocalFile = join(this.props.folder, "animation.mp4");
+    return existsSync(maybeLocalFile)
+      ? `${maybeLocalFile}?${Date.now()}`
+      : this.props.urls.video;
   }
 
-  render () {
+  render() {
     return (
-      <div style={{textAlign: "center" as const }}>
+      <div style={{ textAlign: "center" as const }}>
         <div style={STYLES.videoWrapper}>
           <video controls={true} style={STYLES.video}>
             <source src={this.videoUrl} type="video/mp4" />
           </video>
         </div>
-        <div style={{width: 'calc(100% + 20px)'}}>
+        <div style={{ width: "calc(100% + 20px)" }}>
           <LinkHolster
             linkAddress={this.props.urls.video}
             showLoadingBar={false}

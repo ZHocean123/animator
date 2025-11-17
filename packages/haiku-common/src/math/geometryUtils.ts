@@ -7,8 +7,11 @@ import { distance, Vec2 } from "@haiku/core/lib/helpers/PathUtils.js";
 import SVGPoints from "@haiku/core/lib/helpers/SVGPoints.js";
 import Layout3D from "@haiku/core/lib/Layout3D.js";
 import { CurveSpec } from "@haiku/core/lib/vendor/svg-points/types.js";
-import create from "haiku-vendor-legacy/lib/gl-mat4/create.js";
-import invert from "haiku-vendor-legacy/lib/gl-mat4/invert.js";
+import * as createModule from "haiku-vendor-legacy/lib/gl-mat4/create.js";
+import * as invertModule from "haiku-vendor-legacy/lib/gl-mat4/invert.js";
+
+const create = createModule.default;
+const invert = invertModule.default;
 
 // Number of pixels allowance for a line to be selected
 export const DEFAULT_LINE_SELECTION_THRESHOLD = 5;

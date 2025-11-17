@@ -1,12 +1,13 @@
 // @ts-ignore
 import { decodeBase64 } from "@sigma/rust-base64";
-import {
+import fse from "fs-extra";
+const {
   ensureFileSync,
   existsSync,
   mkdirpSync,
   readFileSync,
   writeFileSync
-} from "fs-extra";
+} = fse;
 import { Experiment, experimentIsEnabled } from "haiku-common";
 // @ts-ignore
 import { LOCKS } from "haiku-serialization/src/bll/Lock.js";

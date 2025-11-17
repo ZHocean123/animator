@@ -2,9 +2,12 @@ import {
   BytecodeNode,
   BytecodeNodeAttributes,
   BytecodeNodeStyle
-} from "@haiku/core/lib/api.js";
-import toStyle from "haiku-vendor-legacy/lib/to-style/index.js";
-import xmlParser from "haiku-vendor-legacy/lib/xml-parser/index.js";
+} from "@haiku/core/lib/api/index.js";
+import * as toStyleModule from "haiku-vendor-legacy/lib/to-style/index.js";
+import * as xmlParserModule from "haiku-vendor-legacy/lib/xml-parser/index.js";
+
+const toStyle = toStyleModule.default;
+const xmlParser = xmlParserModule.default;
 
 const styleStringToObject = toStyle.object;
 
