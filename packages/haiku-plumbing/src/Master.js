@@ -12,7 +12,7 @@ import * as File from "haiku-serialization/src/bll/File.js";
 import * as Project from "haiku-serialization/src/bll/Project.js";
 import * as Sketch from "haiku-serialization/src/bll/Sketch.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
-import figmaModule from "haiku-serialization/src/bll/Figma.js";
+import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma } = figmaModule;
 import * as Illustrator from "haiku-serialization/src/bll/Illustrator.js";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";

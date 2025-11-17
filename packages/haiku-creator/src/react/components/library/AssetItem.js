@@ -4,7 +4,7 @@ import * as Radium from "radium";
 import * as Color from "color";
 import * as lodash from "lodash-es";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
-import figmaModule from "haiku-serialization/src/bll/Figma.js";
+import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma } = figmaModule;
 import { Draggable } from "react-drag-and-drop";
 import AssetList from "./AssetList";

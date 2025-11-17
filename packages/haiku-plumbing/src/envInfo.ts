@@ -1,8 +1,9 @@
-import {clone} from 'lodash-es';
-import * as path from 'path';
-import {argv} from 'yargs';
+import { clone } from "lodash-es";
+import * as path from "path";
+import yargs from "yargs";
+const { argv } = yargs;
 
-export default function envInfo () {
+export default function envInfo() {
   const args = clone(argv._);
   const subcommand = args.shift();
   const flags = clone(argv);
@@ -12,7 +13,7 @@ export default function envInfo () {
   let folder = flags.folder;
   if (folder && folder[0] !== path.sep) {
     if (path.resolve(folder) !== folder) {
-      folder = path.join(process.cwd(), folder || '.');
+      folder = path.join(process.cwd(), folder || ".");
     }
   }
 
@@ -28,7 +29,7 @@ export default function envInfo () {
     socket.host = flags.host;
   }
 
-  const out = {args, subcommand, flags, folder, socket};
+  const out = { args, subcommand, flags, folder, socket };
 
   return out;
 }

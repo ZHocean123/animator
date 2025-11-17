@@ -11,7 +11,7 @@ import Palette from "haiku-ui-common/lib/Palette.js";
 import { LoadingTopBar } from "haiku-ui-common/lib/react/LoadingTopBar.js";
 import { didAskedForSketch } from "haiku-serialization/src/utils/HaikuHomeDir.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
-import figmaModule from "haiku-serialization/src/bll/Figma.js";
+import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma, MAX_ITEMS_TO_IMPORT } = figmaModule;
 import * as sketchUtils from "haiku-serialization/src/utils/sketchUtils.js";
 import SketchDownloader from "../SketchDownloader";

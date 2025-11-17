@@ -1,5 +1,5 @@
 // @ts-ignore
-import figmaModule from "haiku-serialization/src/bll/Figma.js";
+import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma } = figmaModule;
 import { ImportSpec, MaybeAsync, TokenExchange } from ".";
 
