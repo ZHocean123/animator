@@ -2,17 +2,17 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import parseCssValueString from '@haiku/core/lib/helpers/parseCssValueString.js';
-import Layout3D from '@haiku/core/lib/Layout3D.js';
-import cssMat4 from 'haiku-vendor-legacy/lib/css-mat4.js';
-import composedTransformsToTimelineProperties from './composedTransformsToTimelineProperties';
+import parseCssValueString from "@haiku/core/lib/helpers/parseCssValueString.js";
+import Layout3D from "@haiku/core/lib/Layout3D.js";
+import cssMat4 from "haiku-vendor-legacy/lib/css-mat4/index.js";
+import composedTransformsToTimelineProperties from "./composedTransformsToTimelineProperties";
 
-function degreesToRadians (d: number): number {
-  return d * Math.PI / 180;
+function degreesToRadians(d: number): number {
+  return (d * Math.PI) / 180;
 }
 
-function separate (str: string) {
-  const bits = str.split('(');
+function separate(str: string) {
+  const bits = str.split("(");
   const type = bits[0];
   return {
     type,
@@ -23,19 +23,28 @@ function separate (str: string) {
     // Note the variations of comma, space, and decimals that are possible.
     // This parsing step individuates them, producing an array of objects that
     // describe the numeric value and the inferred unit.
-    values: bits[1].replace(')', '').split(/\s*[, ]+\s*/gi).map((str2) => parseCssValueString(str2, type)),
+    values: bits[1]
+      .replace(")", "")
+      .split(/\s*[, ]+\s*/gi)
+      .map(str2 => parseCssValueString(str2, type))
   };
 }
 
-export default function parseCssTransformString (inStr: string, epsilon: number = 1e3): Record<string, any> {
+export default function parseCssTransformString(
+  inStr: string,
+  epsilon: number = 1e3
+): Record<string, any> {
   const out = {};
 
   if (!inStr) {
     return out;
   }
 
-  const str: string = inStr.toLowerCase().replace(';', '').trim();
-  if (str === 'none') {
+  const str: string = inStr
+    .toLowerCase()
+    .replace(";", "")
+    .trim();
+  if (str === "none") {
     return out;
   }
 
@@ -46,114 +55,146 @@ export default function parseCssTransformString (inStr: string, epsilon: number 
 
   const specs = parts.map(separate);
 
-  const matrices = specs.map((spec) => {
+  const matrices = specs.map(spec => {
     const layout = {
       translate: [0, 0, 0],
       rotate: [0, 0, 0],
       scale: [1, 1, 1],
-      skew: [0, 0],
+      skew: [0, 0]
     };
 
     switch (spec.type) {
       // 1D
-      case 'rotatex':
+      case "rotatex":
         layout.rotate[0] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         break;
-      case 'rotatey':
+      case "rotatey":
         layout.rotate[1] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         break;
-      case 'rotatez':
+      case "rotatez":
         layout.rotate[2] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         break;
-      case 'translatex':
+      case "translatex":
         layout.translate[0] = spec.values[0].value;
         break;
-      case 'translatey':
+      case "translatey":
         layout.translate[1] = spec.values[0].value;
         break;
-      case 'translatez':
+      case "translatez":
         layout.translate[2] = spec.values[0].value;
         break;
-      case 'scalex':
+      case "scalex":
         layout.scale[0] = spec.values[0].value;
         break;
-      case 'scaley':
+      case "scaley":
         layout.scale[1] = spec.values[0].value;
         break;
-      case 'scalez':
+      case "scalez":
         layout.scale[2] = spec.values[0].value;
         break;
-      case 'skewx':
+      case "skewx":
         layout.skew[0] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         break;
-      case 'skewy':
+      case "skewy":
         layout.skew[1] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         break;
 
       // 2D
-      case 'rotate':
+      case "rotate":
         layout.rotate[2] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         if (spec.values.length === 3) {
           // We are doing rotation about a point, so we have to offset translation….
           const cosr = Math.cos(layout.rotate[2]);
-          const sinr =  Math.sin(layout.rotate[2]);
-          layout.translate[0] = spec.values[1].value * (1 - cosr) + sinr * spec.values[2].value;
-          layout.translate[1] = spec.values[2].value * (1 - cosr) - sinr * spec.values[1].value;
+          const sinr = Math.sin(layout.rotate[2]);
+          layout.translate[0] =
+            spec.values[1].value * (1 - cosr) + sinr * spec.values[2].value;
+          layout.translate[1] =
+            spec.values[2].value * (1 - cosr) - sinr * spec.values[1].value;
         }
         break;
-      case 'scale':
+      case "scale":
         layout.scale[0] = spec.values[0].value;
-        layout.scale[1] = spec.values[1] ? spec.values[1].value : spec.values[0].value;
+        layout.scale[1] = spec.values[1]
+          ? spec.values[1].value
+          : spec.values[0].value;
         break;
-      case 'skew':
+      case "skew":
         layout.skew[0] =
-          spec.values[0].unit === 'deg' ? degreesToRadians(spec.values[0].value) : spec.values[0].value;
+          spec.values[0].unit === "deg"
+            ? degreesToRadians(spec.values[0].value)
+            : spec.values[0].value;
         if (spec.values[1]) {
           layout.skew[1] =
-            spec.values[1].unit === 'deg' ? degreesToRadians(spec.values[1].value) : spec.values[1].value;
+            spec.values[1].unit === "deg"
+              ? degreesToRadians(spec.values[1].value)
+              : spec.values[1].value;
         }
         break;
-      case 'translate':
+      case "translate":
         layout.translate[0] = spec.values[0].value;
         layout.translate[1] = spec.values[1] ? spec.values[1].value : 0;
         break;
-      case 'matrix':
+      case "matrix":
         return [
-          spec.values[0].value, spec.values[1].value, 0, 0,
-          spec.values[2].value, spec.values[3].value, 0, 0,
-          0, 0, 1, 0,
-          spec.values[4].value, spec.values[5].value, 0, 1,
+          spec.values[0].value,
+          spec.values[1].value,
+          0,
+          0,
+          spec.values[2].value,
+          spec.values[3].value,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          spec.values[4].value,
+          spec.values[5].value,
+          0,
+          1
         ];
 
       // 3D
-      case 'rotate3d':
+      case "rotate3d":
         if (spec.values.length !== 3) {
           break;
         }
-        layout.rotate = spec.values.map((axisSpec) => {
+        layout.rotate = spec.values.map(axisSpec => {
           if (axisSpec.value === 0) {
             return 0;
           }
 
-          if (axisSpec.unit === 'deg') {
+          if (axisSpec.unit === "deg") {
             return degreesToRadians(axisSpec.value);
           }
 
           return axisSpec.value;
         });
         break;
-      case 'scale3d':
+      case "scale3d":
         layout.scale[0] = spec.values[0].value;
         layout.scale[1] = spec.values[1].value;
         layout.scale[2] = spec.values[2].value;
         break;
-      case 'translate3d':
+      case "translate3d":
         layout.translate[0] = spec.values[0].value;
         layout.translate[1] = spec.values[1].value;
         layout.translate[2] = spec.values[2].value;
@@ -161,13 +202,15 @@ export default function parseCssTransformString (inStr: string, epsilon: number 
 
       // Special case: If we get a matrix3d, we can just use that matrix itself instead of flowing through the layout
       // calculator
-      case 'matrix3d':
-        return Layout3D.copyMatrix(spec.values.map((val) => {
-          return val.value;
-        }));
+      case "matrix3d":
+        return Layout3D.copyMatrix(
+          spec.values.map(val => {
+            return val.value;
+          })
+        );
 
       default:
-        console.warn('No CSS transform parser available for ' + spec.type);
+        console.warn("No CSS transform parser available for " + spec.type);
         break;
     }
 
@@ -175,5 +218,11 @@ export default function parseCssTransformString (inStr: string, epsilon: number 
     return cssMat4([], layout);
   });
 
-  return composedTransformsToTimelineProperties(out, matrices, false, null, epsilon);
+  return composedTransformsToTimelineProperties(
+    out,
+    matrices,
+    false,
+    null,
+    epsilon
+  );
 }

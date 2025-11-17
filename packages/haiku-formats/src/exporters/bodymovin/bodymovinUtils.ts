@@ -1,24 +1,24 @@
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
-import {CurveSpec} from '@haiku/core/lib/vendor/svg-points/types.js';
+import SVGPoints from "@haiku/core/lib/helpers/SVGPoints.js";
+import { CurveSpec } from "@haiku/core/lib/vendor/svg-points/types.js";
 
-import {BytecodeTimelineProperty} from '@haiku/core/lib/api.js';
+import { BytecodeTimelineProperty } from "@haiku/core/lib/api/index.js";
 import {
   AnimationKey,
   PathKey,
   PropertyKey,
   ShapeKey,
   ShapeType,
-  TransformKey,
-} from './bodymovinEnums';
+  TransformKey
+} from "./bodymovinEnums";
 import {
   BodymovinCoordinates,
   BodymovinDimensions,
   BodymovinPathComponent,
   BodymovinProperty,
-  Keyframe,
-} from './bodymovinTypes';
+  Keyframe
+} from "./bodymovinTypes";
 
-const {polyPointsStringToPoints} = SVGPoints;
+const { polyPointsStringToPoints } = SVGPoints;
 
 /**
  * Reducer for an animated timeline property.
@@ -72,19 +72,36 @@ const animatedTimelineReducer = (accumulator: any, currentValue: any) => {
   }
 
   currentValue[PropertyKey.Value].forEach((keyframe: any, index: any) => {
-    if (accumulator[PropertyKey.Value][index][AnimationKey.Time] !== keyframe[AnimationKey.Time]) {
+    if (
+      accumulator[PropertyKey.Value][index][AnimationKey.Time] !==
+      keyframe[AnimationKey.Time]
+    ) {
       // This should never happen! The work done in BodymovinExporter.alignCurveKeyframes() should guarantee keyframes
       // are aligned for values that are animated together.
-      throw new Error('Encountered mismatched keyframe times in an animated timeline!');
+      throw new Error(
+        "Encountered mismatched keyframe times in an animated timeline!"
+      );
     }
 
     if (index !== currentValue[PropertyKey.Value].length - 1) {
-      accumulator[PropertyKey.Value][index][AnimationKey.Start].push(keyframe[AnimationKey.Start][0]);
-      accumulator[PropertyKey.Value][index][AnimationKey.End].push(keyframe[AnimationKey.End][0]);
-      accumulator[PropertyKey.Value][index][AnimationKey.BezierIn].x.push(keyframe[AnimationKey.BezierIn].x[0]);
-      accumulator[PropertyKey.Value][index][AnimationKey.BezierIn].y.push(keyframe[AnimationKey.BezierIn].y[0]);
-      accumulator[PropertyKey.Value][index][AnimationKey.BezierOut].x.push(keyframe[AnimationKey.BezierOut].x[0]);
-      accumulator[PropertyKey.Value][index][AnimationKey.BezierOut].y.push(keyframe[AnimationKey.BezierOut].y[0]);
+      accumulator[PropertyKey.Value][index][AnimationKey.Start].push(
+        keyframe[AnimationKey.Start][0]
+      );
+      accumulator[PropertyKey.Value][index][AnimationKey.End].push(
+        keyframe[AnimationKey.End][0]
+      );
+      accumulator[PropertyKey.Value][index][AnimationKey.BezierIn].x.push(
+        keyframe[AnimationKey.BezierIn].x[0]
+      );
+      accumulator[PropertyKey.Value][index][AnimationKey.BezierIn].y.push(
+        keyframe[AnimationKey.BezierIn].y[0]
+      );
+      accumulator[PropertyKey.Value][index][AnimationKey.BezierOut].x.push(
+        keyframe[AnimationKey.BezierOut].x[0]
+      );
+      accumulator[PropertyKey.Value][index][AnimationKey.BezierOut].y.push(
+        keyframe[AnimationKey.BezierOut].y[0]
+      );
     }
   });
 
@@ -97,26 +114,34 @@ const animatedTimelineReducer = (accumulator: any, currentValue: any) => {
  * @param currentValue
  * @returns {{}}
  */
-export const compoundTimelineReducer = (accumulator: any, currentValue: any): any => {
+export const compoundTimelineReducer = (
+  accumulator: any,
+  currentValue: any
+): any => {
   if (currentValue[PropertyKey.Animated] === 1) {
     return animatedTimelineReducer(accumulator, currentValue);
   }
 
   if (Object.keys(accumulator).length === 0) {
     return {
-      ...currentValue, [PropertyKey.Value]: [currentValue[PropertyKey.Value]],
+      ...currentValue,
+      [PropertyKey.Value]: [currentValue[PropertyKey.Value]]
     };
   }
 
   return {
-    ...accumulator, [PropertyKey.Value]: accumulator[PropertyKey.Value].concat(currentValue[PropertyKey.Value]),
+    ...accumulator,
+    [PropertyKey.Value]: accumulator[PropertyKey.Value].concat(
+      currentValue[PropertyKey.Value]
+    )
   };
 };
 
 /**
  * Lazy getter for the Bodymovin version. Only called if the exporter is requested.
  */
-export const getBodymovinVersion = (): string => require('../../../package.json').devDependencies['lottie-web'];
+export const getBodymovinVersion = (): string =>
+  require("../../../package.json").devDependencies["lottie-web"];
 
 /**
  * Produce a fixed property for a transform.
@@ -126,7 +151,7 @@ export const getBodymovinVersion = (): string => require('../../../package.json'
 export const getFixedPropertyValue = (fixedValue: any): BodymovinProperty => {
   return {
     [PropertyKey.Animated]: 0,
-    [PropertyKey.Value]: fixedValue,
+    [PropertyKey.Value]: fixedValue
   } as BodymovinProperty;
 };
 
@@ -152,9 +177,12 @@ export const alwaysArray = (maybeArray: any): any[] => {
  * @param {number} basis
  * @returns {number}
  */
-export const alwaysAbsolute = (maybePercent: string|number, basis: number): number => {
-  if (typeof maybePercent === 'string' && /%$/.test(maybePercent)) {
-    return parseFloat(maybePercent.replace('%', '')) * basis / 100;
+export const alwaysAbsolute = (
+  maybePercent: string | number,
+  basis: number
+): number => {
+  if (typeof maybePercent === "string" && /%$/.test(maybePercent)) {
+    return (parseFloat(maybePercent.replace("%", "")) * basis) / 100;
   }
 
   return Number(maybePercent);
@@ -181,23 +209,39 @@ export const getShapeDimensions = (shape: any): BodymovinDimensions => {
       // currently only that we might fail to perfectly render a gradient fill, so it's not the end of the world!
       const vertices = [];
       if (shape[ShapeKey.Vertices][PropertyKey.Animated]) {
-        vertices.push(...shape[ShapeKey.Vertices][PropertyKey.Value].reduce(
-          (accumulator: BodymovinDimensions[], value: Keyframe<BodymovinDimensions>) => {
-            if (value.hasOwnProperty(AnimationKey.Start)) {
-              accumulator.push(...value[AnimationKey.Start], ...value[AnimationKey.End]);
-            }
-            return accumulator;
-          }, []));
+        vertices.push(
+          ...shape[ShapeKey.Vertices][PropertyKey.Value].reduce(
+            (
+              accumulator: BodymovinDimensions[],
+              value: Keyframe<BodymovinDimensions>
+            ) => {
+              if (value.hasOwnProperty(AnimationKey.Start)) {
+                accumulator.push(
+                  ...value[AnimationKey.Start],
+                  ...value[AnimationKey.End]
+                );
+              }
+              return accumulator;
+            },
+            []
+          )
+        );
       } else {
-        vertices.push(...shape[ShapeKey.Vertices][PropertyKey.Value][PathKey.Points]);
+        vertices.push(
+          ...shape[ShapeKey.Vertices][PropertyKey.Value][PathKey.Points]
+        );
       }
 
       return [
         Math.max(...vertices.map((vertex: number[]) => vertex[0])),
-        Math.max(...vertices.map((vertex: number[]) => vertex[1])),
+        Math.max(...vertices.map((vertex: number[]) => vertex[1]))
       ];
     default:
-      throw new Error(`Invalid request to get dimensions for shape type: ${shape[ShapeKey.Type]}`);
+      throw new Error(
+        `Invalid request to get dimensions for shape type: ${
+          shape[ShapeKey.Type]
+        }`
+      );
   }
 };
 
@@ -210,7 +254,7 @@ export const getShapeDimensions = (shape: any): BodymovinDimensions => {
 export const maybeApplyMutatorToProperty = (
   property: any,
   mutator: (param: any) => any,
-  disableRecursion: boolean = false,
+  disableRecursion: boolean = false
 ): any => {
   if (mutator === undefined) {
     return property;
@@ -229,9 +273,15 @@ export const maybeApplyMutatorToProperty = (
  * @param vertices
  * @private
  */
-const translateInterpolationPoints = (points: BodymovinPathComponent, vertices: BodymovinPathComponent) => {
+const translateInterpolationPoints = (
+  points: BodymovinPathComponent,
+  vertices: BodymovinPathComponent
+) => {
   points.forEach((value, index) => {
-    points[index] = [value[0] - vertices[index][0], value[1] - vertices[index][1]];
+    points[index] = [
+      value[0] - vertices[index][0],
+      value[1] - vertices[index][1]
+    ];
   });
 };
 
@@ -240,15 +290,20 @@ const translateInterpolationPoints = (points: BodymovinPathComponent, vertices: 
  * @returns {[key in PathKey]: BodymovinPathComponent}
  * @param points
  */
-export const pathToInterpolationTrace = (points: CurveSpec[]): Record<PathKey, any> => {
+export const pathToInterpolationTrace = (
+  points: CurveSpec[]
+): Record<PathKey, any> => {
   const vertices: BodymovinPathComponent = [];
   const interpolationInPoints: BodymovinPathComponent = [];
   const interpolationOutPoints: BodymovinPathComponent = [];
 
   // Force the last vertex to be the same as the first so we can use the same algorithm for closed and open paths.
   // The renderer will respect the value of "closed" we pass below.
-  if (points.length > 1 &&
-    (points[0].x !== points[points.length - 1].x || points[0].y !== points[points.length - 1].y)) {
+  if (
+    points.length > 1 &&
+    (points[0].x !== points[points.length - 1].x ||
+      points[0].y !== points[points.length - 1].y)
+  ) {
     points.push(points[0]);
   }
 
@@ -260,20 +315,20 @@ export const pathToInterpolationTrace = (points: CurveSpec[]): Record<PathKey, a
     }
     if (index === 0) {
       // We are at a moveto. This pushes a new vertex onto our trace.
-      vertices.push(lastVertex = [point.x, point.y]);
+      vertices.push((lastVertex = [point.x, point.y]));
     } else if (point.curve) {
       // TODO: Actually check the curve for validity (e.g. NaNs where NaNs are illegal).
-      if (point.curve.type !== 'cubic') {
+      if (point.curve.type !== "cubic") {
         // TODO: Support quadratic beziers and arcs.
         throw new Error(`Unsupported curve type: ${point.curve.type}!`);
       }
       interpolationOutPoints.push([point.curve.x1, point.curve.y1]); // This is the last out point.
       interpolationInPoints.push([point.curve.x2, point.curve.y2]); // This is the current in point.
-      vertices.push(lastVertex = [point.x, point.y]);
+      vertices.push((lastVertex = [point.x, point.y]));
     } else {
       // We are at a lineto. This pushes a new vertex onto our trace and creates a "null interpolation".
       interpolationOutPoints.push(lastVertex);
-      vertices.push(lastVertex = [point.x, point.y]);
+      vertices.push((lastVertex = [point.x, point.y]));
       interpolationInPoints.push(lastVertex);
     }
   });
@@ -299,7 +354,7 @@ export const pathToInterpolationTrace = (points: CurveSpec[]): Record<PathKey, a
     [PathKey.Closed]: closed,
     [PathKey.Points]: vertices,
     [PathKey.InterpolationIn]: interpolationInPoints,
-    [PathKey.InterpolationOut]: interpolationOutPoints,
+    [PathKey.InterpolationOut]: interpolationOutPoints
   };
 };
 
@@ -308,7 +363,9 @@ export const pathToInterpolationTrace = (points: CurveSpec[]): Record<PathKey, a
  * @param {string} svgPoints
  * @returns {[key in PathKey]: BodymovinPathComponent}
  */
-export const pointsToInterpolationTrace = (svgPoints: string|[number, number][]): Record<PathKey, any> => {
+export const pointsToInterpolationTrace = (
+  svgPoints: string | [number, number][]
+): Record<PathKey, any> => {
   const chunkedPoints = polyPointsStringToPoints(svgPoints);
 
   // To support Bodymovin export format, we have to create a "dummy curve" with null interpolation points.
@@ -319,7 +376,7 @@ export const pointsToInterpolationTrace = (svgPoints: string|[number, number][])
     [PathKey.Closed]: true,
     [PathKey.Points]: chunkedPoints,
     [PathKey.InterpolationIn]: dummyCurve,
-    [PathKey.InterpolationOut]: dummyCurve,
+    [PathKey.InterpolationOut]: dummyCurve
   };
 };
 
@@ -333,7 +390,9 @@ export const pointsToInterpolationTrace = (svgPoints: string|[number, number][])
  * @param {string} path
  * @returns {string[]}
  */
-export const decomposePath = (path: string|CurveSpec[]): {points: CurveSpec[], closed: boolean}[] => {
+export const decomposePath = (
+  path: string | CurveSpec[]
+): { points: CurveSpec[]; closed: boolean }[] => {
   if (!Array.isArray(path)) {
     return decomposePath(SVGPoints.pathToPoints(path));
   }
@@ -348,11 +407,12 @@ export const decomposePath = (path: string|CurveSpec[]): {points: CurveSpec[], c
 
   let lastIndex = 0;
   for (let i = 0; i < path.length; ++i) {
-    const isImplicitlyClosed = path[i].x === path[lastIndex].x && path[i].y === path[lastIndex].y;
+    const isImplicitlyClosed =
+      path[i].x === path[lastIndex].x && path[i].y === path[lastIndex].y;
     if (path[i].closed || i === path.length - 1) {
       allClosedPaths.push({
         points: path.slice(lastIndex, i + 1),
-        closed: path[i].closed || isImplicitlyClosed,
+        closed: path[i].closed || isImplicitlyClosed
       });
       lastIndex = i + 1;
     }
@@ -360,7 +420,7 @@ export const decomposePath = (path: string|CurveSpec[]): {points: CurveSpec[], c
     if (path[i].moveTo && i !== lastIndex) {
       allClosedPaths.push({
         points: path.slice(lastIndex, i),
-        closed: isImplicitlyClosed,
+        closed: isImplicitlyClosed
       });
       lastIndex = i;
     }
@@ -376,8 +436,12 @@ export const decomposePath = (path: string|CurveSpec[]): {points: CurveSpec[], c
  * @param timelineProperty
  * @returns {number[]}
  */
-export const keyframesFromTimelineProperty = (timelineProperty: BytecodeTimelineProperty): number[] => {
-  const keyframes: number[] = Object.keys(timelineProperty).map((i) => parseInt(i, 10));
+export const keyframesFromTimelineProperty = (
+  timelineProperty: BytecodeTimelineProperty
+): number[] => {
+  const keyframes: number[] = Object.keys(timelineProperty).map(i =>
+    parseInt(i, 10)
+  );
   keyframes.sort((a, b) => a - b);
   return keyframes;
 };
@@ -387,8 +451,10 @@ export const keyframesFromTimelineProperty = (timelineProperty: BytecodeTimeline
  *
  * TODO: Make this more performant by utilizing the allowed values of the timeline.
  */
-export const timelineValuesAreEquivalent = (valueA: any, valueB: any): boolean =>
-  JSON.stringify(valueA) === JSON.stringify(valueB);
+export const timelineValuesAreEquivalent = (
+  valueA: any,
+  valueB: any
+): boolean => JSON.stringify(valueA) === JSON.stringify(valueB);
 
 /**
  * toJSON() implementation, made safe for the lottie-android streaming parser.
@@ -396,18 +462,18 @@ export const timelineValuesAreEquivalent = (valueA: any, valueB: any): boolean =
  * That streaming parser always skips keys until it encounters the `ty` key, so we need to force it to come first.
  * @returns {Object}
  */
-export const lottieAndroidStreamSafeToJson = function (): any {
+export const lottieAndroidStreamSafeToJson = function(): any {
   if (!this.hasOwnProperty(ShapeKey.Type)) {
     return this;
   }
 
-  const clone = {...this};
+  const clone = { ...this };
   const type = clone[ShapeKey.Type];
 
   // Foist the `ty` key to artificially be placed first during stringification.
   delete clone[ShapeKey.Type];
   return {
     [ShapeKey.Type]: type,
-    ...clone,
+    ...clone
   };
 };

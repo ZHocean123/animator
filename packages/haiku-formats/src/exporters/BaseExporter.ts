@@ -1,17 +1,22 @@
-import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter.js';
+import HaikuDOMAdapter from "@haiku/core/lib/adapters/dom/HaikuDOMAdapter.js";
 import {
   BytecodeTimelineProperties,
   HaikuBytecode,
-  ThreeDimensionalLayoutProperty,
-} from '@haiku/core/lib/api.js';
+  ThreeDimensionalLayoutProperty
+} from "@haiku/core/lib/api/index.js";
 
 export default class BaseExporter {
-  constructor (protected readonly bytecode: HaikuBytecode, protected readonly componentFolder: string) {}
+  constructor(
+    protected readonly bytecode: HaikuBytecode,
+    protected readonly componentFolder: string
+  ) {}
 
   /**
    * Internal method for visiting every timeline and applying a callback to it.
    */
-  protected visitAllTimelines (callback: (timeline: BytecodeTimelineProperties) => void): void {
+  protected visitAllTimelines(
+    callback: (timeline: BytecodeTimelineProperties) => void
+  ): void {
     for (const timelineId in this.bytecode.timelines) {
       for (const haikuId in this.bytecode.timelines[timelineId]) {
         if (/^__/.test(haikuId)) {
@@ -25,27 +30,26 @@ export default class BaseExporter {
   /**
    * Internal method for visiting every timeline property and applying a callback to it.
    */
-  protected visitAllTimelineProperties (callback: (timeline: BytecodeTimelineProperties, property: string) => void): void {
-    this.visitAllTimelines((timeline) => {
+  protected visitAllTimelineProperties(
+    callback: (timeline: BytecodeTimelineProperties, property: string) => void
+  ): void {
+    this.visitAllTimelines(timeline => {
       for (const property in timeline) {
         callback(timeline, property);
       }
     });
   }
 
-  protected getComponentSize (): ThreeDimensionalLayoutProperty {
+  protected getComponentSize(): ThreeDimensionalLayoutProperty {
     const factory = HaikuDOMAdapter(this.bytecode);
-    const component = factory(
-      null,
-      {
-        mixpanel: false,
-        contextMenu: 'disabled',
-        hotEditingMode: true,
-        autoplay: false,
-      },
-    );
+    const component = factory(null, {
+      mixpanel: false,
+      contextMenu: "disabled",
+      hotEditingMode: true,
+      autoplay: false
+    });
 
-    const size = {...component.size};
+    const size = { ...component.size };
 
     // We only want to run migrations and perform auto-sizing. The component can go out of scope now.
     component.context.destroy();

@@ -1,14 +1,15 @@
-import {BytecodeNode, BytecodeSummonable} from '@haiku/core/lib/api.js';
-import {writeFile} from 'fs-extra';
+import { BytecodeNode, BytecodeSummonable } from "@haiku/core/lib/api/index.js";
+import { writeFile } from "fs-extra";
 // @ts-ignore
-import * as Template from 'haiku-serialization/src/bll/Template.js';
+import * as Template from "haiku-serialization/src/bll/Template.js";
 // @ts-ignore
-import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance.js';
-import {ExporterInterface} from '..';
-import BaseExporter from '../BaseExporter';
-import {evaluateInjectedFunctionInExportContext} from '../injectables';
+import * as LoggerInstance from "haiku-serialization/src/utils/LoggerInstance.js";
+import { ExporterInterface } from "..";
+import BaseExporter from "../BaseExporter";
+import { evaluateInjectedFunctionInExportContext } from "../injectables";
 
-export class HaikuStaticExporter extends BaseExporter implements ExporterInterface {
+export class HaikuStaticExporter extends BaseExporter
+  implements ExporterInterface {
   /**
    * Whether we have already parsed the bytecode passed to the object on construction.
    * @type {boolean}
@@ -20,22 +21,25 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
    *
    * Essentially replaces all non-scalar timeline values with the equivalent scalar value of edit mode.
    */
-  private parseBytecode (): void {
+  private parseBytecode(): void {
     delete this.bytecode.eventHandlers;
     this.visitAllTimelineProperties((timeline, property) => {
-      if (typeof timeline[property] !== 'object') {
-        timeline[property] = {0: {value: timeline[property]}};
+      if (typeof timeline[property] !== "object") {
+        timeline[property] = { 0: { value: timeline[property] } };
       }
       const timelineProperty = timeline[property];
       for (const keyframe in timelineProperty) {
-        const {value} = timelineProperty[keyframe];
-        if (typeof value !== 'function') {
+        const { value } = timelineProperty[keyframe];
+        if (typeof value !== "function") {
           continue;
         }
 
         timelineProperty[keyframe] = {
-          value: evaluateInjectedFunctionInExportContext(value as BytecodeSummonable, this.bytecode),
-          curve: timelineProperty[keyframe].curve,
+          value: evaluateInjectedFunctionInExportContext(
+            value as BytecodeSummonable,
+            this.bytecode
+          ),
+          curve: timelineProperty[keyframe].curve
         };
       }
     });
@@ -46,20 +50,30 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
       this.bytecode.template,
       null,
       (node: BytecodeNode) => {
-        if (typeof node.elementName === 'string' || !node.elementName.template || !node.elementName.states) {
+        if (
+          typeof node.elementName === "string" ||
+          !node.elementName.template ||
+          !node.elementName.states
+        ) {
           return;
         }
 
         node.elementName.metadata.root = this.bytecode.metadata.root;
-        const timeline = this.bytecode.timelines.Default[`haiku:${node.attributes['haiku-id']}`];
+        const timeline = this.bytecode.timelines.Default[
+          `haiku:${node.attributes["haiku-id"]}`
+        ];
         for (const property in timeline) {
           if (node.elementName.states[property]) {
-            node.elementName.states[property].value = timeline[property][0] && timeline[property][0].value;
+            node.elementName.states[property].value =
+              timeline[property][0] && timeline[property][0].value;
           }
         }
 
-        node.elementName = (new HaikuStaticExporter(node.elementName, this.componentFolder)).rawOutput();
-      },
+        node.elementName = new HaikuStaticExporter(
+          node.elementName,
+          this.componentFolder
+        ).rawOutput();
+      }
     );
   }
 
@@ -67,7 +81,7 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
    * Method to provide raw output.
    * @returns {{}}
    */
-  rawOutput (): any {
+  rawOutput(): any {
     if (!this.bytecodeParsed) {
       this.parseBytecode();
     }
@@ -80,7 +94,7 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
    * Method to provide binary output.
    * @returns {{}}
    */
-  binaryOutput (): string {
+  binaryOutput(): string {
     if (!this.bytecodeParsed) {
       this.parseBytecode();
     }
@@ -92,13 +106,15 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
    * Interface method to write binary output out to a file.
    * @returns {Promise<void>}
    */
-  writeToFile (filename: string|Buffer): Promise<void> {
+  writeToFile(filename: string | Buffer): Promise<void> {
     try {
       return writeFile(filename, this.binaryOutput());
     } catch (e) {
-      LoggerInstance.error(`[formats] caught exception during static export: ${e.toString()}`);
+      LoggerInstance.error(
+        `[formats] caught exception during static export: ${e.toString()}`
+      );
     }
 
-    return writeFile(filename, '{}');
+    return writeFile(filename, "{}");
   }
 }

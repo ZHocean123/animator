@@ -1,16 +1,21 @@
-import {BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty} from '@haiku/core/lib/api.js';
-import {LAYOUT_3D_VANITIES} from '@haiku/core/lib/HaikuComponent.js';
-import Layout3D from '@haiku/core/lib/Layout3D.js';
-import composedTransformsToTimelineProperties,
-  {ComposedTransformSpec} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
-import {initialValueOr} from './timelineUtils';
+import {
+  BytecodeTimelineProperties,
+  LayoutSpec,
+  ThreeDimensionalLayoutProperty
+} from "@haiku/core/lib/api/index.js";
+import { LAYOUT_3D_VANITIES } from "@haiku/core/lib/HaikuComponent.js";
+import Layout3D from "@haiku/core/lib/Layout3D.js";
+import composedTransformsToTimelineProperties, {
+  ComposedTransformSpec
+} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
+import { initialValueOr } from "./timelineUtils";
 
-const {createLayoutSpec, computeMatrix} = Layout3D;
+const { createLayoutSpec, computeMatrix } = Layout3D;
 
 export const enum LayoutPropertyType {
   Unknown = 0,
   Additive = 1,
-  Multiplicative = 2,
+  Multiplicative = 2
 }
 
 /**
@@ -18,23 +23,20 @@ export const enum LayoutPropertyType {
  * @type {string[]}
  */
 const supportedAdditiveLayoutProperties = [
-  'translation.x',
-  'translation.y',
-  'rotation.z',
+  "translation.x",
+  "translation.y",
+  "rotation.z",
 
   // Not officially supported, but may be strippable when we run `simplify3dTransformations` below.
-  'rotation.x',
-  'rotation.y',
+  "rotation.x",
+  "rotation.y"
 ];
 
 /**
  * The small set of composable multiplicative layout properties that Lottie actually supports.
  * @type {string[]}
  */
-const supportedMultiplicativeLayoutProperties = [
-  'scale.x',
-  'scale.y',
-];
+const supportedMultiplicativeLayoutProperties = ["scale.x", "scale.y"];
 
 /**
  * Hacks into @haiku/core vanities to splice our official "layout spec" into a virtual element.
@@ -43,28 +45,43 @@ const supportedMultiplicativeLayoutProperties = [
  * @param timeline
  * @param element
  */
-const shimLayoutForPseudoElement = (timeline: BytecodeTimelineProperties, element: {layout: LayoutSpec}) => {
-  supportedAdditiveLayoutProperties.forEach((property) => {
+const shimLayoutForPseudoElement = (
+  timeline: BytecodeTimelineProperties,
+  element: { layout: LayoutSpec }
+) => {
+  supportedAdditiveLayoutProperties.forEach(property => {
     if (timeline.hasOwnProperty(property)) {
-      LAYOUT_3D_VANITIES[property](null, element, initialValueOr(timeline, property, 0));
+      LAYOUT_3D_VANITIES[property](
+        null,
+        element,
+        initialValueOr(timeline, property, 0)
+      );
     }
   });
 
-  supportedMultiplicativeLayoutProperties.forEach((property) => {
+  supportedMultiplicativeLayoutProperties.forEach(property => {
     if (timeline.hasOwnProperty(property)) {
-      LAYOUT_3D_VANITIES[property](null, element, initialValueOr(timeline, property, 1));
+      LAYOUT_3D_VANITIES[property](
+        null,
+        element,
+        initialValueOr(timeline, property, 1)
+      );
     }
   });
 };
 
 const precision = 1e-6;
 
-const doublesEqual = (d1: number, d2: number, epsilon = precision): boolean => Math.abs(d1 - d2) < epsilon;
+const doublesEqual = (d1: number, d2: number, epsilon = precision): boolean =>
+  Math.abs(d1 - d2) < epsilon;
 
 /**
  * Private helper method for removing 3D transformations _to the extent possible_.
  */
-const simplify3dTransformations = (out: ComposedTransformSpec, epislon = 1e-3) => {
+const simplify3dTransformations = (
+  out: ComposedTransformSpec,
+  epislon = 1e-3
+) => {
   // Note: the following technique is known to be imperfect, but seems to cover most use cases until Lottie supports
   // 3D rotation.
 
@@ -73,14 +90,14 @@ const simplify3dTransformations = (out: ComposedTransformSpec, epislon = 1e-3) =
   //  - Personality
   //  - daloading2
   //  - percy
-  if (doublesEqual(Math.abs(out['rotation.x']), Math.PI, epislon)) {
-    out['rotation.x'] = 0;
-    out['scale.y'] *= -1;
+  if (doublesEqual(Math.abs(out["rotation.x"]), Math.PI, epislon)) {
+    out["rotation.x"] = 0;
+    out["scale.y"] *= -1;
   }
 
-  if (doublesEqual(Math.abs(out['rotation.y']), Math.PI, epislon)) {
-    out['rotation.y'] = 0;
-    out['scale.x'] *= -1;
+  if (doublesEqual(Math.abs(out["rotation.y"]), Math.PI, epislon)) {
+    out["rotation.y"] = 0;
+    out["scale.x"] *= -1;
   }
 };
 
@@ -114,37 +131,41 @@ const simplify3dTransformations = (out: ComposedTransformSpec, epislon = 1e-3) =
 export const composeTimelines = (
   shapeLayerSize: ThreeDimensionalLayoutProperty,
   childTimeline: any,
-  parentTimeline: any,
+  parentTimeline: any
 ): any => {
   const composedTimeline = {
     ...parentTimeline,
-    ...childTimeline,
+    ...childTimeline
   };
 
-  const childPseudoElement = {layout: createLayoutSpec()};
-  const parentPseudoElement = {layout: createLayoutSpec()};
+  const childPseudoElement = { layout: createLayoutSpec() };
+  const parentPseudoElement = { layout: createLayoutSpec() };
   shimLayoutForPseudoElement(childTimeline, childPseudoElement);
   shimLayoutForPseudoElement(parentTimeline, parentPseudoElement);
   const childMatrix = computeMatrix(childPseudoElement.layout, shapeLayerSize);
-  const parentMatrix = computeMatrix(parentPseudoElement.layout, shapeLayerSize);
-  const composition = composedTransformsToTimelineProperties({}, [parentMatrix, childMatrix], true);
+  const parentMatrix = computeMatrix(
+    parentPseudoElement.layout,
+    shapeLayerSize
+  );
+  const composition = composedTransformsToTimelineProperties(
+    {},
+    [parentMatrix, childMatrix],
+    true
+  );
   simplify3dTransformations(composition);
 
   Object.assign(composedTimeline, {
-    ...supportedAdditiveLayoutProperties.reduce(
-      (properties, property) => {
-        properties[property] = {0: {value: composition[property] || 0}};
-        return properties;
-      },
-      {},
-    ),
+    ...supportedAdditiveLayoutProperties.reduce((properties, property) => {
+      properties[property] = { 0: { value: composition[property] || 0 } };
+      return properties;
+    }, {}),
     ...supportedMultiplicativeLayoutProperties.reduce(
       (properties, property) => {
-        properties[property] = {0: {value: composition[property] || 1}};
+        properties[property] = { 0: { value: composition[property] || 1 } };
         return properties;
       },
-      {},
-    ),
+      {}
+    )
   });
 
   return composedTimeline;

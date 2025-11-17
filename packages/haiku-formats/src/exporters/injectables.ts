@@ -2,8 +2,8 @@
 import {
   BytecodeStateType,
   BytecodeSummonable,
-  HaikuBytecode,
-} from '@haiku/core/lib/api.js';
+  HaikuBytecode
+} from "@haiku/core/lib/api/index.js";
 
 /**
  * A class we can instantiate to act as a stub for injectables that can't be evaluated sensibly during export.
@@ -18,14 +18,14 @@ class DefaultStub {
    * The constructor returns a Proxy, which activates the generic getter for property access mutation.
    * @returns {Proxy}
    */
-  constructor () {
+  constructor() {
     return new Proxy(this, this);
   }
 
   /**
    * Returns the Proxy through regular access, and return a 0-getter when a primitive value is requested.
    */
-  get (_: any, property: any) {
+  get(_: any, property: any) {
     if (property === Symbol.toPrimitive) {
       return () => 1;
     }
@@ -33,7 +33,7 @@ class DefaultStub {
     return new DefaultStub();
   }
 
-  apply () {
+  apply() {
     return new DefaultStub();
   }
 }
@@ -49,20 +49,20 @@ class DefaultStub {
  */
 export const evaluateInjectedFunctionInExportContext = (
   bytecodeSummonable: BytecodeSummonable,
-  bytecode: HaikuBytecode,
+  bytecode: HaikuBytecode
 ): BytecodeStateType => {
   const states = bytecode.states || {};
   const helpers = bytecode.helpers || {};
   const defaultStub = new DefaultStub();
   const params = bytecodeSummonable.specification.params.map(
     (param: string) => {
-      if (param === '$helpers') {
+      if (param === "$helpers") {
         return helpers;
       }
-      return (global[param] || states.hasOwnProperty(param))
-        ? (global[param] || states[param].value)
+      return global[param] || states.hasOwnProperty(param)
+        ? global[param] || states[param].value
         : defaultStub;
-    },
+    }
   );
   try {
     return bytecodeSummonable.apply(undefined, params) || 0;

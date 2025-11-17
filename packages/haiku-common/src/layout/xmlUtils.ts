@@ -3,8 +3,8 @@ import {
   BytecodeNodeAttributes,
   BytecodeNodeStyle
 } from "@haiku/core/lib/api.js";
-import toStyle from "haiku-vendor-legacy/lib/to-style.js";
-import xmlParser from "haiku-vendor-legacy/lib/xml-parser.js";
+import toStyle from "haiku-vendor-legacy/lib/to-style/index.js";
+import xmlParser from "haiku-vendor-legacy/lib/xml-parser/index.js";
 
 const styleStringToObject = toStyle.object;
 

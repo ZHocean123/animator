@@ -1,6 +1,6 @@
-import {BytecodeTimelineProperty, Curve} from '@haiku/core/lib/api.js';
-import * as BezierEasing from 'bezier-easing';
-import {flatten} from 'lodash-es';
+import { BytecodeTimelineProperty, Curve } from "@haiku/core/lib/api/index.js";
+import * as BezierEasing from "bezier-easing";
+import { flatten } from "lodash-es";
 
 export type InterpolationPoints = [number, number, number, number];
 
@@ -9,7 +9,9 @@ export type InterpolationPoints = [number, number, number, number];
  * @param {Curve|InterpolationPoints} curve
  * @returns {InterpolationPoints}
  */
-export const getCurveInterpolationPoints = (curve: Curve|InterpolationPoints): InterpolationPoints => {
+export const getCurveInterpolationPoints = (
+  curve: Curve | InterpolationPoints
+): InterpolationPoints => {
   if (Array.isArray(curve)) {
     // We may receive a pre-interpolated curve. Just return it as is.
     return curve;
@@ -17,55 +19,55 @@ export const getCurveInterpolationPoints = (curve: Curve|InterpolationPoints): I
 
   switch (curve) {
     case Curve.EaseInBack:
-      return [.6, -.28, .735, .045];
+      return [0.6, -0.28, 0.735, 0.045];
     case Curve.EaseInCirc:
-      return [.6, .04, .98, .335];
+      return [0.6, 0.04, 0.98, 0.335];
     case Curve.EaseInCubic:
-      return [.55, .055, .675, .19];
+      return [0.55, 0.055, 0.675, 0.19];
     case Curve.EaseInExpo:
-      return [.95, .05, .795, .035];
+      return [0.95, 0.05, 0.795, 0.035];
     case Curve.EaseInQuad:
-      return [.55, .085, .68, .53];
+      return [0.55, 0.085, 0.68, 0.53];
     case Curve.EaseInQuart:
-      return [.895, .03, .685, .22];
+      return [0.895, 0.03, 0.685, 0.22];
     case Curve.EaseInQuint:
-      return [.755, .05, .855, .06];
+      return [0.755, 0.05, 0.855, 0.06];
     case Curve.EaseInSine:
-      return [.47, 0, .745, .715];
+      return [0.47, 0, 0.745, 0.715];
 
     case Curve.EaseOutBack:
-      return [.175, .885, .32, 1.275];
+      return [0.175, 0.885, 0.32, 1.275];
     case Curve.EaseOutCirc:
-      return [.075, .82, .165, 1];
+      return [0.075, 0.82, 0.165, 1];
     case Curve.EaseOutCubic:
-      return [.215, .61, .355, 1];
+      return [0.215, 0.61, 0.355, 1];
     case Curve.EaseOutExpo:
-      return [.19, 1, .22, 1];
+      return [0.19, 1, 0.22, 1];
     case Curve.EaseOutQuad:
-      return [.25, .46, .45, .94];
+      return [0.25, 0.46, 0.45, 0.94];
     case Curve.EaseOutQuart:
-      return [.165, .84, .44, 1];
+      return [0.165, 0.84, 0.44, 1];
     case Curve.EaseOutQuint:
-      return [.23, 1, .32, 1];
+      return [0.23, 1, 0.32, 1];
     case Curve.EaseOutSine:
-      return [.39, .575, .565, 1];
+      return [0.39, 0.575, 0.565, 1];
 
     case Curve.EaseInOutBack:
-      return [.68, -.55, .265, 1.5];
+      return [0.68, -0.55, 0.265, 1.5];
     case Curve.EaseInOutCirc:
-      return [.785, .135, .15, .86];
+      return [0.785, 0.135, 0.15, 0.86];
     case Curve.EaseInOutCubic:
-      return [.645, .045, .355, 1];
+      return [0.645, 0.045, 0.355, 1];
     case Curve.EaseInOutExpo:
       return [1, 0, 0, 1];
     case Curve.EaseInOutQuad:
-      return [.455, .03, .515, .955];
+      return [0.455, 0.03, 0.515, 0.955];
     case Curve.EaseInOutQuart:
-      return [.77, 0, .175, 1];
+      return [0.77, 0, 0.175, 1];
     case Curve.EaseInOutQuint:
-      return [.86, 0, .07, 1];
+      return [0.86, 0, 0.07, 1];
     case Curve.EaseInOutSine:
-      return [.445, .05, .55, .95];
+      return [0.445, 0.05, 0.55, 0.95];
     case Curve.Linear:
       return [0, 0, 1, 1];
 
@@ -87,16 +89,27 @@ export const getCurveInterpolationPoints = (curve: Curve|InterpolationPoints): I
  * @returns {[number[] , number[]]}
  * @private
  */
-const reinterpolateBezier = (points: number[][], dimension: number, time: number) => {
-  const waypoints = points.map((point) => [point]);
+const reinterpolateBezier = (
+  points: number[][],
+  dimension: number,
+  time: number
+) => {
+  const waypoints = points.map(point => [point]);
   for (let i = 1; i <= dimension; ++i) {
-    for (let j = 0; j <= (dimension - i); ++j) {
+    for (let j = 0; j <= dimension - i; ++j) {
       waypoints[j].push(
-        waypoints[j][i - 1].map((point, index) => point * (1 - time) + waypoints[j + 1][i - 1][index] * time));
+        waypoints[j][i - 1].map(
+          (point, index) =>
+            point * (1 - time) + waypoints[j + 1][i - 1][index] * time
+        )
+      );
     }
   }
 
-  return [waypoints[0], waypoints.map((point, index) => point[dimension - index])];
+  return [
+    waypoints[0],
+    waypoints.map((point, index) => point[dimension - index])
+  ];
 };
 
 /**
@@ -107,8 +120,11 @@ const reinterpolateBezier = (points: number[][], dimension: number, time: number
  * @returns {number}
  * @private
  */
-const denormalizeValue = (normalizedValue: number, from: number, to: number): number =>
-  from + normalizedValue * (to - from);
+const denormalizeValue = (
+  normalizedValue: number,
+  from: number,
+  to: number
+): number => from + normalizedValue * (to - from);
 
 /**
  * Convenience method; normalizes a value in [0, 1].
@@ -130,24 +146,30 @@ const normalizeValue = (value: number, from: number, to: number): number =>
  * @param {number} keyframe
  */
 export const splitBezierForTimelinePropertyAtKeyframe = (
-  timelineProperty: BytecodeTimelineProperty, keyframe: number,
+  timelineProperty: BytecodeTimelineProperty,
+  keyframe: number
 ): void => {
   const allKeyframes = Object.keys(timelineProperty).map(Number);
-  const previousKeyframe = Math.max(...allKeyframes.filter((k) => k < keyframe));
-  const nextKeyframe = Math.min(...allKeyframes.filter((k) => k > keyframe));
+  const previousKeyframe = Math.max(...allKeyframes.filter(k => k < keyframe));
+  const nextKeyframe = Math.min(...allKeyframes.filter(k => k > keyframe));
 
   // Return early if we don't have a next keyframe to animate to.
   if (nextKeyframe === Infinity || previousKeyframe === -Infinity) {
     // There is no basis keyframe! Just animate to/from the current value.
     timelineProperty[keyframe] = {
       // #FIXME: 1 isn't always the correct fallback for properties that might not have a keyframe at 0.
-      value: (timelineProperty[previousKeyframe] && timelineProperty[previousKeyframe].value) || 1,
-      curve: Curve.Linear,
+      value:
+        (timelineProperty[previousKeyframe] &&
+          timelineProperty[previousKeyframe].value) ||
+        1,
+      curve: Curve.Linear
     };
     return;
   }
 
-  const [x1, y1, x2, y2] = getCurveInterpolationPoints(timelineProperty[previousKeyframe].curve as Curve);
+  const [x1, y1, x2, y2] = getCurveInterpolationPoints(
+    timelineProperty[previousKeyframe].curve as Curve
+  );
 
   // Normalize keyframe (time) in [0, 1] to make the curve calculations work with existing tools.
   const time = normalizeValue(keyframe, previousKeyframe, nextKeyframe);
@@ -160,28 +182,43 @@ export const splitBezierForTimelinePropertyAtKeyframe = (
   const value = denormalizeValue(
     BezierEasing(x1, y1, x2, y2)(time),
     timelineProperty[previousKeyframe].value as number,
-    timelineProperty[nextKeyframe].value as number,
+    timelineProperty[nextKeyframe].value as number
   );
-  const [[_, s1, s2, s3], [e0, e1, e2, __]] = reinterpolateBezier([[0, 0], [x1, y1], [x2, y2], [1, 1]], 3, time);
+  const [[_, s1, s2, s3], [e0, e1, e2, __]] = reinterpolateBezier(
+    [
+      [0, 0],
+      [x1, y1],
+      [x2, y2],
+      [1, 1]
+    ],
+    3,
+    time
+  );
 
   // We now have handles on a reinterpolated bezier, pre-normalization. start is [0, 0], end is [1, 1], and s3 is
   // identical to e0. We now have to normalize each curve to fit the standard bezier curve timing function's
   // representation as a continuous curve from [0, 0] to [1, 1]. This is very straightforward for the starting
   // curve, which just needs to be scaled up by s3[0] in the x direction and s3[1] in the y direction.
-  const startingCurve = flatten([s1, s2].map((vertex) => [vertex[0] / s3[0], vertex[1] / s3[1]]));
+  const startingCurve = flatten(
+    [s1, s2].map(vertex => [vertex[0] / s3[0], vertex[1] / s3[1]])
+  );
 
   // For the ending curve, it's a little more challenging because the new "box" is translated up by the vector e0.
   // Recalling that our end cap is [1, 1] from the original curve, it suffices to translate down by e0 and scale up
   // by the new upper right vertex (which is [1 - e0[0], 1 - e0[1]]).
   const endingCurve = flatten(
-    [e1, e2].map((vertex) => [(vertex[0] - e0[0]) / (1 - e0[0]), (vertex[1] - e0[1]) / (1 - e0[1])]));
+    [e1, e2].map(vertex => [
+      (vertex[0] - e0[0]) / (1 - e0[0]),
+      (vertex[1] - e0[1]) / (1 - e0[1])
+    ])
+  );
 
   // Now our work is done! We simply need to replace the original curve with the starting curve, and add a new
   // keyframe with the correct value using the easing from the second curve.
   timelineProperty[previousKeyframe].curve = startingCurve;
   timelineProperty[keyframe] = {
     value,
-    curve: endingCurve,
+    curve: endingCurve
   };
 };
 
@@ -192,7 +229,7 @@ export const splitBezierForTimelinePropertyAtKeyframe = (
  *  - At index 2: the curve that simulates this segment of the broader curve.
  * @private
  */
-type BezierBreakpoint = [number, number, Curve|InterpolationPoints];
+type BezierBreakpoint = [number, number, Curve | InterpolationPoints];
 
 /**
  * Composes two sets of bezier breakpoints into a single set of breakpoints normalized in [0, 1].
@@ -203,9 +240,17 @@ type BezierBreakpoint = [number, number, Curve|InterpolationPoints];
  */
 const composeBezierBreakpoints = (
   first: BezierBreakpoint[],
-  second: BezierBreakpoint[],
-): BezierBreakpoint[] => first.map(([time, value, curve]) => [time / 2, value / 2, curve])
-  .concat(second.map(([time, value, curve]) => [(time + 1) / 2, (value + 1) / 2, curve])) as BezierBreakpoint[];
+  second: BezierBreakpoint[]
+): BezierBreakpoint[] =>
+  first
+    .map(([time, value, curve]) => [time / 2, value / 2, curve])
+    .concat(
+      second.map(([time, value, curve]) => [
+        (time + 1) / 2,
+        (value + 1) / 2,
+        curve
+      ])
+    ) as BezierBreakpoint[];
 
 /**
  * Gets bezier breakpoints for a decomposable curve.
@@ -223,7 +268,9 @@ const composeBezierBreakpoints = (
  * @returns {BezierBreakpoint[]}
  * @private
  */
-const getBezierBreakpointsForDecomposableCurve = (curve: Curve): BezierBreakpoint[] => {
+const getBezierBreakpointsForDecomposableCurve = (
+  curve: Curve
+): BezierBreakpoint[] => {
   switch (curve) {
     case Curve.EaseInBounce:
       return [
@@ -233,7 +280,7 @@ const getBezierBreakpointsForDecomposableCurve = (curve: Curve): BezierBreakpoin
         [0.182, 0.0625, Curve.EaseOutQuad],
         [0.273, 0, Curve.EaseInQuad],
         [0.455, 0.25, Curve.EaseOutQuad],
-        [0.637, 0, Curve.EaseInQuad],
+        [0.637, 0, Curve.EaseInQuad]
       ];
     case Curve.EaseOutBounce:
       return [
@@ -243,12 +290,12 @@ const getBezierBreakpointsForDecomposableCurve = (curve: Curve): BezierBreakpoin
         [0.727, 1, Curve.EaseOutQuad],
         [0.818, 0.9375, Curve.EaseInQuad],
         [0.909, 1, Curve.EaseOutQuad],
-        [0.9545, 0.9844, Curve.EaseInQuad],
+        [0.9545, 0.9844, Curve.EaseInQuad]
       ];
     case Curve.EaseInOutBounce:
       return composeBezierBreakpoints(
         getBezierBreakpointsForDecomposableCurve(Curve.EaseInBounce),
-        getBezierBreakpointsForDecomposableCurve(Curve.EaseOutBounce),
+        getBezierBreakpointsForDecomposableCurve(Curve.EaseOutBounce)
       );
     case Curve.EaseInElastic:
       return [
@@ -256,7 +303,7 @@ const getBezierBreakpointsForDecomposableCurve = (curve: Curve): BezierBreakpoin
         [0.2265, 0.0043, Curve.EaseInSine],
         [0.3, 0, Curve.EaseOutSine],
         [0.4265, -0.0172, Curve.EaseInSine],
-        [0.5, 0, [0.633, 0.444, 0.6, -1.5]],
+        [0.5, 0, [0.633, 0.444, 0.6, -1.5]]
       ];
     case Curve.EaseOutElastic:
       return [
@@ -264,17 +311,19 @@ const getBezierBreakpointsForDecomposableCurve = (curve: Curve): BezierBreakpoin
         [0.5, 1, Curve.EaseOutSine],
         [0.5735, 1.0172, Curve.EaseInSine],
         [0.7, 1, Curve.EaseOutSine],
-        [0.7735, 0.9957, Curve.EaseInSine],
+        [0.7735, 0.9957, Curve.EaseInSine]
       ];
     case Curve.EaseInOutElastic:
       return composeBezierBreakpoints(
         getBezierBreakpointsForDecomposableCurve(Curve.EaseInElastic),
-        getBezierBreakpointsForDecomposableCurve(Curve.EaseOutElastic),
+        getBezierBreakpointsForDecomposableCurve(Curve.EaseOutElastic)
       );
     default:
       // We shouldn't actually ever encounter this situation during export, since the exporter only tries to
       // decompose compound curves.
-      throw new Error('Illegal attempt to retrieve bezier breakpoints for a non-decomposable curve.');
+      throw new Error(
+        "Illegal attempt to retrieve bezier breakpoints for a non-decomposable curve."
+      );
   }
 };
 
@@ -299,7 +348,8 @@ const isBounceCurve = (curve: Curve) => /Bounce/.test(curve);
  * @param {Curve} curve
  * @returns {boolean}
  */
-export const isDecomposableCurve = (curve: Curve): boolean => isBounceCurve(curve) || isElasticCurve(curve);
+export const isDecomposableCurve = (curve: Curve): boolean =>
+  isBounceCurve(curve) || isElasticCurve(curve);
 
 /**
  * Decomposes a compound curve between keyframes.
@@ -311,13 +361,14 @@ export const isDecomposableCurve = (curve: Curve): boolean => isBounceCurve(curv
 export const decomposeCurveBetweenKeyframes = (
   timelineProperty: BytecodeTimelineProperty,
   inKeyframe: number,
-  outKeyframe: number,
+  outKeyframe: number
 ): void => {
   // #FIXME: this will only work correctly for numbers right now.
   // To do this correctly for e.g. paths, we would need more data.
   if (
-    typeof timelineProperty[inKeyframe].value !== typeof timelineProperty[outKeyframe].value ||
-    typeof timelineProperty[inKeyframe].value !== 'number'
+    typeof timelineProperty[inKeyframe].value !==
+      typeof timelineProperty[outKeyframe].value ||
+    typeof timelineProperty[inKeyframe].value !== "number"
   ) {
     timelineProperty[inKeyframe].curve = Curve.Linear;
     return;
@@ -326,18 +377,21 @@ export const decomposeCurveBetweenKeyframes = (
   const [curveIn, from, to] = [
     timelineProperty[inKeyframe].curve,
     timelineProperty[inKeyframe].value,
-    timelineProperty[outKeyframe].value,
+    timelineProperty[outKeyframe].value
   ];
 
-  const getKeyframe = (normalizedTime: number) => Math.floor(denormalizeValue(normalizedTime, inKeyframe, outKeyframe));
-  const getValue = (normalizedPosition: number) => denormalizeValue(normalizedPosition, from as number, to as number);
+  const getKeyframe = (normalizedTime: number) =>
+    Math.floor(denormalizeValue(normalizedTime, inKeyframe, outKeyframe));
+  const getValue = (normalizedPosition: number) =>
+    denormalizeValue(normalizedPosition, from as number, to as number);
 
   // TODO: remove need for typecasting here.
-  getBezierBreakpointsForDecomposableCurve(curveIn as Curve)
-    .forEach(([startTime, startValue, curve]) => {
+  getBezierBreakpointsForDecomposableCurve(curveIn as Curve).forEach(
+    ([startTime, startValue, curve]) => {
       timelineProperty[getKeyframe(startTime)] = {
         curve,
-        value: getValue(startValue),
+        value: getValue(startValue)
       };
-    });
+    }
+  );
 };
