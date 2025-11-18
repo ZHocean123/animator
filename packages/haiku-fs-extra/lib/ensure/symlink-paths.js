@@ -1,6 +1,6 @@
-var path = require('path')
+import path from 'path'
 // path.isAbsolute shim for Node.js 0.10 support
-var fs = require('graceful-fs')
+import fs from 'graceful-fs'
 
 /**
  * Function that returns two types of paths, one relative to symlink, and one
@@ -90,7 +90,7 @@ function symlinkPathsSync (srcpath, dstpath) {
   }
 }
 
-module.exports = {
+export default {
   'symlinkPaths': symlinkPaths,
   'symlinkPathsSync': symlinkPathsSync
 }

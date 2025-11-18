@@ -1,5 +1,5 @@
-var fs = require('graceful-fs')
-var path = require('path')
+import fs from 'graceful-fs'
+import path from 'path'
 
 var walkSync = function (dir, filelist) {
   var files = fs.readdirSync(dir)
@@ -15,6 +15,6 @@ var walkSync = function (dir, filelist) {
   return filelist
 }
 
-module.exports = {
+export default {
   walkSync: walkSync
 }

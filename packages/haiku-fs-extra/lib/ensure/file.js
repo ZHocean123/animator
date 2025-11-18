@@ -1,6 +1,6 @@
-var path = require('path')
-var fs = require('graceful-fs')
-var mkdir = require('../mkdirs')
+import path from 'path'
+import fs from 'graceful-fs'
+import { mkdirs } from '../mkdirs/index.js'
 
 function createFile (file, callback) {
   function makeFile () {
@@ -15,7 +15,7 @@ function createFile (file, callback) {
     var dir = path.dirname(file)
     fs.access(dir, fs.constants.F_OK, function (err) {
       if (!err) return makeFile()
-      mkdir.mkdirs(dir, function (err) {
+      mkdirs(dir, function (err) {
         if (err) return callback(err)
         makeFile()
       })
@@ -28,13 +28,13 @@ function createFileSync (file) {
 
   var dir = path.dirname(file)
   if (!fs.existsSync(dir)) {
-    mkdir.mkdirsSync(dir)
+    mkdirsSync(dir)
   }
 
   fs.writeFileSync(file, '')
 }
 
-module.exports = {
+export default {
   createFile: createFile,
   createFileSync: createFileSync,
   // alias

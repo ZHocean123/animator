@@ -1,3 +1,5 @@
-module.exports = {
-  copy: require('./copy')
+import copy from './copy.js'
+
+export default {
+  copy
 }

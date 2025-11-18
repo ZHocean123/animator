@@ -1,6 +1,6 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var os = require('os')
+import fs from 'graceful-fs'
+import path from 'path'
+import os from 'os'
 
 // HFS, ext{2,3}, FAT do not, Node.js v0.10 does not
 function hasMillisResSync () {
@@ -62,7 +62,7 @@ function utimesMillis (path, atime, mtime, callback) {
   })
 }
 
-module.exports = {
+export default {
   hasMillisRes: hasMillisRes,
   hasMillisResSync: hasMillisResSync,
   timeRemoveMillis: timeRemoveMillis,

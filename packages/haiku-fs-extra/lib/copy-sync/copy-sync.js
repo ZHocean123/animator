@@ -1,11 +1,11 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var copyFileSync = require('./copy-file-sync')
-var mkdir = require('../mkdirs')
+import fs from 'graceful-fs'
+import path from 'path'
+import copyFileSync from './copy-file-sync.js'
+import { mkdirsSync } from '../mkdirs/index.js'
 
-function copySync (src, dest, options) {
+function copySync(src, dest, options) {
   if (typeof options === 'function' || options instanceof RegExp) {
-    options = {filter: options}
+    options = { filter: options }
   }
 
   options = options || {}
@@ -21,7 +21,7 @@ function copySync (src, dest, options) {
   // Warn about using preserveTimestamps on 32-bit node:
   if (options.preserveTimestamps && process.arch === 'ia32') {
     console.warn('fs-extra: Using the preserveTimestamps option in 32-bit node is not recommended;\n' +
-    'see https://github.com/jprichardson/node-fs-extra/issues/269')
+      'see https://github.com/jprichardson/node-fs-extra/issues/269')
   }
 
   var stats = (options.recursive && !options.dereference) ? fs.lstatSync(src) : fs.statSync(src)
@@ -36,11 +36,11 @@ function copySync (src, dest, options) {
     } else if (typeof options.filter === 'function') performCopy = options.filter(src)
 
     if (performCopy) {
-      if (!destFolderExists) mkdir.mkdirsSync(destFolder)
-      copyFileSync(src, dest, {clobber: options.clobber, preserveTimestamps: options.preserveTimestamps})
+      if (!destFolderExists) mkdirsSync(destFolder)
+      copyFileSync(src, dest, { clobber: options.clobber, preserveTimestamps: options.preserveTimestamps })
     }
   } else if (stats.isDirectory()) {
-    if (!fs.existsSync(dest)) mkdir.mkdirsSync(dest)
+    if (!fs.existsSync(dest)) mkdirsSync(dest)
     var contents = fs.readdirSync(src)
     contents.forEach(function (content) {
       var opts = options
@@ -53,4 +53,4 @@ function copySync (src, dest, options) {
   }
 }
 
-module.exports = copySync
+export default copySync

@@ -1,16 +1,16 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var jsonFile = require('./jsonfile')
-var mkdir = require('../mkdirs')
+import fs from 'graceful-fs'
+import path from 'path'
+import jsonFile from './jsonfile.js'
+import { mkdirs } from '../mkdirs/index.js'
 
 function outputJsonSync (file, data, options) {
   var dir = path.dirname(file)
 
   if (!fs.existsSync(dir)) {
-    mkdir.mkdirsSync(dir)
+    mkdirsSync(dir)
   }
 
   jsonFile.writeJsonSync(file, data, options)
 }
 
-module.exports = outputJsonSync
+export default outputJsonSync

@@ -1,9 +1,9 @@
-module.exports = rimraf
+export default rimraf
 rimraf.sync = rimrafSync
 
-var assert = require('assert')
-var path = require('path')
-var fs = require('graceful-fs')
+import assert from 'assert'
+import path from 'path'
+import fs from 'graceful-fs'
 
 var isWindows = (process.platform === 'win32')
 

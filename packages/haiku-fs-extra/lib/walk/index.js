@@ -1,5 +1,5 @@
-var klaw = require('klaw')
+import klaw from 'klaw'
 
-module.exports = {
+export default {
   walk: klaw
 }

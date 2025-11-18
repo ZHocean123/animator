@@ -1,6 +1,6 @@
-var jsonFile = require('jsonfile')
+import jsonFile from 'jsonfile'
 
-module.exports = {
+export default {
   // jsonfile exports
   readJson: jsonFile.readFile,
   readJSON: jsonFile.readFile,

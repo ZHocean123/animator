@@ -1,4 +1,4 @@
-var fs = require('graceful-fs')
+import fs from 'graceful-fs'
 
 function symlinkType (srcpath, type, callback) {
   callback = (typeof type === 'function') ? type : callback
@@ -21,7 +21,7 @@ function symlinkTypeSync (srcpath, type) {
   return (stats && stats.isDirectory()) ? 'dir' : 'file'
 }
 
-module.exports = {
+export default {
   symlinkType: symlinkType,
   symlinkTypeSync: symlinkTypeSync
 }

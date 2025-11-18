@@ -1,3 +1,7 @@
-module.exports = {
-  copySync: require('./copy-sync')
+import copySync from './copy-sync.js'
+
+export default {
+  
+  copySync
+
 }

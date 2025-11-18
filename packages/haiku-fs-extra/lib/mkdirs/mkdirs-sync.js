@@ -1,10 +1,10 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var invalidWin32Path = require('./win32').invalidWin32Path
+import fs from 'graceful-fs'
+import path from 'path'
+import { invalidWin32Path } from './win32.js'
 
 var o777 = parseInt('0777', 8)
 
-function mkdirsSync (p, opts, made) {
+function mkdirsSync(p, opts, made) {
   if (!opts || typeof opts !== 'object') {
     opts = { mode: opts }
   }
@@ -54,4 +54,4 @@ function mkdirsSync (p, opts, made) {
   return made
 }
 
-module.exports = mkdirsSync
+export default mkdirsSync

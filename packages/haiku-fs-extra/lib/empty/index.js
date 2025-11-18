@@ -1,12 +1,12 @@
-var fs = require('fs')
-var path = require('path')
-var mkdir = require('../mkdirs')
-var remove = require('../remove')
+import fs from 'fs'
+import path from 'path'
+import { mkdirs } from '../mkdirs/index.js'
+import { remove } from '../remove/index.js'
 
-function emptyDir (dir, callback) {
-  callback = callback || function () {}
+function emptyDir(dir, callback) {
+  callback = callback || function () { }
   fs.readdir(dir, function (err, items) {
-    if (err) return mkdir.mkdirs(dir, callback)
+    if (err) return mkdirs(dir, callback)
 
     items = items.map(function (item) {
       return path.join(dir, item)
@@ -14,7 +14,7 @@ function emptyDir (dir, callback) {
 
     deleteItem()
 
-    function deleteItem () {
+    function deleteItem() {
       var item = items.pop()
       if (!item) return callback()
       remove.remove(item, function (err) {
@@ -25,12 +25,12 @@ function emptyDir (dir, callback) {
   })
 }
 
-function emptyDirSync (dir) {
+function emptyDirSync(dir) {
   var items
   try {
     items = fs.readdirSync(dir)
   } catch (err) {
-    return mkdir.mkdirsSync(dir)
+    return mkdirsSync(dir)
   }
 
   items.forEach(function (item) {
@@ -39,7 +39,7 @@ function emptyDirSync (dir) {
   })
 }
 
-module.exports = {
+export default {
   emptyDirSync: emptyDirSync,
   emptydirSync: emptyDirSync,
   emptyDir: emptyDir,

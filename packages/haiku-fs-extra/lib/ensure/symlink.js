@@ -1,14 +1,14 @@
-var path = require('path')
-var fs = require('graceful-fs')
-var _mkdirs = require('../mkdirs')
-var mkdirs = _mkdirs.mkdirs
-var mkdirsSync = _mkdirs.mkdirsSync
+import path from 'path'
+import fs from 'graceful-fs'
+import _mkdirs from '../mkdirs/index.js'
+var mkdirs = mkdirs
+var mkdirsSync = mkdirsSync
 
-var _symlinkPaths = require('./symlink-paths')
+import _symlinkPaths from './symlink-paths.js'
 var symlinkPaths = _symlinkPaths.symlinkPaths
 var symlinkPathsSync = _symlinkPaths.symlinkPathsSync
 
-var _symlinkType = require('./symlink-type')
+import _symlinkType from './symlink-type.js'
 var symlinkType = _symlinkType.symlinkType
 var symlinkTypeSync = _symlinkType.symlinkTypeSync
 
@@ -53,7 +53,7 @@ function createSymlinkSync (srcpath, dstpath, type, callback) {
   return fs.symlinkSync(srcpath, dstpath, type)
 }
 
-module.exports = {
+export default {
   createSymlink: createSymlink,
   createSymlinkSync: createSymlinkSync,
   // alias

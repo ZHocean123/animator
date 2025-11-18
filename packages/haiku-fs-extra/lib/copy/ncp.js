@@ -1,8 +1,8 @@
 // imported from ncp (this is temporary, will rewrite)
 
-var fs = require('graceful-fs')
-var path = require('path')
-var utimes = require('../util/utimes')
+import fs from 'graceful-fs'
+import path from 'path'
+import utimes from '../util/utimes.js'
 
 function ncp (source, dest, options, callback) {
   if (!callback) {
@@ -229,4 +229,4 @@ function ncp (source, dest, options, callback) {
   }
 }
 
-module.exports = ncp
+export default ncp

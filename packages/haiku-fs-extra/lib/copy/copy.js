@@ -1,22 +1,22 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var ncp = require('./ncp')
-var mkdir = require('../mkdirs')
+import fs from 'graceful-fs'
+import path from 'path'
+import ncp from './ncp.js'
+import mkdirs from '../mkdirs/index.js'
 
-function copy (src, dest, options, callback) {
+function copy(src, dest, options, callback) {
   if (typeof options === 'function' && !callback) {
     callback = options
     options = {}
   } else if (typeof options === 'function' || options instanceof RegExp) {
-    options = {filter: options}
+    options = { filter: options }
   }
-  callback = callback || function () {}
+  callback = callback || function () { }
   options = options || {}
 
   // Warn about using preserveTimestamps on 32-bit node:
   if (options.preserveTimestamps && process.arch === 'ia32') {
     console.warn('fs-extra: Using the preserveTimestamps option in 32-bit node is not recommended;\n' +
-    'see https://github.com/jprichardson/node-fs-extra/issues/269')
+      'see https://github.com/jprichardson/node-fs-extra/issues/269')
   }
 
   // don't allow src and dest to be the same
@@ -39,7 +39,7 @@ function copy (src, dest, options, callback) {
 
     fs.access(dir, fs.constants.F_OK, function (err) {
       if (!err) return ncp(src, dest, options, callback)
-      mkdir.mkdirs(dir, function (err) {
+      mkdirs(dir, function (err) {
         if (err) return callback(err)
         ncp(src, dest, options, callback)
       })
@@ -47,4 +47,4 @@ function copy (src, dest, options, callback) {
   })
 }
 
-module.exports = copy
+export default copy

@@ -4,13 +4,13 @@
 
 // this needs a cleanup
 
-var fs = require('graceful-fs')
-var ncp = require('../copy/ncp')
-var path = require('path')
-var remove = require('../remove').remove
-var mkdirp = require('../mkdirs').mkdirs
+import fs from 'graceful-fs'
+import ncp from '../copy/ncp.js'
+import path from 'path'
+import { remove } from '../remove/index.js'
+import { mkdirs } from '../mkdirs/index.js'
 
-function mv (source, dest, options, callback) {
+function mv(source, dest, options, callback) {
   if (typeof options === 'function') {
     callback = options
     options = {}
@@ -27,14 +27,14 @@ function mv (source, dest, options, callback) {
     doRename()
   }
 
-  function mkdirs () {
+  function mkdirs() {
     mkdirp(path.dirname(dest), function (err) {
       if (err) return callback(err)
       doRename()
     })
   }
 
-  function doRename () {
+  function doRename() {
     if (clobber) {
       fs.rename(source, dest, function (err) {
         if (!err) return callback()
@@ -79,7 +79,7 @@ function mv (source, dest, options, callback) {
   }
 }
 
-function moveAcrossDevice (source, dest, clobber, limit, callback) {
+function moveAcrossDevice(source, dest, clobber, limit, callback) {
   fs.stat(source, function (err, stat) {
     if (err) {
       callback(err)
@@ -94,10 +94,10 @@ function moveAcrossDevice (source, dest, clobber, limit, callback) {
   })
 }
 
-function moveFileAcrossDevice (source, dest, clobber, limit, callback) {
+function moveFileAcrossDevice(source, dest, clobber, limit, callback) {
   var outFlags = clobber ? 'w' : 'wx'
   var ins = fs.createReadStream(source)
-  var outs = fs.createWriteStream(dest, {flags: outFlags})
+  var outs = fs.createWriteStream(dest, { flags: outFlags })
 
   ins.on('error', function (err) {
     ins.destroy()
@@ -127,19 +127,19 @@ function moveFileAcrossDevice (source, dest, clobber, limit, callback) {
   outs.once('close', onClose)
   ins.pipe(outs)
 
-  function onClose () {
+  function onClose() {
     fs.unlink(source, callback)
   }
 }
 
-function moveDirAcrossDevice (source, dest, clobber, limit, callback) {
+function moveDirAcrossDevice(source, dest, clobber, limit, callback) {
   var options = {
     stopOnErr: true,
     clobber: false,
     limit: limit
   }
 
-  function startNcp () {
+  function startNcp() {
     ncp(source, dest, options, function (errList) {
       if (errList) return callback(errList[0])
       remove(source, callback)
@@ -156,6 +156,6 @@ function moveDirAcrossDevice (source, dest, clobber, limit, callback) {
   }
 }
 
-module.exports = {
+export default {
   move: mv
 }

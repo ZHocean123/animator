@@ -1,10 +1,10 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var invalidWin32Path = require('./win32').invalidWin32Path
+import fs from 'graceful-fs'
+import path from 'path'
+import { invalidWin32Path } from './win32.js'
 
 var o777 = parseInt('0777', 8)
 
-function mkdirs (p, opts, callback, made) {
+function mkdirs(p, opts, callback, made) {
   if (typeof opts === 'function') {
     callback = opts
     opts = {}
@@ -26,7 +26,7 @@ function mkdirs (p, opts, callback, made) {
   }
   if (!made) made = null
 
-  callback = callback || function () {}
+  callback = callback || function () { }
   p = path.resolve(p)
 
   xfs.mkdir(p, mode, function (er) {
@@ -58,4 +58,4 @@ function mkdirs (p, opts, callback, made) {
   })
 }
 
-module.exports = mkdirs
+export default mkdirs

@@ -1,8 +1,8 @@
-var file = require('./file')
-var link = require('./link')
-var symlink = require('./symlink')
+import file from './file.js'
+import link from './link.js'
+import symlink from './symlink.js'
 
-module.exports = {
+export default {
   // file
   createFile: file.createFile,
   createFileSync: file.createFileSync,

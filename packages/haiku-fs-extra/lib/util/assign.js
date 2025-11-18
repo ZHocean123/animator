@@ -1,5 +1,5 @@
 // simple mutable assign
-function assign () {
+function assign() {
   var args = [].slice.call(arguments).filter(function (i) { return i })
   var dest = args.shift()
   args.forEach(function (src) {
@@ -11,4 +11,4 @@ function assign () {
   return dest
 }
 
-module.exports = assign
+export default assign

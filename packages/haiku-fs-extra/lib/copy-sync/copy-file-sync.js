@@ -1,4 +1,4 @@
-var fs = require('graceful-fs')
+import fs from 'graceful-fs'
 
 var BUF_LENGTH = 64 * 1024
 var _buff = Buffer.alloc(BUF_LENGTH)
@@ -39,4 +39,4 @@ function copyFileSync (srcFile, destFile, options) {
   fs.closeSync(fdw)
 }
 
-module.exports = copyFileSync
+export default copyFileSync

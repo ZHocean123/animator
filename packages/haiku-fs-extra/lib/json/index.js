@@ -1,9 +1,11 @@
-var jsonFile = require('./jsonfile')
+import jsonFile from './jsonfile.js'
+import outputJsonSync from './output-json-sync.js'
+import outputJson from './output-json.js'
 
-jsonFile.outputJsonSync = require('./output-json-sync')
-jsonFile.outputJson = require('./output-json')
+jsonFile.outputJsonSync = outputJsonSync
+jsonFile.outputJson = outputJson
 // aliases
-jsonFile.outputJSONSync = require('./output-json-sync')
-jsonFile.outputJSON = require('./output-json')
+jsonFile.outputJSONSync = outputJsonSync
+jsonFile.outputJSON = outputJson
 
-module.exports = jsonFile
+export default jsonFile

@@ -1,7 +1,7 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var jsonFile = require('./jsonfile')
-var mkdir = require('../mkdirs')
+import fs from 'graceful-fs'
+import path from 'path'
+import jsonFile from './jsonfile.js'
+import { mkdirs } from '../mkdirs/index.js'
 
 function outputJson (file, data, options, callback) {
   if (typeof options === 'function') {
@@ -14,11 +14,11 @@ function outputJson (file, data, options, callback) {
   fs.access(dir, fs.constants.F_OK, function (err) {
     if (!err) return jsonFile.writeJson(file, data, options, callback)
 
-    mkdir.mkdirs(dir, function (err) {
+    mkdirs(dir, function (err) {
       if (err) return callback(err)
       jsonFile.writeJson(file, data, options, callback)
     })
   })
 }
 
-module.exports = outputJson
+export default outputJson

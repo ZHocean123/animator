@@ -1,6 +1,6 @@
-var path = require('path')
-var fs = require('graceful-fs')
-var mkdir = require('../mkdirs')
+import path from 'path'
+import fs from 'graceful-fs'
+import { mkdirs } from '../mkdirs/index.js'
 
 function createLink (srcpath, dstpath, callback) {
   function makeLink (srcpath, dstpath) {
@@ -21,7 +21,7 @@ function createLink (srcpath, dstpath, callback) {
       var dir = path.dirname(dstpath)
       fs.access(dir, fs.constants.F_OK, function (err) {
         if (!err) return makeLink(srcpath, dstpath)
-        mkdir.mkdirs(dir, function (err) {
+        mkdirs(dir, function (err) {
           if (err) return callback(err)
           makeLink(srcpath, dstpath)
         })
@@ -44,12 +44,12 @@ function createLinkSync (srcpath, dstpath, callback) {
   var dir = path.dirname(dstpath)
   var dirExists = fs.existsSync(dir)
   if (dirExists) return fs.linkSync(srcpath, dstpath)
-  mkdir.mkdirsSync(dir)
+  mkdirsSync(dir)
 
   return fs.linkSync(srcpath, dstpath)
 }
 
-module.exports = {
+export default {
   createLink: createLink,
   createLinkSync: createLinkSync,
   // alias

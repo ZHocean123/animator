@@ -1,18 +1,16 @@
-import { createRequire } from 'node:module'
-const require = createRequire(import.meta.url)
-const assign = require('./util/assign.js')
-const gfs = require('graceful-fs')
-const copyMod = require('./copy')
-const copySyncMod = require('./copy-sync')
-const mkdirsMod = require('./mkdirs')
-const removeMod = require('./remove')
-const jsonMod = require('./json')
-const moveMod = require('./move')
-const emptyMod = require('./empty')
-const ensureMod = require('./ensure')
-const outputMod = require('./output')
-const walkMod = require('./walk')
-const walkSyncMod = require('./walk-sync')
+import assign from './util/assign.js'
+import gfs from 'graceful-fs'
+import copyMod from './copy/index.js'
+import copySyncMod from './copy-sync/index.js'
+import mkdirsMod from './mkdirs/index.js'
+import removeMod from './remove/index.js'
+import jsonMod from './json/index.js'
+import moveMod from './move/index.js'
+import emptyMod from './empty/index.js'
+import ensureMod from './ensure/index.js'
+import outputMod from './output/index.js'
+import walkMod from './walk/index.js'
+import walkSyncMod from './walk-sync/index.js'
 
 const fse = {}
 Object.keys(gfs).forEach((key) => {
@@ -37,10 +35,10 @@ export default fs
 
 export const jsonfile = {}
 Object.defineProperty(jsonfile, 'spaces', {
-  get () {
+  get() {
     return fs.spaces
   },
-  set (val) {
+  set(val) {
     fs.spaces = val
   }
 })
