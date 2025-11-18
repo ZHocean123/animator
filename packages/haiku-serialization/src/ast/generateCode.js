@@ -1,4 +1,4 @@
-let generate = require('@babel/generator').default;
+import generate from '@babel/generator';
 
 function generateCode (ast, options, code) {
   const output = generate(ast, options || {
@@ -9,4 +9,4 @@ function generateCode (ast, options, code) {
   return output.code;
 }
 
-module.exports = generateCode;
+export default generateCode;

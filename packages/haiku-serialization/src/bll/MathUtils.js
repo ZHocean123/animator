@@ -1,4 +1,4 @@
-const pointInPolygon = require('point-in-polygon');
+import pointInPolygon from 'point-in-polygon';
 
 const isCoordInsideRect = (px, py, rect) => {
   return rect.left <= px && px <= rect.right && rect.top <= py && py <= rect.bottom;
@@ -44,7 +44,17 @@ const transformFourVectorByMatrix = (out, v, m) => {
   out[3] = m[3] * v[0] + m[7] * v[1] + m[11] * v[2] + m[15] * v[3];
 };
 
-module.exports = {
+export {
+  basicallyEquals,
+  rounded,
+  isCoordInsideRect,
+  isCoordInsideBoxPoints,
+  modOfIndex,
+  roundUp,
+  transformFourVectorByMatrix,
+};
+
+export default {
   basicallyEquals,
   rounded,
   isCoordInsideRect,

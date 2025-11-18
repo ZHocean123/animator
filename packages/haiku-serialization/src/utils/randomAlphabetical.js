@@ -8,4 +8,4 @@ function randomAlphabetical (len) {
   return text;
 }
 
-module.exports = randomAlphabetical;
+export default randomAlphabetical;

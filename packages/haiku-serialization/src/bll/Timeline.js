@@ -1,10 +1,9 @@
-const numeral = require("numeral");
-const TimelineProperty = require("haiku-serialization/src/bll/TimelineProperty");
-const BaseModel = require("./BaseModel");
-const MathUtils = require("./MathUtils");
-const formatSeconds = require("haiku-ui-common/lib/helpers/formatSeconds.js")
-  .default;
-const logger = require("haiku-serialization/src/utils/LoggerInstance");
+import numeral from "numeral";
+import TimelineProperty from "haiku-serialization/src/bll/TimelineProperty.js";
+import BaseModel from "./BaseModel.js";
+import MathUtils from "./MathUtils.js";
+import { default as formatSeconds } from "haiku-ui-common/lib/helpers/formatSeconds.js";
+import logger from "haiku-serialization/src/utils/LoggerInstance.js";
 
 const DURATION_DRAG_INCREASE = 20; // Increase by this much per each duration increase
 const DURATION_DRAG_TIMEOUT = 300; // Wait this long before increasing the duration
@@ -1105,9 +1104,9 @@ Timeline.TIME_DISPLAY_MODE = {
   SECONDS: "seconds"
 };
 
-module.exports = Timeline;
+export default Timeline;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Expression = require("./Expression");
-const Keyframe = require("./Keyframe");
-const Property = require("./Property");
+import Expression from "./Expression.js";
+import Keyframe from "./Keyframe.js";
+import Property from "./Property.js";

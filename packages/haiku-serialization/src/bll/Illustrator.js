@@ -1,11 +1,11 @@
-const { execSync } = require("child_process");
-const fse = require("haiku-fs-extra");
-const { isMac, isWindows } = require("haiku-common/lib/environments/os.js");
-const logger = require("../utils/LoggerInstance");
-const { stringifyPath } = require("../utils/fileManipulation");
-const os = require("os");
-const uuid = require("uuid");
-const path = require("path");
+import { execSync } from "child_process";
+import fse from "haiku-fs-extra";
+import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
+import logger from "../utils/LoggerInstance.js";
+import { stringifyPath } from "../utils/fileManipulationStringify.js";
+import os from "os";
+import uuid from "uuid";
+import path from "path";
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/;
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/;
@@ -163,4 +163,4 @@ class Illustrator {
   }
 }
 
-module.exports = Illustrator;
+export default Illustrator;

@@ -1,13 +1,13 @@
 /* eslint-disable prefer-promise-reject-errors */
-const {URL, URLSearchParams} = require('url');
-const request = require('request');
-const fse = require('haiku-fs-extra');
-const path = require('path');
-const {inkstone} = require('@haiku/sdk-inkstone');
-const logger = require('../utils/LoggerInstance');
-const randomAlphabetical = require('../utils/randomAlphabetical');
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel');
-const {sanitize} = require('../utils/fileManipulation');
+import { URL, URLSearchParams } from 'url';
+import request from 'request';
+import fse from 'haiku-fs-extra';
+import path from 'path';
+import { inkstone } from '@haiku/sdk-inkstone';
+import logger from '../utils/LoggerInstance.js';
+import randomAlphabetical from '../utils/randomAlphabetical.js';
+import mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
+import { sanitize } from '../utils/fileManipulationSanitize.js';
 
 const API_BASE = 'https://api.figma.com/v1/';
 const FIGMA_URL = 'https://www.figma.com/';
@@ -399,4 +399,5 @@ class Figma {
   }
 }
 
-module.exports = {Figma, PHONY_FIGMA_FILE, FIGMA_DEFAULT_FILENAME, MAX_ITEMS_TO_IMPORT};
+export { Figma, PHONY_FIGMA_FILE, FIGMA_DEFAULT_FILENAME, MAX_ITEMS_TO_IMPORT };
+export default Figma;

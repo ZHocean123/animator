@@ -1,9 +1,13 @@
-const path = require('path');
-const fs = require('fs');
-const BaseModel = require('./BaseModel');
-const overrideModulesLoaded = require('./../utils/overrideModulesLoaded');
+import path from 'path';
+import fs from 'fs';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
+import BaseModel from './BaseModel.js';
+import overrideModulesLoaded from './../utils/overrideModulesLoaded.js';
 import * as Lock from './Lock.js';
-const logger = require('./../utils/LoggerInstance');
+import logger from './../utils/LoggerInstance.js';
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var';
@@ -38,8 +42,8 @@ const MODULE_CACHE_COLD = {}; // Never changes once populated
 
 // In race conditions where the project node_modules is changed while monkeypatch
 // is occurring, this allows project dependencies to be loaded without crashing
-const haikuCore = require('@haiku/core');
-const Module = require('module');
+import haikuCore from '@haiku/core';
+import Module from 'module';
 const originalRequire = Module.prototype.require;
 MODULE_CACHE_COLD['@haiku/core'] = haikuCore;
 
@@ -124,16 +128,22 @@ class ModuleWrapper extends BaseModel {
     return abspath;
   }
 
-  load () {
+  async load () {
     overrideModulesLoaded(
-      (stop) => {
+      async (stop) => {
         this.isolatedClearCache();
-        this.exp = require(this.getAbspath());
-        this._hasLoadedAtLeastOnce = true;
-        this.update(this.exp, () => {
-          // Tell the node hook to stop interfering with require(...)
-          stop();
-        });
+        try {
+          const module = await import(this.getAbspath());
+          this.exp = module.default || module;
+          this._hasLoadedAtLeastOnce = true;
+          this.update(this.exp, () => {
+            // Tell the node hook to stop interfering with require(...)
+            stop();
+          });
+        } catch (error) {
+          logger.error('[ModuleWrapper] Failed to load module:', error);
+          throw error;
+        }
       },
       ModuleWrapper.getHaikuKnownImportMatch,
     );
@@ -420,8 +430,8 @@ ModuleWrapper.REF_TYPES = {
 
 ModuleWrapper.CORE_VERSION = CORE_VERSION;
 
-module.exports = ModuleWrapper;
+export default ModuleWrapper;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require('./Bytecode');
-const Template = require('./Template');
+import Bytecode from './Bytecode.js';
+import Template from './Template.js';

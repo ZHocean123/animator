@@ -1,25 +1,24 @@
 import * as lodash from "lodash-es";
-const HaikuElement = require("@haiku/core/lib/HaikuElement.js").default;
-const Layout3D = require("@haiku/core/lib/Layout3D.js").default;
-const { cssQueryTree } = require("@haiku/core/lib/HaikuNode.js");
-const {
-  default: composedTransformsToTimelineProperties
-} = require("haiku-common/lib/layout/composedTransformsToTimelineProperties.js");
-const functionToRFO = require("@haiku/core/lib/reflection/functionToRFO.js")
-  .default;
-const { LAYOUT_3D_SCHEMA } = require("@haiku/core/lib/HaikuComponent.js");
-const KnownDOMEvents = require("@haiku/core/lib/renderers/dom/Events.js").default;
-const titlecase = require("titlecase");
-const decamelize = require("decamelize");
-const Matrix = require("gl-matrix");
-const polygonOverlap = require("polygon-overlap");
-const logger = require("./../utils/LoggerInstance");
-const BaseModel = require("./BaseModel");
-const TransformCache = require("./TransformCache");
-const {
+import { default as HaikuElement } from "@haiku/core/lib/HaikuElement.js";
+import { default as Layout3D } from "@haiku/core/lib/Layout3D.js";
+import { cssQueryTree } from "@haiku/core/lib/HaikuNode.js";
+import {
+  default as composedTransformsToTimelineProperties
+} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
+import { default as functionToRFO } from "@haiku/core/lib/reflection/functionToRFO.js";
+import { LAYOUT_3D_SCHEMA } from "@haiku/core/lib/HaikuComponent.js";
+import { default as KnownDOMEvents } from "@haiku/core/lib/renderers/dom/Events.js";
+import titlecase from "titlecase";
+import decamelize from "decamelize";
+import Matrix from "gl-matrix";
+import polygonOverlap from "polygon-overlap";
+import logger from "./../utils/LoggerInstance.js";
+import BaseModel from "./BaseModel.js";
+import TransformCache from "./TransformCache.js";
+import {
   Experiment,
   experimentIsEnabled
-} = require("haiku-common/lib/experiments.js");
+} from "haiku-common/lib/experiments/index.js";
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't
@@ -2518,13 +2517,13 @@ Element.deselectAllOtherElements = (criteria, target, metadata) => {
   );
 };
 
-module.exports = Element;
+export default Element;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require("./Bytecode");
-const MathUtils = require("./MathUtils");
-const Property = require("./Property");
-const Row = require("./Row");
-const Template = require("./Template");
-const TimelineProperty = require("./TimelineProperty");
-const ElementSelectionProxy = require("./ElementSelectionProxy");
+import Bytecode from "./Bytecode.js";
+import MathUtils from "./MathUtils.js";
+import Property from "./Property.js";
+import Row from "./Row.js";
+import Template from "./Template.js";
+import TimelineProperty from "./TimelineProperty.js";
+import ElementSelectionProxy from "./ElementSelectionProxy.js";

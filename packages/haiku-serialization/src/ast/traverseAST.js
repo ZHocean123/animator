@@ -1,4 +1,4 @@
-let traverse = require('@babel/traverse').default;
+import traverse from '@babel/traverse';
 
 function traverseAST (ast, iterator) {
   traverse(ast, {
@@ -8,4 +8,4 @@ function traverseAST (ast, iterator) {
   });
 }
 
-module.exports = traverseAST;
+export default traverseAST;

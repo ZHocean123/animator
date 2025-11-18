@@ -1,4 +1,6 @@
-import * as Raven from "raven";
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const Raven = require("raven");
 import { shouldEmitErrors } from "haiku-common";
 import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.js";
 import logger from "haiku-serialization/src/utils/LoggerInstance.js";

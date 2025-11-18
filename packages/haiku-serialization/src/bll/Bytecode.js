@@ -2,16 +2,13 @@ import * as lodash from "lodash-es";
 import { clone } from "lodash-es";
 import { cloneDeepWith } from "lodash-es";
 import { merge } from "lodash-es";
-const BaseModel = require("./BaseModel");
-const enhance = require("@haiku/core/lib/reflection/enhance.js").default;
-const { xmlToMana } = require("haiku-common/lib/layout/xmlUtils.js");
-const {
-  default: convertManaLayout
-} = require("haiku-common/lib/layout/convertManaLayout.js");
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
-  .default;
-const reifyRO = require("@haiku/core/lib/reflection/reifyRO.js").default;
-const logger = require("haiku-serialization/src/utils/LoggerInstance");
+import BaseModel from "./BaseModel.js";
+import { default as enhance } from "@haiku/core/lib/reflection/enhance.js";
+import { xmlToMana } from "haiku-common/lib/layout/xmlUtils.js";
+import { default as convertManaLayout } from "haiku-common/lib/layout/convertManaLayout.js";
+import { default as expressionToRO } from "@haiku/core/lib/reflection/expressionToRO.js";
+import { default as reifyRO } from "@haiku/core/lib/reflection/reifyRO.js";
+import logger from "../utils/LoggerInstance.js";
 
 const HAIKU_ID_ATTRIBUTE = "haiku-id";
 const HAIKU_TITLE_ATTRIBUTE = "haiku-title";
@@ -1667,10 +1664,10 @@ Bytecode.addDefaultCurveIfNecessary = (
   }
 };
 
-module.exports = Bytecode;
+export default Bytecode;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const ModuleWrapper = require("./ModuleWrapper");
-const State = require("./State");
-const Template = require("./Template");
-const TimelineProperty = require("./TimelineProperty");
+import ModuleWrapper from "./ModuleWrapper.js";
+import State from "./State.js";
+import Template from "./Template.js";
+import TimelineProperty from "./TimelineProperty.js";

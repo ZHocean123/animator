@@ -1,11 +1,11 @@
-const decamelize = require("decamelize");
-const titlecase = require("titlecase");
-const { getFallback } = require("@haiku/core/lib/HaikuComponent.js");
-const BaseModel = require("./BaseModel");
-const {
+import decamelize from "decamelize";
+import titlecase from "titlecase";
+import { getFallback } from "@haiku/core/lib/HaikuComponent.js";
+import BaseModel from "./BaseModel.js";
+import {
   Experiment,
   experimentIsEnabled
-} = require("haiku-common/lib/experiments.js");
+} from "haiku-common/lib/experiments/index.js";
 
 function decam(s) {
   return decamelize(s).replace(/[\W_]/g, " ");
@@ -976,4 +976,4 @@ Property.buildFilterObject = (
   }
 };
 
-module.exports = Property;
+export default Property;

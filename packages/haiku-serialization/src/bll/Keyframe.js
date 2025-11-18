@@ -1,12 +1,9 @@
-const HaikuComponent = require("@haiku/core/lib/HaikuComponent.js").default;
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
-  .default;
-const Curve = require("@haiku/core/lib/api.js").Curve;
-const isDecomposableCurve = require("haiku-formats/lib/exporters/curves.js")
-  .isDecomposableCurve;
-const getCurveInterpolationPoints = require("haiku-formats/lib/exporters/curves.js")
-  .getCurveInterpolationPoints;
-const BaseModel = require("./BaseModel");
+import { default as HaikuComponent } from "@haiku/core/lib/HaikuComponent.js";
+import { default as expressionToRO } from "@haiku/core/lib/reflection/expressionToRO.js";
+import { Curve } from "@haiku/core/lib/api/index.js";
+import { isDecomposableCurve } from "haiku-formats/lib/exporters/curves.js";
+import { getCurveInterpolationPoints } from "haiku-formats/lib/exporters/curves.js";
+import BaseModel from "./BaseModel.js";
 
 /**
  * @class Keyframe
@@ -1088,7 +1085,7 @@ Keyframe.groupHasBezierEditableCurves = keyframes => {
     );
 };
 
-module.exports = Keyframe;
+export default Keyframe;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Timeline = require("./Timeline");
+import Timeline from "./Timeline.js";

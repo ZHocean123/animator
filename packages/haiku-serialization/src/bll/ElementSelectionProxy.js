@@ -1,27 +1,27 @@
-const path = require("path");
-const logger = require("./../utils/LoggerInstance");
-const BaseModel = require("./BaseModel");
-const {
+import path from "path";
+import logger from "./../utils/LoggerInstance.js";
+import BaseModel from "./BaseModel.js";
+import {
   rounded,
   transformFourVectorByMatrix,
   basicallyEquals
-} = require("./MathUtils");
-const TransformCache = require("./TransformCache");
-const { default: Layout3D } = require("@haiku/core/lib/Layout3D.js");
-const { default: HaikuElement } = require("@haiku/core/lib/HaikuElement.js");
-const {
-  default: composedTransformsToTimelineProperties
-} = require("haiku-common/lib/layout/composedTransformsToTimelineProperties.js");
-const {
-  default: invertMatrix
-} = require("haiku-vendor-legacy/lib/gl-mat4/invert.js");
-const {
+} from "./MathUtils.js";
+import TransformCache from "./TransformCache.js";
+import { default as Layout3D } from "@haiku/core/lib/Layout3D.js";
+import { default as HaikuElement } from "@haiku/core/lib/HaikuElement.js";
+import {
+  default as composedTransformsToTimelineProperties
+} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
+import {
+  default as invertMatrix
+} from "haiku-vendor-legacy/lib/gl-mat4/invert.js";
+import {
   Experiment,
   experimentIsEnabled
-} = require("haiku-common/lib/experiments.js");
-const { Figma } = require("./Figma");
-const Sketch = require("./Sketch");
-const Illustrator = require("./Illustrator");
+} from "haiku-common/lib/experiments/index.js";
+import { Figma } from "./Figma.js";
+import Sketch from "./Sketch.js";
+import Illustrator from "./Illustrator.js";
 import * as lodash from "lodash-es";
 
 const PI_OVER_12 = Math.PI / 12;
@@ -2823,10 +2823,10 @@ ElementSelectionProxy.getPasteables = () => {
   return PASTEABLES;
 };
 
-module.exports = ElementSelectionProxy;
+export default ElementSelectionProxy;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Element = require("./Element");
-const Property = require("./Property");
-const Template = require("./Template");
-const TimelineProperty = require("./TimelineProperty");
+import Element from "./Element.js";
+import Property from "./Property.js";
+import Template from "./Template.js";
+import TimelineProperty from "./TimelineProperty.js";

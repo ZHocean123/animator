@@ -1,8 +1,8 @@
-const nodehook = require('node-hook');
-const path = require('path');
-const remapSource = require('../ast/remapSource');
+import nodehook from 'node-hook';
+import path from 'path';
+import remapSource from '../ast/remapSource.js';
 
-module.exports = (cb, remapParams, iterator) => {
+export default (cb, remapParams, iterator) => {
   nodehook.hook('.js', (source, filename) => {
     if (path.basename(filename) !== 'code.js') {
       return source;

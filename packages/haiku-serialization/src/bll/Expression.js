@@ -1,5 +1,5 @@
-const BaseModel = require('./BaseModel');
-const {tokenizeDirective} = require("@haiku/core/lib/reflection/Tokenizer.js");
+import BaseModel from './BaseModel.js';
+import {tokenizeDirective} from "@haiku/core/lib/reflection/Tokenizer.js";
 
 /**
  * @class Expression
@@ -294,4 +294,4 @@ Expression.buildStateInjectorFunction = (stateName) => {
   };
 };
 
-module.exports = Expression;
+export default Expression;

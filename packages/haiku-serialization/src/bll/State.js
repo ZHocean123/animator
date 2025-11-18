@@ -1,6 +1,6 @@
-const camelcase = require('camelcase');
-const ReservedWords = require("@haiku/core/lib/reflection/ReservedWords.js").default;
-const BaseModel = require('./BaseModel');
+import camelcase from 'camelcase';
+import { default as ReservedWords } from "@haiku/core/lib/reflection/ReservedWords.js";
+import BaseModel from './BaseModel.js';
 
 /**
  * @class State
@@ -184,6 +184,6 @@ State.recast = (stateValueDescriptor) => {
   return clonedValueDescriptor;
 };
 
-module.exports = State;
+export default State;
 
-const Expression = require('./Expression');
+import Expression from './Expression.js';

@@ -1,5 +1,5 @@
-const BaseModel = require('./BaseModel');
-const TimelineProperty = require('haiku-serialization/src/bll/TimelineProperty');
+import BaseModel from './BaseModel.js';
+import TimelineProperty from './TimelineProperty.js';
 
 const NAVIGATION_DIRECTIONS = {
   SAME: 0,
@@ -864,9 +864,9 @@ Row.buildHeadingUid = (component, targetElement) => {
   return `${component.getPrimaryKey()}::${targetElement.getComponentId()}-heading`;
 };
 
-module.exports = Row;
+export default Row;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Keyframe = require('./Keyframe');
-const Timeline = require('./Timeline');
-const Property = require('./Property');
+import Keyframe from './Keyframe.js';
+import Timeline from './Timeline.js';
+import Property from './Property.js';
