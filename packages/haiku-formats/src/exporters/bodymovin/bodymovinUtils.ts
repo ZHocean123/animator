@@ -19,6 +19,7 @@ import {
 } from "./bodymovinTypes";
 
 const { polyPointsStringToPoints } = SVGPoints;
+import pkg from "../../../package.json";
 
 /**
  * Reducer for an animated timeline property.
@@ -140,8 +141,7 @@ export const compoundTimelineReducer = (
 /**
  * Lazy getter for the Bodymovin version. Only called if the exporter is requested.
  */
-export const getBodymovinVersion = (): string =>
-  require("../../../package.json").devDependencies["lottie-web"];
+export const getBodymovinVersion = (): string => pkg.devDependencies["lottie-web"];
 
 /**
  * Produce a fixed property for a transform.

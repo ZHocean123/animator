@@ -6,6 +6,7 @@
     "declarationDir": "lib",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,

@@ -1,4 +1,4 @@
-import path = require('path');
+import * as path from 'path';
 import {ExporterInterface} from '..';
 import BaseExporter from '../BaseExporter';
 import {newFfmpegCommand} from '../ffmpeg';
