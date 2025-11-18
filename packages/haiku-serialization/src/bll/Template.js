@@ -1,18 +1,18 @@
-const path = require("path");
+import path from "path";
 import { find } from "lodash-es";
 import { merge } from "lodash-es";
-const pascalcase = require("pascalcase");
-const { ATTRS_HYPH_TO_CAMEL } = require("@haiku/core/lib/HaikuComponent.js");
-const SVGPoints = require("@haiku/core/lib/helpers/SVGPoints.js").default;
-const {
-  default: convertManaLayout
-} = require("haiku-common/lib/layout/convertManaLayout.js");
-const { visitManaTree } = require("@haiku/core/lib/HaikuNode.js");
-const { manaToXml } = require("haiku-common/lib/layout/xmlUtils.js");
+import pascalcase from "pascalcase";
+import { ATTRS_HYPH_TO_CAMEL } from "@haiku/core/lib/HaikuComponent.js";
+import SVGPoints from "@haiku/core/lib/helpers/SVGPoints.js";
+import convertManaLayout from "haiku-common/lib/layout/convertManaLayout.js";
+import { visitManaTree } from "@haiku/core/lib/HaikuNode.js";
+import { manaToXml } from "haiku-common/lib/layout/xmlUtils.js";
 import { assign } from "lodash-es";
 import { defaults } from "lodash-es";
-const BaseModel = require("./BaseModel");
-const CryptoUtils = require("./../utils/CryptoUtils");
+import BaseModel from "./BaseModel.js";
+import CryptoUtils from "./../utils/CryptoUtils.js";
+import titlecase from "titlecase";
+import decamelize from "decamelize";
 
 const GROUP_DELIMITER = ".";
 const MERGE_STRATEGIES = {
@@ -422,7 +422,7 @@ Template.hoistNodeAttributes = (
 Template.createHaikuId = (node, fqa, source, context) => {
   const base = `${context}|${source}|${fqa}`;
   const sha = CryptoUtils.sha256(base).slice(0, 16);
-  const label = Element.getFriendlyLabel(node);
+  const label = Template.getFriendlyLabelLocal(node);
 
   // No label could happen if the node is blank or a string
   if (label) {
@@ -637,7 +637,7 @@ Template.visitManaTreeSpecial = function visitManaTreeSpecial(
   mana,
   iteratee
 ) {
-  address += `:[${hash}]${Element.safeElementName(mana)}(${
+  address += `:[${hash}]${Template.safeElementNameLocal(mana)}(${
     mana.attributes && mana.attributes.id ? "#" + mana.attributes.id : ""
   })`;
   iteratee(mana, address);
@@ -780,7 +780,7 @@ Template.ensureTopLevelDisplayAttributes = function ensureTopLevelDisplayAttribu
     }
   });
   // If our context is SVG, ensure it has appropriate SVG attributes
-  if (Element.safeElementName(mana) === "svg") {
+  if (Template.safeElementNameLocal(mana) === "svg") {
     merge(mana.attributes, {
       version: "1.1",
       xmlns: "http://www.w3.org/2000/svg",
@@ -877,7 +877,7 @@ Template.ensureRootDisplayAttributes = mana => {
     }
   });
   // If our context is SVG, ensure it has appropriate SVG attributes
-  if (Element.safeElementName(mana) === "svg") {
+  if (Template.safeElementNameLocal(mana) === "svg") {
     merge(mana.attributes, {
       version: "1.1",
       xmlns: "http://www.w3.org/2000/svg",
@@ -1260,8 +1260,40 @@ Template.getPropertyValue = (
   ].value;
 };
 
-module.exports = Template;
+Template.safeElementNameLocal = mana => {
+  if (!mana || typeof mana !== "object") {
+    return "div";
+  }
+  if (mana.elementName && typeof mana.elementName === "object") {
+    return "div";
+  }
+  return mana.elementName;
+};
 
-// Down here to avoid Node circular dependency stub objects. #FIXME
-const Element = require("./Element");
-const Bytecode = require("./Bytecode");
+const cleanHaikuIdLocal = str =>
+  titlecase(decamelize((String(str)).trim()).replace(/[\W_:]/g, " "));
+
+Template.getFriendlyLabelLocal = node => {
+  if (!node || typeof node !== "object") {
+    return "";
+  }
+  const id = node.attributes && node.attributes.id;
+  const title = node.attributes && node.attributes[HAIKU_TITLE_ATTRIBUTE];
+  let name = typeof node.elementName === "string" && node.elementName ? node.elementName : "div";
+  if (id && !title) {
+    return cleanHaikuIdLocal(id);
+  }
+  let out = "";
+  if (typeof id === "string") {
+    out += `${id} `;
+  }
+  if (typeof title === "string") {
+    out += `${title} `;
+  }
+  if (out.length === 0 && typeof name === "string") {
+    out += `${name}`;
+  }
+  return cleanHaikuIdLocal(out);
+};
+
+export default Template;

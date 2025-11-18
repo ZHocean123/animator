@@ -1,9 +1,7 @@
-const fse = require('haiku-fs-extra');
-const path = require('path');
+import fse from 'haiku-fs-extra';
+import path from 'path';
 
-const {
-  HOMEDIR_MODEL_STORAGE_PATH,
-} = require('./../../utils/HaikuHomeDir');
+import { HOMEDIR_MODEL_STORAGE_PATH } from './../../utils/HaikuHomeDir.js';
 
 fse.mkdirpSync(HOMEDIR_MODEL_STORAGE_PATH);
 
@@ -24,4 +22,4 @@ class DiskStorage {
   }
 }
 
-module.exports = DiskStorage;
+export default DiskStorage;

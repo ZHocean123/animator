@@ -11,4 +11,4 @@ class MemoryStorage {
 
 MemoryStorage.data = {};
 
-module.exports = MemoryStorage;
+export default MemoryStorage;

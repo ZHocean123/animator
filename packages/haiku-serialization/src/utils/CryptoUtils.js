@@ -1,5 +1,5 @@
-const CryptoJs = require('crypto-js');
-const realSha256 = require('crypto-js/sha256');
+import CryptoJs from 'crypto-js';
+import realSha256 from 'crypto-js/sha256.js';
 
 function aesDecrypt (str, passcode) {
   return CryptoJs.AES.decrypt(str, passcode).toString(CryptoJs.enc.Utf8);
@@ -25,7 +25,7 @@ function sha256 (input) {
   return realSha256(jsonStr).toString();
 }
 
-module.exports = {
+export default {
   aesEncrypt,
   aesDecrypt,
   sha256,
