@@ -13,7 +13,7 @@ import {
   session
 } from "electron";
 import { dialog } from "electron";
-import * as ElectronProxyAgent from "electron-proxy-agent";
+// import * as ElectronProxyAgent from "electron-proxy-agent";
 import * as qs from "qs";
 
 import * as fs from "fs";
@@ -301,7 +301,7 @@ function createWindow() {
   // its own websocket connections to our plumbing server, etc.
   browserWindow.webContents.on("did-finish-load", () => {
     const ses = session.fromPartition("persist:name");
-    setBothGlobalAgents(new ElectronProxyAgent(session.defaultSession));
+    // setBothGlobalAgents(new ElectronProxyAgent(session.defaultSession));
 
     ses.resolveProxy(haiku.plumbing.url, proxy => {
       haiku.proxy = {
