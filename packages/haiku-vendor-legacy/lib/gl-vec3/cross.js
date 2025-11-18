@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Computes the cross product of two vec3's
  *
@@ -20,5 +20,5 @@ function cross(out, a, b) {
     out[2] = ax * by - ay * bx;
     return out;
 }
-exports.default = cross;
+export default cross;
 //# sourceMappingURL=cross.js.map

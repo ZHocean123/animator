@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Calculates the dot product of two vec3's
  *
@@ -10,5 +10,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function dot(a, b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
-exports.default = dot;
+export default dot;
 //# sourceMappingURL=dot.js.map

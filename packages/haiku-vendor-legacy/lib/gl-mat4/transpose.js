@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Transpose the values of a mat4
  *
@@ -49,5 +49,5 @@ function transpose(out, a) {
     }
     return out;
 }
-exports.default = transpose;
+export default transpose;
 //# sourceMappingURL=transpose.js.map

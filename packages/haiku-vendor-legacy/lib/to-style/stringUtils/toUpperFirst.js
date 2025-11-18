@@ -20,11 +20,11 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+
 function toUpperFirst(value) {
     return value.length
         ? value.charAt(0).toUpperCase() + value.substring(1)
         : value;
 }
-exports.default = toUpperFirst;
+export default toUpperFirst;
 //# sourceMappingURL=toUpperFirst.js.map

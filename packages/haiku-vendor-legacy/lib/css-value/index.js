@@ -20,7 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+
 function Parser(str) {
     this.str = str;
 }
@@ -128,5 +128,5 @@ Parser.prototype.parse = function () {
 function parse(str) {
     return new Parser(str).parse();
 }
-exports.default = parse;
+export default parse;
 //# sourceMappingURL=index.js.map

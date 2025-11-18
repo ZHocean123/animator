@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 function normalize(out, mat) {
     var m44 = mat[15];
     // Cannot normalize.
@@ -12,5 +12,5 @@ function normalize(out, mat) {
     }
     return true;
 }
-exports.default = normalize;
+export default normalize;
 //# sourceMappingURL=normalize.js.map

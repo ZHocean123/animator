@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Creates a new identity mat4
  *
@@ -25,5 +25,5 @@ function create() {
     out[15] = 1;
     return out;
 }
-exports.default = create;
+export default create;
 //# sourceMappingURL=create.js.map

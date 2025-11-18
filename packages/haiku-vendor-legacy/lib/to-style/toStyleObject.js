@@ -1,3 +1,11 @@
+import cssPrefix from './cssPrefix.js';
+import hasOwn from './hasOwn.js';
+import isFunction from './isFunction.js';
+import isObject from './isObject.js';
+import camelize from './stringUtils/camelize.js';
+import hyphenate from './stringUtils/hyphenate.js';
+import cssUnitless from './cssUnitless.js';
+
 "use strict";
 /**
  * The MIT License
@@ -20,35 +28,35 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var cssPrefix_1 = require("./cssPrefix");
-var hasOwn_1 = require("./hasOwn");
-var isFunction_1 = require("./isFunction");
-var isObject_1 = require("./isObject");
-var camelize_1 = require("./stringUtils/camelize");
-var hyphenate_1 = require("./stringUtils/hyphenate");
+
+;
+;
+;
+;
+;
+;
 function applyPrefix(target, property, value, normalizeFn) {
-    cssPrefix_1.default(property, null).forEach(function (p) {
-        target[normalizeFn ? normalizeFn(p) : p] = value;
-    });
+  cssPrefix(property, null).forEach(function (p) {
+    target[normalizeFn ? normalizeFn(p) : p] = value;
+  });
 }
 function toObject(str) {
-    str = (str || '').split(';');
-    var result = {};
-    for (var i = 0; i < str.length; i++) {
-        var item = str[i];
-        var split = item.split(':');
-        if (split.length === 2) {
-            result[split[0].trim()] = split[1].trim();
-        }
+  str = (str || '').split(';');
+  var result = {};
+  for (var i = 0; i < str.length; i++) {
+    var item = str[i];
+    var split = item.split(':');
+    if (split.length === 2) {
+      result[split[0].trim()] = split[1].trim();
     }
-    return result;
+  }
+  return result;
 }
 var CONFIG = {
-    cssUnitless: require('./cssUnitless'),
+  cssUnitless: cssUnitless,
 };
 function _notUndef(thing) {
-    return thing !== null && thing !== undefined;
+  return thing !== null && thing !== undefined;
 }
 /**
  * @ignore
@@ -65,130 +73,130 @@ function _notUndef(thing) {
  * @return {Object} The object, normalized with css style names
  */
 function toStyleObject(styles, config, prepend, result) {
-    if (typeof styles === 'string') {
-        styles = toObject(styles);
-    }
-    config = config || CONFIG;
-    config.cssUnitless = config.cssUnitless || CONFIG.cssUnitless;
-    result = result || {};
-    var scope = config.scope || {};
-    var addUnits = _notUndef(config.addUnits)
-        ? config.addUnits
-        : scope && _notUndef(scope.addUnits) ? scope.addUnits : true;
-    var cssUnitless = (_notUndef(config.cssUnitless)
-        ? config.cssUnitless
-        : scope ? scope.cssUnitless : null) || {};
-    var cssUnit = (config.cssUnit || scope ? scope.cssUnit : null) || 'px';
-    var prefixProperties = config.prefixProperties || (scope ? scope.prefixProperties : null) || {};
-    var camelize = config.camelize;
-    var normalizeFn = camelize ? camelize_1.default : hyphenate_1.default;
-    var processed, styleName, propName, propValue, propType, propIsNumber, fnPropValue, prefix;
-    for (propName in styles) {
-        if (hasOwn_1.default(styles, propName)) {
-            propValue = styles[propName];
-            // the hyphenated style name (css property name)
-            styleName = hyphenate_1.default(prepend ? prepend + propName : propName);
-            processed = false;
-            prefix = false;
-            if (isFunction_1.default(propValue)) {
-                // a function can either return a css value
-                // or an object with { value, prefix, name }
-                fnPropValue = propValue.call(scope || styles, propValue, propName, styleName, styles);
-                if (isObject_1.default(fnPropValue) && fnPropValue.value != null) {
-                    propValue = fnPropValue.value;
-                    prefix = fnPropValue.prefix;
-                    styleName = fnPropValue.name ? hyphenate_1.default(fnPropValue.name) : styleName;
-                }
-                else {
-                    propValue = fnPropValue;
-                }
-            }
-            // tslint:disable-next-line:triple-equals
-            if (parseFloat(propValue) == propValue) {
-                propValue = parseFloat(propValue);
-            }
-            propType = typeof propValue;
-            propIsNumber =
-                propType === 'number' ||
-                    (propType === 'string' &&
-                        propValue !== '' &&
-                        propValue * 1 === propValue);
-            if (propValue === null ||
-                propValue === undefined ||
-                styleName === null ||
-                styleName === undefined ||
-                styleName === '') {
-                continue;
-            }
-            if (propIsNumber || propType === 'string') {
-                processed = true;
-            }
-            if (!processed && _notUndef(propValue.value) && propValue.prefix) {
-                processed = true;
-                prefix = propValue.prefix;
-                propValue = propValue.value;
-            }
-            // hyphenStyleName = camelize? HYPHENATE(styleName): styleName
-            if (processed) {
-                prefix = prefix || !!prefixProperties[styleName];
-                if (propIsNumber) {
-                    propValue = addUnits && !(styleName in cssUnitless)
-                        ? propValue + cssUnit
-                        : propValue + ''; // change it to a string, so that jquery does not append px or other units
-                }
-                // special border treatment
-                if ((styleName === 'border' ||
-                    (!styleName.indexOf('border') &&
-                        !~styleName.indexOf('radius') &&
-                        !~styleName.indexOf('width'))) &&
-                    propIsNumber) {
-                    styleName = styleName + '-width';
-                }
-                // special border radius treatment
-                if (!styleName.indexOf('border-radius-')) {
-                    styleName.replace(/border(-radius)(-(.*))/, function (str, radius, theRest) {
-                        var positions = {
-                            '-top': ['-top-left', '-top-right'],
-                            '-left': ['-top-left', '-bottom-left'],
-                            '-right': ['-top-right', '-bottom-right'],
-                            '-bottom': ['-bottom-left', '-bottom-right'],
-                        };
-                        if (theRest in positions) {
-                            styleName = [];
-                            positions[theRest].forEach(function (pos) {
-                                styleName.push('border' + pos + radius);
-                            });
-                        }
-                        else {
-                            styleName = 'border' + theRest + radius;
-                        }
-                    });
-                    if (Array.isArray(styleName)) {
-                        styleName.forEach(function (styleName) {
-                            if (prefix) {
-                                applyPrefix(result, styleName, propValue, normalizeFn);
-                            }
-                            else {
-                                result[normalizeFn(styleName)] = propValue;
-                            }
-                        });
-                        continue;
-                    }
-                }
-                if (prefix) {
-                    applyPrefix(result, styleName, propValue, normalizeFn);
-                }
-                else {
-                    result[normalizeFn(styleName)] = propValue;
-                }
+  if (typeof styles === 'string') {
+    styles = toObject(styles);
+  }
+  config = config || CONFIG;
+  config.cssUnitless = config.cssUnitless || CONFIG.cssUnitless;
+  result = result || {};
+  var scope = config.scope || {};
+  var addUnits = _notUndef(config.addUnits)
+    ? config.addUnits
+    : scope && _notUndef(scope.addUnits) ? scope.addUnits : true;
+  var cssUnitless = (_notUndef(config.cssUnitless)
+    ? config.cssUnitless
+    : scope ? scope.cssUnitless : null) || {};
+  var cssUnit = (config.cssUnit || scope ? scope.cssUnit : null) || 'px';
+  var prefixProperties = config.prefixProperties || (scope ? scope.prefixProperties : null) || {};
+  var camelize = config.camelize;
+  var normalizeFn = camelize ? camelize : hyphenate;
+  var processed, styleName, propName, propValue, propType, propIsNumber, fnPropValue, prefix;
+  for (propName in styles) {
+    if (hasOwn(styles, propName)) {
+      propValue = styles[propName];
+      // the hyphenated style name (css property name)
+      styleName = hyphenate(prepend ? prepend + propName : propName);
+      processed = false;
+      prefix = false;
+      if (isFunction(propValue)) {
+        // a function can either return a css value
+        // or an object with { value, prefix, name }
+        fnPropValue = propValue.call(scope || styles, propValue, propName, styleName, styles);
+        if (isObject(fnPropValue) && fnPropValue.value != null) {
+          propValue = fnPropValue.value;
+          prefix = fnPropValue.prefix;
+          styleName = fnPropValue.name ? hyphenate(fnPropValue.name) : styleName;
+        }
+        else {
+          propValue = fnPropValue;
+        }
+      }
+      // tslint:disable-next-line:triple-equals
+      if (parseFloat(propValue) == propValue) {
+        propValue = parseFloat(propValue);
+      }
+      propType = typeof propValue;
+      propIsNumber =
+        propType === 'number' ||
+        (propType === 'string' &&
+          propValue !== '' &&
+          propValue * 1 === propValue);
+      if (propValue === null ||
+        propValue === undefined ||
+        styleName === null ||
+        styleName === undefined ||
+        styleName === '') {
+        continue;
+      }
+      if (propIsNumber || propType === 'string') {
+        processed = true;
+      }
+      if (!processed && _notUndef(propValue.value) && propValue.prefix) {
+        processed = true;
+        prefix = propValue.prefix;
+        propValue = propValue.value;
+      }
+      // hyphenStyleName = camelize? HYPHENATE(styleName): styleName
+      if (processed) {
+        prefix = prefix || !!prefixProperties[styleName];
+        if (propIsNumber) {
+          propValue = addUnits && !(styleName in cssUnitless)
+            ? propValue + cssUnit
+            : propValue + ''; // change it to a string, so that jquery does not append px or other units
+        }
+        // special border treatment
+        if ((styleName === 'border' ||
+          (!styleName.indexOf('border') &&
+            !~styleName.indexOf('radius') &&
+            !~styleName.indexOf('width'))) &&
+          propIsNumber) {
+          styleName = styleName + '-width';
+        }
+        // special border radius treatment
+        if (!styleName.indexOf('border-radius-')) {
+          styleName.replace(/border(-radius)(-(.*))/, function (str, radius, theRest) {
+            var positions = {
+              '-top': ['-top-left', '-top-right'],
+              '-left': ['-top-left', '-bottom-left'],
+              '-right': ['-top-right', '-bottom-right'],
+              '-bottom': ['-bottom-left', '-bottom-right'],
+            };
+            if (theRest in positions) {
+              styleName = [];
+              positions[theRest].forEach(function (pos) {
+                styleName.push('border' + pos + radius);
+              });
             }
             else {
-                // the propValue must be an object, so go down the hierarchy
-                toStyleObject(propValue, config, styleName + '-', result);
+              styleName = 'border' + theRest + radius;
             }
+          });
+          if (Array.isArray(styleName)) {
+            styleName.forEach(function (styleName) {
+              if (prefix) {
+                applyPrefix(result, styleName, propValue, normalizeFn);
+              }
+              else {
+                result[normalizeFn(styleName)] = propValue;
+              }
+            });
+            continue;
+          }
         }
+        if (prefix) {
+          applyPrefix(result, styleName, propValue, normalizeFn);
+        }
+        else {
+          result[normalizeFn(styleName)] = propValue;
+        }
+      }
+      else {
+        // the propValue must be an object, so go down the hierarchy
+        toStyleObject(propValue, config, styleName + '-', result);
+      }
     }
-    return result;
+  }
+  return result;
 }
-exports.default = toStyleObject;
+export default toStyleObject;
 //# sourceMappingURL=toStyleObject.js.map

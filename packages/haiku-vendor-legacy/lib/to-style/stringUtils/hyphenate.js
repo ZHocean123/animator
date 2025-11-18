@@ -1,3 +1,5 @@
+import separate_1 from './separate.js';
+
 "use strict";
 /**
  * The MIT License
@@ -20,10 +22,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var separate_1 = require("./separate");
+
+;
 function hyphenate(name) {
     return separate_1.default(name, null).toLowerCase();
 }
-exports.default = hyphenate;
+export default hyphenate;
 //# sourceMappingURL=hyphenate.js.map

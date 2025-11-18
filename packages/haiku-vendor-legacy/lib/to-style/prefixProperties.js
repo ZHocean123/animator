@@ -20,8 +20,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+
+export default {
     'border-radius': 1,
     'border-top-left-radius': 1,
     'border-top-right-radius': 1,

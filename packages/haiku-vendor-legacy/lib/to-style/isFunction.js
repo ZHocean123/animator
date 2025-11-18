@@ -20,10 +20,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+
 var objectToString = Object.prototype.toString;
 function isFunction(v) {
     return objectToString.apply(v) === '[object Function]';
 }
-exports.default = isFunction;
+export default isFunction;
 //# sourceMappingURL=isFunction.js.map

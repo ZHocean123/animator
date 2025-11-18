@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Creates a matrix from a quaternion rotation and vector translation
  * This is equivalent to (but much faster than):
@@ -51,5 +51,5 @@ function fromRotationTranslation(out, q, v) {
     out[15] = 1;
     return out;
 }
-exports.default = fromRotationTranslation;
+export default fromRotationTranslation;
 //# sourceMappingURL=fromRotationTranslation.js.map

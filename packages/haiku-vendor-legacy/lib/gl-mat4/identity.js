@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Set a mat4 to the identity matrix
  *
@@ -25,5 +25,5 @@ function identity(out) {
     out[15] = 1;
     return out;
 }
-exports.default = identity;
+export default identity;
 //# sourceMappingURL=identity.js.map

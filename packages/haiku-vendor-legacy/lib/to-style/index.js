@@ -1,4 +1,5 @@
-"use strict";
+import toStyleObject_1 from './toStyleObject.js';
+
 /**
  * The MIT License
  *
@@ -20,9 +21,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var toStyleObject_1 = require("./toStyleObject");
-exports.default = {
-    object: toStyleObject_1.default,
+
+export default {
+  object: toStyleObject_1.default,
 };
 //# sourceMappingURL=index.js.map

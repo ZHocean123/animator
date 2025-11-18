@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Multiplies two mat4's
  *
@@ -60,5 +60,5 @@ function multiply(out, a, b) {
     out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
     return out;
 }
-exports.default = multiply;
+export default multiply;
 //# sourceMappingURL=multiply.js.map

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Creates a new mat4 initialized with values from an existing matrix
  *
@@ -26,5 +26,5 @@ function clone(a) {
     out[15] = a[15];
     return out;
 }
-exports.default = clone;
+export default clone;
 //# sourceMappingURL=clone.js.map

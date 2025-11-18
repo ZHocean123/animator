@@ -20,7 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, '__esModule', {value: true});
+
 /**
  * Parse the given string of `xml`.
  *
@@ -164,5 +164,5 @@ function parse (xml) {
     return xml.indexOf(prefix) === 0;
   }
 }
-exports.default = parse;
+export default parse;
 // # sourceMappingURL=index.js.map

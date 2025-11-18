@@ -20,7 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+
 var doubleColonRe = /::/g;
 var upperToLowerRe = /([A-Z]+)([A-Z][a-z])/g;
 var lowerToUpperRe = /([a-z\d])([A-Z])/g;
@@ -34,5 +34,5 @@ function separate(name, separator) {
             .replace(underscoreToDashRe, separator || '-')
         : '';
 }
-exports.default = separate;
+export default separate;
 //# sourceMappingURL=separate.js.map

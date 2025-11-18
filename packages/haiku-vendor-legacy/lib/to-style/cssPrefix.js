@@ -1,3 +1,5 @@
+import prefixer from './prefixer.js';
+
 "use strict";
 /**
  * The MIT License
@@ -20,8 +22,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var prefixer_1 = require("./prefixer");
-var cssPrefix = prefixer_1.default(null);
-exports.default = cssPrefix;
+
+;
+var cssPrefix = prefixer(null);
+export default cssPrefix;
 //# sourceMappingURL=cssPrefix.js.map

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Calculates the length of a vec3
  *
@@ -12,5 +12,5 @@ function length(a) {
     var z = a[2];
     return Math.sqrt(x * x + y * y + z * z);
 }
-exports.default = length;
+export default length;
 //# sourceMappingURL=length.js.map

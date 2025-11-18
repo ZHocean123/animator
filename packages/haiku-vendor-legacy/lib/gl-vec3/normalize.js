@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Normalize a vec3
  *
@@ -21,5 +21,5 @@ function normalize(out, a) {
     }
     return out;
 }
-exports.default = normalize;
+export default normalize;
 //# sourceMappingURL=normalize.js.map

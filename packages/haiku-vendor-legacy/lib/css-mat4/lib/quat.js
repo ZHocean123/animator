@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 // ZYX order
 function fromEuler(quaternion, euler) {
     var x = euler[0];
@@ -24,7 +24,7 @@ function identity(out) {
     out[3] = 1;
     return out;
 }
-exports.default = {
+export default {
     fromEuler: fromEuler,
     identity: identity,
 };

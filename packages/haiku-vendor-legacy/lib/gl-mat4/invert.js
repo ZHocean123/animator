@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Inverts a mat4
  *
@@ -60,5 +60,5 @@ function invert(out, a) {
     out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
     return out;
 }
-exports.default = invert;
+export default invert;
 //# sourceMappingURL=invert.js.map

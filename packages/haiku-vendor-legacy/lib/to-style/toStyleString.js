@@ -1,3 +1,6 @@
+import toStyleObject_1 from './toStyleObject.js';
+import hasOwn_1 from './hasOwn.js';
+
 "use strict";
 /**
  * The MIT License
@@ -20,9 +23,9 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var toStyleObject_1 = require("./toStyleObject");
-var hasOwn_1 = require("./hasOwn");
+
+;
+;
 /**
  * @ignore
  * @method toStyleString
@@ -48,5 +51,5 @@ function toStyleString(styles, config) {
     }
     return result.join('; ');
 }
-exports.default = toStyleString;
+export default toStyleString;
 //# sourceMappingURL=toStyleString.js.map

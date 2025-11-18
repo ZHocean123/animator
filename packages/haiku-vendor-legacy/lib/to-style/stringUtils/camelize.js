@@ -20,7 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+
 var hyphenRe = /[-\s]+(.)?/g;
 function toCamelFn(str, letter) {
     return letter ? letter.toUpperCase() : '';
@@ -28,5 +28,5 @@ function toCamelFn(str, letter) {
 function camelize(str) {
     return str ? str.replace(hyphenRe, toCamelFn) : '';
 }
-exports.default = camelize;
+export default camelize;
 //# sourceMappingURL=camelize.js.map

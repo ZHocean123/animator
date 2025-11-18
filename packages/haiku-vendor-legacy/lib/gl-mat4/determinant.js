@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Calculates the determinant of a mat4
  *
@@ -38,5 +38,5 @@ function determinant(a) {
     // Calculate the determinant
     return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 }
-exports.default = determinant;
+export default determinant;
 //# sourceMappingURL=determinant.js.map

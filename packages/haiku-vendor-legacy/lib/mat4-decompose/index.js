@@ -1,4 +1,10 @@
-'use strict';
+import createModule from '../gl-mat4/create.js';
+import cross_1 from '../gl-vec3/cross.js';
+import dot_1 from '../gl-vec3/dot.js';
+import length_1 from '../gl-vec3/length.js';
+import normalize_1 from '../gl-vec3/normalize.js';
+import normalize_2 from './normalize.js';
+
 /* jshint unused:true */
 /*
 Input:  matrix      ; a 4x4 matrix
@@ -14,33 +20,26 @@ https://github.com/kamicane/matrix3d/blob/master/lib/Matrix3d.js
 https://github.com/ChromiumWebApps/chromium/blob/master/ui/gfx/transform_util.cc
 http://www.w3.org/TR/css3-transforms/#decomposing-a-3d-matrix
 */
-Object.defineProperty(exports, '__esModule', {value: true});
-let create_1 = require('../gl-mat4/create');
-let cross_1 = require('../gl-vec3/cross');
-let dot_1 = require('../gl-vec3/dot');
-let length_1 = require('../gl-vec3/length');
-let normalize_1 = require('../gl-vec3/normalize');
-let normalize_2 = require('./normalize');
-let vec3 = {
+
+const vec3 = {
   length: length_1.default,
   normalize: normalize_1.default,
   dot: dot_1.default,
   cross: cross_1.default,
 };
-let tmp = create_1.default();
-let row = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-let pdum3 = [0, 0, 0];
-exports.round = function (value, epsilon = 1e3) {
+const tmp = createModule();
+const row = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+const pdum3 = [0, 0, 0];
+export const round = function (value, epsilon = 1e3) {
   return Math.round(value * epsilon) / epsilon;
 };
-function roundVector (vector, epsilon = 1e3) {
+function roundVector(vector, epsilon = 1e3) {
   return vector.map(function (value) {
-    return exports.round(value, epsilon);
+    return round(value, epsilon);
   });
 }
-exports.roundVector = roundVector;
-function decomposeMat4 (matrix, epsilon = 1e3) {
-    // Normalize. If not possible or we have a 0 scale factor, bail out early.
+function decomposeMat4(matrix, epsilon = 1e3) {
+  // Normalize. If not possible or we have a 0 scale factor, bail out early.
   if (!normalize_2.default(tmp, matrix) || !tmp[0] || !tmp[5] || !tmp[10]) {
     return {
       translation: [0, 0, 0],
@@ -50,33 +49,33 @@ function decomposeMat4 (matrix, epsilon = 1e3) {
     };
   }
   const translation = roundVector([tmp[12], tmp[13], tmp[14]], epsilon);
-    // Now get scale and shear. 'row' is a 3 element array of 3 component vectors
+  // Now get scale and shear. 'row' is a 3 element array of 3 component vectors
   mat3from4(row, tmp);
   const scale = [0, 0, 0];
   const shear = [0, 0, 0];
-    // Compute X scale factor and normalize first row.
+  // Compute X scale factor and normalize first row.
   scale[0] = vec3.length(row[0]);
   vec3.normalize(row[0], row[0]);
-    // Compute XY shear factor and make 2nd row orthogonal to 1st.
+  // Compute XY shear factor and make 2nd row orthogonal to 1st.
   shear[0] = vec3.dot(row[0], row[1]);
   combine(row[1], row[1], row[0], 1.0, -shear[0]);
-    // Now, compute Y scale and normalize 2nd row.
+  // Now, compute Y scale and normalize 2nd row.
   scale[1] = vec3.length(row[1]);
   vec3.normalize(row[1], row[1]);
   shear[0] /= scale[1];
-    // Compute XZ and YZ shears, orthogonalize 3rd row
+  // Compute XZ and YZ shears, orthogonalize 3rd row
   shear[1] = vec3.dot(row[0], row[2]);
   combine(row[2], row[2], row[0], 1.0, -shear[1]);
   shear[2] = vec3.dot(row[1], row[2]);
   combine(row[2], row[2], row[1], 1.0, -shear[2]);
-    // Next, get Z scale and normalize 3rd row.
+  // Next, get Z scale and normalize 3rd row.
   scale[2] = vec3.length(row[2]);
   vec3.normalize(row[2], row[2]);
   shear[1] /= scale[2];
   shear[2] /= scale[2];
-    // At this point, the matrix (in rows) is orthonormal.
-    // Check for a coordinate system flip.  If the determinant
-    // is -1, then negate the matrix and the scaling factors.
+  // At this point, the matrix (in rows) is orthonormal.
+  // Check for a coordinate system flip.  If the determinant
+  // is -1, then negate the matrix and the scaling factors.
   vec3.cross(pdum3, row[1], row[2]);
   if (vec3.dot(row[0], pdum3) < 0) {
     for (let i = 0; i < 3; i++) {
@@ -97,7 +96,7 @@ function decomposeMat4 (matrix, epsilon = 1e3) {
   } else {
     rotation[0] = Math.atan2(-row[2][1], row[1][1]);
   }
-    // Force positive rotations.
+  // Force positive rotations.
   for (let i = 0; i < rotation.length; i++) {
     if (rotation[i] < 0) {
       rotation[i] += 2 * Math.PI;
@@ -110,9 +109,9 @@ function decomposeMat4 (matrix, epsilon = 1e3) {
     shear: roundVector(shear, epsilon),
   };
 }
-exports.default = decomposeMat4;
+export default decomposeMat4;
 // gets upper-left of a 4x4 matrix into a 3x3 of vectors
-function mat3from4 (out, mat4x4) {
+function mat3from4(out, mat4x4) {
   out[0][0] = mat4x4[0];
   out[0][1] = mat4x4[1];
   out[0][2] = mat4x4[2];
@@ -123,7 +122,7 @@ function mat3from4 (out, mat4x4) {
   out[2][1] = mat4x4[9];
   out[2][2] = mat4x4[10];
 }
-function combine (out, a, b, scale1, scale2) {
+function combine(out, a, b, scale1, scale2) {
   out[0] = a[0] * scale1 + b[0] * scale2;
   out[1] = a[1] * scale1 + b[1] * scale2;
   out[2] = a[2] * scale1 + b[2] * scale2;

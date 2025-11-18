@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * Scales the mat4 by the dimensions in the given vec3
  *
@@ -30,5 +30,5 @@ function scale(out, a, v) {
     out[15] = a[15];
     return out;
 }
-exports.default = scale;
+export default scale;
 //# sourceMappingURL=scale.js.map
