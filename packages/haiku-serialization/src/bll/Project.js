@@ -1,22 +1,22 @@
-const fse = require("haiku-fs-extra");
-const path = require("path");
-const async = require("async");
-const WebSocket = require("ws");
-import * as lodash from "lodash-es";
-const jss = require("json-stable-stringify");
+const fse = require('haiku-fs-extra');
+const path = require('path');
+const async = require('async');
+const WebSocket = require('ws');
+import * as lodash from 'lodash-es';
+const jss = require('json-stable-stringify');
 const {
   Experiment,
-  experimentIsEnabled
-} = require("haiku-common/lib/experiments");
-const EnvoyClient = require("haiku-sdk-creator/lib/envoy/EnvoyClient").default;
-const EnvoyLogger = require("haiku-sdk-creator/lib/envoy/EnvoyLogger").default;
-const { GLASS_CHANNEL } = require("haiku-sdk-creator/lib/glass");
-const logger = require("./../utils/LoggerInstance");
-const BaseModel = require("./BaseModel");
-const { InteractionMode } = require("@haiku/core/lib/helpers/interactionModes.js");
-const toTitleCase = require("./helpers/toTitleCase");
-import * as Lock from "./Lock.js";
-const ActionStack = require("./ActionStack");
+  experimentIsEnabled,
+} = require('haiku-common/lib/experiments');
+const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default;
+const EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default;
+const { GLASS_CHANNEL } = require('haiku-sdk-creator/lib/glass');
+const logger = require('./../utils/LoggerInstance');
+const BaseModel = require('./BaseModel');
+const { InteractionMode } = require('@haiku/core/lib/helpers/interactionModes.js');
+const toTitleCase = require('./helpers/toTitleCase');
+import * as Lock from './Lock.js';
+const ActionStack = require('./ActionStack');
 const {
   getSafeProjectName,
   getProjectNameSafeShort,
@@ -25,12 +25,12 @@ const {
   getReactProjectName,
   getProjectNameLowerCase,
   readPackageJson,
-  getAngularSelectorName
-} = require("@haiku/sdk-client/lib/ProjectDefinitions.js.js");
+  getAngularSelectorName,
+} = require('@haiku/sdk-client/lib/ProjectDefinitions.js.js');
 
 const SILENT_METHODS = {
   hoverElement: true,
-  unhoverElement: true
+  unhoverElement: true,
 };
 
 /**
@@ -54,7 +54,7 @@ class Project extends BaseModel {
     // and not end up with infinite loops of events emitted, captured, and emitted again. Beware!
     this.metadata = {
       from: this.alias, // #FIXME, dumb name?
-      alias: this.alias
+      alias: this.alias,
     };
 
     this.ensurePlatformHaikuRegistry();
@@ -62,10 +62,10 @@ class Project extends BaseModel {
     // Batched collections of methods to send through the websocket
     this.actionStack = new ActionStack({
       uid: this.getPrimaryKey(),
-      project: this
+      project: this,
     });
 
-    this.actionStack.on("next", (method, params, done) => {
+    this.actionStack.on('next', (method, params, done) => {
       logger.info(`[project (${this.getAlias()})] sending action: ${method}`);
 
       this.websocket.action(
@@ -74,7 +74,7 @@ class Project extends BaseModel {
         (err, out) => {
           done(err, out);
         },
-        this.getFolder()
+        this.getFolder(),
       );
     });
 
@@ -85,8 +85,8 @@ class Project extends BaseModel {
     // In multi-component editing, this controls what the current active component is
     this._activeComponentSceneName = null;
 
-    ActiveComponent.on("update", (ac, what, entity) => {
-      this.emit("update", what, entity, ac, this.getMetadata());
+    ActiveComponent.on('update', (ac, what, entity) => {
+      this.emit('update', what, entity, ac, this.getMetadata());
     });
 
     // List of components we are tracking as part of the component tabs
@@ -108,7 +108,7 @@ class Project extends BaseModel {
   teardown() {
     this.stopHandlingMethods();
     this.getEnvoyClient().closeConnection();
-    if (this.websocket) {
+    if(this.websocket) {
       this.websocket.disconnect();
     }
     this.actionStack.stop();
@@ -125,57 +125,57 @@ class Project extends BaseModel {
   connectClients() {
     this.startHandlingMethods();
 
-    if (this.websocket) {
+    if(this.websocket) {
       // Idempotent setup should handle an already-connected client gracefully
       this.websocket.connect();
 
-      if (!this._didStartWebsocketListeners) {
+      if(!this._didStartWebsocketListeners) {
         // Upon receipt of a method, route to the correct ActiveComponent
-        this.websocket.on("method", this.receiveMethodCall.bind(this));
-        this.websocket.on("close", () =>
-          logger.info(`[project (${this.getAlias()})] websocket closed`)
+        this.websocket.on('method', this.receiveMethodCall.bind(this));
+        this.websocket.on('close', () =>
+          logger.info(`[project (${this.getAlias()})] websocket closed`),
         );
-        this.websocket.on("error", () =>
-          logger.info(`[project (${this.getAlias()})] websocket error`)
+        this.websocket.on('error', () =>
+          logger.info(`[project (${this.getAlias()})] websocket error`),
         );
 
         this._didStartWebsocketListeners = true;
       }
     }
 
-    if (this._envoyClient) {
+    if(this._envoyClient) {
       // no-op; the client should already be connected to the server
     } else {
       const websocketClient =
         this.WebSocket ||
-        (typeof window !== "undefined" && window.WebSocket) ||
+        (typeof window !== 'undefined' && window.WebSocket) ||
         WebSocket;
 
       this._envoyClient = new EnvoyClient(
         Object.assign(
           {
             WebSocket: websocketClient,
-            logger: new EnvoyLogger("warn")
+            logger: new EnvoyLogger('warn'),
           },
-          this.getEnvoyOptions()
-        )
+          this.getEnvoyOptions(),
+        ),
       );
 
-      this._envoyClient.get("timeline").then(timelineChannel => {
+      this._envoyClient.get('timeline').then(timelineChannel => {
         this._envoyTimelineChannel = timelineChannel;
-        this.emit("envoy:timelineClientReady", this._envoyTimelineChannel);
+        this.emit('envoy:timelineClientReady', this._envoyTimelineChannel);
       });
 
       this._envoyClient.get(GLASS_CHANNEL).then(glassChannel => {
         this._envoyGlassChannel = glassChannel;
-        this.emit("envoy:glassClientReady", this._envoyGlassChannel);
+        this.emit('envoy:glassClientReady', this._envoyGlassChannel);
       });
 
-      this._envoyClient.get("tour").then(tourChannel => {
+      this._envoyClient.get('tour').then(tourChannel => {
         this._envoyTourChannel = tourChannel;
-        if (!this._envoyClient.isInMockMode()) {
+        if(!this._envoyClient.isInMockMode()) {
           this._envoyTourChannel.requestWebviewCoordinates().then(() => {
-            this.emit("envoy:tourClientReady", this._envoyTourChannel);
+            this.emit('envoy:tourClientReady', this._envoyTourChannel);
           });
         }
       });
@@ -194,11 +194,11 @@ class Project extends BaseModel {
   }
 
   receiveMethodCall(method, params, message, cb) {
-    if (!this.isHandlingMethods) {
+    if(!this.isHandlingMethods) {
       return cb();
     }
 
-    if (this.isIgnoringMethodRequestsForMethod(method)) {
+    if(this.isIgnoringMethodRequestsForMethod(method)) {
       return null; // Another handler will call the callback in this case
     }
 
@@ -208,21 +208,21 @@ class Project extends BaseModel {
   handleMethodCall(method, params, message, cb) {
     return Lock.request(Lock.LOCKS.ProjectMethodHandler, false, release => {
       // Try matching a method on a given active component
-      if (
-        typeof params[0] === "string" &&
+      if(
+        typeof params[0] === 'string' &&
         ActiveComponent.prototype[method] instanceof Function
       ) {
         return this.findActiveComponentBySource(
           params[0],
           (findAcError, ac) => {
-            if (findAcError) {
+            if(findAcError) {
               release();
               return cb(findAcError);
             }
 
-            if (!SILENT_METHODS[method]) {
+            if(!SILENT_METHODS[method]) {
               logger.info(
-                `[project (${this.getAlias()})] component handling method ${method}`
+                `[project (${this.getAlias()})] component handling method ${method}`,
               );
             }
 
@@ -231,17 +231,17 @@ class Project extends BaseModel {
               params.slice(1).concat(err => {
                 release();
                 return cb(err);
-              })
+              }),
             );
-          }
+          },
         );
       }
 
       // If we have a method here at the top, call it
-      if (this[method] instanceof Function) {
-        if (!SILENT_METHODS) {
+      if(this[method] instanceof Function) {
+        if(!SILENT_METHODS) {
           logger.info(
-            `[project (${this.getAlias()})] project handling method ${method}`
+            `[project (${this.getAlias()})] project handling method ${method}`,
           );
         }
 
@@ -250,7 +250,7 @@ class Project extends BaseModel {
           params.concat(err => {
             release();
             return cb(err);
-          })
+          }),
         );
       }
 
@@ -260,13 +260,13 @@ class Project extends BaseModel {
   }
 
   ensurePlatformHaikuRegistry() {
-    if (!this.platform) {
+    if(!this.platform) {
       this.platform = {};
     }
-    if (!this.platform.haiku) {
+    if(!this.platform.haiku) {
       this.platform.haiku = {};
     }
-    if (!this.platform.haiku.registry) {
+    if(!this.platform.haiku.registry) {
       this.platform.haiku.registry = {};
     }
   }
@@ -296,7 +296,7 @@ class Project extends BaseModel {
   }
 
   getCurrentActiveComponent() {
-    if (!this._activeComponentSceneName) {
+    if(!this._activeComponentSceneName) {
       return null;
     }
     return this.findActiveComponentBySceneName(this._activeComponentSceneName);
@@ -308,8 +308,8 @@ class Project extends BaseModel {
 
   addActiveComponentToMultiComponentTabs(scenename, active = false) {
     // Update the active tabs in memory used for displaying in the UI
-    for (const tab of this._multiComponentTabs) {
-      if (tab.scenename === scenename) {
+    for(const tab of this._multiComponentTabs) {
+      if(tab.scenename === scenename) {
         tab.active = active;
         return;
       }
@@ -320,9 +320,9 @@ class Project extends BaseModel {
 
   removeActiveComponentFromMultiComponentTabs(scenename) {
     const index = this._multiComponentTabs.findIndex(
-      tab => tab.scenename === scenename
+      tab => tab.scenename === scenename,
     );
-    if (index !== -1) {
+    if(index !== -1) {
       this._multiComponentTabs.splice(index, 1);
     }
   }
@@ -332,7 +332,7 @@ class Project extends BaseModel {
       return {
         isActive: !!active,
         scenename,
-        title: toTitleCase(scenename)
+        title: toTitleCase(scenename),
       };
     });
   }
@@ -342,20 +342,20 @@ class Project extends BaseModel {
     const filter = doable => !doable.ac || doable.ac === ac;
     return {
       canUndo: this.actionStack.getUndoables().filter(filter).length > 0,
-      canRedo: this.actionStack.getRedoables().filter(filter).length > 0
+      canRedo: this.actionStack.getRedoables().filter(filter).length > 0,
     };
   }
 
   describeTopMenu() {
     return {
       subComponents: this.describeSubComponents(),
-      undoState: this.describeUndoState()
+      undoState: this.describeUndoState(),
     };
   }
 
   getExistingComponentNames() {
     const names = {
-      main: true // Never allow 'main'
+      main: true, // Never allow 'main'
     };
 
     this._multiComponentTabs.forEach(tab => {
@@ -367,8 +367,8 @@ class Project extends BaseModel {
 
   getNextAvailableSceneNameWithPrefix(prefix, num = 0) {
     // myName, myName_2, myName_3, ...
-    const full = `${prefix}${num < 2 ? "" : `_${num}`}`;
-    if (!this.findActiveComponentBySceneName(full)) {
+    const full = `${prefix}${num < 2 ? '' : `_${num}`}`;
+    if(!this.findActiveComponentBySceneName(full)) {
       return full;
     }
     return this.getNextAvailableSceneNameWithPrefix(prefix, num + 1);
@@ -403,15 +403,15 @@ class Project extends BaseModel {
   }
 
   getEnvoyChannel(name) {
-    switch (name) {
-      case "timeline":
+    switch(name) {
+      case 'timeline':
         return this._envoyTimelineChannel;
-      case "glass":
+      case 'glass':
         return this._envoyGlassChannel;
-      case "tour":
+      case 'tour':
         return this._envoyTourChannel;
       default:
-        throw new Error("Envoy channel name required");
+        throw new Error('Envoy channel name required');
     }
   }
 
@@ -452,18 +452,18 @@ class Project extends BaseModel {
       handleActionResolution =>
         tx((err, out) => {
           // Should only called if there is *not* an error, but sticking with err-first convention anyway.
-          if (
+          if(
             experimentIsEnabled(Experiment.IpcIntegrityCheck) &&
             metadata.integrity !== false
           ) {
             const integrity = this.describeIntegrity();
 
-            if (metadata.integrity && this.isRemoteRequest(metadata)) {
+            if(metadata.integrity && this.isRemoteRequest(metadata)) {
               const mismatch = integritiesMismatched(
                 metadata.integrity,
-                integrity
+                integrity,
               );
-              if (mismatch) {
+              if(mismatch) {
                 logger.error(`
                 Integrity mismatch due to ${method} in ${this.getAlias()}:
                   ${metadata.from} (their result):
@@ -471,14 +471,14 @@ class Project extends BaseModel {
                   ${this.getAlias()} (our result):
                     ${mismatch[1]}
               `);
-                if (
+                if(
                   experimentIsEnabled(
-                    Experiment.CrashOnIpcIntegrityCheckFailure
+                    Experiment.CrashOnIpcIntegrityCheckFailure,
                   )
                 ) {
                   let message = `Unable to update component (${method} in ${this.getAlias()})`;
 
-                  if (process.env.NODE_ENV !== "production") {
+                  if(process.env.NODE_ENV !== 'production') {
                     message = `CRASH! Stop editing now and open dev tools (Cmd+Option+I). ${message}`;
                   }
 
@@ -491,8 +491,8 @@ class Project extends BaseModel {
           }
 
           // If we originated the action, notify all other views
-          if (!this.isRemoteRequest(metadata)) {
-            this.emit("update", method, ...args);
+          if(!this.isRemoteRequest(metadata)) {
+            this.emit('update', method, ...args);
             this.actionStack.enqueueAction(
               method,
               [this.getFolder()].concat(args),
@@ -502,30 +502,30 @@ class Project extends BaseModel {
                 metadata.actionStackIndex = this.actionStackIndex;
                 this.advanceActionStackIndex();
                 handleActionResolution(err, out);
-              }
+              },
             );
           } else {
             // Otherwise we received an update and may need to update ourselves
-            this.emit("remote-update", method, ...args);
+            this.emit('remote-update', method, ...args);
             handleActionResolution(err, out);
           }
-        })
+        }),
     );
   }
 
   getWebsocketBroadcastDefaults() {
     return {
       time: Date.now(),
-      type: "broadcast",
+      type: 'broadcast',
       folder: this.getFolder(),
-      from: this.getMetadata().alias
+      from: this.getMetadata().alias,
     };
   }
 
   broadcastPayload(mainPayload) {
     const fullPayloadWithMetadata = Object.assign(
       this.getWebsocketBroadcastDefaults(),
-      mainPayload
+      mainPayload,
     );
     this.websocket.send(fullPayloadWithMetadata);
   }
@@ -537,7 +537,7 @@ class Project extends BaseModel {
       dtModified: Date.now(),
       project: this,
       relpath,
-      type
+      type,
     });
 
     return File.upsert(spec, this.getFileOptions());
@@ -555,10 +555,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "masterHeartbeat",
-        params: [this.getFolder()]
+        method: 'masterHeartbeat',
+        params: [this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
@@ -566,10 +566,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "saveProject",
-        params: [project, saveOptions]
+        method: 'saveProject',
+        params: [project, saveOptions],
       },
-      cb
+      cb,
     );
   }
 
@@ -582,8 +582,8 @@ class Project extends BaseModel {
         (component, next) => {
           // If we toggle preview mode before any subcomponents are bootstrapped,
           // the bytecode for those subcomponents will be null
-          return component.moduleFindOrCreate("basicReload", {}, err => {
-            if (err) {
+          return component.moduleFindOrCreate('basicReload', {}, err => {
+            if(err) {
               return next(err);
             }
 
@@ -591,7 +591,7 @@ class Project extends BaseModel {
           });
         },
         err => {
-          if (err) {
+          if(err) {
             release();
             return cb(err);
           }
@@ -601,13 +601,13 @@ class Project extends BaseModel {
 
           release();
           this.updateHook(
-            "setInteractionMode",
+            'setInteractionMode',
             interactionMode,
             metadata,
-            fire => fire()
+            fire => fire(),
           );
           return cb();
-        }
+        },
       );
     });
   }
@@ -629,10 +629,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "linkAsset",
-        params: [assetAbspath, this.getFolder()]
+        method: 'linkAsset',
+        params: [assetAbspath, this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
@@ -640,10 +640,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "unlinkAsset",
-        params: [assetRelpath, this.getFolder()]
+        method: 'unlinkAsset',
+        params: [assetRelpath, this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
@@ -651,10 +651,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "bulkLinkAssets",
-        params: [assetAbspaths, this.getFolder()]
+        method: 'bulkLinkAssets',
+        params: [assetAbspaths, this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
@@ -662,31 +662,31 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "listAssets",
-        params: [this.getFolder()]
+        method: 'listAssets',
+        params: [this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
   readAllStateValues(cb) {
     return this.websocket.method(
-      "readAllStateValues",
+      'readAllStateValues',
       [this.getFolder(), this.getCurrentActiveComponentRelpath()],
-      cb
+      cb,
     );
   }
 
   queryImageSize(abspath, cb) {
-    return this.websocket.method("queryImageSize", [abspath], cb);
+    return this.websocket.method('queryImageSize', [abspath], cb);
   }
 
   mergeDesigns(designs, metadata, cb) {
     const ac = this.getCurrentActiveComponent();
 
-    if (!ac) {
+    if(!ac) {
       logger.warn(
-        `[project] skipping design merge since no component is active`
+        `[project] skipping design merge since no component is active`,
       );
       return cb();
     }
@@ -698,7 +698,7 @@ class Project extends BaseModel {
 
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, release => {
       return this.updateHook(
-        "mergeDesigns",
+        'mergeDesigns',
         designs,
         metadata || this.getMetadata(),
         fire => {
@@ -707,8 +707,8 @@ class Project extends BaseModel {
           return async.eachSeries(
             components,
             (component, next) => {
-              return component.moduleFindOrCreate("basicReload", {}, err => {
-                if (err) {
+              return component.moduleFindOrCreate('basicReload', {}, err => {
+                if(err) {
                   return next(err);
                 }
 
@@ -716,7 +716,7 @@ class Project extends BaseModel {
               });
             },
             err => {
-              if (err) {
+              if(err) {
                 ac.codeReloadingOff();
                 release();
                 logger.error(`[project (${this.getAlias()})]`, err);
@@ -727,8 +727,8 @@ class Project extends BaseModel {
                 {
                   hardReload: true,
                   clearCacheOptions: {
-                    doClearEntityCaches: true
-                  }
+                    doClearEntityCaches: true,
+                  },
                 },
                 null,
                 () => {
@@ -736,11 +736,11 @@ class Project extends BaseModel {
                   release();
                   fire();
                   return cb();
-                }
+                },
               );
-            }
+            },
           );
-        }
+        },
       );
     });
   }
@@ -748,25 +748,25 @@ class Project extends BaseModel {
   addActiveComponentToRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
-      activeComponent.getRelpath()
+      activeComponent.getRelpath(),
     );
     this.ensurePlatformHaikuRegistry(); // Make sure we have this.platform.haiku; race condition
     this.platform.haiku.registry[activeComponentKey] = activeComponent;
     this.addActiveComponentToMultiComponentTabs(
       activeComponent.getSceneName(),
-      false
+      false,
     );
   }
 
   removeActiveComponentFromRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
-      activeComponent.getRelpath()
+      activeComponent.getRelpath(),
     );
     this.ensurePlatformHaikuRegistry(); // Make sure we have this.platform.haiku; race condition
     delete this.platform.haiku.registry[activeComponentKey];
     this.removeActiveComponentFromMultiComponentTabs(
-      activeComponent.getSceneName()
+      activeComponent.getSceneName(),
     );
   }
 
@@ -776,14 +776,14 @@ class Project extends BaseModel {
     // we would also need to find/destroy any subcomponent instances that would have require(...) broken by these actions.
     const ac = this.findActiveComponentBySceneName(scenename);
 
-    if (!ac) {
+    if(!ac) {
       // Bail if no ActiveComponent.
       return cb();
     }
 
     // First unregister it from the UI.
     this.removeActiveComponentFromRegistry(ac);
-    this.emit("update", "updateMenu");
+    this.emit('update', 'updateMenu');
 
     // Next actually destroy the corresponding BLL entities.
     ac.destroy(true);
@@ -792,19 +792,19 @@ class Project extends BaseModel {
   }
 
   upsertSceneByName(scenename, cb) {
-    const relpath = path.join("code", scenename, "code.js");
+    const relpath = path.join('code', scenename, 'code.js');
     return this.upsertComponentBytecodeToModule(relpath, cb);
   }
 
   findOrCreateActiveComponent(scenename, cb) {
     const ac = this.findActiveComponentBySceneName(scenename);
 
-    if (ac) {
+    if(ac) {
       return cb(null, ac);
     }
 
     return this.upsertSceneByName(scenename, err => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
@@ -820,7 +820,7 @@ class Project extends BaseModel {
       release => {
         // If not in read only mode, create the component entity for the scene in question
         this.findOrCreateActiveComponent(scenename, (err, ac) => {
-          if (err) {
+          if(err) {
             release();
             return cb(err);
           }
@@ -834,38 +834,38 @@ class Project extends BaseModel {
           return Lock.awaitAllLocksFreeExcept(
             [
               Lock.LOCKS.SetCurrentActiveComponent,
-              Lock.LOCKS.ProjectMethodHandler
+              Lock.LOCKS.ProjectMethodHandler,
             ],
             () => {
               // Useful to stop haiku-creator listeners when deactivating ActiveComponent
               const currentActiveComponent = this.getCurrentActiveComponent();
-              if (currentActiveComponent) {
-                currentActiveComponent.emit("update", "componentDeactivating");
+              if(currentActiveComponent) {
+                currentActiveComponent.emit('update', 'componentDeactivating');
               }
 
               this._activeComponentSceneName = scenename;
 
               this.updateHook(
-                "setCurrentActiveComponent",
+                'setCurrentActiveComponent',
                 scenename,
                 metadata || this.getMetadata(),
                 fire => {
                   fire();
                   release();
                   return cb(null, ac);
-                }
+                },
               );
-            }
+            },
           );
         });
-      }
+      },
     );
   }
 
   closeNamedActiveComponent(scenename, metadata, cb) {
-    for (let i = this._multiComponentTabs.length - 1; i >= 0; i--) {
+    for(let i = this._multiComponentTabs.length - 1; i >= 0; i--) {
       const tab = this._multiComponentTabs[i];
-      if (tab.scenename === scenename) {
+      if(tab.scenename === scenename) {
         this._multiComponentTabs.splice(i, 1);
       } else {
         tab.active = false;
@@ -874,12 +874,12 @@ class Project extends BaseModel {
     // TODO: Make smarter instead of just choosing the first one in the list
     this._activeComponentSceneName = this._multiComponentTabs[0];
     this.updateHook(
-      "closeNamedActiveComponent",
+      'closeNamedActiveComponent',
       scenename,
       metadata || this.getMetadata(),
-      fire => fire()
+      fire => fire(),
     );
-    if (cb) {
+    if(cb) {
       return cb();
     }
   }
@@ -889,7 +889,7 @@ class Project extends BaseModel {
     // Need to change all in-memory references to the name,
     // all existing file-system references to the name including other components
     // within the project that may have instantiated this :/
-    throw new Error("not yet implemented");
+    throw new Error('not yet implemented');
     // if (cb) return cb()
   }
 
@@ -901,7 +901,7 @@ class Project extends BaseModel {
    * - Linking the assets via plumbing
    */
   linkExternalAssetOnDrop(event, cb) {
-    if (Asset.isInternalDrop(event)) {
+    if(Asset.isInternalDrop(event)) {
       return cb();
     }
 
@@ -914,10 +914,10 @@ class Project extends BaseModel {
     return this.websocket.request(
       {
         folder: this.getFolder(),
-        method: "bulkLinkAssets",
-        params: [files, this.getFolder()]
+        method: 'bulkLinkAssets',
+        params: [files, this.getFolder()],
       },
-      cb
+      cb,
     );
   }
 
@@ -933,15 +933,15 @@ class Project extends BaseModel {
   upsertComponentBytecodeToModule(relpath, cb) {
     // Note: This assumes that the basic bytecode file *has already been created*
     this.upsertActiveComponentInstance(relpath, (err, ac) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
       return ac.mountApplication(null, {}, err => {
-        if (err) {
+        if(err) {
           return cb(err);
         }
-        this.emit("active-component:upserted");
+        this.emit('active-component:upserted');
         return cb(null, ac);
       });
     });
@@ -957,7 +957,7 @@ class Project extends BaseModel {
     return Lock.request(Lock.LOCKS.FileReadWrite(abspath), false, release => {
       const file = this.upsertFile({
         relpath,
-        type: File.TYPES.code
+        type: File.TYPES.code,
       });
 
       release();
@@ -977,12 +977,12 @@ class Project extends BaseModel {
 
   findActiveComponentBySceneName(scenename) {
     return ActiveComponent.findById(
-      ActiveComponent.buildPrimaryKey(this.getFolder(), scenename)
+      ActiveComponent.buildPrimaryKey(this.getFolder(), scenename),
     );
   }
 
   getPackageJsonPath() {
-    return path.join(this.getFolder(), "package.json");
+    return path.join(this.getFolder(), 'package.json');
   }
 
   getDefaultComponentInfo() {}
@@ -992,10 +992,10 @@ class Project extends BaseModel {
 
     try {
       pkg = fse.readJsonSync(this.getPackageJsonPath(), { throws: false });
-    } catch (exception) {
+    } catch(exception) {
       logger.warn(
         `[project (${this.getAlias()})] package.json error:`,
-        exception
+        exception,
       );
       pkg = {};
     }
@@ -1006,7 +1006,7 @@ class Project extends BaseModel {
   writePackageJson(pkg, cb) {
     try {
       fse.outputJsonSync(this.getPackageJsonPath(), pkg);
-    } catch (exception) {
+    } catch(exception) {
       return cb(exception);
     }
 
@@ -1020,15 +1020,15 @@ class Project extends BaseModel {
       const getMetadata = cb => {
         const ac = this.findActiveComponentBySceneName(scenename);
 
-        if (!ac) {
+        if(!ac) {
           return cb({}); // eslint-disable-line standard/no-callback-literal
         }
 
         return ac.readMetadata((err, metadata) => {
-          if (err) {
+          if(err) {
             logger.warn(
               `[project (${this.getAlias()})] component metadata error:`,
-              err
+              err,
             );
           }
 
@@ -1044,7 +1044,7 @@ class Project extends BaseModel {
   }
 
   getCodeFolderAbspath() {
-    return path.join(this.getFolder(), "code");
+    return path.join(this.getFolder(), 'code');
   }
 
   rehydrate() {
@@ -1052,7 +1052,7 @@ class Project extends BaseModel {
       .readdirSync(this.getCodeFolderAbspath())
       .filter(entry => {
         // Ignore hidden files that may appear here such as everyone's favorite .DS_Store
-        return entry && entry[0] !== ".";
+        return entry && entry[0] !== '.';
       })
       .forEach(scenename => {
         this.addActiveComponentToMultiComponentTabs(scenename);
@@ -1083,8 +1083,8 @@ Project.DEFAULT_OPTIONS = {
     websocket: true, // Websocket for plumbing connection - Expected to be initialized already
     platform: true, // E.g. window or global
     fileOptions: true,
-    envoyOptions: true
-  }
+    envoyOptions: true,
+  },
 };
 
 BaseModel.extend(Project);
@@ -1093,8 +1093,8 @@ module.exports = Project;
 
 Project.awaitOneUpdateFromActiveComponent = (activeComponent, channel, fn) => {
   let once = true;
-  activeComponent.on("update", (what, a, b, c, d, e, f, g, h) => {
-    if (once && what === channel) {
+  activeComponent.on('update', (what, a, b, c, d, e, f, g, h) => {
+    if(once && what === channel) {
       once = false;
       fn(a, b, c, d, e, f, g, h);
     }
@@ -1109,9 +1109,9 @@ Project.setup = (
   userconfig = {},
   fileOptions = {},
   envoyOptions = {},
-  cb
+  cb,
 ) => {
-  fse.mkdirpSync(path.join(folder, "code"));
+  fse.mkdirpSync(path.join(folder, 'code'));
 
   const project = Project.upsert({
     uid: folder,
@@ -1121,7 +1121,7 @@ Project.setup = (
     userconfig,
     platform,
     fileOptions,
-    envoyOptions
+    envoyOptions,
   });
 
   project.rehydrate();
@@ -1132,20 +1132,20 @@ Project.getProjectNameVariations = folder => {
   const projectHaikuConfig = readPackageJson(folder).haiku;
   const projectNameSafe = getSafeProjectName(projectHaikuConfig.project);
   const projectNameSafeShort = getProjectNameSafeShort(
-    projectHaikuConfig.project
+    projectHaikuConfig.project,
   );
   const projectNameLowerCase = getProjectNameLowerCase(
-    projectHaikuConfig.project
+    projectHaikuConfig.project,
   );
   const reactProjectName = getReactProjectName(projectHaikuConfig.project);
   const angularSelectorName = getAngularSelectorName(
-    projectHaikuConfig.project
+    projectHaikuConfig.project,
   );
   const primaryAssetPath = getDefaultSketchAssetPath(
-    projectHaikuConfig.project
+    projectHaikuConfig.project,
   );
   const defaultIllustratorAssetPath = getDefaultIllustratorAssetPath(
-    projectHaikuConfig.project
+    projectHaikuConfig.project,
   );
 
   return {
@@ -1155,28 +1155,28 @@ Project.getProjectNameVariations = folder => {
     reactProjectName,
     angularSelectorName,
     primaryAssetPath,
-    defaultIllustratorAssetPath
+    defaultIllustratorAssetPath,
   };
 };
 
 const integritiesMismatched = (i1, i2) => {
   const s1 = jss(
     Object.keys(i1).reduce((accumulator, key) => {
-      if (i2[key]) {
+      if(i2[key]) {
         accumulator[key] = i1[key];
       }
       return accumulator;
-    }, {})
+    }, {}),
   );
   const s2 = jss(
     Object.keys(i1).reduce((accumulator, key) => {
-      if (i1[key]) {
+      if(i1[key]) {
         accumulator[key] = i2[key];
       }
       return accumulator;
-    }, {})
+    }, {}),
   );
-  if (s1 !== s2) {
+  if(s1 !== s2) {
     return [s1, s2];
   }
   return false;
@@ -1187,11 +1187,11 @@ const integritiesMismatched = (i1, i2) => {
 Project.PUBLIC_METHODS = {
   setCurrentActiveComponent: true,
   closeNamedActiveComponent: true,
-  renameComponent: true
+  renameComponent: true,
 };
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const ActiveComponent = require("./ActiveComponent");
-const Asset = require("./Asset");
-const File = require("./File");
-const ModuleWrapper = require("./ModuleWrapper");
+const ActiveComponent = require('./ActiveComponent');
+const Asset = require('./Asset');
+const File = require('./File');
+const ModuleWrapper = require('./ModuleWrapper');

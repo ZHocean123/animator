@@ -47,11 +47,11 @@ import Module from 'module';
 const originalRequire = Module.prototype.require;
 MODULE_CACHE_COLD['@haiku/core'] = haikuCore;
 
-Module.prototype.require = function (request) {
-  if (MODULE_CACHE_COLD[request]) {
+Module.prototype.require = function(request) {
+  if(MODULE_CACHE_COLD[request]) {
     return MODULE_CACHE_COLD[request];
   }
-  if (MODULE_CACHE_HOT[request]) {
+  if(MODULE_CACHE_HOT[request]) {
     return MODULE_CACHE_HOT[request];
   }
   return originalRequire.apply(this, arguments);
@@ -72,7 +72,7 @@ Module.prototype.require = function (request) {
  *  Also contains a variety of useful constants related to module pathing.
  */
 class ModuleWrapper extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     this.exp = null; // Safest to set to null until we really load the content
@@ -81,56 +81,56 @@ class ModuleWrapper extends BaseModel {
     this._projectConfig = null;
   }
 
-  hasLoadedAtLeastOnce () {
+  hasLoadedAtLeastOnce() {
     return this._hasLoadedAtLeastOnce;
   }
 
-  clearInMemoryExport () {
+  clearInMemoryExport() {
     this.exp = null;
   }
 
-  fetchInMemoryExport () {
+  fetchInMemoryExport() {
     return this.exp;
   }
 
-  isolatedClearCache () {
+  isolatedClearCache() {
     ModuleWrapper.clearRequireCache(path.dirname(this.getAbspath()));
     ModuleWrapper.clearHotCache();
   }
 
-  basicReload (cb) {
-    if (this.exp) {
+  basicReload(cb) {
+    if(this.exp) {
       return cb(null, this.exp);
     }
     return this.reload(cb);
   }
 
-  getFolder () {
+  getFolder() {
     return this.file.folder;
   }
 
-  getModpath () {
+  getModpath() {
     return this.file.relpath;
   }
 
-  getAbspath () {
-    if (this.isExternalModule) {
+  getAbspath() {
+    if(this.isExternalModule) {
       return require.resolve(this.getModpath());
     }
 
     let abspath = path.normalize(this.file.getAbspath());
 
     // Handle Mac temporary folder discrepency so its key in require.cache is correct
-    if (abspath.slice(0, 5) === '/var/') {
+    if(abspath.slice(0, 5) === '/var/') {
       abspath = `/private${abspath}`;
     }
 
     return abspath;
   }
 
-  async load () {
+  async load() {
     overrideModulesLoaded(
-      async (stop) => {
+      async(stop) => {
         this.isolatedClearCache();
         try {
           const module = await import(this.getAbspath());
@@ -140,7 +140,7 @@ class ModuleWrapper extends BaseModel {
             // Tell the node hook to stop interfering with require(...)
             stop();
           });
-        } catch (error) {
+        } catch(error) {
           logger.error('[ModuleWrapper] Failed to load module:', error);
           throw error;
         }
@@ -149,11 +149,11 @@ class ModuleWrapper extends BaseModel {
     );
   }
 
-  reload (cb) {
+  reload(cb) {
     return Lock.request(Lock.LOCKS.FileReadWrite(this.getAbspath()), false, (release) => {
       try {
         this.load();
-      } catch (exception) {
+      } catch(exception) {
         logger.warn(`[module wrapper] cannot load ${this.getAbspath()}`);
         logger.warn(exception);
 
@@ -162,7 +162,7 @@ class ModuleWrapper extends BaseModel {
         this._hasLoadedAtLeastOnce = true;
 
         return this.update(this.exp, () => {
-          if (!this.isExternalModule) {
+          if(!this.isExternalModule) {
             logger.warn(`[module wrapper] ***forcing flush content of ${this.getAbspath()}***`);
             this.file.maybeFlushContentForceSync();
           }
@@ -176,17 +176,17 @@ class ModuleWrapper extends BaseModel {
     });
   }
 
-  moduleAsMana (hostComponentRelpath, identifier, title, cb) {
+  moduleAsMana(hostComponentRelpath, identifier, title, cb) {
     return this.basicReload((err, exp) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
-      if (!exp) {
+      if(!exp) {
         return cb(null, null);
       }
 
       let source;
-      if (this.isExternalModule) {
+      if(this.isExternalModule) {
         source = Template.normalizePath(this.getModpath());
       } else {
         const relpath = path.relative(this.getFolder(), this.getAbspath());
@@ -216,8 +216,8 @@ class ModuleWrapper extends BaseModel {
     });
   }
 
-  update (bytecode, cb) {
-    if (this.isExternalModule) {
+  update(bytecode, cb) {
+    if(this.isExternalModule) {
       return cb();
     }
 
@@ -251,17 +251,17 @@ ModuleWrapper.buildReference = (type, host, source, identifier) => {
 };
 
 ModuleWrapper.isValidReference = (__reference) => {
-  if (!__reference) {
+  if(!__reference) {
     return false;
   }
 
-  if (typeof __reference !== 'string') {
+  if(typeof __reference !== 'string') {
     return false;
   }
 
   const ref = ModuleWrapper.parseReference(__reference);
 
-  if (!ref) {
+  if(!ref) {
     return false;
   }
 
@@ -274,13 +274,13 @@ ModuleWrapper.isValidReference = (__reference) => {
 };
 
 ModuleWrapper.parseReference = (__reference) => {
-  if (typeof __reference !== 'string') {
+  if(typeof __reference !== 'string') {
     return null;
   }
 
   try {
     return JSON.parse(__reference);
-  } catch (exception) {
+  } catch(exception) {
     logger.warn('[module wrapper]', exception);
     return null;
   }
@@ -313,7 +313,7 @@ ModuleWrapper.getScenenameFromRelpath = (relpath) => {
 ModuleWrapper.getHaikuKnownImportMatch = (importPath) => {
   const normalizedPath = importPath.trim().toLowerCase();
 
-  if (normalizedPath in REPLACEMENT_MODULES) {
+  if(normalizedPath in REPLACEMENT_MODULES) {
     return REPLACEMENT_MODULES[normalizedPath];
   }
 
@@ -325,7 +325,7 @@ ModuleWrapper.getHaikuKnownImportMatch = (importPath) => {
 ModuleWrapper.clearHotCache = () => {
   const cleared = {};
 
-  for (const key in MODULE_CACHE_HOT) {
+  for(const key in MODULE_CACHE_HOT) {
     cleared[key] = true;
     MODULE_CACHE_HOT[key] = null;
   }
@@ -336,13 +336,13 @@ ModuleWrapper.clearHotCache = () => {
 ModuleWrapper.clearRequireCache = (dirname) => {
   const cleared = {};
 
-  for (const key in require.cache) {
-    if (dirname) {
-      if (key.indexOf(dirname) !== -1) {
+  for(const key in require.cache) {
+    if(dirname) {
+      if(key.indexOf(dirname) !== -1) {
         cleared[key] = true;
         delete require.cache[key];
       }
-    } else if (!key.match(/node_modules/)) {
+    } else if(!key.match(/node_modules/)) {
       cleared[key] = true;
       delete require.cache[key];
     }
@@ -374,7 +374,7 @@ ModuleWrapper.doesRelpathLookLikeInstalledComponent = (relpath) => {
  * Heavily based on https://github.com/floatdrop/require-from-string
  */
 ModuleWrapper.requireFromString = (code, filename, opts) => {
-  if (typeof filename === 'object') {
+  if(typeof filename === 'object') {
     opts = filename;
     filename = undefined;
   }
@@ -382,7 +382,7 @@ ModuleWrapper.requireFromString = (code, filename, opts) => {
   opts = opts || {};
   filename = filename || '';
 
-  if (typeof code !== 'string') {
+  if(typeof code !== 'string') {
     throw new Error('code must be a string, not ' + typeof code);
   }
 

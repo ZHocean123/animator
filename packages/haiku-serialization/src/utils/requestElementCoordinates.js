@@ -1,11 +1,22 @@
-const logger = require('haiku-serialization/src/utils/LoggerInstance');
+/**
+ * Requests element coordinates for tour functionality
+ * @param {Object} params - Configuration parameters
+ * @param {string} params.currentWebview - Current webview identifier
+ * @param {string} params.requestedWebview - Requested webview identifier
+ * @param {string} params.selector - DOM element selector
+ * @param {boolean} params.shouldNotifyEnvoy - Whether to notify envoy
+ * @param {Object} params.tourClient - Tour client instance
+ * @param {number} maxNumberOfTries - Maximum number of retry attempts
+ * @param {number} currentNumberOfTries - Current retry attempt number
+ */
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
-module.exports = function requestElementCoordinates (
+export default function requestElementCoordinates(
   {currentWebview, requestedWebview, selector, shouldNotifyEnvoy, tourClient},
   maxNumberOfTries = 15,
   currentNumberOfTries = 0,
 ) {
-  if (currentWebview !== requestedWebview) {
+  if(currentWebview !== requestedWebview) {
     return;
   }
 
@@ -13,7 +24,7 @@ module.exports = function requestElementCoordinates (
   const loader = document.getElementById('js-helper-project-loader');
   // (deprecated) webview project loader: when the loader transform style is "none", that means it's visible.
   // Current: when the loader is present on the page, that means it's visible.
-  if (loader) {
+  if(loader) {
     return setTimeout(() => {
       requestElementCoordinates.apply(this, [
         ...arguments,
@@ -31,9 +42,9 @@ module.exports = function requestElementCoordinates (
 
   const domElement = document.querySelector(selector);
 
-  if (domElement) {
+  if(domElement) {
     const {top, left, width, height} = domElement.getBoundingClientRect();
-    if (shouldNotifyEnvoy) {
+    if(shouldNotifyEnvoy) {
       logger.info(
         `[${currentWebview}] receive element coordinates`,
         selector,
@@ -44,7 +55,7 @@ module.exports = function requestElementCoordinates (
     }
   } else {
     // If we didn't find a DOM element, try again in 300ms
-    if (maxNumberOfTries >= currentNumberOfTries) {
+    if(maxNumberOfTries >= currentNumberOfTries) {
       setTimeout(() => {
         requestElementCoordinates.apply(this, [
           ...arguments,
@@ -60,4 +71,4 @@ module.exports = function requestElementCoordinates (
       );
     }
   }
-};
+}

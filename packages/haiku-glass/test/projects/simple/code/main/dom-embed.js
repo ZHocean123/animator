@@ -1,11 +1,11 @@
-var code = require('./code')
+import code from './code.js'
 var adapter = window.HaikuCore && window.HaikuCore['3.0.28']
 if (!adapter) {
   // See if we can find the legacy player module if HaikuCore isn't present
   adapter = window.HaikuPlayer && window.HaikuPlayer['3.0.28']
 }
 if (adapter) {
-  module.exports = adapter(code)
+  export default adapter(code)
 } else  {
   function safety () {
     console.error(
@@ -18,5 +18,6 @@ if (adapter) {
   for (var key in code) {
     safety[key] = code[key]
   }
-  module.exports = safety
+  }
+  export default safety
 }

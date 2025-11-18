@@ -6,34 +6,34 @@ const BaseModel = require('./BaseModel');
  *  Represents the on-stage selection marquee.
  */
 class SelectionMarquee extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     // Whether or not our marquee is active, i.e. displayed
     this._isActive = false;
   }
 
-  startSelection (startPosition) {
+  startSelection(startPosition) {
     this._isActive = true;
     this._startPosition = startPosition;
   }
 
-  moveSelection (movePosition) {
+  moveSelection(movePosition) {
     this._movePosition = movePosition;
   }
 
-  endSelection () {
+  endSelection() {
     this._isActive = false;
     this._startPosition = null;
     this._movePosition = null;
   }
 
-  isActive () {
+  isActive() {
     return this._isActive;
   }
 
-  getBox () {
-    if (
+  getBox() {
+    if(
       !this._startPosition ||
       !this._movePosition ||
       !this._isActive

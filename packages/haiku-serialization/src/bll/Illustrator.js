@@ -1,11 +1,11 @@
-import { execSync } from "child_process";
-import fse from "haiku-fs-extra";
-import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
-import logger from "../utils/LoggerInstance.js";
-import { stringifyPath } from "../utils/fileManipulationStringify.js";
-import os from "os";
-import uuid from "uuid";
-import path from "path";
+import { execSync } from 'child_process';
+import fse from 'haiku-fs-extra';
+import { isMac, isWindows } from 'haiku-common/lib/environments/os.js';
+import logger from '../utils/LoggerInstance.js';
+import { stringifyPath } from '../utils/fileManipulationStringify.js';
+import os from 'os';
+import uuid from 'uuid';
+import path from 'path';
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/;
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/;
@@ -80,35 +80,35 @@ class Illustrator {
    * @returns {Boolean}
    */
   static importSVG({ abspath, tryToOpenFile }) {
-    if (!Illustrator.isIllustratorFile(abspath)) {
+    if(!Illustrator.isIllustratorFile(abspath)) {
       return false;
     }
 
-    logger.info("[illustrator] got", abspath);
+    logger.info('[illustrator] got', abspath);
 
     const assetBaseFolder = `${abspath}.contents`;
-    const artboardFolder = path.join(assetBaseFolder, "artboards/");
+    const artboardFolder = path.join(assetBaseFolder, 'artboards/');
 
     fse.emptyDirSync(assetBaseFolder);
     fse.mkdirpSync(artboardFolder);
 
-    logger.info("[illustrator] running commands");
+    logger.info('[illustrator] running commands');
 
     // We need to create a temporary Illustrator script file with the contents of
     // EXPORTER_SCRIPT to perform the export, this is an attempt to obscure the
     // file name to reduce the chances of an attacker modifying the contents of this
     // file before being executed.
     const tmpdir = os.tmpdir();
-    const fileName = uuid.v4() + ".jsx";
+    const fileName = uuid.v4() + '.jsx';
     const exportScriptPath = path.join(tmpdir, fileName);
     const exportScript = EXPORTER_SCRIPT.replace(
-      "DESTINATION_PATH",
-      stringifyPath(artboardFolder)
-    ).replace("SOURCE_PATH", stringifyPath(abspath));
+      'DESTINATION_PATH',
+      stringifyPath(artboardFolder),
+    ).replace('SOURCE_PATH', stringifyPath(abspath));
 
     fse.writeFileSync(exportScriptPath, exportScript);
 
-    if (tryToOpenFile) {
+    if(tryToOpenFile) {
       execSync(Illustrator.openIllustratorFile(abspath));
       // Try to do our best to wait until the file is open before running the
       // script.
@@ -121,17 +121,17 @@ class Illustrator {
   }
 
   static openIllustratorFile(file) {
-    if (isMac()) {
+    if(isMac()) {
       return `open -g -b com.adobe.Illustrator ${file}`;
     }
 
-    if (isWindows()) {
+    if(isWindows()) {
       return `"${Illustrator.getWindowsIllustratorPath()}" "${file}"`;
     }
   }
 
   static getWindowsIllustratorPath() {
-    if (cachedWindowsInstallPath) {
+    if(cachedWindowsInstallPath) {
       return cachedWindowsInstallPath;
     }
 
@@ -139,22 +139,22 @@ class Illustrator {
 
     try {
       const installedApplications = execSync(
-        'reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s'
+        'reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s',
       ).toString();
 
       illustratorPath = installedApplications
-        .split("\n")
+        .split('\n')
         .find(
-          record => record.includes("Illustrator") && record.includes("Default")
+          record => record.includes('Illustrator') && record.includes('Default'),
         )
         .match(/([a-zA-Z]\:.+)/g)[0];
-    } catch (error) {
-      logger.info("[illustrator] error finding Illustrator: ", error);
+    } catch(error) {
+      logger.info('[illustrator] error finding Illustrator: ', error);
       return;
     }
 
-    if (!illustratorPath) {
-      logger.info("[illustrator] unable to find an Illustrator installation");
+    if(!illustratorPath) {
+      logger.info('[illustrator] unable to find an Illustrator installation');
       return;
     }
 

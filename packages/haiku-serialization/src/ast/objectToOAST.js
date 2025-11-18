@@ -1,4 +1,9 @@
-const {LAYOUT_3D_SCHEMA} = require("@haiku/core/lib/HaikuComponent.js");
+/**
+ * 将对象转换为OAST格式
+ * @module objectToOAST
+ */
+
+import {LAYOUT_3D_SCHEMA} from '@haiku/core/lib/HaikuComponent.js';
 
 /**
  * We can emit a "shorthand" for bytecode timeline properties at serialization time like so:
@@ -25,7 +30,7 @@ const canUseShorthand = (obj, keyChain) => {
   //  - has exactly one key which is "0"
   //  - has that key point to an object which a scalar "value" property
   // …inspecting the key chain assures us we are actually in the correct spot.
-  if (keyChain.length !== 4 || keyChain[0] !== 'timelines') {
+  if(keyChain.length !== 4 || keyChain[0] !== 'timelines') {
     return false;
   }
 
@@ -43,7 +48,7 @@ const canUseShorthand = (obj, keyChain) => {
 };
 
 const objectToOAST = (obj, keyChain = []) => {
-  if (canUseShorthand(obj, keyChain)) {
+  if(canUseShorthand(obj, keyChain)) {
     return expressionToOASTComponent(obj['0'].value);
   }
 
@@ -52,8 +57,8 @@ const objectToOAST = (obj, keyChain = []) => {
     properties: [],
   };
 
-  for (const key in obj) {
-    if (key === undefined) {
+  for(const key in obj) {
+    if(key === undefined) {
       continue;
     }
     const keyexp = expressionToOASTComponent(key);
@@ -70,7 +75,7 @@ const objectToOAST = (obj, keyChain = []) => {
   return oast;
 };
 
-module.exports = objectToOAST;
+export default objectToOAST;
 
 // Down here to avoid circular dependency blank object
 const expressionToOASTComponent = require('./expressionToOASTComponent');

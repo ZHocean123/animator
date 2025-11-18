@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   metadata: {
     uuid: 'HAIKU_SHARE_UUID',
     type: 'haiku',

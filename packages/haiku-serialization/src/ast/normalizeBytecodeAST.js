@@ -1,14 +1,20 @@
-let upsertRequire = require('./upsertRequire');
-let removeRequire = require('./removeRequire');
-let traverseAST = require('./traverseAST');
-let wrapInHaikuInject = require('./wrapInHaikuInject');
+/**
+ * 标准化字节码AST
+ * @param {Object} ast - 字节码AST对象
+ * @returns {void}
+ */
+
+import upsertRequire from './upsertRequire.js';
+import removeRequire from './removeRequire.js';
+import traverseAST from './traverseAST.js';
+import wrapInHaikuInject from './wrapInHaikuInject.js';
 
 /**
  * @function normalizeBytecodeAST
  * @description Given an AST of a bytecode file, normalize it so that it
  * uses all of the up-to-date constructs expected for the output file.
  */
-module.exports = function normalizeBytecodeAST (ast) {
+export default function normalizeBytecodeAST(ast) {
   // Make sure we get rid of any legacy references to @haiku/player
   removeRequire(ast, 'Haiku', '@haiku/player');
 
@@ -17,54 +23,54 @@ module.exports = function normalizeBytecodeAST (ast) {
 
   // Remove all comments at the top level since they cause more problems than they solve
   ast.program.body.forEach((node) => {
-    if (node.leadingComments) {
+    if(node.leadingComments) {
       node.leadingComments.splice(0);
     }
-    if (node.trailingComments) {
+    if(node.trailingComments) {
       node.trailingComments.splice(0);
     }
   });
 
   // Convert any object-destructuring functions to Haiku.inject expressions
   traverseAST(ast, (node) => {
-    if (node.type === 'ObjectProperty') {
-      if (node.value.type === 'ArrowFunctionExpression') {
+    if(node.type === 'ObjectProperty') {
+      if(node.value.type === 'ArrowFunctionExpression') {
         // There is no use for a this-binding in the bytecode, and we want widest possible
         // browser support, so convert any ArrowFunctionExpression to FunctionExpressions
         node.value.type = 'FunctionExpression';
       }
-      if (node.value.type === 'FunctionExpression') {
+      if(node.value.type === 'FunctionExpression') {
         // Assume we only want to change 'expressions' that appear in timelines
-        if (node.key && ((node.key.name === 'value') || (node.key.value === 'value'))) {
+        if(node.key && ((node.key.name === 'value') || (node.key.value === 'value'))) {
           _convertFunctionToHaikuInjectFormat(node.value, node);
         }
       }
     }
   });
-};
+}
 
-function _uniqParams (params) {
+function _uniqParams(params) {
   const ids = {};
   params.forEach((param) => {
     ids[param.name || param.value] = param;
   });
   const out = [];
-  for (const name in ids) {
+  for(const name in ids) {
     out.push(ids[name]);
   }
   return out;
 }
 
-function _convertFunctionToHaikuInjectFormat (node, parent) {
+function _convertFunctionToHaikuInjectFormat(node, parent) {
   // We're going to build a new full params object to replace the existing one
   const params = [];
   node.params.forEach((param) => {
-    if (param.type === 'Identifier') {
+    if(param.type === 'Identifier') {
       params.push(param);
-    } else if (param.type === 'ObjectPattern') {
+    } else if(param.type === 'ObjectPattern') {
       // We only need to deal with the top-level of the object pattern
       param.properties.forEach((property) => {
-        if (property.key.type === 'Identifier') {
+        if(property.key.type === 'Identifier') {
           params.push(property.key);
         }
       });

@@ -1,5 +1,5 @@
 import camelcase from 'camelcase';
-import { default as ReservedWords } from "@haiku/core/lib/reflection/ReservedWords.js";
+import { default as ReservedWords } from '@haiku/core/lib/reflection/ReservedWords.js';
 import BaseModel from './BaseModel.js';
 
 /**
@@ -15,8 +15,8 @@ State.DEFAULT_OPTIONS = {
 
 BaseModel.extend(State);
 
-function nextAvailableWordIfReserved (word) {
-  if (ReservedWords.isReserved(word)) {
+function nextAvailableWordIfReserved(word) {
+  if(ReservedWords.isReserved(word)) {
     return nextAvailableWordIfReserved(`_${word}`);
   }
 
@@ -30,8 +30,8 @@ State.isNumeric = (n) => {
 State.safeJsonStringify = (thing) => {
   try {
     return JSON.stringify(thing);
-  } catch (exception) {
-    if (thing && thing.toString) {
+  } catch(exception) {
+    if(thing && thing.toString) {
       return thing.toString();
     }
     return '' + thing + '';
@@ -43,13 +43,13 @@ State.buildStateNameFromElementPropertyName = (n, states, elementNode, propertyN
 
   const elementName = elementNode && elementNode.elementName;
 
-  if (!stateName) {
-    if (elementName === 'path' && propertyName === 'd') {
+  if(!stateName) {
+    if(elementName === 'path' && propertyName === 'd') {
       stateName = 'pathInstructions';
     }
   }
 
-  if (!stateName) {
+  if(!stateName) {
     stateName = camelcase(propertyName);
   }
 
@@ -59,7 +59,7 @@ State.buildStateNameFromElementPropertyName = (n, states, elementNode, propertyN
   // will result in syntax errors when injected into expressions
   stateName = nextAvailableWordIfReserved(stateName);
 
-  if (!states[stateName]) {
+  if(!states[stateName]) {
     return stateName;
   }
 
@@ -72,22 +72,22 @@ State.buildStateNameFromElementPropertyName = (n, states, elementNode, propertyN
  * @returns {Boolean}
  */
 State.areStatesEquivalent = (s1, s2) => {
-  if (!s1 && !s2) {
+  if(!s1 && !s2) {
     return true;
   }
-  if (s1 && !s2) {
+  if(s1 && !s2) {
     return false;
   }
-  if (!s1 && s2) {
+  if(!s1 && s2) {
     return false;
   }
-  for (const k1 in s1) {
-    if (s2[k1] === undefined) {
+  for(const k1 in s1) {
+    if(s2[k1] === undefined) {
       return false;
     }
   }
-  for (const k2 in s2) {
-    if (s1[k2] === undefined) {
+  for(const k2 in s2) {
+    if(s1[k2] === undefined) {
       return false;
     }
   }
@@ -95,54 +95,54 @@ State.areStatesEquivalent = (s1, s2) => {
 };
 
 State.deduceTypeOfValue = (stateValue) => {
-  if (Array.isArray(stateValue)) {
+  if(Array.isArray(stateValue)) {
     return 'array';
   }
-  if (State.isNumeric(stateValue)) {
+  if(State.isNumeric(stateValue)) {
     return 'number';
   }
-  if (stateValue && typeof stateValue === 'object') {
+  if(stateValue && typeof stateValue === 'object') {
     return 'object';
   }
-  if (stateValue === null || stateValue === undefined) {
+  if(stateValue === null || stateValue === undefined) {
     return 'any';
   }
-  if (typeof stateValue === 'string') {
+  if(typeof stateValue === 'string') {
     return 'string';
   }
   return typeof stateValue;
 };
 
 State.deduceType = (stateValueDescriptor) => {
-  if (stateValueDescriptor.type) {
+  if(stateValueDescriptor.type) {
     return stateValueDescriptor.type;
   }
   return State.deduceTypeOfValue(stateValueDescriptor.value);
 };
 
 State.assignDescriptor = (out, stateValueDescriptor) => {
-  if (stateValueDescriptor.setter) {
+  if(stateValueDescriptor.setter) {
     out.set = stateValueDescriptor.setter;
   } // Fix legacy naming
-  if (stateValueDescriptor.getter) {
+  if(stateValueDescriptor.getter) {
     out.get = stateValueDescriptor.getter;
   } // Fix legacy naming
-  if (stateValueDescriptor.set) {
+  if(stateValueDescriptor.set) {
     out.set = stateValueDescriptor.set;
   }
-  if (stateValueDescriptor.get) {
+  if(stateValueDescriptor.get) {
     out.get = stateValueDescriptor.get;
   }
-  if (stateValueDescriptor.type) {
+  if(stateValueDescriptor.type) {
     out.type = stateValueDescriptor.type;
   }
-  if (stateValueDescriptor.access) {
+  if(stateValueDescriptor.access) {
     out.access = stateValueDescriptor.access;
   }
-  if (stateValueDescriptor.mock !== undefined) {
+  if(stateValueDescriptor.mock !== undefined) {
     out.mock = stateValueDescriptor.mock;
   }
-  if (stateValueDescriptor.value !== undefined) {
+  if(stateValueDescriptor.value !== undefined) {
     out.value = stateValueDescriptor.value;
   }
   return out;
@@ -154,22 +154,22 @@ State.autoStringify = (stateValueDescriptor) => {
 };
 
 State.stringifyFromType = (stateValue, knownType) => {
-  if (typeof stateValue === 'string') {
+  if(typeof stateValue === 'string') {
     return stateValue;
   } // Use string if already a string
-  switch (knownType) {
+  switch(knownType) {
     case 'array':
       return State.safeJsonStringify(stateValue);
     case 'object':
       return State.safeJsonStringify(stateValue);
     default: // booleans, numbers, strings, and empty values
-      if (stateValue && stateValue.toString) {
+      if(stateValue && stateValue.toString) {
         return stateValue.toString();
       }
-      if (stateValue === null) {
+      if(stateValue === null) {
         return '';
       }
-      if (stateValue === undefined) {
+      if(stateValue === undefined) {
         return '';
       }
       return '' + stateValue + '';

@@ -11,34 +11,34 @@ const STATES = {
 };
 
 // Simple wrapper over an in-browser websocket client
-function Websocket (url, folder, clientType, clientAlias, WebSocket, token) {
+function Websocket(url, folder, clientType, clientAlias, WebSocket, token) {
   EventEmitter.call(this);
 
   this.WebSocket = WebSocket;
-  if (!this.WebSocket && typeof window !== 'undefined') {
+  if(!this.WebSocket && typeof window !== 'undefined') {
     this.WebSocket = window.WebSocket;
   }
 
-  if (!url) {
+  if(!url) {
     throw new Error('A url is required');
   }
-  if (!clientType) {
+  if(!clientType) {
     throw new Error('A client type is required');
   }
-  if (!clientType) {
+  if(!clientType) {
     throw new Error('A client type is required');
   }
 
-  if (!folder) {
+  if(!folder) {
     logger.warn('[websocket] received no folder argument');
   }
 
   // NOTE: The plumbing uses these URL query params to manage comms between clients
   this.url = url + '?type=' + clientType + '&alias=' + clientAlias;
-  if (folder) {
+  if(folder) {
     this.url += ('&folder=' + folder);
   }
-  if (token) {
+  if(token) {
     this.url += ('&token=' + token);
   }
 
@@ -47,10 +47,10 @@ function Websocket (url, folder, clientType, clientAlias, WebSocket, token) {
 
   this.workers = {
     connection: setInterval(() => {
-      if (this._isPermanentlyDisconnected) {
+      if(this._isPermanentlyDisconnected) {
         return null;
       }
-      if (this.ws.readyState === STATES.CLOSING || this.ws.readyState === STATES.CLOSED) {
+      if(this.ws.readyState === STATES.CLOSING || this.ws.readyState === STATES.CLOSED) {
         this.connect();
       }
     }, 1000),
@@ -63,29 +63,29 @@ function Websocket (url, folder, clientType, clientAlias, WebSocket, token) {
 
 util.inherits(Websocket, EventEmitter);
 
-Websocket.prototype.disconnect = function disconnect () {
+Websocket.prototype.disconnect = function disconnect() {
   // Stop the worker from attempting to reconnect until explicitly requested to do so
   this._isPermanentlyDisconnected = true;
 
   this.requests = {};
 
-  if (this.ws) {
+  if(this.ws) {
     // To avoid any kind of infinite loop in eventing, only call close if we're
     // not already closing (see Master.js' constructor to understand why)
-    if (this.ws.readyState === STATES.OPEN || this.ws.readyState === STATES.CONNECTING) {
+    if(this.ws.readyState === STATES.OPEN || this.ws.readyState === STATES.CONNECTING) {
       this.ws.close();
     }
   }
 };
 
-Websocket.prototype.connect = function connect (cb) {
+Websocket.prototype.connect = function connect(cb) {
   this._isPermanentlyDisconnected = false;
 
   const WebSocket = this.WebSocket;
 
-  if (this.ws) {
+  if(this.ws) {
     // If we have an instance but are closing or closed, create a new connection
-    if (this.ws.readyState === STATES.CLOSING || this.ws.readyState === STATES.CLOSED) {
+    if(this.ws.readyState === STATES.CLOSING || this.ws.readyState === STATES.CLOSED) {
       this.ws = new WebSocket(this.url);
       this.setupSocket();
     }
@@ -95,12 +95,12 @@ Websocket.prototype.connect = function connect (cb) {
     this.setupSocket();
   }
 
-  if (cb) {
+  if(cb) {
     return this.whenConnected(cb);
   }
 };
 
-Websocket.prototype.setupSocket = function setupSocket () {
+Websocket.prototype.setupSocket = function setupSocket() {
   logger.info('[websocket] connecting to ' + this.url + ' (' + (this.folder || '?') + ')');
 
   this.ws.onopen = () => {
@@ -116,7 +116,7 @@ Websocket.prototype.setupSocket = function setupSocket () {
   };
 
   this.ws.onerror = (error) => {
-    if (error && error.message) {
+    if(error && error.message) {
       logger.error('[websocket] error: ' + error && error.message);
     } else {
       logger.error('[websocket] error: ', error || 'Unknown');
@@ -127,20 +127,20 @@ Websocket.prototype.setupSocket = function setupSocket () {
   this.ws.onmessage = (event) => {
     const message = JSON.parse(event.data);
 
-    if (message.type === 'broadcast') {
+    if(message.type === 'broadcast') {
       return this.emit('broadcast', message);
     }
 
-    if (message.type === 'signal') {
+    if(message.type === 'signal') {
       return this.emit('signal', message);
     }
 
-    if (message.type === 'relay') {
+    if(message.type === 'relay') {
       return this.emit('relay', message);
     }
 
     // Assume the message is a reply if the incoming has an id that matches one of our outgoing
-    if (this.requests[message.id]) {
+    if(this.requests[message.id]) {
       const entry = this.requests[message.id];
       delete this.requests[message.id]; // Remove from incoming requests
 
@@ -151,7 +151,7 @@ Websocket.prototype.setupSocket = function setupSocket () {
       return callback(error, result);
     }
 
-    if (typeof message.method === 'string') {
+    if(typeof message.method === 'string') {
       return this.emit('method', message.method, message.params || [], message, (error, result) => {
         return this.sendWhenConnected({
           id: message.id,
@@ -169,8 +169,8 @@ Websocket.prototype.setupSocket = function setupSocket () {
 };
 
 // Fire the callback as soon as we detect the connection is open
-Websocket.prototype.whenConnected = function whenConnected (cb) {
-  if (this.ws.readyState === STATES.OPEN) {
+Websocket.prototype.whenConnected = function whenConnected(cb) {
+  if(this.ws.readyState === STATES.OPEN) {
     return cb();
   }
   return setTimeout(() => {
@@ -179,8 +179,8 @@ Websocket.prototype.whenConnected = function whenConnected (cb) {
 };
 
 // Send the given message once the connection is open
-Websocket.prototype.sendWhenConnected = function sendWhenConnected (message) {
-  if (this.ws.readyState === STATES.OPEN) {
+Websocket.prototype.sendWhenConnected = function sendWhenConnected(message) {
+  if(this.ws.readyState === STATES.OPEN) {
     return this.sendImmediate(message);
   }
 
@@ -190,17 +190,17 @@ Websocket.prototype.sendWhenConnected = function sendWhenConnected (message) {
 };
 
 // Attempt to send the given message immediately, without checking if we are connected
-Websocket.prototype.sendImmediate = function sendImmediate (message) {
-  if (this.ws.readyState === STATES.OPEN) {
+Websocket.prototype.sendImmediate = function sendImmediate(message) {
+  if(this.ws.readyState === STATES.OPEN) {
     return this.sendPayload(message);
   }
   logger.warn('[websocket] connection not open (state: ' + this.ws.readyState + ')!');
 };
 
 // Flexibly send the given message, serializing it if necessary
-Websocket.prototype.sendPayload = function sendPayload (message) {
-  if (typeof message !== 'string') {
-    if (!message.folder) {
+Websocket.prototype.sendPayload = function sendPayload(message) {
+  if(typeof message !== 'string') {
+    if(!message.folder) {
       message.folder = this.folder;
     }
     message = JSON.stringify(message);
@@ -210,20 +210,20 @@ Websocket.prototype.sendPayload = function sendPayload (message) {
 };
 
 // Sends the message once we detect that we are connected
-Websocket.prototype.send = function send (message) {
-  if (!message.folder) {
+Websocket.prototype.send = function send(message) {
+  if(!message.folder) {
     message.folder = this.folder;
   } // The plumbing uses the folder property to route messages to clients
-  if (!message.alias) {
+  if(!message.alias) {
     message.alias = this.alias;
   } // The plumbing uses this alias property to route messages
   return this.sendWhenConnected(message);
 };
 
 // Request-like wrapper for sending a message that expects a response with a callback
-Websocket.prototype.request = function request (message, callback) {
+Websocket.prototype.request = function request(message, callback) {
   // The message id associates responses (if any) to our requests
-  if (message.id === undefined) {
+  if(message.id === undefined) {
     message.id = ('request-' + Math.random());
   }
 
@@ -231,14 +231,14 @@ Websocket.prototype.request = function request (message, callback) {
   let timedOut = false;
   let timeoutInstance = null;
 
-  if (message.timeout) {
+  if(message.timeout) {
     timeoutInstance = setTimeout(() => {
       // In case we are running despite having been cleared check if we got a response
-      if (!gotResponse) {
+      if(!gotResponse) {
         timedOut = true;
 
         // If retry is specified, we'll try again and decrement the number of remaining retries
-        if (typeof message.retry === 'number' && message.retry > 0) {
+        if(typeof message.retry === 'number' && message.retry > 0) {
           message.retry -= 1;
           return this.request(message, callback);
         }
@@ -255,13 +255,13 @@ Websocket.prototype.request = function request (message, callback) {
       gotResponse = true;
 
       // If we're waiting for a timeout, we may as well clear it
-      if (timeoutInstance) {
+      if(timeoutInstance) {
         clearTimeout(timeoutInstance);
       }
 
       // If we timed out, we already returned a timeout error to the callback
       // The timedOut variable should only be falsy if a timeout was specified
-      if (!timedOut) {
+      if(!timedOut) {
         callback(err, a, b, c, d, e, f);
       }
     },
@@ -271,11 +271,11 @@ Websocket.prototype.request = function request (message, callback) {
 };
 
 // Wrapper for invoking an RPC-like call over this socket with a method name, its params, and a callback
-Websocket.prototype.method = function method (method, params, cb) {
+Websocket.prototype.method = function method(method, params, cb) {
   return this.request({method, params: params || []}, cb);
 };
 
-Websocket.prototype.action = function action (method, params, cb, folder) {
+Websocket.prototype.action = function action(method, params, cb, folder) {
   return this.request({type: 'action', method, params: params || [], folder}, cb);
 };
 

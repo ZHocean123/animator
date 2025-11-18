@@ -1,6 +1,6 @@
-var Haiku = require("@haiku/core");
-var _code_brick_code = require("./../brick/code.js");
-module.exports = {
+import Haiku from '@haiku/core/index.js';
+import _code_brick_code from './../brick/code.js';
+export default {
   metadata: {
     folder: "/Users/matthew/.haiku/projects/matthew2/Bricks",
     uuid: "HAIKU_SHARE_UUID",

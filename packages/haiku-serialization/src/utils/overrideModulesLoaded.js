@@ -4,11 +4,11 @@ import remapSource from '../ast/remapSource.js';
 
 export default (cb, remapParams, iterator) => {
   nodehook.hook('.js', (source, filename) => {
-    if (path.basename(filename) !== 'code.js') {
+    if(path.basename(filename) !== 'code.js') {
       return source;
     }
     const updated = remapSource(source, remapParams);
-    if (iterator) {
+    if(iterator) {
       iterator(filename, updated, source);
     }
     return updated;

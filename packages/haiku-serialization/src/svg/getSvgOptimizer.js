@@ -20,7 +20,7 @@ const plugins = [
 ];
 
 module.exports = () => {
-  if (!singleton) {
+  if(!singleton) {
     singleton = new Svgo({
       full: true,
       floatPrecision: 3,

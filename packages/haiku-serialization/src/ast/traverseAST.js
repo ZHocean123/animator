@@ -1,8 +1,8 @@
 import traverse from '@babel/traverse';
 
-function traverseAST (ast, iterator) {
+function traverseAST(ast, iterator) {
   traverse(ast, {
-    enter (path) {
+    enter(path) {
       iterator(path.node, path.parent);
     },
   });

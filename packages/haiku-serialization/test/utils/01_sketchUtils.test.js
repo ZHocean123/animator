@@ -1,5 +1,5 @@
-const test = require('tape');
-const sketchUtils = require('../../src/utils/sketchUtils');
+import test from 'tape';
+import sketchUtils from '../../src/utils/sketchUtils.js';
 
 const validDump = `
   /Applications/__MACOSX/Sketch.app

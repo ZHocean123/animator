@@ -7,13 +7,13 @@ import { isWindows } from 'haiku-common/lib/environments/os.mjs';
 import 'colors';
 
 const formatJsonLogToString = (message) => {
-  if (message.noFormat) {
+  if(message.noFormat) {
     return message.message;
   }
 
-  if (Array.isArray(message.message)) {
+  if(Array.isArray(message.message)) {
     message.message = message.message.map((message) => {
-      if (typeof message === 'string') {
+      if(typeof message === 'string') {
         return message;
       }
       return jsonStringify(message);
@@ -34,7 +34,7 @@ const haikuFormat = winston.format.printf((info, opts) => {
 // Ignore log messages if they have { doNotLogOnFile: true }
 // Its needed to avoid double writing to log file on plumbing
 const ignoreDoNotWriteToFile = winston.format((info, opts) => {
-  if (info.doNotLogOnFile) {
+  if(info.doNotLogOnFile) {
     return false;
   }
   return info;
@@ -47,14 +47,14 @@ const DEFAULTS = {
 };
 
 class Logger extends EventEmitter {
-  constructor (folder, relpath, options = {}) {
+  constructor(folder, relpath, options = {}) {
     super(options);
 
     const config = Object.assign({}, DEFAULTS, options);
 
     const transports = [];
 
-    if (folder && relpath) {
+    if(folder && relpath) {
       const filename = path.join(folder, relpath);
       transports.push(new winston.transports.File({
         filename,
@@ -73,7 +73,7 @@ class Logger extends EventEmitter {
 
     // In prod, we don't really benefit from sending logs to the dev console.
     // In Windows, our logging library (winston) has problems with stdout.
-    if (!isProduction() && !isWindows()) {
+    if(!isProduction() && !isWindows()) {
       transports.push(new winston.transports.Console({
         format: winston.format.combine(
           haikuFormat,
@@ -92,27 +92,27 @@ class Logger extends EventEmitter {
     this.view = '?';
   }
 
-  raw (jsonMessage) {
+  raw(jsonMessage) {
     this.logger.log(jsonMessage);
   }
 
-  info (...args) {
+  info(...args) {
     this.logger.info(args, {view: this.view});
   }
 
-  traceInfo (tag, message, attachedObject) {
+  traceInfo(tag, message, attachedObject) {
     this.logger.info(message, {view: this.view, tag, attachedObject});
   }
 
-  debug (...args) {
+  debug(...args) {
     this.logger.debug(args, {view: this.view});
   }
 
-  warn (...args) {
+  warn(...args) {
     this.logger.warn(args, {view: this.view});
   }
 
-  error (...args) {
+  error(...args) {
     this.logger.error(args, {view: this.view});
   }
 
@@ -120,67 +120,67 @@ class Logger extends EventEmitter {
    * Methods not supported by winston fall back to console
    */
 
-  assert (...args) {
+  assert(...args) {
     console.assert(...args);
   }
 
-  count (...args) {
+  count(...args) {
     console.count(...args);
   }
 
-  countReset (...args) {
+  countReset(...args) {
     console.countReset(...args);
   }
 
-  dir (...args) {
+  dir(...args) {
     console.dir(...args);
   }
 
-  dirxml (...args) {
+  dirxml(...args) {
     console.dirxml(...args);
   }
 
-  exception (...args) {
+  exception(...args) {
     console.exception(...args);
   }
 
-  group (...args) {
+  group(...args) {
     console.group(...args);
   }
 
-  groupCollapsed (...args) {
+  groupCollapsed(...args) {
     console.groupCollapsed(...args);
   }
 
-  groupEnd (...args) {
+  groupEnd(...args) {
     console.groupEnd(...args);
   }
 
-  profileEnd (...args) {
+  profileEnd(...args) {
     console.profileEnd(...args);
   }
 
-  select (...args) {
+  select(...args) {
     console.select(...args);
   }
 
-  table (...args) {
+  table(...args) {
     console.table(...args);
   }
 
-  time (...args) {
+  time(...args) {
     this.logger.profile(args, {view: this.view});
   }
 
-  timeLog (...args) {
+  timeLog(...args) {
     console.timeLog(...args);
   }
 
-  timeEnd (...args) {
+  timeEnd(...args) {
     this.logger.profile(args, {view: this.view});
   }
 
-  trace (...args) {
+  trace(...args) {
     console.trace(...args);
   }
 }

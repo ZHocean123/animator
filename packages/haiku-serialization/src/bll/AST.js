@@ -1,17 +1,17 @@
-const prettier = require("prettier");
-const BaseModel = require("./BaseModel");
-const expressionToRO = require("@haiku/core/lib/reflection/expressionToRO.js")
+const prettier = require('prettier');
+const BaseModel = require('./BaseModel');
+const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO.js')
   .default;
-const bytecodeObjectToAST = require("./../ast/bytecodeObjectToAST");
-const normalizeBytecodeAST = require("./../ast/normalizeBytecodeAST");
-const parseCode = require("./../ast/parseCode");
+const bytecodeObjectToAST = require('./../ast/bytecodeObjectToAST');
+const normalizeBytecodeAST = require('./../ast/normalizeBytecodeAST');
+const parseCode = require('./../ast/parseCode');
 const {
   Experiment,
-  experimentIsEnabled
-} = require("haiku-common/lib/experiments.js");
+  experimentIsEnabled,
+} = require('haiku-common/lib/experiments.js');
 
-const HAIKU_SOURCE_ATTRIBUTE = "haiku-source";
-const HAIKU_VAR_ATTRIBUTE = "haiku-var";
+const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
+const HAIKU_VAR_ATTRIBUTE = 'haiku-var';
 
 /**
  * @class AST
@@ -34,23 +34,23 @@ class AST extends BaseModel {
     const ro = AST.normalizeBytecode(bytecode);
 
     const { frontMatterNodes, backMatterNodes } = grabExtraMatterFromSourceCode(
-      previousSourceCodeString
+      previousSourceCodeString,
     );
 
     const ast = bytecodeObjectToAST(
       ro,
       imports,
       frontMatterNodes,
-      backMatterNodes
+      backMatterNodes,
     );
 
     normalizeBytecodeAST(ast);
 
     // Merge instead of replacing wholesale in case we have any pointers
-    for (const k1 in this.obj) {
+    for(const k1 in this.obj) {
       delete this.obj[k1];
     }
-    for (const k2 in ast) {
+    for(const k2 in ast) {
       this.obj[k2] = ast[k2];
     }
 
@@ -66,19 +66,19 @@ class AST extends BaseModel {
     // Prettier doesn't expose a public API that would allow us to "cheat" elegantly, but…
     return prettier.format(
       // …as long as we pass in some nonempty string…
-      "()=>{}",
+      '()=>{}',
       {
         // …we can bypass an extra AST parse step from generated code and return our AST direcetly.
-        parser: () => this.obj
-      }
+        parser: () => this.obj,
+      },
     );
   }
 }
 
 AST.DEFAULT_OPTIONS = {
   required: {
-    file: true
-  }
+    file: true,
+  },
 };
 
 BaseModel.extend(AST);
@@ -86,32 +86,32 @@ BaseModel.extend(AST);
 const grabExtraMatterFromSourceCode = code => {
   const out = {
     frontMatterNodes: [],
-    backMatterNodes: []
+    backMatterNodes: [],
   };
 
-  if (!experimentIsEnabled(Experiment.PreserveFrontMatterInCode) || !code) {
+  if(!experimentIsEnabled(Experiment.PreserveFrontMatterInCode) || !code) {
     return out;
   }
 
   try {
     const ast = parseCode(code);
 
-    if (ast instanceof Error) {
+    if(ast instanceof Error) {
       return out;
     }
 
-    if (!ast || !ast.program || !ast.program.body) {
+    if(!ast || !ast.program || !ast.program.body) {
       return out;
     }
 
     let nodesCollection = out.frontMatterNodes;
 
     ast.program.body.forEach(node => {
-      if (isAutoGenImportNode(node)) {
+      if(isAutoGenImportNode(node)) {
         return;
       }
 
-      if (isModuleExportsNode(node)) {
+      if(isModuleExportsNode(node)) {
         nodesCollection = out.backMatterNodes;
         return;
       }
@@ -120,8 +120,8 @@ const grabExtraMatterFromSourceCode = code => {
     });
 
     return out;
-  } catch (exception) {
-    console.warn("[AST]", exception);
+  } catch(exception) {
+    console.warn('[AST]', exception);
     return out;
   }
 };
@@ -129,16 +129,16 @@ const grabExtraMatterFromSourceCode = code => {
 const isAutoGenImportNode = node => {
   // Assumes the form `var Foo = require('bar')`
   return (
-    node.type === "VariableDeclaration" &&
+    node.type === 'VariableDeclaration' &&
     node.declarations &&
     node.declarations[0] &&
-    node.declarations[0].type === "VariableDeclarator" &&
-    node.declarations[0].init.type === "CallExpression" &&
-    node.declarations[0].init.callee.type === "Identifier" &&
-    node.declarations[0].init.callee.name === "require" &&
+    node.declarations[0].type === 'VariableDeclarator' &&
+    node.declarations[0].init.type === 'CallExpression' &&
+    node.declarations[0].init.callee.type === 'Identifier' &&
+    node.declarations[0].init.callee.name === 'require' &&
     node.declarations[0].init.arguments &&
     doesRequireCalleeArgIndicateAutoGenImport(
-      node.declarations[0].init.arguments[0]
+      node.declarations[0].init.arguments[0],
     )
   );
 };
@@ -146,14 +146,14 @@ const isAutoGenImportNode = node => {
 const doesRequireCalleeArgIndicateAutoGenImport = node => {
   return (
     node &&
-    typeof node.value === "string" &&
+    typeof node.value === 'string' &&
     isImportSourceViaAutoGen(node.value)
   );
 };
 
 const isImportSourceViaAutoGen = source => {
   return (
-    source === "@haiku/core" || // var Haiku = require('@haiku/core'); the core lib
+    source === '@haiku/core' || // var Haiku = require('@haiku/core'); the core lib
     source.match(/^@haiku\/core\/components/) || // var Text = require('@haiku/core/components/controls/Text');
     source.match(/\/code\.js$/) // var  Foo = require("../foo/code.js"); subcomponents
   );
@@ -162,12 +162,12 @@ const isImportSourceViaAutoGen = source => {
 const isModuleExportsNode = node => {
   // Assumes the form `module.exports = {...}`
   return (
-    node.type === "ExpressionStatement" &&
-    node.expression.type === "AssignmentExpression" &&
-    node.expression.left.type === "MemberExpression" &&
-    node.expression.left.object.name === "module" &&
-    node.expression.left.property.name === "exports" &&
-    node.expression.right.type === "ObjectExpression"
+    node.type === 'ExpressionStatement' &&
+    node.expression.type === 'AssignmentExpression' &&
+    node.expression.left.type === 'MemberExpression' &&
+    node.expression.left.object.name === 'module' &&
+    node.expression.left.property.name === 'exports' &&
+    node.expression.right.type === 'ObjectExpression'
   );
 };
 
@@ -191,16 +191,16 @@ AST.findImportsFromTemplate = (hostfile, template) => {
   Template.visitWithoutDescendingIntoSubcomponents(
     template,
     (node, parent, index, depth, address) => {
-      if (node && node.elementName && typeof node.elementName === "object") {
+      if(node && node.elementName && typeof node.elementName === 'object') {
         let source;
         let identifier;
 
         // If we're loading from in-memory then this should be present
-        if (node.elementName.__reference) {
+        if(node.elementName.__reference) {
           const reference = ModuleWrapper.parseReference(
-            node.elementName.__reference
+            node.elementName.__reference,
           );
-          if (reference) {
+          if(reference) {
             source = reference.source;
             identifier = reference.identifier;
           }
@@ -211,13 +211,13 @@ AST.findImportsFromTemplate = (hostfile, template) => {
           identifier = node.attributes && node.attributes[HAIKU_VAR_ATTRIBUTE];
         }
 
-        if (source && identifier) {
+        if(source && identifier) {
           // In case these weren't set (see above), set them so downstream codegen works :/
           node.elementName.__reference = ModuleWrapper.buildReference(
             ModuleWrapper.REF_TYPES.COMPONENT, // type
             Template.normalizePath(`./${hostfile.relpath}`), // host
             Template.normalizePathOfPossiblyExternalModule(source),
-            identifier
+            identifier,
           );
 
           // While the source string we store as an attribute is always with respect to the project
@@ -227,7 +227,7 @@ AST.findImportsFromTemplate = (hostfile, template) => {
           imports[importSourcePath] = identifier;
         }
       }
-    }
+    },
   );
 
   return imports;
@@ -237,20 +237,20 @@ AST.safeBytecode = bytecode => {
   const safe = {};
   // We're dealing with a chunk of bytecode that has been rendered, so we need to fix
   // the template object which has been mutated, and return it to its serializable form
-  for (const key in bytecode) {
-    if (key === "template") {
+  for(const key in bytecode) {
+    if(key === 'template') {
       safe[key] = Template.manaWithOnlyStandardProps(
         bytecode[key],
         true,
         __reference => {
           const ref = ModuleWrapper.parseReference(__reference);
 
-          if (ref && ref.identifier) {
+          if(ref && ref.identifier) {
             return ref.identifier;
           }
 
           return __reference;
-        }
+        },
       );
     } else {
       safe[key] = bytecode[key];
@@ -261,7 +261,7 @@ AST.safeBytecode = bytecode => {
 
 AST.parseFile = (folder, relpath, contents, cb) => {
   const ast = parseCode(contents);
-  if (ast instanceof Error) {
+  if(ast instanceof Error) {
     return cb(ast);
   }
 
@@ -271,6 +271,6 @@ AST.parseFile = (folder, relpath, contents, cb) => {
 module.exports = AST;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require("./Bytecode");
-const ModuleWrapper = require("./ModuleWrapper");
-const Template = require("./Template");
+const Bytecode = require('./Bytecode');
+const ModuleWrapper = require('./ModuleWrapper');
+const Template = require('./Template');

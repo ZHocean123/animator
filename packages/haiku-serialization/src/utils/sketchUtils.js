@@ -1,19 +1,20 @@
-import path from "path";
-import { exec } from "child_process";
-import logger from "./LoggerInstance.js";
-import { isMac } from "haiku-common/lib/environments/os.js";
+import path from 'path';
+import { exec } from 'child_process';
+import logger from './LoggerInstance.js';
+// import { isMac } from "haiku-common/lib/environments/os.js";
+const isMac = process.platform === 'darwin';
 
 const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`;
-const PARSER_CLI_PATH = "/Contents/Resources/sketchtool/bin/sketchtool";
+const PARSER_CLI_PATH = '/Contents/Resources/sketchtool/bin/sketchtool';
 let sketchInstalledCache = null;
 
 export default {
   dumpToPaths(rawDump) {
-    logger.info("[sketch utils] about to parse Sketch paths", rawDump);
+    logger.info('[sketch utils] about to parse Sketch paths', rawDump);
 
     return rawDump
       .trim()
-      .split("\n")
+      .split('\n')
       .filter(Boolean);
   },
 
@@ -23,7 +24,7 @@ export default {
         const sketchtoolPath = path.join(sketchPath, PARSER_CLI_PATH);
 
         exec(`${sketchtoolPath} --version`, (error, stdout, stderr) => {
-          if (error || !stdout || stdout.trim().length === 0 || stderr) {
+          if(error || !stdout || stdout.trim().length === 0 || stderr) {
             return resolve(null);
           }
 
@@ -40,7 +41,7 @@ export default {
   getDumpInfo() {
     return new Promise((resolve, reject) => {
       exec(SKETCH_PATH_FINDER, (error, stdout, stderr) => {
-        if (error || !stdout || stdout.trim().length === 0 || stderr) {
+        if(error || !stdout || stdout.trim().length === 0 || stderr) {
           reject(error);
         }
 
@@ -63,9 +64,9 @@ export default {
 
   checkIfInstalled() {
     // Only Mac has sketch support
-    if (isMac()) {
+    if(isMac()) {
       return new Promise((resolve, reject) => {
-        if (sketchInstalledCache !== null) {
+        if(sketchInstalledCache !== null) {
           return resolve(sketchInstalledCache);
         }
 
@@ -78,16 +79,16 @@ export default {
             resolve(path);
           })
           .catch(error => {
-            logger.info("[sketch utils] error finding Sketch: ", error);
+            logger.info('[sketch utils] error finding Sketch: ', error);
             sketchInstalledCache = false;
             resolve(false);
           });
       });
     }
 
-    logger.info("[sketch utils] Platform does not support Sketch");
+    logger.info('[sketch utils] Platform does not support Sketch');
     return new Promise((resolve, reject) => {
       resolve(null);
     });
-  }
+  },
 };

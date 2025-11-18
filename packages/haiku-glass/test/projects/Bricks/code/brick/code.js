@@ -1,5 +1,5 @@
-var Haiku = require("@haiku/core");
-module.exports = {
+import Haiku from '@haiku/core/index.js';
+export default {
   metadata: {
     title: "Brick",
     uuid: "HAIKU_SHARE_UUID",

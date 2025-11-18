@@ -1,4 +1,4 @@
-const tape = require('tape');
+import tape from 'tape';
 
 tape('Exit', (t) => {
   t.end();

@@ -1,7 +1,7 @@
-var code = require('./code')
+import code from './code.js'
 var adapter = window.HaikuPlayer && window.HaikuPlayer['2.3.70']
 if (adapter) {
-  module.exports = adapter(code)
+  export default adapter(code)
 } else  {
   function safety () {
     console.error(
@@ -14,5 +14,5 @@ if (adapter) {
   for (var key in code) {
     safety[key] = code[key]
   }
-  module.exports = safety
+  export default safety
 }

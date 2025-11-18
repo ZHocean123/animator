@@ -1,14 +1,20 @@
-const {parse} = require('@babel/parser');
+/**
+ * 将函数字符串转换为函数体AST
+ * @param {string} body - 函数体字符串
+ * @returns {Object} 函数体AST节点
+ */
 
-function functionBodyStringToFunctionBodyAST (body) {
+import {parse} from '@babel/parser';
+
+function functionBodyStringToFunctionBodyAST(body) {
   const nodes = [];
   let innerComments = null;
-  if (body) {
+  if(body) {
     const ast = parse(body, {
       allowReturnOutsideFunction: true,
     });
     // Inner comments happens when only comments are existant
-    if (ast.program.innerComments) {
+    if(ast.program.innerComments) {
       innerComments = ast.program.innerComments;
     }
     nodes.push(...ast.program.body);
@@ -18,10 +24,10 @@ function functionBodyStringToFunctionBodyAST (body) {
     body: nodes,
   };
   // If have inner comments, set them
-  if (innerComments) {
+  if(innerComments) {
     block.innerComments = innerComments;
   }
   return block;
 }
 
-module.exports = functionBodyStringToFunctionBodyAST;
+export default functionBodyStringToFunctionBodyAST;

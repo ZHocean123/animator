@@ -1,5 +1,5 @@
 class TransformCache {
-  constructor (host) {
+  constructor(host) {
     this.host = host;
     this.cache = {};
   }
@@ -17,15 +17,15 @@ class TransformCache {
    *        logic should be able to piggyback on this
    *      - alt-dragging to duplicate an element
    */
-  set (key) {
+  set(key) {
     const transform = this.host.getComputedLayout();
-    if (this.host.getOriginOffsetComposedMatrix) {
+    if(this.host.getOriginOffsetComposedMatrix) {
       transform.originOffsetComposedMatrix = this.host.getOriginOffsetComposedMatrix();
     }
     this.cache[key] = transform;
   }
 
-  get (key) {
+  get(key) {
     return this.cache[key];
   }
 }

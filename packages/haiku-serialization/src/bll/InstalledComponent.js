@@ -5,10 +5,10 @@ const BaseModel = require('./BaseModel');
  * @class InstalledComponent
  */
 class InstalledComponent extends BaseModel {
-  getTitle () {
+  getTitle() {
     const parts = this.modpath.split(path.sep);
 
-    if (parts[0] === '@haiku' && parts[1] === 'core' && parts[2] === 'components') {
+    if(parts[0] === '@haiku' && parts[1] === 'core' && parts[2] === 'components') {
       // @haiku/core/components/controls/HTML, etc
       return parts[4];
     }
@@ -16,15 +16,15 @@ class InstalledComponent extends BaseModel {
     return parts.join('_');
   }
 
-  getReifiedBytecode () {
+  getReifiedBytecode() {
     return null;
   }
 
-  doesMatchOrHostComponent (other, cb) {
+  doesMatchOrHostComponent(other, cb) {
     return cb(null, false);
   }
 
-  getIdentifier () {
+  getIdentifier() {
     // This identifier is going to be something like HaikuLine or MyOrg_MyName
     return ModuleWrapper.modulePathToIdentifierName(this.modpath);
   }

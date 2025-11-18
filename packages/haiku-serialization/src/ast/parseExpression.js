@@ -1,9 +1,17 @@
-const Parser = require('cst').Parser;
-const walk = require('estree-walker').walk;
-const fsm = require('fuzzy-string-matching');
-const uniq = require('lodash').uniq;
-const FORBIDDEN_EXPRESSION_TOKENS = require("@haiku/core/lib/HaikuComponent.js").default.FORBIDDEN_EXPRESSION_TOKENS;
-const logger = require('./../utils/LoggerInstance');
+/**
+ * 表达式解析器
+ * 用于解析和处理JavaScript表达式
+ * @module parseExpression
+ */
+
+import cst from 'cst';
+const {Parser} = cst;
+import {walk} from 'estree-walker';
+import fsm from 'fuzzy-string-matching';
+import lodash from 'lodash';
+const {uniq} = lodash;
+import HaikuComponent from '@haiku/core/lib/HaikuComponent.js';
+import logger from './../utils/LoggerInstance.js';
 
 const PARSER = new Parser({
   sourceType: 'script',
@@ -17,41 +25,41 @@ const MATCH_WEIGHTS = {
   DECLARATIONS: 0.5,
 };
 
-function wrap (exprWithourWrap) {
+function wrap(exprWithourWrap) {
   return '(function(){"use strict";\n' + exprWithourWrap + '\n})';
 }
 
-function unwrap (exprWithWrap) {
+function unwrap(exprWithWrap) {
   return exprWithWrap.slice(26, exprWithWrap.length - 3);
 }
 
-function getSegsList (list, node) {
-  if (node.type === 'Identifier') {
+function getSegsList(list, node) {
+  if(node.type === 'Identifier') {
     list.push(node);
     return list;
   }
 
-  if (node.type === 'MemberExpression') {
+  if(node.type === 'MemberExpression') {
     getSegsList(list, node.object);
     list.push(node.property);
     return list;
   }
 }
 
-function isTokenStreamInvalid (tokens, options) {
-  if (tokens.length < 1) {
+function isTokenStreamInvalid(tokens, options) {
+  if(tokens.length < 1) {
     return {
       annotation: 'Expression is has no content',
     };
   }
 
-  if (tokens.length === 1 && tokens[0].type === 'Keyword' && tokens[0].value === 'return') {
+  if(tokens.length === 1 && tokens[0].type === 'Keyword' && tokens[0].value === 'return') {
     return {
       annotation: 'Expression is incomplete',
     };
   }
 
-  if (options.skipForbiddensCheck) {
+  if(options.skipForbiddensCheck) {
     return false;
   }
 
@@ -59,56 +67,56 @@ function isTokenStreamInvalid (tokens, options) {
   let foundForbiddenToken = false;
   let otherWarning = false;
 
-  for (let i = 0; i < tokens.length; i++) {
+  for(let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     const parent = tokens[i - 1];
     const grandparent = tokens[i - 2];
 
-    if (token.type === 'Keyword') {
-      if (token.value === 'return') {
+    if(token.type === 'Keyword') {
+      if(token.value === 'return') {
         foundReturn = true;
       }
     }
 
-    if (token.type === 'Identifier' || token.type === 'Keyword') {
-      if (token.value === 'random') {
-        if (parent && parent.value === '.') {
-          if (grandparent && grandparent.value === 'Math') {
+    if(token.type === 'Identifier' || token.type === 'Keyword') {
+      if(token.value === 'random') {
+        if(parent && parent.value === '.') {
+          if(grandparent && grandparent.value === 'Math') {
             otherWarning = 'Instead of Math.random(), use $helpers.rand()';
             break;
           }
         }
       }
 
-      if (token.value === 'now') {
-        if (parent && parent.value === '.') {
-          if (grandparent && grandparent.value === 'Date') {
+      if(token.value === 'now') {
+        if(parent && parent.value === '.') {
+          if(grandparent && grandparent.value === 'Date') {
             otherWarning = 'Instead of Date.now(), use $helpers.now()';
             break;
           }
         }
       }
 
-      if (FORBIDDEN_EXPRESSION_TOKENS[token.value]) {
+      if(FORBIDDEN_EXPRESSION_TOKENS[token.value]) {
         foundForbiddenToken = token;
         break;
       }
     }
   }
 
-  if (otherWarning) {
+  if(otherWarning) {
     return {
       annotation: otherWarning,
     };
   }
 
-  if (foundForbiddenToken) {
+  if(foundForbiddenToken) {
     return {
       annotation: foundForbiddenToken.type + ' "' + foundForbiddenToken.value + '" is not allowed in expressions',
     };
   }
 
-  if (!foundReturn) {
+  if(!foundReturn) {
     return {
       annotation: 'Expression must have a return statement',
     };
@@ -117,11 +125,11 @@ function isTokenStreamInvalid (tokens, options) {
   return false;
 }
 
-function smushKeys (out, base, obj, depth, minDepth, maxDepth) {
-  for (const key in obj) {
+function smushKeys(out, base, obj, depth, minDepth, maxDepth) {
+  for(const key in obj) {
     const sub = (base) ? (base + '.' + key) : key;
 
-    if (depth >= minDepth && depth <= maxDepth) {
+    if(depth >= minDepth && depth <= maxDepth) {
       out.push(sub);
     }
 
@@ -131,11 +139,11 @@ function smushKeys (out, base, obj, depth, minDepth, maxDepth) {
   return out;
 }
 
-function populateCompletions (target, injectables, keywords, declarations) {
+function populateCompletions(target, injectables, keywords, declarations) {
   const segs = getSegsList([], target);
 
   // Nothing to do if we have no segments
-  if (segs.length < 1) {
+  if(segs.length < 1) {
     return [];
   }
 
@@ -143,16 +151,16 @@ function populateCompletions (target, injectables, keywords, declarations) {
   const chain = segs.map((identifierNode) => identifierNode.name).join('.');
 
   // Only try to match declarations and keywords if we are only dealing with one segment
-  if (segs.length === 1) {
-    for (const declarationKey in declarations) {
-      if (fsm(segs[0].name, declarationKey) > MATCH_WEIGHTS.DECLARATIONS) {
+  if(segs.length === 1) {
+    for(const declarationKey in declarations) {
+      if(fsm(segs[0].name, declarationKey) > MATCH_WEIGHTS.DECLARATIONS) {
         completions.add(declarationKey);
       }
     }
 
-    for (const keywordKey in keywords) {
-      if (!FORBIDDEN_EXPRESSION_TOKENS[keywordKey]) {
-        if (fsm(segs[0].name, keywordKey) > MATCH_WEIGHTS.KEYWORDS) {
+    for(const keywordKey in keywords) {
+      if(!FORBIDDEN_EXPRESSION_TOKENS[keywordKey]) {
+        if(fsm(segs[0].name, keywordKey) > MATCH_WEIGHTS.KEYWORDS) {
           completions.add(keywordKey);
         }
       }
@@ -167,7 +175,7 @@ function populateCompletions (target, injectables, keywords, declarations) {
   });
 
   // If there is exactly one completion, and it's identical to our chain, we should not show completions.
-  if (completions.size === 1 && completions.has(chain)) {
+  if(completions.size === 1 && completions.has(chain)) {
     return [];
   }
 
@@ -182,29 +190,29 @@ function populateCompletions (target, injectables, keywords, declarations) {
     const nb = b.toLowerCase();
 
     // Ensures exact matches are always at the top.
-    if (a === chain) {
+    if(a === chain) {
       return -1;
     }
 
-    if (b === chain) {
+    if(b === chain) {
       return 1;
     }
 
     // Ensures typeahead matches come next after exact matches.
-    if (na.startsWith(nChain)) {
+    if(na.startsWith(nChain)) {
       return -1;
     }
 
-    if (nb.startsWith(nChain)) {
+    if(nb.startsWith(nChain)) {
       return 1;
     }
 
     // The rest can be sorted lexographically.
-    if (na < nb) {
+    if(na < nb) {
       return -1;
     }
 
-    if (na > nb) {
+    if(na > nb) {
       return 1;
     }
 
@@ -227,25 +235,25 @@ function populateCompletions (target, injectables, keywords, declarations) {
   return completions;
 }
 
-function findMatches (found, segs, idx, base) {
-  if (Array.isArray(base)) {
+function findMatches(found, segs, idx, base) {
+  if(Array.isArray(base)) {
     return found;
   }
-  if (!base || typeof base !== 'object') {
+  if(!base || typeof base !== 'object') {
     return found;
   }
 
   const name = segs[idx] && segs[idx].name;
   const prev = segs[idx - 1] && segs[idx - 1].name;
 
-  if (!name && !prev) {
+  if(!name && !prev) {
     return found;
   }
 
   // The user has probably typed a _full_ completion, but we need to check for sub-objects to recommend those
-  if (!name && prev) {
-    for (const k4 in base) {
-      if (!found[k4]) {
+  if(!name && prev) {
+    for(const k4 in base) {
+      if(!found[k4]) {
         found[k4] = {};
       }
     }
@@ -253,15 +261,15 @@ function findMatches (found, segs, idx, base) {
     return found;
   }
 
-  if (!name) {
+  if(!name) {
     return found;
   }
 
   // Special case: Just display all injectable roots
-  if (name === '$') {
-    for (const k1 in base) {
-      if (k1[0] === '$') {
-        if (!found[k1]) {
+  if(name === '$') {
+    for(const k1 in base) {
+      if(k1[0] === '$') {
+        if(!found[k1]) {
           found[k1] = {};
         }
       }
@@ -271,12 +279,12 @@ function findMatches (found, segs, idx, base) {
   }
 
   // Special case: If under three characters, search on those chars
-  if (name.length < 5) {
+  if(name.length < 5) {
     const lcname = name.toLowerCase();
 
-    for (const k2 in base) {
-      if (k2.slice(0, lcname.length).toLowerCase() === lcname) {
-        if (!found[k2]) {
+    for(const k2 in base) {
+      if(k2.slice(0, lcname.length).toLowerCase() === lcname) {
+        if(!found[k2]) {
           found[k2] = {};
         }
 
@@ -287,12 +295,12 @@ function findMatches (found, segs, idx, base) {
     return found;
   }
 
-  for (const k3 in base) {
-    if (fsm(name, k3) < MATCH_WEIGHTS.INJECTABLES) {
+  for(const k3 in base) {
+    if(fsm(name, k3) < MATCH_WEIGHTS.INJECTABLES) {
       continue;
     }
 
-    if (!found[k3]) {
+    if(!found[k3]) {
       found[k3] = {};
     }
 
@@ -302,20 +310,20 @@ function findMatches (found, segs, idx, base) {
   return found;
 }
 
-function dataizeCompletion (completion) {
+function dataizeCompletion(completion) {
   return {name: completion};
 }
 
-function chooseTarget (candidate, existing) {
-  if (!existing) {
+function chooseTarget(candidate, existing) {
+  if(!existing) {
     return candidate;
   }
 
-  if (existing.type === 'Identifier' && candidate.type === 'MemberExpression') {
+  if(existing.type === 'Identifier' && candidate.type === 'MemberExpression') {
     return candidate;
   }
 
-  if (existing.type === 'MemberExpression' && candidate.type === 'Identifier') {
+  if(existing.type === 'MemberExpression' && candidate.type === 'Identifier') {
     return existing;
   }
 
@@ -327,8 +335,8 @@ function chooseTarget (candidate, existing) {
  * @description Given an expression string, parse it and return a summary about it, including
  * tokens, params, as well as any warnings/errors that need to be displayed to the coder.
  */
-function parseExpression (expr, injectables, keywords, state, cursor, options) {
-  if (!options) {
+function parseExpression(expr, injectables, keywords, state, cursor, options) {
+  if(!options) {
     options = {};
   }
 
@@ -353,13 +361,13 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
     const references = [];
 
     walk(cst, {
-      enter: function enter (node) {
-        if (cursor) { // If no cursor, nothing to do
-          if (!node.sourceCode && node.loc) { // If no node location, nothing to do; also skip 'Tokens' which have .sourceCode
-            if (node.loc.start.line === node.loc.end.line) { // Only identifiers on the same line (not braces)
-              if (node.loc.start.line === cursor.line) { // Only on the same line as the cursor
-                if (node.loc.start.column <= cursor.ch && node.loc.end.column >= cursor.ch) {
-                  if (node.type === 'MemberExpression' || node.type === 'Identifier') {
+      enter: function enter(node) {
+        if(cursor) { // If no cursor, nothing to do
+          if(!node.sourceCode && node.loc) { // If no node location, nothing to do; also skip 'Tokens' which have .sourceCode
+            if(node.loc.start.line === node.loc.end.line) { // Only identifiers on the same line (not braces)
+              if(node.loc.start.line === cursor.line) { // Only on the same line as the cursor
+                if(node.loc.start.column <= cursor.ch && node.loc.end.column >= cursor.ch) {
+                  if(node.type === 'MemberExpression' || node.type === 'Identifier') {
                     candidates.push(node);
                   }
                 }
@@ -368,13 +376,13 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
           }
         }
 
-        if (node.type === 'VariableDeclaration') {
-          for (let i = 0; i < node.declarations.length; i++) {
+        if(node.type === 'VariableDeclaration') {
+          for(let i = 0; i < node.declarations.length; i++) {
             const declarator = node.declarations[i];
-            if (declarator.id.type === 'Identifier') {
+            if(declarator.id.type === 'Identifier') {
               declarations[declarator.id.name] = true;
-            } else if (declarator.id.type === 'ObjectPattern') {
-              for (let j = 0; j < declarator.id.properties.length; j++) {
+            } else if(declarator.id.type === 'ObjectPattern') {
+              for(let j = 0; j < declarator.id.properties.length; j++) {
                 declarations[declarator.id.properties[j].key.name] = true;
               }
             }
@@ -383,7 +391,7 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
 
         // We check for node.name since estree-walker provides duplicates from the token stream
         // as well as the tree, and we use only the tree nodes
-        if (node.type === 'Identifier' && node.name) {
+        if(node.type === 'Identifier' && node.name) {
           references.push(node);
         }
       },
@@ -392,29 +400,29 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
     // The node representing the current placement of the cursor, if any
     let target = null;
     // Loop through the candidates and find the one that is the best fit for a target
-    for (let i = 0; i < candidates.length; i++) {
+    for(let i = 0; i < candidates.length; i++) {
       target = chooseTarget(candidates[i], target);
     }
 
     // Now strip away any references that refer to any declarations that were made in scope
-    for (let j = references.length - 1; j > -1; j--) {
+    for(let j = references.length - 1; j > -1; j--) {
       const reference = references[j];
-      if (declarations[reference.name]) {
+      if(declarations[reference.name]) {
         references.splice(j, 1);
       }
     }
 
     let params = [];
-    if (references.length > 0) {
+    if(references.length > 0) {
       references.forEach((reference) => {
         // If this seg was the first element, and if it matches a forbidden
         // token, then don't include this in the list of injectables
-        if (FORBIDDEN_EXPRESSION_TOKENS[reference.name]) {
+        if(FORBIDDEN_EXPRESSION_TOKENS[reference.name]) {
           return null;
         }
         // Don't include any reference in the final params if it doesn't match
         // a known injectable that core can provide
-        if (!injectables[reference.name]) {
+        if(!injectables[reference.name]) {
           return null;
         }
         params.push(reference.name);
@@ -425,14 +433,14 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
     // Completions is initially populated as a dict so we avoid having double entries in the list
     let completions;
     // If we got a target node that is an identifier, we can display autocompletions for it, if any match
-    if (target && (target.type === 'Identifier' || target.type === 'MemberExpression')) {
+    if(target && (target.type === 'Identifier' || target.type === 'MemberExpression')) {
       completions = populateCompletions(target, injectables, keywords, declarations);
     } else {
       completions = [];
     }
 
     const tokenInvalidity = isTokenStreamInvalid(tokens, options);
-    if (tokenInvalidity) {
+    if(tokenInvalidity) {
       warnings.push(tokenInvalidity);
     }
 
@@ -447,7 +455,7 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
       target,
       source: expr,
     };
-  } catch (error) {
+  } catch(error) {
     logger.warn('[parse expression]', error.message);
     return {
       error,
@@ -459,4 +467,4 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
 parseExpression.wrap = wrap;
 parseExpression.unwrap = unwrap;
 
-module.exports = parseExpression;
+export default parseExpression;

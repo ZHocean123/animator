@@ -1,1 +1,1 @@
-module.exports = require('./dom')
+export { default } from './dom.js'

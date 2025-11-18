@@ -1,5 +1,10 @@
-module.exports = function serializeError (err) {
-  if (!err) {
+/**
+ * Serializes an error object to a plain object
+ * @param {Error} err - The error object to serialize
+ * @returns {Object|null} - The serialized error object or null if no error
+ */
+export default function serializeError(err) {
+  if(!err) {
     return null;
   }
   return {
@@ -9,4 +14,4 @@ module.exports = function serializeError (err) {
     code: err.code,
     type: err.type,
   };
-};
+}

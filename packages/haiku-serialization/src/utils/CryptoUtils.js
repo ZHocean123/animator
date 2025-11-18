@@ -1,25 +1,25 @@
 import CryptoJs from 'crypto-js';
 import realSha256 from 'crypto-js/sha256.js';
 
-function aesDecrypt (str, passcode) {
+function aesDecrypt(str, passcode) {
   return CryptoJs.AES.decrypt(str, passcode).toString(CryptoJs.enc.Utf8);
 }
 
-function aesEncrypt (str, passcode) {
+function aesEncrypt(str, passcode) {
   return CryptoJs.AES.encrypt(str, passcode).toString();
 }
 
-function safeJsonStringify (objToStringify, maybeReplacer, maybeSpacing) {
+function safeJsonStringify(objToStringify, maybeReplacer, maybeSpacing) {
   try {
     return JSON.stringify(objToStringify, maybeReplacer, maybeSpacing);
-  } catch (exception) {
+  } catch(exception) {
     return null;
   }
 }
 
-function sha256 (input) {
+function sha256(input) {
   const jsonStr = safeJsonStringify(input);
-  if (!jsonStr) {
+  if(!jsonStr) {
     return null;
   }
   return realSha256(jsonStr).toString();

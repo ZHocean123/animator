@@ -6,7 +6,7 @@ const semver = require('semver');
 const DEFAULT_CHANGELOG_PATH = path.join(__dirname, '..', '..', '..', '..', 'changelog/public');
 
 class Changelog {
-  constructor (
+  constructor(
     lastViewedChangelog = process.env.HAIKU_RELEASE_VERSION,
     changelogPath = DEFAULT_CHANGELOG_PATH,
   ) {
@@ -15,7 +15,7 @@ class Changelog {
     this.changelogPath = changelogPath;
   }
 
-  readSingleChangelog (changelog) {
+  readSingleChangelog(changelog) {
     return new Promise((resolve, reject) => {
       fs.readFile(path.join(this.changelogPath, changelog), 'utf8', (err, content) => {
         err ? reject(err) : resolve(JSON.parse(content));
@@ -23,18 +23,18 @@ class Changelog {
     });
   }
 
-  readChangelogs () {
+  readChangelogs() {
     const rawChangelogs = fs.readdirSync(this.changelogPath, 'utf8').filter(
       (filename) => {
         return filename === 'latest.json' ||
           semver.gt(path.basename(filename, '.json'), this.lastViewedChangelog || '0.0.0');
       },
     ).sort((a, b) => {
-      if (b === 'latest.json') {
+      if(b === 'latest.json') {
         return -1;
       }
 
-      if (a === 'latest.json') {
+      if(a === 'latest.json') {
         return 1;
       }
 
@@ -44,9 +44,9 @@ class Changelog {
     return Promise.all(rawChangelogs.map((changelogFilename) => this.readSingleChangelog(changelogFilename)));
   }
 
-  getChangelog () {
+  getChangelog() {
     return new Promise((resolve, reject) => {
-      if (this.cachedChangelog) {
+      if(this.cachedChangelog) {
         resolve(this.cachedChangelog);
       } else {
         this.readChangelogs()
@@ -54,8 +54,8 @@ class Changelog {
             const latest = changelogs[changelogs.length - 1];
             const outputSections = {};
 
-            for (const changelog of changelogs) {
-              for (const section in changelog.sections) {
+            for(const changelog of changelogs) {
+              for(const section in changelog.sections) {
                 outputSections[section] = [
                   ...changelog.sections[section],
                   ...(outputSections[section] ? outputSections[section] : []),

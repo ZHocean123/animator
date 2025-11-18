@@ -1,28 +1,28 @@
-import path from "path";
-import logger from "./../utils/LoggerInstance.js";
-import BaseModel from "./BaseModel.js";
+import path from 'path';
+import logger from './../utils/LoggerInstance.js';
+import BaseModel from './BaseModel.js';
 import {
   rounded,
   transformFourVectorByMatrix,
-  basicallyEquals
-} from "./MathUtils.js";
-import TransformCache from "./TransformCache.js";
-import { default as Layout3D } from "@haiku/core/lib/Layout3D.js";
-import { default as HaikuElement } from "@haiku/core/lib/HaikuElement.js";
+  basicallyEquals,
+} from './MathUtils.js';
+import TransformCache from './TransformCache.js';
+import { default as Layout3D } from '@haiku/core/lib/Layout3D.js';
+import { default as HaikuElement } from '@haiku/core/lib/HaikuElement.js';
 import {
-  default as composedTransformsToTimelineProperties
-} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
+  default as composedTransformsToTimelineProperties,
+} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
 import {
-  default as invertMatrix
-} from "haiku-vendor-legacy/lib/gl-mat4/invert.js";
+  default as invertMatrix,
+} from 'haiku-vendor-legacy/lib/gl-mat4/invert.js';
 import {
   Experiment,
-  experimentIsEnabled
-} from "haiku-common/lib/experiments/index.js";
-import { Figma } from "./Figma.js";
-import Sketch from "./Sketch.js";
-import Illustrator from "./Illustrator.js";
-import * as lodash from "lodash-es";
+  experimentIsEnabled,
+} from 'haiku-common/lib/experiments/index.js';
+import { Figma } from './Figma.js';
+import Sketch from './Sketch.js';
+import Illustrator from './Illustrator.js';
+import * as lodash from 'lodash-es';
 
 const PI_OVER_12 = Math.PI / 12;
 
@@ -30,8 +30,8 @@ const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
 
 const forceNumeric = n => (isNaN(n) || !isFinite(n) ? 0 : n);
 
-const HAIKU_SOURCE_ATTRIBUTE = "haiku-source";
-const HAIKU_TITLE_ATTRIBUTE = "haiku-title";
+const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
+const HAIKU_TITLE_ATTRIBUTE = 'haiku-title';
 const SNAP_THRESHOLD = 10; // px, world-space (i.e. will get bigger/smaller with zoom)
 const SNAP_EPSILON = 0.025;
 
@@ -46,8 +46,8 @@ class ElementSelectionProxy extends BaseModel {
   constructor(props, opts) {
     super(props, opts);
 
-    if (!Array.isArray(this.selection)) {
-      throw new Error("ElementSelectionProxy selection must be an array");
+    if(!Array.isArray(this.selection)) {
+      throw new Error('ElementSelectionProxy selection must be an array');
     }
 
     // When representing multiple elements, we apply changes to our proxy properties
@@ -66,26 +66,26 @@ class ElementSelectionProxy extends BaseModel {
 
     Object.assign(
       this._proxyProperties,
-      ElementSelectionProxy.DEFAULT_PROPERTY_VALUES
+      ElementSelectionProxy.DEFAULT_PROPERTY_VALUES,
     );
 
-    if (!this.hasAnythingInSelection()) {
+    if(!this.hasAnythingInSelection()) {
       return;
     }
 
     const elements = this.selection.filter(
-      element => !!element.getLiveRenderedNode()
+      element => !!element.getLiveRenderedNode(),
     );
 
     // After ungrouping, the live rendered node of the <group> won't be available,
     // thus no bounding points to compute, thus we should early return.
-    if (elements.length < 1) {
+    if(elements.length < 1) {
       return;
     }
 
     // If we're dealing with just a single element, we need to to use its points and
     // layout spec directly so that the transform control box fits to its actual shape.
-    if (elements.length === 1) {
+    if(elements.length === 1) {
       // It's assumed that this list of points is *not* transformed here but downstream
       // as the return value of this.getBoxPointsTransformed
       this._proxyBoxPoints = elements[0].getBoundingBoxPoints().map(p => p);
@@ -94,13 +94,13 @@ class ElementSelectionProxy extends BaseModel {
         this._proxyProperties,
         Property.layoutSpecAsProperties(elements[0].getLayoutSpec()),
         {
-          "sizeAbsolute.x": Math.abs(
-            this._proxyBoxPoints[0].x - this._proxyBoxPoints[8].x
+          'sizeAbsolute.x': Math.abs(
+            this._proxyBoxPoints[0].x - this._proxyBoxPoints[8].x,
           ),
-          "sizeAbsolute.y": Math.abs(
-            this._proxyBoxPoints[0].y - this._proxyBoxPoints[8].y
-          )
-        }
+          'sizeAbsolute.y': Math.abs(
+            this._proxyBoxPoints[0].y - this._proxyBoxPoints[8].y,
+          ),
+        },
       );
 
       return;
@@ -112,7 +112,7 @@ class ElementSelectionProxy extends BaseModel {
         .reduce((accumulator, boxPoints) => {
           accumulator.push(...boxPoints);
           return accumulator;
-        }, [])
+        }, []),
     );
 
     const xOffset = boxPoints[0].x;
@@ -124,14 +124,14 @@ class ElementSelectionProxy extends BaseModel {
     const width = Math.abs(boxPoints[0].x - boxPoints[8].x);
     const height = Math.abs(boxPoints[0].y - boxPoints[8].y);
     Object.assign(this._proxyProperties, {
-      "sizeAbsolute.x": width,
-      "sizeAbsolute.y": height,
-      "translation.x":
+      'sizeAbsolute.x': width,
+      'sizeAbsolute.y': height,
+      'translation.x':
         boxPoints[0].x +
-        width * ElementSelectionProxy.DEFAULT_PROPERTY_VALUES["origin.x"],
-      "translation.y":
+        width * ElementSelectionProxy.DEFAULT_PROPERTY_VALUES['origin.x'],
+      'translation.y':
         boxPoints[0].y +
-        height * ElementSelectionProxy.DEFAULT_PROPERTY_VALUES["origin.y"]
+        height * ElementSelectionProxy.DEFAULT_PROPERTY_VALUES['origin.y'],
     });
   }
 
@@ -215,10 +215,10 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   getSourcePath() {
-    if (!this.selection) {
+    if(!this.selection) {
       return;
     }
-    if (!this.selection[0]) {
+    if(!this.selection[0]) {
       return;
     }
     const node = this.selection[0].getStaticTemplateNode();
@@ -227,17 +227,17 @@ class ElementSelectionProxy extends BaseModel {
 
   isSelectionFinderOpenable() {
     const sourcePath = this.getSourcePath();
-    if (!sourcePath) {
+    if(!sourcePath) {
       return false;
     }
   }
 
   getAbspath() {
     const folder = this.component.project.getFolder();
-    if (this.isSelectionSketchEditable()) {
-      return path.join(folder, this.getSourcePath(), "..", "..");
+    if(this.isSelectionSketchEditable()) {
+      return path.join(folder, this.getSourcePath(), '..', '..');
     }
-    if (this.canEditComponentFromSelection()) {
+    if(this.canEditComponentFromSelection()) {
       const sourcePath = this.getSourcePath();
       const componentFolder = this.component.getSceneCodeFolder();
       const targetPath = path.resolve(componentFolder, sourcePath);
@@ -254,7 +254,7 @@ class ElementSelectionProxy extends BaseModel {
   getSketchAssetPath() {
     const sourcePath = this.getSourcePath();
     return (
-      sourcePath && sourcePath.split(/\.sketch\.contents/)[0].concat(".sketch")
+      sourcePath && sourcePath.split(/\.sketch\.contents/)[0].concat('.sketch')
     );
   }
 
@@ -266,7 +266,7 @@ class ElementSelectionProxy extends BaseModel {
   getFigmaAssetPath() {
     const sourcePath = this.getSourcePath();
     return (
-      sourcePath && sourcePath.split(/\.figma\.contents/)[0].concat(".figma")
+      sourcePath && sourcePath.split(/\.figma\.contents/)[0].concat('.figma')
     );
   }
 
@@ -281,7 +281,7 @@ class ElementSelectionProxy extends BaseModel {
 
   getIllustratorAssetPath() {
     const sourcePath = this.getSourcePath();
-    return sourcePath && sourcePath.split(/\.ai\.contents/)[0].concat(".ai");
+    return sourcePath && sourcePath.split(/\.ai\.contents/)[0].concat('.ai');
   }
 
   canCut() {
@@ -362,7 +362,7 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   group(metadata) {
-    if (!this.hasAnythingInSelection()) {
+    if(!this.hasAnythingInSelection()) {
       return;
     }
 
@@ -378,11 +378,11 @@ class ElementSelectionProxy extends BaseModel {
     const attributes = {
       width: computedLayout.size.x,
       height: computedLayout.size.y,
-      [HAIKU_SOURCE_ATTRIBUTE]: "<group>",
+      [HAIKU_SOURCE_ATTRIBUTE]: '<group>',
       [HAIKU_TITLE_ATTRIBUTE]: this.component.nextSuggestedGroupName,
-      "origin.x": computedLayout.origin.x,
-      "origin.y": computedLayout.origin.y,
-      "rotation.z": computedLayout.rotation.z
+      'origin.x': computedLayout.origin.x,
+      'origin.y': computedLayout.origin.y,
+      'rotation.z': computedLayout.rotation.z,
     };
 
     // The new top-level object that will host the groupees. We can use the top-left box point of the selection proxy to
@@ -403,22 +403,22 @@ class ElementSelectionProxy extends BaseModel {
     shimMatrix[12] = -(boxPoint.x * shimMatrix[0] + boxPoint.y * shimMatrix[4]);
     shimMatrix[13] = -(boxPoint.x * shimMatrix[1] + boxPoint.y * shimMatrix[5]);
     const groupMana = {
-      elementName: "div",
+      elementName: 'div',
       attributes,
       children: [
         {
-          elementName: "div",
+          elementName: 'div',
           attributes: {
-            transform: `matrix3d(${shimMatrix.join(",")})`,
-            "origin.x": 0,
-            "origin.y": 0,
+            transform: `matrix3d(${shimMatrix.join(',')})`,
+            'origin.x': 0,
+            'origin.y': 0,
             style: {
-              pointerEvents: "none"
+              pointerEvents: 'none',
             },
-            children: []
-          }
-        }
-      ]
+            children: [],
+          },
+        },
+      ],
     };
 
     return this.component.groupElements(
@@ -428,7 +428,7 @@ class ElementSelectionProxy extends BaseModel {
       // during on-stage transformation.
       this.getOriginTransformed(),
       metadata,
-      () => {}
+      () => {},
     );
   }
 
@@ -474,7 +474,7 @@ class ElementSelectionProxy extends BaseModel {
     const points = this.getBoundingBoxPoints();
     return {
       x: points[2].x - points[0].x,
-      y: points[6].y - points[0].y
+      y: points[6].y - points[0].y,
     };
   }
 
@@ -485,21 +485,21 @@ class ElementSelectionProxy extends BaseModel {
         .reduce((accumulator, boxPoints) => {
           accumulator.push(...boxPoints);
           return accumulator;
-        }, [])
+        }, []),
     );
   }
 
   getOriginTransformed() {
-    return this.cache.fetch("getOriginTransformed", () => {
+    return this.cache.fetch('getOriginTransformed', () => {
       const layout = this.getComputedLayout();
 
       return HaikuElement.transformPointInPlace(
         {
           x: layout.size.x * layout.origin.x,
           y: layout.size.y * layout.origin.y,
-          z: layout.size.z * layout.origin.z
+          z: layout.size.z * layout.origin.z,
         },
-        layout.matrix
+        layout.matrix,
       );
     });
   }
@@ -518,7 +518,7 @@ class ElementSelectionProxy extends BaseModel {
       { x: w, y: h / 2, z: 0 },
       { x: 0, y: h, z: 0 },
       { x: w / 2, y: h, z: 0 },
-      { x: w, y: h, z: 0 }
+      { x: w, y: h, z: 0 },
     ];
   }
 
@@ -532,54 +532,54 @@ class ElementSelectionProxy extends BaseModel {
       sizeProportional: { x: 1, y: 1, z: 1 },
       sizeDifferential: { x: 0, y: 0, z: 0 },
       offset: {
-        x: this.computePropertyValue("offset.x"),
-        y: this.computePropertyValue("offset.y"),
-        z: this.computePropertyValue("offset.z")
+        x: this.computePropertyValue('offset.x'),
+        y: this.computePropertyValue('offset.y'),
+        z: this.computePropertyValue('offset.z'),
       },
       origin: {
-        x: this.computePropertyValue("origin.x"),
-        y: this.computePropertyValue("origin.y"),
-        z: this.computePropertyValue("origin.z")
+        x: this.computePropertyValue('origin.x'),
+        y: this.computePropertyValue('origin.y'),
+        z: this.computePropertyValue('origin.z'),
       },
       translation: {
-        x: this.computePropertyValue("translation.x"),
-        y: this.computePropertyValue("translation.y"),
-        z: this.computePropertyValue("translation.z")
+        x: this.computePropertyValue('translation.x'),
+        y: this.computePropertyValue('translation.y'),
+        z: this.computePropertyValue('translation.z'),
       },
       shear: {
-        xy: this.computePropertyValue("shear.xy"),
-        xz: this.computePropertyValue("shear.xz"),
-        yz: this.computePropertyValue("shear.yz")
+        xy: this.computePropertyValue('shear.xy'),
+        xz: this.computePropertyValue('shear.xz'),
+        yz: this.computePropertyValue('shear.yz'),
       },
       rotation: {
-        x: this.computePropertyValue("rotation.x"),
-        y: this.computePropertyValue("rotation.y"),
-        z: this.computePropertyValue("rotation.z")
+        x: this.computePropertyValue('rotation.x'),
+        y: this.computePropertyValue('rotation.y'),
+        z: this.computePropertyValue('rotation.z'),
       },
       scale: {
-        x: this.computePropertyValue("scale.x"),
-        y: this.computePropertyValue("scale.y"),
-        z: 1
+        x: this.computePropertyValue('scale.x'),
+        y: this.computePropertyValue('scale.y'),
+        z: 1,
       },
       sizeAbsolute: {
-        x: this.computePropertyValue("sizeAbsolute.x"),
-        y: this.computePropertyValue("sizeAbsolute.y"),
-        z: this.computePropertyValue("sizeAbsolute.z")
-      }
+        x: this.computePropertyValue('sizeAbsolute.x'),
+        y: this.computePropertyValue('sizeAbsolute.y'),
+        z: this.computePropertyValue('sizeAbsolute.z'),
+      },
     };
   }
 
   isAutoSizeX() {
-    if (this.hasNothingInSelection() || this.hasMultipleInSelection()) {
+    if(this.hasNothingInSelection() || this.hasMultipleInSelection()) {
       return false;
     }
 
     // When displaying transform control lines, indicate the mode of the wrapee not wrapper
-    if (this.selection[0].isComponent()) {
+    if(this.selection[0].isComponent()) {
       const wrapper = this.selection[0].getHaikuElement();
       const node = wrapper.memory && wrapper.memory.children[0];
-      if (node && node.layout) {
-        return typeof node.layout.sizeAbsolute.x !== "number";
+      if(node && node.layout) {
+        return typeof node.layout.sizeAbsolute.x !== 'number';
       }
     }
 
@@ -587,16 +587,16 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   isAutoSizeY() {
-    if (this.hasNothingInSelection() || this.hasMultipleInSelection()) {
+    if(this.hasNothingInSelection() || this.hasMultipleInSelection()) {
       return false;
     }
 
     // When displaying transform control lines, indicate the mode of the wrapee not wrapper
-    if (this.selection[0].isComponent()) {
+    if(this.selection[0].isComponent()) {
       const wrapper = this.selection[0].getHaikuElement();
       const node = wrapper.memory && wrapper.memory.children[0];
-      if (node && node.layout) {
-        return typeof node.layout.sizeAbsolute.y !== "number";
+      if(node && node.layout) {
+        return typeof node.layout.sizeAbsolute.y !== 'number';
       }
     }
 
@@ -604,7 +604,7 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   getComputedLayout() {
-    return this.cache.fetch("getComputedLayout", () => {
+    return this.cache.fetch('getComputedLayout', () => {
       const { width, height } = this.component.getContextSize();
 
       let bounds = {
@@ -613,10 +613,10 @@ class ElementSelectionProxy extends BaseModel {
         right: null,
         bottom: null,
         front: null,
-        back: null
+        back: null,
       };
 
-      if (
+      if(
         this.doesManageSingleElement() &&
         !this.doesSelectionContainArtboard()
       ) {
@@ -628,7 +628,7 @@ class ElementSelectionProxy extends BaseModel {
       return HaikuElement.computeLayout(
         {
           // targetNode
-          layout: this.getLayoutSpec()
+          layout: this.getLayoutSpec(),
         },
         {
           // parentNode
@@ -639,38 +639,38 @@ class ElementSelectionProxy extends BaseModel {
               size: {
                 x: width,
                 y: height,
-                z: 0
-              }
-            }
-          }
-        }
+                z: 0,
+              },
+            },
+          },
+        },
       );
     });
   }
 
   getBoxPointsTransformed() {
-    return this.cache.fetch("getBoxPointsTransformed", () => {
+    return this.cache.fetch('getBoxPointsTransformed', () => {
       const points = this._proxyBoxPoints.map(point =>
-        Object.assign({}, point)
+        Object.assign({}, point),
       );
       return HaikuElement.transformPointsInPlace(
         points,
-        this.getComputedLayout().matrix
+        this.getComputedLayout().matrix,
       );
     });
   }
 
   getControlsPosition(basisPointIndex, xOffset, yOffset) {
-    return this.cache.fetch("getControlsPosition", () => {
+    return this.cache.fetch('getControlsPosition', () => {
       const layout = this.getComputedLayout();
       const orthonormalBasisMatrix = Layout3D.computeOrthonormalBasisMatrix(
         layout.rotation,
-        layout.shear
+        layout.shear,
       );
       const offset = {
         x: xOffset * Math.sign(layout.scale.x),
         y: yOffset * Math.sign(layout.scale.y),
-        z: 0
+        z: 0,
       };
       HaikuElement.transformPointInPlace(offset, orthonormalBasisMatrix);
       const basisPoint = this.getBoxPointsTransformed()[basisPointIndex];
@@ -678,7 +678,7 @@ class ElementSelectionProxy extends BaseModel {
       return {
         x: basisPoint.x + offset.x,
         y: basisPoint.y + offset.y,
-        z: basisPoint.z
+        z: basisPoint.z,
       };
     });
   }
@@ -688,7 +688,7 @@ class ElementSelectionProxy extends BaseModel {
 
     // tslint:disable-next-line:one-variable-per-declaration
     let left, right, top, bottom, width, height;
-    if (!points || !points.length) {
+    if(!points || !points.length) {
       // It seems that sometimes proxy is given an empty set of elements to drag (?)
       // so `getBoxPointsTransformed` sensibly returns an empty array.
       // Unfortunately, that crashes the UI.
@@ -714,7 +714,7 @@ class ElementSelectionProxy extends BaseModel {
       top,
       bottom,
       width,
-      height
+      height,
     };
   }
 
@@ -738,15 +738,15 @@ class ElementSelectionProxy extends BaseModel {
   reset() {
     const layout = this.getComputedLayout();
     this.applyPropertyValue(
-      "sizeAbsolute.x",
-      Math.abs(layout.size.x * layout.scale.x)
+      'sizeAbsolute.x',
+      Math.abs(layout.size.x * layout.scale.x),
     );
     this.applyPropertyValue(
-      "sizeAbsolute.y",
-      Math.abs(layout.size.y * layout.scale.y)
+      'sizeAbsolute.y',
+      Math.abs(layout.size.y * layout.scale.y),
     );
-    this.applyPropertyValue("scale.x", 1);
-    this.applyPropertyValue("scale.y", 1);
+    this.applyPropertyValue('scale.x', 1);
+    this.applyPropertyValue('scale.y', 1);
   }
 
   handleMouseDown(mousePosition) {
@@ -768,20 +768,20 @@ class ElementSelectionProxy extends BaseModel {
     snapLines.forEach(snap => {
       // don't snap to this element's own bounding snaplines
       const ids = this.getComponentIds();
-      if (ids.indexOf(snap.elementId) !== -1) {
+      if(ids.indexOf(snap.elementId) !== -1) {
         return;
       }
 
       snapDefinitions.forEach(def => {
-        if (
+        if(
           snap.direction === def.direction &&
           def.bboxEdgePosition > snap.positionWorld - SNAP_THRESHOLD &&
           def.bboxEdgePosition < snap.positionWorld + SNAP_THRESHOLD
         ) {
           const delta = Math.abs(def.bboxEdgePosition - snap.positionWorld);
 
-          if (
-            snap.direction === "HORIZONTAL" &&
+          if(
+            snap.direction === 'HORIZONTAL' &&
             (winningDeltaHoriz === undefined ||
               delta < winningDeltaHoriz + SNAP_EPSILON)
           ) {
@@ -791,21 +791,21 @@ class ElementSelectionProxy extends BaseModel {
               direction: def.direction,
               positionWorld: snap.positionWorld,
               bboxEdgePosition: def.bboxEdgePosition,
-              metadata: Object.assign({}, def.metadata, snap.metadata)
+              metadata: Object.assign({}, def.metadata, snap.metadata),
             };
-            for (let i = 0; i < horizWinners.length; i++) {
+            for(let i = 0; i < horizWinners.length; i++) {
               const oldWinner = horizWinners[i];
               const oldWinningDelta = Math.abs(
-                oldWinner.bboxEdgePosition - oldWinner.positionWorld
+                oldWinner.bboxEdgePosition - oldWinner.positionWorld,
               );
-              if (winningDeltaHoriz + SNAP_EPSILON < oldWinningDelta) {
+              if(winningDeltaHoriz + SNAP_EPSILON < oldWinningDelta) {
                 horizWinners.splice(i, 1);
                 i--;
               }
             }
             horizWinners.push(newWinner);
-          } else if (
-            snap.direction === "VERTICAL" &&
+          } else if(
+            snap.direction === 'VERTICAL' &&
             (winningDeltaVert === undefined ||
               delta < winningDeltaVert + SNAP_EPSILON)
           ) {
@@ -814,14 +814,14 @@ class ElementSelectionProxy extends BaseModel {
               direction: def.direction,
               positionWorld: snap.positionWorld,
               bboxEdgePosition: def.bboxEdgePosition,
-              metadata: Object.assign({}, def.metadata, snap.metadata)
+              metadata: Object.assign({}, def.metadata, snap.metadata),
             };
-            for (let j = 0; j < vertWinners.length; j++) {
+            for(let j = 0; j < vertWinners.length; j++) {
               const oldWinner = vertWinners[j];
               const oldWinningDelta = Math.abs(
-                oldWinner.bboxEdgePosition - oldWinner.positionWorld
+                oldWinner.bboxEdgePosition - oldWinner.positionWorld,
               );
-              if (winningDeltaVert + SNAP_EPSILON < oldWinningDelta) {
+              if(winningDeltaVert + SNAP_EPSILON < oldWinningDelta) {
                 vertWinners.splice(j, 1);
                 j--;
               }
@@ -835,34 +835,34 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   getBboxValueFromEdgeValue(bbox, xEdge, yEdge) {
-    if (xEdge !== undefined) {
-      if (xEdge === 0) {
+    if(xEdge !== undefined) {
+      if(xEdge === 0) {
         return bbox.left;
       }
 
-      if (xEdge === 0.5) {
+      if(xEdge === 0.5) {
         return bbox.left + bbox.width / 2;
       }
 
-      if (xEdge === 1) {
+      if(xEdge === 1) {
         return bbox.right;
       }
 
-      throw new Error("Unknown edge value", xEdge);
+      throw new Error('Unknown edge value', xEdge);
     } else {
-      if (yEdge === 0) {
+      if(yEdge === 0) {
         return bbox.top;
       }
 
-      if (yEdge === 0.5) {
+      if(yEdge === 0.5) {
         return bbox.top + bbox.height / 2;
       }
 
-      if (yEdge === 1) {
+      if(yEdge === 1) {
         return bbox.bottom;
       }
 
-      throw new Error("Unknown edge value", yEdge);
+      throw new Error('Unknown edge value', yEdge);
     }
   }
 
@@ -871,12 +871,12 @@ class ElementSelectionProxy extends BaseModel {
   // yEdge ∈ {undefined, 0, .5, .1}
   // toStage ∈ {true, falsy}
   align(xEdge, yEdge, toStage) {
-    if (!this.selection || !this.selection.length) {
+    if(!this.selection || !this.selection.length) {
       return;
     }
 
     let alignBbox = {};
-    if (toStage) {
+    if(toStage) {
       const artboard = this.component.getArtboard();
       alignBbox = {
         top: 0,
@@ -884,16 +884,16 @@ class ElementSelectionProxy extends BaseModel {
         right: artboard._mountWidth,
         bottom: artboard._mountHeight,
         width: artboard._mountWidth,
-        height: artboard._mountHeight
+        height: artboard._mountHeight,
       };
     } else {
       alignBbox = this.getBoundingClientRect();
     }
 
     const edge = xEdge !== undefined ? xEdge : yEdge;
-    const axis = xEdge !== undefined ? "x" : "y";
+    const axis = xEdge !== undefined ? 'x' : 'y';
     const targetValue =
-      axis === "x"
+      axis === 'x'
         ? this.getBboxValueFromEdgeValue(alignBbox, edge, undefined)
         : this.getBboxValueFromEdgeValue(alignBbox, undefined, edge);
     const origins = this.selection.map(elem => {
@@ -901,10 +901,10 @@ class ElementSelectionProxy extends BaseModel {
     });
     const overrides = [];
 
-    for (let i = 0; i < this.selection.length; i++) {
+    for(let i = 0; i < this.selection.length; i++) {
       const bbox = this.selection[i].getBoundingClientRect();
       const bboxEdgePosition =
-        axis === "x"
+        axis === 'x'
           ? this.getBboxValueFromEdgeValue(bbox, edge, undefined)
           : this.getBboxValueFromEdgeValue(bbox, undefined, edge);
       overrides[i] = overrides[i] || {};
@@ -919,11 +919,11 @@ class ElementSelectionProxy extends BaseModel {
   // yEdge ∈ {undefined, 0, .5, .1}
   // toStage ∈ {true, falsy}
   distribute(xEdge, yEdge, toStage) {
-    if (!this.selection || this.selection.length < 2) {
+    if(!this.selection || this.selection.length < 2) {
       return;
     }
 
-    const axis = xEdge !== undefined ? "x" : "y";
+    const axis = xEdge !== undefined ? 'x' : 'y';
 
     // First, we'll sort the elements by the appropriate bounding edge, tracking
     // relevant data along the way
@@ -934,26 +934,26 @@ class ElementSelectionProxy extends BaseModel {
           this,
           points.map(p => {
             return p.y;
-          })
+          }),
         ),
         right: Math.max.apply(
           this,
           points.map(p => {
             return p.x;
-          })
+          }),
         ),
         bottom: Math.max.apply(
           this,
           points.map(p => {
             return p.y;
-          })
+          }),
         ),
         left: Math.min.apply(
           this,
           points.map(p => {
             return p.x;
-          })
-        )
+          }),
+        ),
       };
       bbox.width = bbox.right - bbox.left;
       bbox.height = bbox.bottom - bbox.top;
@@ -961,16 +961,16 @@ class ElementSelectionProxy extends BaseModel {
       elem._distributeBbox = bbox;
       elem._distributeOriginalIndex = i;
       elem._distributeBoundingEdge =
-        axis === "x"
+        axis === 'x'
           ? this.getBboxValueFromEdgeValue(
               elem._distributeBbox,
               xEdge,
-              undefined
+              undefined,
             )
           : this.getBboxValueFromEdgeValue(
               elem._distributeBbox,
               undefined,
-              yEdge
+              yEdge,
             );
     });
 
@@ -992,14 +992,14 @@ class ElementSelectionProxy extends BaseModel {
     let max = elementsSortedByBoundingEdge[count - 1]._distributeBoundingEdge;
 
     // Stage has special boundaries
-    if (toStage) {
+    if(toStage) {
       const artboard = this.component.getArtboard();
-      if (axis === "x") {
+      if(axis === 'x') {
         min =
           this.getBboxValueFromEdgeValue(
             elementsSortedByBoundingEdge[0]._distributeBbox,
             xEdge,
-            undefined
+            undefined,
           ) - elementsSortedByBoundingEdge[0]._distributeBbox.left; // origins[elementsSortedByBoundingEdge[0]._distributeOriginalIndex][axis] - elementsSortedByBoundingEdge[0]._distributeBbox.left
         max =
           artboard._mountWidth -
@@ -1007,14 +1007,14 @@ class ElementSelectionProxy extends BaseModel {
             this.getBboxValueFromEdgeValue(
               elementsSortedByBoundingEdge[count - 1]._distributeBbox,
               xEdge,
-              undefined
+              undefined,
             ));
       } else {
         min =
           this.getBboxValueFromEdgeValue(
             elementsSortedByBoundingEdge[0]._distributeBbox,
             undefined,
-            yEdge
+            yEdge,
           ) - elementsSortedByBoundingEdge[0]._distributeBbox.top;
         max =
           artboard._mountHeight -
@@ -1022,7 +1022,7 @@ class ElementSelectionProxy extends BaseModel {
             this.getBboxValueFromEdgeValue(
               elementsSortedByBoundingEdge[count - 1]._distributeBbox,
               undefined,
-              yEdge
+              yEdge,
             ));
       }
     }
@@ -1056,15 +1056,15 @@ class ElementSelectionProxy extends BaseModel {
     isOriginPanning,
     controlActivation,
     viewportTransform,
-    globals
+    globals,
   ) {
     // If nothing's selected, we have nothing to drag
-    if (!this.selection || !this.selection.length) {
+    if(!this.selection || !this.selection.length) {
       return;
     }
 
     // 'mousetrap' for snapping
-    if (
+    if(
       this._shouldCaptureMousePosition ||
       globals.isSpecialKeyDown() ||
       this._lastMouseDownPosition === undefined
@@ -1083,16 +1083,16 @@ class ElementSelectionProxy extends BaseModel {
     // track mouse positions, offsets, and original bounding boxes for snapping
     const totalDragDelta = {
       x: mouseCoordsCurrent.x - this._lastMouseDownPosition.x,
-      y: mouseCoordsCurrent.y - this._lastMouseDownPosition.y
+      y: mouseCoordsCurrent.y - this._lastMouseDownPosition.y,
     };
 
-    if (isOriginPanning) {
+    if(isOriginPanning) {
       return this.panOrigin(dx, dy);
     }
 
-    if (this.canControlHandles()) {
-      if (isAnythingScaling) {
-        if (!controlActivation.cmd) {
+    if(this.canControlHandles()) {
+      if(isAnythingScaling) {
+        if(!controlActivation.cmd) {
           // TODO: add snapping
           return this.scale(
             dx,
@@ -1101,13 +1101,13 @@ class ElementSelectionProxy extends BaseModel {
             mouseCoordsCurrent,
             mouseCoordsPrevious,
             viewportTransform,
-            globals
+            globals,
           );
         }
-      } else if (isAnythingRotating) {
-        if (controlActivation.cmd) {
+      } else if(isAnythingRotating) {
+        if(controlActivation.cmd) {
           // In case we got here, don't allow artboard to rotate
-          if (this.doesSelectionContainArtboard()) {
+          if(this.doesSelectionContainArtboard()) {
             return;
           }
 
@@ -1117,14 +1117,14 @@ class ElementSelectionProxy extends BaseModel {
             mouseCoordsCurrent,
             mouseCoordsPrevious,
             controlActivation,
-            globals
+            globals,
           );
         }
       }
     }
 
     // In case we got here, don't allow artboard to move
-    if (this.doesSelectionContainArtboard()) {
+    if(this.doesSelectionContainArtboard()) {
       return;
     }
 
@@ -1132,9 +1132,9 @@ class ElementSelectionProxy extends BaseModel {
 
     // handle snapping
     // don't snap if user is holding cmd key (like Sketch)
-    if (!globals.isCommandKeyDown && experimentIsEnabled(Experiment.Snapping)) {
+    if(!globals.isCommandKeyDown && experimentIsEnabled(Experiment.Snapping)) {
       let bbox;
-      if (this._lastBbox !== undefined) {
+      if(this._lastBbox !== undefined) {
         bbox = ((bbox, delta) => {
           const ret = {};
           ret.top = bbox.top + delta.y;
@@ -1179,54 +1179,54 @@ class ElementSelectionProxy extends BaseModel {
       // note that 'name' is really only used for readability & debugging
       const SNAP_DEFINITIONS = [
         {
-          name: "TOP",
-          direction: "HORIZONTAL",
-          bboxEdgePosition: bbox.top
+          name: 'TOP',
+          direction: 'HORIZONTAL',
+          bboxEdgePosition: bbox.top,
         },
         {
-          name: "RIGHT",
-          direction: "VERTICAL",
-          bboxEdgePosition: bbox.right
+          name: 'RIGHT',
+          direction: 'VERTICAL',
+          bboxEdgePosition: bbox.right,
         },
         {
-          name: "BOTTOM",
-          direction: "HORIZONTAL",
-          bboxEdgePosition: bbox.bottom
+          name: 'BOTTOM',
+          direction: 'HORIZONTAL',
+          bboxEdgePosition: bbox.bottom,
         },
         {
-          name: "LEFT",
-          direction: "VERTICAL",
-          bboxEdgePosition: bbox.left
+          name: 'LEFT',
+          direction: 'VERTICAL',
+          bboxEdgePosition: bbox.left,
         },
         {
-          name: "VERTICAL_MID",
-          direction: "VERTICAL",
-          bboxEdgePosition: (bbox.right + bbox.left) / 2
+          name: 'VERTICAL_MID',
+          direction: 'VERTICAL',
+          bboxEdgePosition: (bbox.right + bbox.left) / 2,
         },
         {
-          name: "HORIZONTAL_MID",
-          direction: "HORIZONTAL",
-          bboxEdgePosition: (bbox.bottom + bbox.top) / 2
-        }
+          name: 'HORIZONTAL_MID',
+          direction: 'HORIZONTAL',
+          bboxEdgePosition: (bbox.bottom + bbox.top) / 2,
+        },
       ];
       let foundSnaps = this.findSnapsMatchesAndBreakTies(
         SNAP_DEFINITIONS,
-        snapLines
+        snapLines,
       );
 
       // Shift-dragging affects which axis we want to snap on
       // and can use the same `overrides` mechanism
-      if (globals.isShiftKeyDown) {
+      if(globals.isShiftKeyDown) {
         const isXAxis =
           Math.abs(mouseCoordsCurrent.x - this._originCache.groupOrigin.x) >
           Math.abs(mouseCoordsCurrent.y - this._originCache.groupOrigin.y);
 
         // only snap to the relevant axis
-        if (isXAxis) {
+        if(isXAxis) {
           foundSnaps = foundSnaps.filter(snap => {
-            return snap.direction === "VERTICAL";
+            return snap.direction === 'VERTICAL';
           });
-          for (let i = 0; i < this.selection.length; i++) {
+          for(let i = 0; i < this.selection.length; i++) {
             overrides[i] = overrides[i] || {};
             overrides[i].y = this._originCache[i].y;
             overrides.groupOrigin = overrides.groupOrigin || {};
@@ -1234,9 +1234,9 @@ class ElementSelectionProxy extends BaseModel {
           }
         } else {
           foundSnaps = foundSnaps.filter(snap => {
-            return snap.direction === "HORIZONTAL";
+            return snap.direction === 'HORIZONTAL';
           });
-          for (let j = 0; j < this.selection.length; j++) {
+          for(let j = 0; j < this.selection.length; j++) {
             overrides[j] = overrides[j] || {};
             overrides[j].x = this._originCache[j].x;
             overrides.groupOrigin = overrides.groupOrigin || {};
@@ -1246,7 +1246,7 @@ class ElementSelectionProxy extends BaseModel {
       }
 
       foundSnaps.forEach(snap => {
-        const whichAxis = snap.direction === "HORIZONTAL" ? "y" : "x";
+        const whichAxis = snap.direction === 'HORIZONTAL' ? 'y' : 'x';
         const desiredPosition = snap.positionWorld;
         this.selection.forEach((elem, i) => {
           overrides[i] = overrides[i] || {};
@@ -1284,7 +1284,7 @@ class ElementSelectionProxy extends BaseModel {
     const scaledBasisMatrix = Layout3D.computeScaledBasisMatrix(
       computedLayout.rotation,
       computedLayout.scale,
-      computedLayout.shear
+      computedLayout.shear,
     );
     const determinant =
       scaledBasisMatrix[0] * scaledBasisMatrix[5] -
@@ -1301,12 +1301,12 @@ class ElementSelectionProxy extends BaseModel {
     const deltaTranslationY =
       layoutMatrix[1] * deltaX + layoutMatrix[5] * deltaY;
 
-    this.applyPropertyDelta("translation.x", deltaTranslationX);
-    this.applyPropertyDelta("translation.y", deltaTranslationY);
-    this.applyPropertyDelta("origin.x", deltaOriginX);
-    this.applyPropertyDelta("origin.y", deltaOriginY);
+    this.applyPropertyDelta('translation.x', deltaTranslationX);
+    this.applyPropertyDelta('translation.y', deltaTranslationY);
+    this.applyPropertyDelta('origin.x', deltaOriginX);
+    this.applyPropertyDelta('origin.y', deltaOriginY);
 
-    if (!this.doesManageSingleElement()) {
+    if(!this.doesManageSingleElement()) {
       return;
     }
 
@@ -1314,21 +1314,21 @@ class ElementSelectionProxy extends BaseModel {
     // is kept.
     const targetElement = this.selection[0];
     const propertyGroupDelta = {
-      "translation.x": {
-        value: deltaTranslationX
+      'translation.x': {
+        value: deltaTranslationX,
       },
-      "translation.y": {
-        value: deltaTranslationY
+      'translation.y': {
+        value: deltaTranslationY,
       },
-      "origin.x": {
-        value: deltaOriginX
+      'origin.x': {
+        value: deltaOriginX,
       },
-      "origin.y": {
-        value: deltaOriginY
-      }
+      'origin.y': {
+        value: deltaOriginY,
+      },
     };
     const propertyGroup = targetElement.computePropertyGroupValueFromGroupDelta(
-      propertyGroupDelta
+      propertyGroupDelta,
     );
     const accumulatedUpdates = {};
     ElementSelectionProxy.accumulateKeyframeUpdates(
@@ -1336,7 +1336,7 @@ class ElementSelectionProxy extends BaseModel {
       targetElement,
       this.component.getCurrentTimelineName(),
       this.component.getCurrentTimelineTime(),
-      propertyGroup
+      propertyGroup,
     );
     targetElement.component.updateKeyframes(
       accumulatedUpdates,
@@ -1344,12 +1344,12 @@ class ElementSelectionProxy extends BaseModel {
       this.component.project.getMetadata(),
       () => {
         this.clearAllRelatedCaches();
-      }
+      },
     );
   }
 
   clearAllRelatedCaches() {
-    if (this.hasAnythingInSelection()) {
+    if(this.hasAnythingInSelection()) {
       this.cache.clear();
 
       this.selection.forEach(element => {
@@ -1362,15 +1362,15 @@ class ElementSelectionProxy extends BaseModel {
   move(dx, dy, overrides) {
     const propertyGroupDelta = {};
 
-    if (dx > 0 || dx < 0) {
-      propertyGroupDelta["translation.x"] = {
-        value: dx
+    if(dx > 0 || dx < 0) {
+      propertyGroupDelta['translation.x'] = {
+        value: dx,
       };
     }
 
-    if (dy > 0 || dy < 0) {
-      propertyGroupDelta["translation.y"] = {
-        value: dy
+    if(dy > 0 || dy < 0) {
+      propertyGroupDelta['translation.y'] = {
+        value: dy,
       };
     }
 
@@ -1379,17 +1379,17 @@ class ElementSelectionProxy extends BaseModel {
     this.selection.forEach((element, i) => {
       const layoutSpec = element.getLayoutSpec();
       const propertyGroup = element.computePropertyGroupValueFromGroupDelta(
-        propertyGroupDelta
+        propertyGroupDelta,
       );
 
-      if (overrides && overrides[i] && overrides[i].x !== undefined) {
-        propertyGroup["translation.x"] = {
-          value: overrides[i].x - layoutSpec.offset.x
+      if(overrides && overrides[i] && overrides[i].x !== undefined) {
+        propertyGroup['translation.x'] = {
+          value: overrides[i].x - layoutSpec.offset.x,
         };
       }
-      if (overrides && overrides[i] && overrides[i].y !== undefined) {
-        propertyGroup["translation.y"] = {
-          value: overrides[i].y - layoutSpec.offset.y
+      if(overrides && overrides[i] && overrides[i].y !== undefined) {
+        propertyGroup['translation.y'] = {
+          value: overrides[i].y - layoutSpec.offset.y,
         };
       }
 
@@ -1398,7 +1398,7 @@ class ElementSelectionProxy extends BaseModel {
         element,
         element.component.getCurrentTimelineName(),
         element.component.getCurrentTimelineTime(),
-        propertyGroup
+        propertyGroup,
       );
     });
 
@@ -1406,38 +1406,38 @@ class ElementSelectionProxy extends BaseModel {
       accumulatedUpdates,
       {},
       this.component.project.getMetadata(),
-      () => {} // no-op
+      () => {}, // no-op
     );
 
-    if (
+    if(
       overrides &&
       overrides.groupOrigin &&
       overrides.groupOrigin.x !== undefined
     ) {
       this.applyPropertyValue(
-        "translation.x",
-        overrides.groupOrigin.x - this.computePropertyValue("offset.x")
+        'translation.x',
+        overrides.groupOrigin.x - this.computePropertyValue('offset.x'),
       );
     } else {
-      this.applyPropertyDelta("translation.x", dx);
+      this.applyPropertyDelta('translation.x', dx);
     }
 
-    if (
+    if(
       overrides &&
       overrides.groupOrigin &&
       overrides.groupOrigin.y !== undefined
     ) {
       this.applyPropertyValue(
-        "translation.y",
-        overrides.groupOrigin.y - this.computePropertyValue("offset.y")
+        'translation.y',
+        overrides.groupOrigin.y - this.computePropertyValue('offset.y'),
       );
     } else {
-      this.applyPropertyDelta("translation.y", dy);
+      this.applyPropertyDelta('translation.y', dy);
     }
   }
 
   getActivationPointInRadians(index) {
-    switch (index) {
+    switch(index) {
       case 5:
         return Math.PI * 2;
       case 8:
@@ -1456,7 +1456,7 @@ class ElementSelectionProxy extends BaseModel {
         return (7 * Math.PI) / 4;
       default:
         throw new Error(
-          "Cannot retrieve radian value for provided activation point: " + index
+          'Cannot retrieve radian value for provided activation point: ' + index,
         );
     }
   }
@@ -1468,14 +1468,14 @@ class ElementSelectionProxy extends BaseModel {
     mouseCoordsCurrent,
     mouseCoordsPrevious,
     viewportTransform,
-    globals
+    globals,
   ) {
-    if (this.doesSelectionContainArtboard()) {
+    if(this.doesSelectionContainArtboard()) {
       return this.scaleArtboard(
         mouseCoordsCurrent,
         mouseCoordsPrevious,
         viewportTransform,
-        activationPoint
+        activationPoint,
       );
     }
 
@@ -1483,7 +1483,7 @@ class ElementSelectionProxy extends BaseModel {
       mouseCoordsCurrent,
       mouseCoordsPrevious,
       activationPoint,
-      globals
+      globals,
     );
   }
 
@@ -1491,7 +1491,7 @@ class ElementSelectionProxy extends BaseModel {
     return boxPoints.map(point => {
       return {
         x: point.x + delta.x,
-        y: point.y + delta.y
+        y: point.y + delta.y,
       };
     });
   }
@@ -1500,7 +1500,7 @@ class ElementSelectionProxy extends BaseModel {
     mouseCoordsCurrent,
     mouseCoordsPrevious,
     activationPoint,
-    globals
+    globals,
   ) {
     const foundSnaps = [];
 
@@ -1510,7 +1510,7 @@ class ElementSelectionProxy extends BaseModel {
 
     // note an Object.assign({}, ...) doesn't suffice here because computeScalePropertyGroup mutates properties deeply
     const getBaseTransform = () =>
-      lodash.cloneDeep(this.transformCache.get("CONTROL_ACTIVATION"));
+      lodash.cloneDeep(this.transformCache.get('CONTROL_ACTIVATION'));
 
     const baseTransform = getBaseTransform();
 
@@ -1518,18 +1518,18 @@ class ElementSelectionProxy extends BaseModel {
       ? this._lastOrigin
       : ElementSelectionProxy.getFixedPointForScale(
           baseProxyBox,
-          activationPoint
+          activationPoint,
         );
 
     const translatedPoint = ElementSelectionProxy.getTranslatedPointForScale(
       baseProxyBox,
-      activationPoint
+      activationPoint,
     );
 
     const totalMouseDelta = {
       x: mouseCoordsCurrent.x - this._lastMouseDownPosition.x,
       y: mouseCoordsCurrent.y - this._lastMouseDownPosition.y,
-      z: 0
+      z: 0,
     };
 
     let scalePropertyGroup = ElementSelectionProxy.computeScalePropertyGroup(
@@ -1538,59 +1538,59 @@ class ElementSelectionProxy extends BaseModel {
       translatedPoint,
       totalMouseDelta,
       activationPoint,
-      true
+      true,
     );
 
     const updatedLayout = getBaseTransform();
-    updatedLayout.scale.x = scalePropertyGroup["scale.x"].value;
-    updatedLayout.scale.y = scalePropertyGroup["scale.y"].value;
-    updatedLayout.translation.x = scalePropertyGroup["translation.x"].value;
-    updatedLayout.translation.y = scalePropertyGroup["translation.y"].value;
+    updatedLayout.scale.x = scalePropertyGroup['scale.x'].value;
+    updatedLayout.scale.y = scalePropertyGroup['scale.y'].value;
+    updatedLayout.translation.x = scalePropertyGroup['translation.x'].value;
+    updatedLayout.translation.y = scalePropertyGroup['translation.y'].value;
     const transformedPoints = lodash.cloneDeep(
-      this._baseBoxPointsNotTransformed
+      this._baseBoxPointsNotTransformed,
     );
     ElementSelectionProxy.transformPointsByLayoutInPlace(
       transformedPoints,
-      updatedLayout
+      updatedLayout,
     );
     // find axis-aligned bounding box; add each edge
     const axisAlignedBbox = [
       {
-        name: "TOP",
+        name: 'TOP',
         value: Math.min.apply(
           this,
           transformedPoints.map(p => {
             return p.y;
-          })
-        )
+          }),
+        ),
       },
       {
-        name: "RIGHT",
+        name: 'RIGHT',
         value: Math.max.apply(
           this,
           transformedPoints.map(p => {
             return p.x;
-          })
-        )
+          }),
+        ),
       },
       {
-        name: "BOTTOM",
+        name: 'BOTTOM',
         value: Math.max.apply(
           this,
           transformedPoints.map(p => {
             return p.y;
-          })
-        )
+          }),
+        ),
       },
       {
-        name: "LEFT",
+        name: 'LEFT',
         value: Math.min.apply(
           this,
           transformedPoints.map(p => {
             return p.x;
-          })
-        )
-      }
+          }),
+        ),
+      },
     ];
 
     const transformedTranslatedPoint = transformedPoints[activationPoint.index];
@@ -1603,19 +1603,19 @@ class ElementSelectionProxy extends BaseModel {
     // based on observations of how the translated point and fixed point intersect with the axis-aligned bbox.
     let isDraggingEdge = false;
 
-    if (activationPoint.alt) {
+    if(activationPoint.alt) {
       // TODO:  when alt is held, we care about all bounding edges
       // BUT, the 'unusual' edges need to give a proper offset
       // for now, disable snapping when alt-scaling
-    } else if (activationPoint.shift) {
+    } else if(activationPoint.shift) {
       // TODO:  when shift is held, break ties between horiz & vert (could refactor findSnapsMatchesAndBreakTies to handle based on flag, or could do a post-pass manually)
       // for now, disable snapping when shift-scaling
-    } else if ([1, 3, 5, 7].indexOf(activationPoint.index) > -1) {
+    } else if([1, 3, 5, 7].indexOf(activationPoint.index) > -1) {
       // When dragging an edge, check if the translated point is touching a bbox edge.  if it is,
       // we care ONLY about that edge.  If it's not, we care about the bbox edges that its two neighbor (corners) are touching.
-      for (const edge of axisAlignedBbox) {
-        const isHoriz = edge.name === "TOP" || edge.name === "BOTTOM";
-        if (
+      for(const edge of axisAlignedBbox) {
+        const isHoriz = edge.name === 'TOP' || edge.name === 'BOTTOM';
+        if(
           (isHoriz &&
             isWithinEpsilon(transformedTranslatedPoint.y, edge.value, 10)) ||
           (!isHoriz &&
@@ -1625,24 +1625,24 @@ class ElementSelectionProxy extends BaseModel {
           break;
         }
       }
-      if (filteredEdges.length === 0) {
+      if(filteredEdges.length === 0) {
         // get neighbor points and find the edges they're touching
         isDraggingEdge = true;
         const transformedNeighborPoints = ElementSelectionProxy.getNeighborPointsForScaleSnapping(
           transformedPoints,
-          activationPoint
+          activationPoint,
         );
         filteredEdges.push(
           ...axisAlignedBbox.filter(edge => {
-            const isHoriz = edge.name === "TOP" || edge.name === "BOTTOM";
-            if (
+            const isHoriz = edge.name === 'TOP' || edge.name === 'BOTTOM';
+            if(
               isHoriz &&
               (isWithinEpsilon(transformedNeighborPoints[0].y, edge.value) ||
                 isWithinEpsilon(transformedNeighborPoints[1].y, edge.value))
             ) {
               return true;
             }
-            if (
+            if(
               !isHoriz &&
               (isWithinEpsilon(transformedNeighborPoints[0].x, edge.value) ||
                 isWithinEpsilon(transformedNeighborPoints[1].x, edge.value))
@@ -1650,7 +1650,7 @@ class ElementSelectionProxy extends BaseModel {
               return true;
             }
             return false;
-          })
+          }),
         );
       }
     } else {
@@ -1673,34 +1673,34 @@ class ElementSelectionProxy extends BaseModel {
       // Instead of the above, when dragging a corner, we only want to snap to the edge(s) that the translatedPoint is touching
       filteredEdges.push(
         ...axisAlignedBbox.filter(edge => {
-          const isHoriz = edge.name === "TOP" || edge.name === "BOTTOM";
-          if (
+          const isHoriz = edge.name === 'TOP' || edge.name === 'BOTTOM';
+          if(
             isHoriz &&
             isWithinEpsilon(transformedTranslatedPoint.y, edge.value, 1)
           ) {
             return true;
           }
-          if (
+          if(
             !isHoriz &&
             isWithinEpsilon(transformedTranslatedPoint.x, edge.value, 1)
           ) {
             return true;
           }
           return false;
-        })
+        }),
       );
     }
 
     const snapDefinitions = filteredEdges.map(edge => {
-      const isHoriz = edge.name === "TOP" || edge.name === "BOTTOM";
+      const isHoriz = edge.name === 'TOP' || edge.name === 'BOTTOM';
       return {
         name: edge.name,
-        direction: isHoriz ? "HORIZONTAL" : "VERTICAL",
+        direction: isHoriz ? 'HORIZONTAL' : 'VERTICAL',
         bboxEdgePosition: edge.value,
         metadata: {
-          offset: edge.value - transformedTranslatedPoint[isHoriz ? "y" : "x"],
-          isDraggingEdge
-        }
+          offset: edge.value - transformedTranslatedPoint[isHoriz ? 'y' : 'x'],
+          isDraggingEdge,
+        },
       };
     });
 
@@ -1708,20 +1708,20 @@ class ElementSelectionProxy extends BaseModel {
     foundSnaps.push(
       ...this.findSnapsMatchesAndBreakTies(
         snapDefinitions,
-        artboard.getSnapLinesInScreenCoords()
-      )
+        artboard.getSnapLinesInScreenCoords(),
+      ),
     );
     foundSnaps.forEach(snap => {
-      if (snap.direction === "HORIZONTAL") {
+      if(snap.direction === 'HORIZONTAL') {
         totalMouseDelta.y =
           snap.positionWorld -
           (snap.metadata.offset || 0) -
           this._lastProxyBox[activationPoint.index].y;
-        if (snap.metadata && snap.metadata.isDraggingEdge) {
+        if(snap.metadata && snap.metadata.isDraggingEdge) {
           // we know one of the deltas but must solve for the other based on our knowledge of the current
           // rotation & the transform controls' absolute rotations.
           const offsetRotation = this.getActivationPointInRadians(
-            activationPoint.index
+            activationPoint.index,
           );
           const transformRotation = updatedLayout.rotation.z;
           const theta =
@@ -1733,9 +1733,9 @@ class ElementSelectionProxy extends BaseModel {
           snap.positionWorld -
           (snap.metadata.offset || 0) -
           this._lastProxyBox[activationPoint.index].x;
-        if (snap.metadata && snap.metadata.isDraggingEdge) {
+        if(snap.metadata && snap.metadata.isDraggingEdge) {
           const offsetRotation = this.getActivationPointInRadians(
-            activationPoint.index
+            activationPoint.index,
           );
           const transformRotation = updatedLayout.rotation.z;
           const theta =
@@ -1745,7 +1745,7 @@ class ElementSelectionProxy extends BaseModel {
       }
     });
 
-    if (foundSnaps.length) {
+    if(foundSnaps.length) {
       // Reset baseTransform
       Object.assign(baseTransform, getBaseTransform());
       scalePropertyGroup = ElementSelectionProxy.computeScalePropertyGroup(
@@ -1754,7 +1754,7 @@ class ElementSelectionProxy extends BaseModel {
         translatedPoint,
         totalMouseDelta,
         activationPoint,
-        true
+        true,
       );
     }
 
@@ -1763,24 +1763,24 @@ class ElementSelectionProxy extends BaseModel {
     invertMatrix(matrixBeforeInverted, baseTransform.matrix);
 
     const {
-      "scale.x": { value: scaleX },
-      "scale.y": { value: scaleY },
-      "translation.x": { value: translationX },
-      "translation.y": { value: translationY }
+      'scale.x': { value: scaleX },
+      'scale.y': { value: scaleY },
+      'translation.x': { value: translationX },
+      'translation.y': { value: translationY },
     } = scalePropertyGroup;
 
-    this.applyPropertyValue("scale.x", scaleX);
-    this.applyPropertyValue("scale.y", scaleY);
-    this.applyPropertyValue("translation.x", translationX);
-    this.applyPropertyValue("translation.y", translationY);
+    this.applyPropertyValue('scale.x', scaleX);
+    this.applyPropertyValue('scale.y', scaleY);
+    this.applyPropertyValue('translation.x', translationX);
+    this.applyPropertyValue('translation.y', translationY);
 
     const matrixAfter = this.getComputedLayout().matrix;
     let shouldTick = false;
 
     this.selection.forEach(element => {
       // Use our cached transform to mitigate the possibility of rounding errors at small/weird scales.
-      const layoutSpec = element.transformCache.get("CONTROL_ACTIVATION");
-      if (!layoutSpec) {
+      const layoutSpec = element.transformCache.get('CONTROL_ACTIVATION');
+      if(!layoutSpec) {
         return;
       }
 
@@ -1793,7 +1793,7 @@ class ElementSelectionProxy extends BaseModel {
       const finalMatrix = Layout3D.multiplyArrayOfMatrices([
         layoutSpec.originOffsetComposedMatrix,
         matrixBeforeInverted,
-        matrixAfter
+        matrixAfter,
       ]);
 
       // This converts a composition of matrices like [[1,0,0,...],...] into our own
@@ -1803,7 +1803,7 @@ class ElementSelectionProxy extends BaseModel {
         propertyGroup,
         [finalMatrix],
         true,
-        element.getLayoutSpec()
+        element.getLayoutSpec(),
       );
 
       const offsetX = layoutSpec.offset.x;
@@ -1815,21 +1815,21 @@ class ElementSelectionProxy extends BaseModel {
 
       // Ensure translation properties are defined so we can do #math with them below.
       // This is necessary when we pass explicit = false to composedTransformsToTimelineProperties like above.
-      propertyGroup["translation.x"] = propertyGroup["translation.x"] || 0;
-      propertyGroup["translation.y"] = propertyGroup["translation.y"] || 0;
-      propertyGroup["translation.z"] = propertyGroup["translation.z"] || 0;
+      propertyGroup['translation.x'] = propertyGroup['translation.x'] || 0;
+      propertyGroup['translation.y'] = propertyGroup['translation.y'] || 0;
+      propertyGroup['translation.z'] = propertyGroup['translation.z'] || 0;
 
-      propertyGroup["translation.x"] +=
+      propertyGroup['translation.x'] +=
         finalMatrix[0] * originX +
         finalMatrix[4] * originY +
         finalMatrix[8] * originZ -
         offsetX;
-      propertyGroup["translation.y"] +=
+      propertyGroup['translation.y'] +=
         finalMatrix[1] * originX +
         finalMatrix[5] * originY +
         finalMatrix[9] * originZ -
         offsetY;
-      propertyGroup["translation.z"] +=
+      propertyGroup['translation.z'] +=
         finalMatrix[2] * originX +
         finalMatrix[6] * originY +
         finalMatrix[10] * originZ -
@@ -1840,36 +1840,36 @@ class ElementSelectionProxy extends BaseModel {
           accumulator[property] = { value: propertyGroup[property] };
           return accumulator;
         },
-        {}
+        {},
       );
 
-      if (experimentIsEnabled(Experiment.SizeInsteadOfScaleWhenPossible)) {
-        if (element.isComponent()) {
+      if(experimentIsEnabled(Experiment.SizeInsteadOfScaleWhenPossible)) {
+        if(element.isComponent()) {
           const addressables = element.getComponentAddressables();
           const baseProxyTransform = getBaseTransform();
 
-          if (addressables.width && addressables.width.typedef === "number") {
+          if(addressables.width && addressables.width.typedef === 'number') {
             propertyGroupNorm.width = {
               value: Math.abs(
-                (layoutSpec.size.x * scaleX) / baseProxyTransform.scale.x
-              )
+                (layoutSpec.size.x * scaleX) / baseProxyTransform.scale.x,
+              ),
             };
             // Note: here and below, scale.x and scale.y are guaranteed to exist as properties of propertyGroup[Norm]
             // because composedTransformsToTimelineProperties was called with explicit = true.
-            propertyGroupNorm["scale.x"] = {
-              value: Math.sign(propertyGroup["scale.x"] || 1)
+            propertyGroupNorm['scale.x'] = {
+              value: Math.sign(propertyGroup['scale.x'] || 1),
             };
             shouldTick = true;
           }
 
-          if (addressables.height && addressables.height.typedef === "number") {
+          if(addressables.height && addressables.height.typedef === 'number') {
             propertyGroupNorm.height = {
               value: Math.abs(
-                (layoutSpec.size.y * scaleY) / baseProxyTransform.scale.y
-              )
+                (layoutSpec.size.y * scaleY) / baseProxyTransform.scale.y,
+              ),
             };
-            propertyGroupNorm["scale.y"] = {
-              value: Math.sign(propertyGroup["scale.y"] || 1)
+            propertyGroupNorm['scale.y'] = {
+              value: Math.sign(propertyGroup['scale.y'] || 1),
             };
             shouldTick = true;
           }
@@ -1881,7 +1881,7 @@ class ElementSelectionProxy extends BaseModel {
         element,
         element.component.getCurrentTimelineName(),
         element.component.getCurrentTimelineTime(),
-        propertyGroupNorm
+        propertyGroupNorm,
       );
     });
 
@@ -1890,11 +1890,11 @@ class ElementSelectionProxy extends BaseModel {
       {},
       this.component.project.getMetadata(),
       () => {
-        if (shouldTick) {
+        if(shouldTick) {
           this.component.tick();
         }
         this.clearAllRelatedCaches();
-      }
+      },
     );
 
     ElementSelectionProxy.snaps = foundSnaps;
@@ -1904,7 +1904,7 @@ class ElementSelectionProxy extends BaseModel {
     mouseCoordsCurrent,
     mouseCoordsPrevious,
     { zoom },
-    activationPoint
+    activationPoint,
   ) {
     const accumulatedUpdates = {};
 
@@ -1913,11 +1913,11 @@ class ElementSelectionProxy extends BaseModel {
     const timelineName = element.component.getCurrentTimelineName();
     const timelineTime = 0; // Lock artboard changes to time 0
 
-    if (!bytecode.timelines[timelineName]) {
+    if(!bytecode.timelines[timelineName]) {
       bytecode.timelines[timelineName] = {};
     }
 
-    if (!accumulatedUpdates[timelineName]) {
+    if(!accumulatedUpdates[timelineName]) {
       // dupe accumulateKeyframeUpdates
       accumulatedUpdates[timelineName] = {};
     }
@@ -1928,29 +1928,29 @@ class ElementSelectionProxy extends BaseModel {
       ((mouseCoordsCurrent.clientY - mouseCoordsPrevious.clientY) * 2) / zoom;
 
     const {
-      "scale.x": { value: scaleX },
-      "scale.y": { value: scaleY },
-      "translation.x": { value: translationX },
-      "translation.y": { value: translationY }
+      'scale.x': { value: scaleX },
+      'scale.y': { value: scaleY },
+      'translation.x': { value: translationX },
+      'translation.y': { value: translationY },
     } = ElementSelectionProxy.computeScaleInfoForArtboard(
       element,
       dx,
       dy,
-      activationPoint
+      activationPoint,
     );
 
-    let sizeX = element.computePropertyValue("sizeAbsolute.x");
-    let sizeY = element.computePropertyValue("sizeAbsolute.y");
+    let sizeX = element.computePropertyValue('sizeAbsolute.x');
+    let sizeY = element.computePropertyValue('sizeAbsolute.y');
 
     // If the artboard has "auto"-size designated, then resizing it has the effect of
     // switching it to numeric sizing. But in order for that to work, we first need to
     // compute the numeric size and then switch to it.
-    if (typeof sizeX !== "number" || typeof sizeY !== "number") {
+    if(typeof sizeX !== 'number' || typeof sizeY !== 'number') {
       const computedSize = element.getComputedSize();
-      if (typeof sizeX !== "number") {
+      if(typeof sizeX !== 'number') {
         sizeX = computedSize.x;
       }
-      if (typeof sizeY !== "number") {
+      if(typeof sizeY !== 'number') {
         sizeY = computedSize.y;
       }
     }
@@ -1958,28 +1958,28 @@ class ElementSelectionProxy extends BaseModel {
     const didSizeX = scaleX > 1.000001 || scaleX < 0.999999;
     const didSizeY = scaleY > 1.000001 || scaleY < 0.999999;
 
-    if (!didSizeX && !didSizeY) {
+    if(!didSizeX && !didSizeY) {
       return;
     }
 
     const finalSize = {};
 
     // We don't want to overwrite "auto"-size unless the axis was actually changed numerically
-    if (didSizeX) {
-      finalSize["sizeAbsolute.x"] = {
-        value: rounded(scaleX * sizeX)
+    if(didSizeX) {
+      finalSize['sizeAbsolute.x'] = {
+        value: rounded(scaleX * sizeX),
       };
     }
-    if (didSizeY) {
-      finalSize["sizeAbsolute.y"] = {
-        value: rounded(scaleY * sizeY)
+    if(didSizeY) {
+      finalSize['sizeAbsolute.y'] = {
+        value: rounded(scaleY * sizeY),
       };
     }
 
     // Don't allow the user to reduce the artboard's scale to nothing
-    if (
-      (finalSize["sizeAbsolute.x"] && finalSize["sizeAbsolute.x"].value < 5) ||
-      (finalSize["sizeAbsolute.y"] && finalSize["sizeAbsolute.y"].value < 5)
+    if(
+      (finalSize['sizeAbsolute.x'] && finalSize['sizeAbsolute.x'].value < 5) ||
+      (finalSize['sizeAbsolute.y'] && finalSize['sizeAbsolute.y'].value < 5)
     ) {
       return;
     }
@@ -1989,17 +1989,17 @@ class ElementSelectionProxy extends BaseModel {
       element,
       timelineName,
       timelineTime,
-      finalSize
+      finalSize,
     );
 
     const elementOffset = {};
 
     // We shouldn't bother translating elements if there was no offet along the given axis
-    if (didSizeX) {
-      elementOffset["translation.x"] = translationX;
+    if(didSizeX) {
+      elementOffset['translation.x'] = translationX;
     }
-    if (didSizeY) {
-      elementOffset["translation.y"] = translationY;
+    if(didSizeY) {
+      elementOffset['translation.y'] = translationY;
     }
 
     // Translate all elements on stage by the offset so the stage can be resized
@@ -2007,48 +2007,48 @@ class ElementSelectionProxy extends BaseModel {
     this.component.getTopLevelElementHaikuIds().forEach(haikuId => {
       const selector = Template.buildHaikuIdSelector(haikuId);
 
-      if (!accumulatedUpdates[timelineName][haikuId]) {
+      if(!accumulatedUpdates[timelineName][haikuId]) {
         // dupe accumulateKeyframeUpdates
         accumulatedUpdates[timelineName][haikuId] = {};
       }
 
-      if (!bytecode.timelines[timelineName][selector]) {
+      if(!bytecode.timelines[timelineName][selector]) {
         bytecode.timelines[timelineName][selector] = {};
       }
 
-      for (const propertyName in elementOffset) {
+      for(const propertyName in elementOffset) {
         const offsetValue = elementOffset[propertyName];
 
-        if (!accumulatedUpdates[timelineName][haikuId][propertyName]) {
+        if(!accumulatedUpdates[timelineName][haikuId][propertyName]) {
           // dupe accumulateKeyframeUpdates
           accumulatedUpdates[timelineName][haikuId][propertyName] = {};
         }
 
-        if (!bytecode.timelines[timelineName][selector][propertyName]) {
+        if(!bytecode.timelines[timelineName][selector][propertyName]) {
           bytecode.timelines[timelineName][selector][propertyName] = {};
         }
 
         // We must ensure the zeroth keyframe exists since some elements may end up on stage
         // without a translation.x,y value explicitly set, and we need to offset those too.
-        if (!bytecode.timelines[timelineName][selector][propertyName][0]) {
+        if(!bytecode.timelines[timelineName][selector][propertyName][0]) {
           bytecode.timelines[timelineName][selector][propertyName][0] = {};
         }
 
-        for (const keyframeMs in bytecode.timelines[timelineName][selector][
+        for(const keyframeMs in bytecode.timelines[timelineName][selector][
           propertyName
         ]) {
           const existingValue =
             bytecode.timelines[timelineName][selector][propertyName][keyframeMs]
               .value || 0;
 
-          if (isNumeric(existingValue)) {
+          if(isNumeric(existingValue)) {
             const updatedValue = existingValue - offsetValue;
 
             accumulatedUpdates[timelineName][haikuId][propertyName][
               keyframeMs
             ] = {
               // dupe accumulateKeyframeUpdates
-              value: updatedValue
+              value: updatedValue,
             };
           }
         }
@@ -2062,7 +2062,7 @@ class ElementSelectionProxy extends BaseModel {
       () => {
         this.clearAllRelatedCaches();
         this.reinitializeLayout();
-      }
+      },
     );
   }
 
@@ -2071,28 +2071,28 @@ class ElementSelectionProxy extends BaseModel {
 
     const fixedPoint = this.getOriginTransformed();
     const {
-      "rotation.z": { value: rotationZ }
+      'rotation.z': { value: rotationZ },
     } = ElementSelectionProxy.computeRotationPropertyGroupDelta(
       this,
       this,
       coordsCurrent,
       coordsPrevious,
-      globals
+      globals,
     );
 
     const rotationGroup = Object.assign(
       {
         // Ensure we always get a default out in case rotation is snapping to 0.
-        "rotation.z": { value: 0 }
+        'rotation.z': { value: 0 },
       },
       ElementSelectionProxy.computeRotationPropertyGroup(
         this,
         rotationZ,
-        fixedPoint
-      )
+        fixedPoint,
+      ),
     );
 
-    for (const property in rotationGroup) {
+    for(const property in rotationGroup) {
       this.applyPropertyValue(property, rotationGroup[property].value);
     }
 
@@ -2105,14 +2105,14 @@ class ElementSelectionProxy extends BaseModel {
         Object.assign(
           {
             // Ensure we always get a default out in case rotation is snapping to 0.
-            "rotation.z": { value: 0 }
+            'rotation.z': { value: 0 },
           },
           ElementSelectionProxy.computeRotationPropertyGroup(
             element,
             rotationZ,
-            fixedPoint
-          )
-        )
+            fixedPoint,
+          ),
+        ),
       );
     });
 
@@ -2122,23 +2122,23 @@ class ElementSelectionProxy extends BaseModel {
       this.component.project.getMetadata(),
       () => {
         this.clearAllRelatedCaches();
-      }
+      },
     );
   }
 
   pasteClipsAndSelect(clips, metadata, cb) {
     logger.info(
-      `[element selection proxy] paste ${this.getComponentIds().join("|")}`
+      `[element selection proxy] paste ${this.getComponentIds().join('|')}`,
     );
     this.component.pasteThings(clips, {}, metadata, (err, { haikuIds }) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       Element.unselectAllElements({ component: this.component }, metadata);
       haikuIds
         .map(haikuId => this.component.findElementByComponentId(haikuId))
         .forEach(element => {
-          if (element) {
+          if(element) {
             element.selectSoftly(metadata);
           }
         });
@@ -2155,14 +2155,14 @@ class ElementSelectionProxy extends BaseModel {
 
   cut(metadata) {
     logger.info(
-      `[element selection proxy] cut ${this.getComponentIds().join("|")}`
+      `[element selection proxy] cut ${this.getComponentIds().join('|')}`,
     );
 
     const pasteables = [];
 
     this.selection.forEach(element => {
       // Don't allow the artboard to be cut
-      if (!element.isRootElement()) {
+      if(!element.isRootElement()) {
         pasteables.push(element.copy());
       }
     });
@@ -2173,14 +2173,14 @@ class ElementSelectionProxy extends BaseModel {
 
   copy(metadata) {
     logger.info(
-      `[element selection proxy] copy ${this.getComponentIds().join("|")}`
+      `[element selection proxy] copy ${this.getComponentIds().join('|')}`,
     );
 
     const pasteables = [];
 
     this.selection.forEach(element => {
       // Don't allow the artboard to be copied
-      if (!element.isRootElement()) {
+      if(!element.isRootElement()) {
         pasteables.push(element.copy(metadata));
       }
     });
@@ -2190,7 +2190,7 @@ class ElementSelectionProxy extends BaseModel {
 
   remove(metadata) {
     logger.info(
-      `[element selection proxy] remove ${this.getComponentIds().join("|")}`
+      `[element selection proxy] remove ${this.getComponentIds().join('|')}`,
     );
 
     const componentIdsToRemove = this.selection
@@ -2217,38 +2217,38 @@ ElementSelectionProxy.DEFAULT_OPTIONS = {
   required: {
     uid: true,
     selection: true,
-    component: true
-  }
+    component: true,
+  },
 };
 
 BaseModel.extend(ElementSelectionProxy);
 
 ElementSelectionProxy.DEFAULT_PROPERTY_VALUES = {
-  "offset.x": 0,
-  "offset.y": 0,
-  "offset.z": 0,
-  "origin.x": 0.5,
-  "origin.y": 0.5,
-  "origin.z": 0.5,
-  "rotation.x": 0,
-  "rotation.y": 0,
-  "rotation.z": 0,
-  "scale.x": 1,
-  "scale.y": 1,
-  "scale.z": 1,
-  "sizeAbsolute.x": 0,
-  "sizeAbsolute.y": 0,
-  "sizeAbsolute.z": 0,
-  "translation.x": 0,
-  "translation.y": 0,
-  "translation.z": 0
+  'offset.x': 0,
+  'offset.y': 0,
+  'offset.z': 0,
+  'origin.x': 0.5,
+  'origin.y': 0.5,
+  'origin.z': 0.5,
+  'rotation.x': 0,
+  'rotation.y': 0,
+  'rotation.z': 0,
+  'scale.x': 1,
+  'scale.y': 1,
+  'scale.z': 1,
+  'sizeAbsolute.x': 0,
+  'sizeAbsolute.y': 0,
+  'sizeAbsolute.z': 0,
+  'translation.x': 0,
+  'translation.y': 0,
+  'translation.z': 0,
 };
 
 ElementSelectionProxy.activeAxesFromActivationPoint = activationPoint => {
   const activeAxes = new Uint8Array(2);
 
   // Shift (proportional scale) should always enable all axes.
-  if (activationPoint.shift) {
+  if(activationPoint.shift) {
     activeAxes[0] = activeAxes[1] = 1;
     return activeAxes;
   }
@@ -2257,12 +2257,12 @@ ElementSelectionProxy.activeAxesFromActivationPoint = activationPoint => {
   // points).
 
   // x-axis is only disabled at top and bottom edges.
-  if (activationPoint.index !== 1 && activationPoint.index !== 7) {
+  if(activationPoint.index !== 1 && activationPoint.index !== 7) {
     activeAxes[0] = 1;
   }
 
   // y-axis is only disabled at left and right edges.
-  if (activationPoint.index !== 3 && activationPoint.index !== 5) {
+  if(activationPoint.index !== 3 && activationPoint.index !== 5) {
     activeAxes[1] = 1;
   }
 
@@ -2279,7 +2279,7 @@ ElementSelectionProxy.computeScaleInfoForArtboard = (
   targetElement,
   dx,
   dy,
-  activationPoint
+  activationPoint,
 ) => {
   // Disable origin scaling, which does not really make sense in this context.
   activationPoint.alt = false;
@@ -2289,23 +2289,23 @@ ElementSelectionProxy.computeScaleInfoForArtboard = (
     ElementSelectionProxy.getFixedPointForScale(boxPoints, activationPoint),
     ElementSelectionProxy.getTranslatedPointForScale(
       boxPoints,
-      activationPoint
+      activationPoint,
     ),
     {
       x: dx,
       y: dy,
-      z: 0
+      z: 0,
     },
     activationPoint,
-    true
+    true,
   );
 };
 
 ElementSelectionProxy.getFixedPointForScale = (
   proxyBoxPoints,
-  activationPoint
+  activationPoint,
 ) => {
-  switch (activationPoint.index) {
+  switch(activationPoint.index) {
     case 5:
     case 7:
       return proxyBoxPoints[0];
@@ -2321,9 +2321,9 @@ ElementSelectionProxy.getFixedPointForScale = (
 // For a given activation point, we're also interested in the snaps of its neighbors, for e.g.
 ElementSelectionProxy.getNeighborPointsForScaleSnapping = (
   proxyBoxPoints,
-  activationPoint
+  activationPoint,
 ) => {
-  switch (activationPoint.index) {
+  switch(activationPoint.index) {
     case 1:
       return [proxyBoxPoints[0], proxyBoxPoints[2]];
     case 3:
@@ -2335,16 +2335,16 @@ ElementSelectionProxy.getNeighborPointsForScaleSnapping = (
     default:
       // 4 or other
       throw new Error(
-        "Snapping behavior for 'center point' scaling is undefined"
+        'Snapping behavior for \'center point\' scaling is undefined',
       );
   }
 };
 
 ElementSelectionProxy.getTranslatedPointForScale = (
   proxyBoxPoints,
-  activationPoint
+  activationPoint,
 ) => {
-  switch (activationPoint.index) {
+  switch(activationPoint.index) {
     case 5:
     case 7:
       return proxyBoxPoints[8];
@@ -2363,7 +2363,7 @@ ElementSelectionProxy.computeScalePropertyGroup = (
   translatedPointIn,
   deltaIn,
   activationPoint,
-  applyConstraints
+  applyConstraints,
 ) => {
   // Make a copy of inbound points so we can transform them in place.
   const fixedPoint = Object.assign({}, fixedPointIn);
@@ -2373,14 +2373,14 @@ ElementSelectionProxy.computeScalePropertyGroup = (
   // point (the point being dragged). These are represented by `fixedPoint` and `translatedPoint` respectively.
 
   // Prevent zero scale because matrix multiplication will lock the scale to zero permanently while interacting.
-  if (targetLayout.scale.x === 0) {
+  if(targetLayout.scale.x === 0) {
     targetLayout.scale.x = 0.0001;
   }
-  if (targetLayout.scale.y === 0) {
+  if(targetLayout.scale.y === 0) {
     targetLayout.scale.y = 0.0001;
   }
 
-  if (applyConstraints) {
+  if(applyConstraints) {
     // The activation point index corresponds to a box with this coordinate system:
     // 0 1 2
     // 3   5
@@ -2391,13 +2391,13 @@ ElementSelectionProxy.computeScalePropertyGroup = (
     const scaledBasisMatrix = Layout3D.computeScaledBasisMatrix(
       targetLayout.rotation,
       targetLayout.scale,
-      targetLayout.shear
+      targetLayout.shear,
     );
     const scaledBasisMatrixInverted = new Float32Array(16);
     invertMatrix(scaledBasisMatrixInverted, scaledBasisMatrix);
     HaikuElement.transformPointInPlace(delta, scaledBasisMatrixInverted);
     const activeAxes = ElementSelectionProxy.activeAxesFromActivationPoint(
-      activationPoint
+      activationPoint,
     );
 
     delta.x *= activeAxes[0];
@@ -2405,7 +2405,7 @@ ElementSelectionProxy.computeScalePropertyGroup = (
 
     // If we are performing a proportional scale, it suffices to let the longer side "dominate" the shorter one.
     // Note that we are scale and rotation-normalized while carrying out this operation.
-    if (activationPoint.shift) {
+    if(activationPoint.shift) {
       // We encounter a "negative proportion" trigger whenever negative Δsx increases the size, while positive Δsy
       // decreases the size, or conversely. This is accordingly offset below.
       const negativeProportion =
@@ -2413,7 +2413,7 @@ ElementSelectionProxy.computeScalePropertyGroup = (
         ElementSelectionProxy.isActivationPointTop(activationPoint);
       // "Edge case", lulz: if we are scaling from a vertical edge, Δsx should _always_ dominate Δsy, even if the
       // transformed object is taller than it is wide.
-      if (
+      if(
         activationPoint.index === 3 ||
         activationPoint.index === 5 ||
         (targetLayout.size.x > targetLayout.size.y &&
@@ -2421,12 +2421,12 @@ ElementSelectionProxy.computeScalePropertyGroup = (
           activationPoint.index !== 7)
       ) {
         delta.y = (delta.x * targetLayout.size.y) / targetLayout.size.x;
-        if (negativeProportion) {
+        if(negativeProportion) {
           delta.y *= -1;
         }
       } else {
         delta.x = (delta.y * targetLayout.size.x) / targetLayout.size.y;
-        if (negativeProportion) {
+        if(negativeProportion) {
           delta.x *= -1;
         }
       }
@@ -2491,7 +2491,7 @@ ElementSelectionProxy.computeScalePropertyGroup = (
     0,
     1,
     0,
-    1
+    1,
   ];
   const coefficientMatrixInverted = new Float32Array(16);
   invertMatrix(coefficientMatrixInverted, coefficientMatrix);
@@ -2502,7 +2502,7 @@ ElementSelectionProxy.computeScalePropertyGroup = (
   transformFourVectorByMatrix(
     propertyGroupFinalVector,
     propertyGroupInitialVector,
-    coefficientMatrixInverted
+    coefficientMatrixInverted,
   );
 
   targetLayout.scale.x += propertyGroupFinalVector[0];
@@ -2511,18 +2511,18 @@ ElementSelectionProxy.computeScalePropertyGroup = (
   targetLayout.translation.y += propertyGroupFinalVector[3];
 
   return {
-    "scale.x": {
-      value: rounded(targetLayout.scale.x)
+    'scale.x': {
+      value: rounded(targetLayout.scale.x),
     },
-    "scale.y": {
-      value: rounded(targetLayout.scale.y)
+    'scale.y': {
+      value: rounded(targetLayout.scale.y),
     },
-    "translation.x": {
-      value: rounded(targetLayout.translation.x)
+    'translation.x': {
+      value: rounded(targetLayout.translation.x),
     },
-    "translation.y": {
-      value: rounded(targetLayout.translation.y)
-    }
+    'translation.y': {
+      value: rounded(targetLayout.translation.y),
+    },
   };
 };
 
@@ -2538,7 +2538,7 @@ ElementSelectionProxy.transformPointsByLayoutInPlace = (points, layout) => {
 ElementSelectionProxy.computeRotationPropertyGroup = (
   element,
   rotationZDelta,
-  fixedPoint
+  fixedPoint,
 ) => {
   // Given a known rotation delta, we can directly compute the new property group for a subelement of a selection.
   //       target origin (x1, y1)
@@ -2563,16 +2563,16 @@ ElementSelectionProxy.computeRotationPropertyGroup = (
   const ray = {
     x: targetOrigin.x - fixedPoint.x,
     y: targetOrigin.y - fixedPoint.y,
-    z: targetOrigin.z - fixedPoint.z
+    z: targetOrigin.z - fixedPoint.z,
   };
   HaikuElement.transformPointInPlace(ray, matrix);
 
   const layoutSpec = element.getLayoutSpec();
   const originalRotationMatrix = Layout3D.computeOrthonormalBasisMatrix(
     layoutSpec.rotation,
-    layoutSpec.shear
+    layoutSpec.shear,
   );
-  if (layoutSpec.offset.x !== 0 || layoutSpec.offset.y !== 0) {
+  if(layoutSpec.offset.x !== 0 || layoutSpec.offset.y !== 0) {
     ray.x -= layoutSpec.offset.x;
     ray.y -= layoutSpec.offset.y;
   }
@@ -2581,7 +2581,7 @@ ElementSelectionProxy.computeRotationPropertyGroup = (
     attributes,
     [matrix, originalRotationMatrix],
     false,
-    layoutSpec
+    layoutSpec,
   );
 
   // Return directly after offsetting translation by the `fixedPoint`'s coordinates. Note that we are choosing _not_ to
@@ -2593,21 +2593,21 @@ ElementSelectionProxy.computeRotationPropertyGroup = (
       return accumulator;
     },
     {
-      "translation.x": {
-        value: rounded(fixedPoint.x + ray.x)
+      'translation.x': {
+        value: rounded(fixedPoint.x + ray.x),
       },
-      "translation.y": {
-        value: rounded(fixedPoint.y + ray.y)
+      'translation.y': {
+        value: rounded(fixedPoint.y + ray.y),
       },
-      "translation.z": {
-        value: rounded(fixedPoint.z + ray.z)
-      }
-    }
+      'translation.z': {
+        value: rounded(fixedPoint.z + ray.z),
+      },
+    },
   );
 };
 
 ElementSelectionProxy.normalizeRotationDelta = delta => {
-  if (Math.abs(delta) > Math.PI) {
+  if(Math.abs(delta) > Math.PI) {
     // If we have somehow flipped over an axis, normalize in [-π, π]. In realistic scenarios, we are actually
     // normalizing in [- π / 64, π / 64] or so.
     return delta - 2 * Math.PI * Math.sign(delta);
@@ -2621,7 +2621,7 @@ ElementSelectionProxy.computeRotationPropertyGroupDelta = (
   contextElement,
   coordsCurrent,
   coordsPrevious,
-  globals
+  globals,
 ) => {
   // Calculate rotation delta based on old mouse position and new
   //  *(x0, y0)
@@ -2658,9 +2658,9 @@ ElementSelectionProxy.computeRotationPropertyGroupDelta = (
   const delta = ElementSelectionProxy.normalizeRotationDelta(theta1 - theta0);
 
   // If shift is held, snap to absolute increments of π / 12.
-  if (globals.isShiftKeyDown) {
-    const originalRotation = targetElement.computePropertyValue("rotation.z");
-    if (!contextElement.rotationSnapOffset) {
+  if(globals.isShiftKeyDown) {
+    const originalRotation = targetElement.computePropertyValue('rotation.z');
+    if(!contextElement.rotationSnapOffset) {
       // Look at the directionality of the original requested rotation and round up/down according to the apparent wish
       // of the user. We need to stick with this strategy for as long as snapping rotation is active to avoid confusion
       // and/or judders.
@@ -2671,22 +2671,22 @@ ElementSelectionProxy.computeRotationPropertyGroupDelta = (
       contextElement.rotationSnapOffset =
         PI_OVER_12 * contextElement.rotationSnapStrategy(theta1 / PI_OVER_12);
       return {
-        "rotation.z": {
-          value: originalRotationRounded - originalRotation
-        }
+        'rotation.z': {
+          value: originalRotationRounded - originalRotation,
+        },
       };
     }
 
     const theta1Rounded =
       PI_OVER_12 * contextElement.rotationSnapStrategy(theta1 / PI_OVER_12);
     const effectiveDelta = theta1Rounded - contextElement.rotationSnapOffset;
-    if (effectiveDelta !== 0) {
+    if(effectiveDelta !== 0) {
       contextElement.rotationSnapOffset = theta1Rounded;
     }
     return {
-      "rotation.z": {
-        value: ElementSelectionProxy.normalizeRotationDelta(effectiveDelta)
-      }
+      'rotation.z': {
+        value: ElementSelectionProxy.normalizeRotationDelta(effectiveDelta),
+      },
     };
   }
 
@@ -2694,9 +2694,9 @@ ElementSelectionProxy.computeRotationPropertyGroupDelta = (
   contextElement.initializeRotationSnap();
 
   return {
-    "rotation.z": {
-      value: rounded(delta)
-    }
+    'rotation.z': {
+      value: rounded(delta),
+    },
   };
 };
 
@@ -2708,14 +2708,14 @@ ElementSelectionProxy.accumulateKeyframeUpdates = (
   element,
   timelineName,
   timelineTime,
-  propertyGroup
+  propertyGroup,
 ) => {
-  if (!out[timelineName]) {
+  if(!out[timelineName]) {
     out[timelineName] = {};
   }
 
   const componentId = element.getComponentId();
-  if (!out[timelineName][componentId]) {
+  if(!out[timelineName][componentId]) {
     out[timelineName][componentId] = {};
   }
 
@@ -2723,47 +2723,47 @@ ElementSelectionProxy.accumulateKeyframeUpdates = (
     TimelineProperty.getPropertiesBase(
       element.component.getReifiedBytecode().timelines,
       timelineName,
-      componentId
+      componentId,
     ) || {};
 
-  for (const propertyName in propertyGroup) {
-    if (
+  for(const propertyName in propertyGroup) {
+    if(
       // Are we setting a layout property to the default value for the first time? If yes, just skip it.
       // Because of rounding errors, we should allow a reasonable margin of error. Because translation is
       // snappable, definitely always set this even if it appears to be trivial.
       !currentProperties[propertyName] &&
       basicallyEquals(
         Property.PREPOPULATED_VALUES[propertyName],
-        propertyGroup[propertyName].value
+        propertyGroup[propertyName].value,
       )
     ) {
       continue;
     }
 
     // We can also skip if the last defined keyframe for the same property is unchanged.
-    if (currentProperties[propertyName]) {
+    if(currentProperties[propertyName]) {
       const lastKeyframe = Object.keys(currentProperties[propertyName])
         .map(Number)
         .filter(time => time <= timelineTime)
         .sort((a, b) => a - b)
         .pop();
-      if (
+      if(
         lastKeyframe !== undefined &&
         basicallyEquals(
           currentProperties[propertyName][lastKeyframe].value,
-          propertyGroup[propertyName].value
+          propertyGroup[propertyName].value,
         )
       ) {
         continue;
       }
     }
 
-    if (!out[timelineName][componentId][propertyName]) {
+    if(!out[timelineName][componentId][propertyName]) {
       out[timelineName][componentId][propertyName] = {};
     }
 
     out[timelineName][componentId][propertyName][timelineTime] = {
-      value: propertyGroup[propertyName].value
+      value: propertyGroup[propertyName].value,
     };
   }
 
@@ -2773,7 +2773,7 @@ ElementSelectionProxy.accumulateKeyframeUpdates = (
 const addVectors = (v0, v1) => {
   return {
     x: v0.x + v1.x,
-    y: v0.y + v1.y
+    y: v0.y + v1.y,
   };
 };
 
@@ -2790,7 +2790,7 @@ ElementSelectionProxy.fromSelection = (rawSelection, component) => {
   const uid = `${component && component.getPrimaryKey()}+${rawSelection
     .map(element => element.getPrimaryKey())
     .sort()
-    .join("+") || "none"}`;
+    .join('+') || 'none'}`;
 
   return (
     ElementSelectionProxy.findById(uid) ||
@@ -2799,15 +2799,15 @@ ElementSelectionProxy.fromSelection = (rawSelection, component) => {
         {
           uid,
           selection: rawSelection.reduce((accumulator, element) => {
-            while (!element.isVisuallySelectable && element.parent) {
+            while(!element.isVisuallySelectable && element.parent) {
               element = element.parent;
             }
             accumulator.push(element);
             return accumulator;
-          }, [])
+          }, []),
         },
-        { component }
-      )
+        { component },
+      ),
     )
   );
 };
@@ -2826,7 +2826,7 @@ ElementSelectionProxy.getPasteables = () => {
 export default ElementSelectionProxy;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-import Element from "./Element.js";
-import Property from "./Property.js";
-import Template from "./Template.js";
-import TimelineProperty from "./TimelineProperty.js";
+import Element from './Element.js';
+import Property from './Property.js';
+import Template from './Template.js';
+import TimelineProperty from './TimelineProperty.js';

@@ -1,5 +1,13 @@
-let _ = require('lodash');
-let matchesRequire = require('./matchesRequire');
+/**
+ * 更新或插入require语句
+ * @param {Object} ast - AST对象
+ * @param {string} identifierName - 标识符名称
+ * @param {string} modulePath - 模块路径
+ * @returns {null|Object} 如果已存在则返回null，否则返回新的require语句
+ */
+
+import _ from 'lodash';
+import matchesRequire from './matchesRequire.js';
 
 /**
  * @function upsertRequire
@@ -8,13 +16,13 @@ let matchesRequire = require('./matchesRequire');
  * var {identifierName} = require({modulePath}).
  * This should mutate the AST in place.
  */
-module.exports = function upsertRequire (ast, identifierName, modulePath) {
+export default function upsertRequire(ast, identifierName, modulePath) {
   // TODO: Mutate line numbers so we don't end up with a bunch of nodes on the same line
 
   // we don't need a full traversal, since we know our require stmts are at the root
   const match = _.find(ast.program.body, (stmt) => matchesRequire(stmt, identifierName, modulePath));
 
-  if (match) {
+  if(match) {
     return null;
   }
 
@@ -45,4 +53,4 @@ module.exports = function upsertRequire (ast, identifierName, modulePath) {
       },
     }],
   });
-};
+}

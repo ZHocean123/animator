@@ -66,12 +66,12 @@ Sketch.sketchtoolPipeline = (abspath) => {
   const sketchtoolPath = Sketch.INSTALL_PATH + PARSER_CLI_PATH;
 
   // Don't bother if the file passed is not a .sketch file
-  if (!Sketch.isSketchFile(abspath)) {
+  if(!Sketch.isSketchFile(abspath)) {
     return void (0);
   }
 
   // Don't bother if we detect that the user doesn't even have sketchtool installed
-  if (!fse.existsSync(sketchtoolPath)) {
+  if(!fse.existsSync(sketchtoolPath)) {
     return void (0);
   }
 
@@ -107,7 +107,7 @@ Sketch.sketchtoolPipeline = (abspath) => {
   const outputEntries = fse.walkSync(assetBaseFolder);
   outputEntries.forEach((outputEntry) => {
     // We only care about SVG vilew for now, since those are our primary component data format
-    if (path.extname(outputEntry) !== '.svg') {
+    if(path.extname(outputEntry) !== '.svg') {
       return void (0);
     }
     const outputContents = fse.readFileSync(outputEntry).toString();
@@ -121,13 +121,13 @@ Sketch.sketchtoolPipeline = (abspath) => {
   return true;
 };
 
-function _escapeShell (cmd) {
+function _escapeShell(cmd) {
   return cmd.replace(/(["\s'$`\\])/g, '\\$1');
 }
 
-function _processBase64ImageData (base64data, imageFormat, fileAbspath, bitmapIndex) {
+function _processBase64ImageData(base64data, imageFormat, fileAbspath, bitmapIndex) {
   // TODO: Support other image formats (if necessary?) I dunno if formats other than png have gamma correction...
-  if (imageFormat === 'png') {
+  if(imageFormat === 'png') {
     const imageBufferData = Buffer.from(base64data, 'base64');
     const pngInstance = PNG.sync.read(imageBufferData);
 

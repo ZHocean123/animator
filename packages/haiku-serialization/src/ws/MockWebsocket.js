@@ -1,10 +1,10 @@
 class MockWebsocket {
-  constructor (eventEmitter = null) {
+  constructor(eventEmitter = null) {
     this.eventEmitter = eventEmitter;
   }
 
-  on (eventName, handler) {
-    if (this.eventEmitter === null) {
+  on(eventName, handler) {
+    if(this.eventEmitter === null) {
       return;
     }
 
@@ -14,12 +14,12 @@ class MockWebsocket {
     });
   }
 
-  connect () {}
-  disconnect () {}
-  send () {}
-  method () {}
-  request () {}
-  action (method, params, cb) {
+  connect() {}
+  disconnect() {}
+  send() {}
+  method() {}
+  request() {}
+  action(method, params, cb) {
     return cb();
   }
 }

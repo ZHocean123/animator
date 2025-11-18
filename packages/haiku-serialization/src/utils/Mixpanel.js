@@ -30,23 +30,23 @@ const defaultPayload = {
   distinct_id: void (0), // Assign to email address when available
 };
 
-mixpanel.mergeToPayload = function mergeToPayload (keepPayload) {
+mixpanel.mergeToPayload = function mergeToPayload(keepPayload) {
   return Object.assign(defaultPayload, keepPayload);
 };
 
-function _getPayload (eventName, eventPayload) {
+function _getPayload(eventName, eventPayload) {
   return Object.assign({}, defaultPayload, eventPayload);
 }
 
-function _safeStringify (obj) {
+function _safeStringify(obj) {
   try {
     return JSON.stringify(obj);
-  } catch (exception) {
+  } catch(exception) {
     return null;
   }
 }
 
-mixpanel.haikuTrack = function haikuTrack (eventName, eventPayload) {
+mixpanel.haikuTrack = function haikuTrack(eventName, eventPayload) {
   const finalPayload = _getPayload(eventName, eventPayload);
   logger.info('[mixpanel]', eventName);
   return mixpanel.track(eventName, finalPayload);
@@ -54,11 +54,11 @@ mixpanel.haikuTrack = function haikuTrack (eventName, eventPayload) {
 
 const trackedEvents = {};
 
-mixpanel.haikuTrackOnce = function haikuTrackOnce (eventName, eventPayload) {
+mixpanel.haikuTrackOnce = function haikuTrackOnce(eventName, eventPayload) {
   const candidatePayload = _getPayload(eventName, eventPayload);
   const payloadString = _safeStringify(candidatePayload);
-  if (payloadString) {
-    if (!trackedEvents[payloadString]) {
+  if(payloadString) {
+    if(!trackedEvents[payloadString]) {
       trackedEvents[payloadString] = true;
       mixpanel.haikuTrack(eventName, eventPayload);
     }

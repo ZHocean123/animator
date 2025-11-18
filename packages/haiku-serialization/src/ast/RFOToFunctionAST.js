@@ -1,11 +1,18 @@
-let paramsToFunctionASTParams = require('./paramsToFunctionASTParams');
-let functionBodyStringToFunctionBodyAST = require('./functionBodyStringToFunctionBodyAST');
-let wrapInHaikuInject = require('./wrapInHaikuInject');
+/**
+ * 将RFO转换为函数AST
+ * @param {Object} rfo - RFO对象
+ * @param {string} key - 键名
+ * @returns {Object} 函数AST节点
+ */
 
-function RFOToFunctionAST (rfo, key) {
+import paramsToFunctionASTParams from './paramsToFunctionASTParams.js';
+import functionBodyStringToFunctionBodyAST from './functionBodyStringToFunctionBodyAST.js';
+import wrapInHaikuInject from './wrapInHaikuInject.js';
+
+function RFOToFunctionAST(rfo, key) {
   const type = rfo.type || 'FunctionExpression';
   let ast;
-  switch (type) {
+  switch(type) {
     case 'FunctionExpression':
       ast = {
         type: 'FunctionExpression',
@@ -25,11 +32,11 @@ function RFOToFunctionAST (rfo, key) {
 
   // If the function was labeled as an injectee, that means it's an 'expression'
   // function that must be wrapped in a Haiku.inject to work properly at runtime
-  if (rfo.injectee) {
+  if(rfo.injectee) {
     return wrapInHaikuInject(ast);
   }
 
   return ast;
 }
 
-module.exports = RFOToFunctionAST;
+export default RFOToFunctionAST;

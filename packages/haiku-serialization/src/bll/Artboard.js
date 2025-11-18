@@ -13,10 +13,10 @@ const HAIKU_ID_ATTRIBUTE = 'haiku-id';
  *  in here instead of into the Glass React app.
  */
 class Artboard extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
-    if (typeof window !== 'undefined') {
+    if(typeof window !== 'undefined') {
       this._containerWidth = window.document.body.clientWidth || 1;
       this._containerHeight = window.document.body.clientHeight || 1;
     } else {
@@ -39,28 +39,28 @@ class Artboard extends BaseModel {
     this._drawingIsModal = true;
 
     this.component.on('time:change', (timelineName, timelineTime) => {
-      if (!this.component.isCodeReloading()) {
+      if(!this.component.isCodeReloading()) {
         this.updateMountSize();
       }
     });
 
     this.project.on('update', (what, arg1, arg2) => {
-      if (
+      if(
         what === 'application-mounted' ||
         (what === 'reloaded' && arg1 === 'hard')
       ) {
         this.updateMountSize();
-      } else if (what === 'updateKeyframes') {
+      } else if(what === 'updateKeyframes') {
         const timelineName = this.component.getCurrentTimelineName();
         const artboardId = this.getElementHaikuId();
-        if (arg2 && arg2[timelineName] && arg2[timelineName][artboardId]) {
+        if(arg2 && arg2[timelineName] && arg2[timelineName][artboardId]) {
           this.updateMountSize();
         }
       }
     });
 
     this.project.on('remote-update', (what) => {
-      if (what === 'updateKeyframes') {
+      if(what === 'updateKeyframes') {
         this.updateMountSize();
       }
     });
@@ -68,7 +68,7 @@ class Artboard extends BaseModel {
 
   // used by at least "cmd + 0" to center and
   // reset zoom on stage
-  resetZoomPan () {
+  resetZoomPan() {
     this._panX = 0;
     this._panY = 0;
     this._originalPanX = 0;
@@ -79,11 +79,11 @@ class Artboard extends BaseModel {
     this.dimensionsChangedHook();
   }
 
-  dimensionsChangedHook () {
+  dimensionsChangedHook() {
     const hc = this.component.$instance;
     const renderer = hc && hc.context && hc.context.renderer;
-    if (renderer) {
-      if (!renderer.config) {
+    if(renderer) {
+      if(!renderer.config) {
         renderer.config = {};
       }
       renderer.config.zoom = this.getZoom();
@@ -93,21 +93,21 @@ class Artboard extends BaseModel {
     this.emit('update', 'dimensions-changed');
   }
 
-  getElementHaikuId () {
+  getElementHaikuId() {
     const bytecode = this.component.fetchActiveBytecodeFile().getReifiedBytecode();
     const template = bytecode && bytecode.template; // If called too early this may not be present :/
     return template && template.attributes[HAIKU_ID_ATTRIBUTE];
   }
 
-  getElement () {
+  getElement() {
     const haikuId = this.getElementHaikuId();
-    if (!haikuId) {
+    if(!haikuId) {
       return null;
     }
     return Element.findByComponentAndHaikuId(this.component, haikuId);
   }
 
-  getArtboardRenderInfo () {
+  getArtboardRenderInfo() {
     return {
       pan: {
         x: this._panX,
@@ -132,12 +132,12 @@ class Artboard extends BaseModel {
     };
   }
 
-  getRect () {
+  getRect() {
     return this.mount.getBoundingClientRect();
   }
 
-  resetContainerDimensions ($container) {
-    if ($container) {
+  resetContainerDimensions($container) {
+    if($container) {
       const w1 = $container.clientWidth;
       const h1 = $container.clientHeight;
 
@@ -150,7 +150,7 @@ class Artboard extends BaseModel {
       const cw = Math.max(w1, w2);
       const ch = Math.max(h1, h2);
 
-      if (
+      if(
         cw !== this._containerWidth ||
         ch !== this._containerHeight ||
         mountX !== this._mountX ||
@@ -166,9 +166,9 @@ class Artboard extends BaseModel {
     this.emit('update', 'dimensions-reset');
   }
 
-  updateMountSize ($container) {
+  updateMountSize($container) {
     const updatedArtboardSize = this.component && this.component.getContextSize();
-    if (updatedArtboardSize && updatedArtboardSize.width && updatedArtboardSize.height) {
+    if(updatedArtboardSize && updatedArtboardSize.width && updatedArtboardSize.height) {
       this._mountWidth = updatedArtboardSize.width;
       this._mountHeight = updatedArtboardSize.height;
     }
@@ -176,63 +176,63 @@ class Artboard extends BaseModel {
     this.dimensionsChangedHook();
   }
 
-  zoomIn (factor) {
+  zoomIn(factor) {
     this._zoomXY = this._zoomXY * factor;
     this.dimensionsChangedHook();
   }
 
-  zoomOut (factor) {
+  zoomOut(factor) {
     this._zoomXY = this._zoomXY / factor;
     this.dimensionsChangedHook();
   }
 
-  performPan (dx, dy) {
+  performPan(dx, dy) {
     this._panX = this._originalPanX + dx;
     this._panY = this._originalPanY + dy;
     this.dimensionsChangedHook();
   }
 
-  isDrawingModal () {
+  isDrawingModal() {
     return this._drawingIsModal;
   }
 
-  getSize () {
+  getSize() {
     return {
       x: this.getMountWidth(),
       y: this.getMountHeight(),
     };
   }
 
-  getMountX () {
+  getMountX() {
     return this._mountX;
   }
 
-  getMountY () {
+  getMountY() {
     return this._mountY;
   }
 
-  getMountWidth () {
+  getMountWidth() {
     return this._mountWidth;
   }
 
-  getMountHeight () {
+  getMountHeight() {
     return this._mountHeight;
   }
 
-  getContainerWidth () {
+  getContainerWidth() {
     return this._containerWidth;
   }
 
-  getContainerHeight () {
+  getContainerHeight() {
     return this._containerHeight;
   }
 
-  snapshotOriginalPan () {
+  snapshotOriginalPan() {
     this._originalPanX = this._panX;
     this._originalPanY = this._panY;
   }
 
-  transformScreenToWorld (screenCoords) {
+  transformScreenToWorld(screenCoords) {
     const mat = Matrix.mat2d.create();
     const mount = Matrix.vec2.create();
 
@@ -249,11 +249,11 @@ class Artboard extends BaseModel {
     return screenSpace;
   }
 
-  getZoom () {
+  getZoom() {
     return this._zoomXY;
   }
 
-  getPan () {
+  getPan() {
     return {
       x: this._panX,
       y: this._panY,
@@ -266,7 +266,7 @@ class Artboard extends BaseModel {
   //  elementId: String | undefined
   // }
 
-  getSnapLinesInScreenCoords () {
+  getSnapLinesInScreenCoords() {
     const snapLines = [];
     const topWorld = 0;
     const rightWorld = this._mountWidth;
@@ -309,7 +309,7 @@ class Artboard extends BaseModel {
 
     topLevelElements.forEach((elem) => {
       // deleted elements will show up as null entries in this array
-      if (!elem) {
+      if(!elem) {
         return;
       }
 
@@ -349,7 +349,7 @@ class Artboard extends BaseModel {
       });
     });
 
-    if (typeof window !== 'undefined') {
+    if(typeof window !== 'undefined') {
       window.snapLines = snapLines;
     }
 

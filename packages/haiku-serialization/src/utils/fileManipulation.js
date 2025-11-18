@@ -1,13 +1,17 @@
-const https = require('https');
-const fs = require('fs');
-const {exec} = require('child_process');
+/**
+ * File manipulation utilities
+ * Provides functions for downloading, unzipping, and file operations
+ */
+import https from 'https';
+import fs from 'fs';
+import { exec } from 'child_process';
 
 const RESERVED_CHAR_REPLACEMENT = '-';
 const FILENAME_RESERVED_REGEX = /[<>:"\/\\|?*\x00-\x1F]/g;
 const WINDOWS_NAMES_RESERVED_REGEX = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
 
-module.exports = {
-  download (url, downloadPath, onProgress, shouldCancel) {
+export default {
+  download(url, downloadPath, onProgress, shouldCancel) {
     const file = fs.createWriteStream(downloadPath);
 
     return new Promise((resolve, reject) => {
@@ -18,7 +22,7 @@ module.exports = {
         response.pipe(file);
 
         response.on('data', (data) => {
-          if (typeof shouldCancel === 'function' && shouldCancel()) {
+          if(typeof shouldCancel === 'function' && shouldCancel()) {
             request.abort();
             file.close();
             reject(Error('Download cancelled'));
@@ -40,7 +44,7 @@ module.exports = {
     });
   },
 
-  unzip (zipPath, destination) {
+  unzip(zipPath, destination) {
     const saneZipPath = JSON.stringify(zipPath);
     const saneDestination = JSON.stringify(destination);
     const unzipCommand = `/usr/bin/unzip -o -qq ${saneZipPath} -d ${saneDestination}`;
@@ -52,7 +56,7 @@ module.exports = {
     });
   },
 
-  ditto (src, dest) {
+  ditto(src, dest) {
     const saneSrc = JSON.stringify(src);
     const saneDest = JSON.stringify(dest);
     const dittoComand = `/usr/bin/ditto ${saneSrc} ${saneDest}`;
@@ -64,8 +68,8 @@ module.exports = {
     });
   },
 
-  sanitize (name) {
-    if (typeof name !== 'string') {
+  sanitize(name) {
+    if(typeof name !== 'string') {
       return '';
     }
 
@@ -74,8 +78,8 @@ module.exports = {
       .replace(WINDOWS_NAMES_RESERVED_REGEX, RESERVED_CHAR_REPLACEMENT);
   },
 
-  stringifyPath (filePath) {
-    if (typeof filePath !== 'string') {
+  stringifyPath(filePath) {
+    if(typeof filePath !== 'string') {
       return '';
     }
 

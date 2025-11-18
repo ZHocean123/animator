@@ -1,6 +1,6 @@
-var Haiku = require("@haiku/core");
-var _code_asfd_code = require("./../asfd/code.js");
-module.exports = {
+import Haiku from "@haiku/core";
+import _code_asfd_code from "./../asfd/code.js";
+export default {
   metadata: {
     folder: "/Users/matthew/Code/HaikuTeam/mono/packages/haiku-plumbing/test/fixtures/projects/blank-project/",
     uuid: "HAIKU_SHARE_UUID",

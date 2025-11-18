@@ -7,7 +7,7 @@ module.exports = {
   type: 'perItem',
   fn: (item) => {
     // Clobber font-family on any/all nodes that try to declare it so users don't get their hopes up.
-    if (item.hasAttr('font-family')) {
+    if(item.hasAttr('font-family')) {
       item.attr('font-family').value = 'Helvetica, Arial, sans-serif';
     }
   },

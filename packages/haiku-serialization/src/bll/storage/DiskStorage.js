@@ -6,7 +6,7 @@ import { HOMEDIR_MODEL_STORAGE_PATH } from './../../utils/HaikuHomeDir.js';
 fse.mkdirpSync(HOMEDIR_MODEL_STORAGE_PATH);
 
 class DiskStorage {
-  store (key, pojo) {
+  store(key, pojo) {
     fse.writeJsonSync(
       path.join(HOMEDIR_MODEL_STORAGE_PATH, `${key}.json`),
       pojo,
@@ -15,7 +15,7 @@ class DiskStorage {
     return pojo;
   }
 
-  unstore (key) {
+  unstore(key) {
     return fse.readJsonSync(
       path.join(HOMEDIR_MODEL_STORAGE_PATH, `${key}.json`),
     );

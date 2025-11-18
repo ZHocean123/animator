@@ -1,1 +1,2 @@
-module.exports = require('./dom')
+import domModule from './dom.js'
+export default domModule

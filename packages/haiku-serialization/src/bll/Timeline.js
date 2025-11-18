@@ -1,9 +1,9 @@
-import numeral from "numeral";
-import TimelineProperty from "haiku-serialization/src/bll/TimelineProperty.js";
-import BaseModel from "./BaseModel.js";
-import MathUtils from "./MathUtils.js";
-import { default as formatSeconds } from "haiku-ui-common/lib/helpers/formatSeconds.js";
-import logger from "haiku-serialization/src/utils/LoggerInstance.js";
+import numeral from 'numeral';
+import TimelineProperty from 'haiku-serialization/src/bll/TimelineProperty.js';
+import BaseModel from './BaseModel.js';
+import MathUtils from './MathUtils.js';
+import { default as formatSeconds } from 'haiku-ui-common/lib/helpers/formatSeconds.js';
+import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
 const DURATION_DRAG_INCREASE = 20; // Increase by this much per each duration increase
 const DURATION_DRAG_TIMEOUT = 300; // Wait this long before increasing the duration
@@ -85,17 +85,17 @@ class Timeline extends BaseModel {
 
   setTimeDisplayMode(newMode) {
     this._timeDisplayMode = newMode;
-    this.emit("update", "time-display-mode-change");
+    this.emit('update', 'time-display-mode-change');
   }
 
   toggleTimeDisplayMode() {
-    if (this.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES) {
+    if(this.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES) {
       this._timeDisplayMode = Timeline.TIME_DISPLAY_MODE.SECONDS;
     } else {
       this._timeDisplayMode = Timeline.TIME_DISPLAY_MODE.FRAMES;
     }
 
-    this.emit("update", "time-display-mode-change");
+    this.emit('update', 'time-display-mode-change');
   }
 
   getDisplayTime() {
@@ -103,8 +103,8 @@ class Timeline extends BaseModel {
       this.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES
         ? ~~this.getCurrentFrame()
         : formatSeconds(
-            (this.getCurrentFrame() * 1000) / this.getFPS() / 1000
-          ).replace("0.", ".");
+            (this.getCurrentFrame() * 1000) / this.getFPS() / 1000,
+          ).replace('0.', '.');
 
     return displayTime;
   }
@@ -131,13 +131,13 @@ class Timeline extends BaseModel {
   togglePlayback() {
     const frameInfo = this.getFrameInfo();
 
-    if (this.getCurrentFrame() >= frameInfo.maxf) {
+    if(this.getCurrentFrame() >= frameInfo.maxf) {
       this.seek(frameInfo.fri0); // Don't pause here because we'll pause below
       this.updateCurrentFrame(frameInfo.fri0);
       this.tryToLeftAlignTickerInVisibleFrameRange(frameInfo.fri0);
     }
 
-    if (this.isPlaying()) {
+    if(this.isPlaying()) {
       this.pause();
     } else {
       this.play();
@@ -161,10 +161,10 @@ class Timeline extends BaseModel {
   play() {
     this._playing = true;
     this._stopwatch = Date.now();
-    if (!this.component.project.getEnvoyClient().isInMockMode()) {
-      const channel = this.component.project.getEnvoyChannel("timeline");
+    if(!this.component.project.getEnvoyClient().isInMockMode()) {
+      const channel = this.component.project.getEnvoyChannel('timeline');
       // Don't know why, but this can be undefined in some edge case/race
-      if (channel) {
+      if(channel) {
         channel.play(this.getPrimaryKey()).then(() => {
           this.update();
         });
@@ -175,13 +175,13 @@ class Timeline extends BaseModel {
   pause(skipTransmit = false) {
     this._playing = false;
     this._lastSeek = null;
-    if (
+    if(
       !skipTransmit &&
       !this.component.project.getEnvoyClient().isInMockMode()
     ) {
-      const channel = this.component.project.getEnvoyChannel("timeline");
+      const channel = this.component.project.getEnvoyChannel('timeline');
       // Don't know why, but this can be undefined in some edge case/race
-      if (channel) {
+      if(channel) {
         channel.pause(this.getPrimaryKey()).then(finalFrame => {
           this.setCurrentFrame(finalFrame);
           this.setAuthoritativeFrame(finalFrame);
@@ -199,12 +199,12 @@ class Timeline extends BaseModel {
 
   seek(newFrame, skipTransmit, forceSeek) {
     // Don't bother with any part of this update if we're already at this frame
-    if (forceSeek || this.getCurrentFrame() !== newFrame) {
+    if(forceSeek || this.getCurrentFrame() !== newFrame) {
       this.setCurrentFrame(newFrame);
       const id = this.getPrimaryKey();
-      const tuple = id + "|" + newFrame;
+      const tuple = id + '|' + newFrame;
       const last = this._lastSeek;
-      if (forceSeek || last !== tuple) {
+      if(forceSeek || last !== tuple) {
         this._lastSeek = tuple;
         this.setAuthoritativeFrame(newFrame);
         // If we end up calling the handler here, we end up doing this:
@@ -212,20 +212,20 @@ class Timeline extends BaseModel {
         // Which calls draw, which in turn calls component.setTimelineTimeValue.
         // Which in turn calls setCurrentTime, which alls Timeline.seekToTime,
         // which in turn calls seek (this method). Beware!
-        if (
+        if(
           !skipTransmit &&
           !this.component.project.getEnvoyClient().isInMockMode()
         ) {
           const timelineChannel = this.component.project.getEnvoyChannel(
-            "timeline"
+            'timeline',
           );
           // When ActiveComponent is loaded, it calls setTimelineTimeValue() -> seek(),
           // which may occur before Envoy channels are opened, hence this check.
-          if (timelineChannel) {
+          if(timelineChannel) {
             timelineChannel.seekToFrame(id, newFrame);
           } else {
             logger.warn(
-              `[timeline] envoy timeline channel not open (seekToFrame ${id}, ${newFrame})`
+              `[timeline] envoy timeline channel not open (seekToFrame ${id}, ${newFrame})`,
             );
           }
         }
@@ -236,13 +236,13 @@ class Timeline extends BaseModel {
   seekAndPause(newFrame) {
     this.seek(newFrame, true);
     this.pause(true);
-    if (!this.component.project.getEnvoyClient().isInMockMode()) {
+    if(!this.component.project.getEnvoyClient().isInMockMode()) {
       const timelineChannel = this.component.project.getEnvoyChannel(
-        "timeline"
+        'timeline',
       );
       // When ActiveComponent is loaded, it calls setTimelineTimeValue() -> seek(),
       // which may occur before Envoy channels are opened, hence this check.
-      if (timelineChannel) {
+      if(timelineChannel) {
         timelineChannel
           .seekToFrameAndPause(this.getPrimaryKey(), newFrame)
           .then(finalFrame => {
@@ -252,18 +252,18 @@ class Timeline extends BaseModel {
           });
       } else {
         logger.warn(
-          `[timeline] envoy timeline channel not open (seekToFrameAndPause ${this.getPrimaryKey()}, ${newFrame})`
+          `[timeline] envoy timeline channel not open (seekToFrameAndPause ${this.getPrimaryKey()}, ${newFrame})`,
         );
       }
     }
   }
 
   update() {
-    if (this._playing) {
+    if(this._playing) {
       const frameInfo = this.getFrameInfo();
 
       // Prevent pointless looping
-      if (frameInfo.maxf < 1) {
+      if(frameInfo.maxf < 1) {
         this.seekAndPause(frameInfo.maxf);
         return;
       }
@@ -273,11 +273,11 @@ class Timeline extends BaseModel {
       this.updateCurrentFrame(extrapolatedFrame);
 
       // Only go as far as the maximum frame as defined in the bytecode
-      if (this.getCurrentFrame() > frameInfo.maxf) {
+      if(this.getCurrentFrame() > frameInfo.maxf) {
         // Need to unset this or the next seek will be treated as a a no-op
         this._lastSeek = null;
 
-        if (this.getRepeat()) {
+        if(this.getRepeat()) {
           this.seek(0);
           this._stopwatch = Date.now();
         } else {
@@ -293,7 +293,7 @@ class Timeline extends BaseModel {
 
   getFPS() {
     const instance = this.component.$instance;
-    if (!instance) {
+    if(!instance) {
       return 60;
     }
     return instance.getClock().getFPS();
@@ -305,8 +305,8 @@ class Timeline extends BaseModel {
 
   setMaxFrame(maxFrame) {
     this._maxFrame = maxFrame;
-    this.cache.unset("frameInfo");
-    this.emit("update", "timeline-max-frame-changed");
+    this.cache.unset('frameInfo');
+    this.emit('update', 'timeline-max-frame-changed');
     return this;
   }
 
@@ -322,7 +322,7 @@ class Timeline extends BaseModel {
 
   hoverFrame(hoveredFrame) {
     this._hoveredFrame = hoveredFrame;
-    this.emit("update", "timeline-frame-hovered");
+    this.emit('update', 'timeline-frame-hovered');
     return this;
   }
 
@@ -349,7 +349,7 @@ class Timeline extends BaseModel {
 
     this.component.$instance.controlTime(timelineName, timelineTime);
 
-    this.emit("update", "timeline-frame");
+    this.emit('update', 'timeline-frame');
 
     return this;
   }
@@ -364,7 +364,7 @@ class Timeline extends BaseModel {
 
   setDurationTrim(durationTrim) {
     this._durationTrim = durationTrim;
-    this.emit("update", "timeline-duration-trim");
+    this.emit('update', 'timeline-duration-trim');
     return this;
   }
 
@@ -374,14 +374,14 @@ class Timeline extends BaseModel {
 
   setTimelinePixelWidth(pxWidth) {
     this._timelinePixelWidth = pxWidth;
-    this.cache.unset("frameInfo");
-    this.emit("update", "timeline-timeline-pixel-width");
+    this.cache.unset('frameInfo');
+    this.emit('update', 'timeline-timeline-pixel-width');
     return this;
   }
 
   setPropertiesPixelWidth(value) {
     this._propertiesPixelWidth = value;
-    this.cache.unset("frameInfo");
+    this.cache.unset('frameInfo');
   }
 
   getPropertiesPixelWidth() {
@@ -439,7 +439,7 @@ class Timeline extends BaseModel {
    *          |scB
    */
   getFrameInfo() {
-    return this.cache.fetch("frameInfo", () => {
+    return this.cache.fetch('frameInfo', () => {
       const frameInfo = {};
 
       // Number of frames per second
@@ -457,7 +457,7 @@ class Timeline extends BaseModel {
       // The maximum frame *as defined in the bytecode*
       frameInfo.maxf = Timeline.millisecondToNearestFrame(
         frameInfo.maxms,
-        frameInfo.mspf
+        frameInfo.mspf,
       ); // Maximum frame defined in the timeline
 
       // The lowest possible frame (always 0) (this is pointless but?)
@@ -527,7 +527,7 @@ class Timeline extends BaseModel {
     const leftMostAbsolutePixel = Math.round(leftFrame * frameInfo.pxpf);
     const frameModulus = Timeline.getFrameModulus(frameInfo.pxpf);
 
-    for (let i = leftFrame; i <= rightFrame; i++) {
+    for(let i = leftFrame; i <= rightFrame; i++) {
       const pixelOffsetLeft = Math.round(i * frameInfo.pxpf);
 
       visibleFrames.push({
@@ -535,7 +535,7 @@ class Timeline extends BaseModel {
         frameModulus,
         frameNumber: i,
         leftMostAbsolutePixel,
-        pixelsPerFrame: frameInfo.pxpf
+        pixelsPerFrame: frameInfo.pxpf,
       });
     }
 
@@ -553,18 +553,18 @@ class Timeline extends BaseModel {
         leftMostAbsolutePixel,
         frameModulus,
         frameNumber,
-        pixelsPerFrame
+        pixelsPerFrame,
       }) => {
         const mapOutput = iteratee(
           frameNumber,
           pixelOffsetLeft - leftMostAbsolutePixel,
           pixelsPerFrame,
-          frameModulus
+          frameModulus,
         );
-        if (mapOutput) {
+        if(mapOutput) {
           mappedOutput.push(mapOutput);
         }
-      }
+      },
     );
 
     return mappedOutput;
@@ -586,25 +586,25 @@ class Timeline extends BaseModel {
 
     let msMarkerTmp = firstMarker;
     const msMarkers = [];
-    while (msMarkerTmp <= rightMs) {
+    while(msMarkerTmp <= rightMs) {
       msMarkers.push(msMarkerTmp);
       msMarkerTmp += msModulus;
     }
 
-    for (let i = 0; i < msMarkers.length; i++) {
+    for(let i = 0; i < msMarkers.length; i++) {
       const msMarker = msMarkers[i];
       const nearestFrame = Timeline.millisecondToNearestFrame(
         msMarker,
-        frameInfo.mspf
+        frameInfo.mspf,
       );
       const msRemainder = Math.floor(nearestFrame * frameInfo.mspf - msMarker);
 
       // TODO: handle the msRemainder case rather than ignoring it
-      if (!msRemainder) {
+      if(!msRemainder) {
         const frameOffset = nearestFrame - leftFrame;
         const pxOffset = Math.round(frameOffset * frameInfo.pxpf);
         const mapOutput = iteratee(msMarker, pxOffset, totalMs);
-        if (mapOutput) {
+        if(mapOutput) {
           mappedOutput.push(mapOutput);
         }
       }
@@ -621,8 +621,8 @@ class Timeline extends BaseModel {
 
     let frameDelta = Math.round(dragDelta / frameInfo.pxpf);
 
-    if (dragDelta > 0 && this.getDurationTrim() >= 0) {
-      if (!this._durationInterval) {
+    if(dragDelta > 0 && this.getDurationTrim() >= 0) {
+      if(!this._durationInterval) {
         // The point of this interval is to let the user hold the little element over to the
         // side for a bit before we immediately start adding frames (don't do it right away)
         this._durationInterval = setInterval(() => {
@@ -639,12 +639,12 @@ class Timeline extends BaseModel {
       return;
     }
 
-    if (this._durationInterval) {
+    if(this._durationInterval) {
       clearInterval(this._durationInterval);
     }
 
     // Don't let user drag back past last frame; and don't let them drag more than an entire width of frames
-    if (
+    if(
       frameInfo.friB + frameDelta <= frameInfo.friMax ||
       -frameDelta >= frameInfo.friB - frameInfo.friA
     ) {
@@ -681,11 +681,11 @@ class Timeline extends BaseModel {
   }
 
   handleSettingScroll(scrollValue, eventName) {
-    if (scrollValue >= 0) {
+    if(scrollValue >= 0) {
       const maxScrollValue = this.calculateMaxScrollValue();
       const frameInfo = this.getFrameInfo();
 
-      if (scrollValue >= maxScrollValue) {
+      if(scrollValue >= maxScrollValue) {
         const pixelsToMove = 40;
         const framesToMove = pixelsToMove / frameInfo.pxpf;
         this._scrollLeft = maxScrollValue;
@@ -698,16 +698,16 @@ class Timeline extends BaseModel {
         this._scrollLeft = scrollValue;
       }
 
-      this.emit("update", eventName);
+      this.emit('update', eventName);
     }
   }
 
   setScrollLeft(scrollValue) {
-    this.handleSettingScroll(scrollValue, "timeline-scroll");
+    this.handleSettingScroll(scrollValue, 'timeline-scroll');
   }
 
   setScrollLeftFromScrollbar(scrollValue) {
-    this.handleSettingScroll(scrollValue, "timeline-scroll-from-scrollbar");
+    this.handleSettingScroll(scrollValue, 'timeline-scroll-from-scrollbar');
   }
 
   getScrollLeft() {
@@ -725,7 +725,7 @@ class Timeline extends BaseModel {
 
     this.zoomByLeftAndRightEndpoints(
       left * scale + left,
-      right * scale + right
+      right * scale + right,
     );
   }
 
@@ -735,7 +735,7 @@ class Timeline extends BaseModel {
     const difference = rightTotal - leftTotal;
     const frameInfo = this.getFrameInfo();
 
-    if (
+    if(
       difference < MINIMUM_ZOOM_THRESHOLD ||
       difference > this._timelinePixelWidth * 2 ||
       rightTotal < leftTotal
@@ -743,13 +743,13 @@ class Timeline extends BaseModel {
       return;
     }
 
-    if (leftTotal < frameInfo.fri0) {
+    if(leftTotal < frameInfo.fri0) {
       leftTotal = frameInfo.fri0;
     }
 
     this.setVisibleFrameRange(leftTotal, rightTotal);
 
-    if (fromScrollbar) {
+    if(fromScrollbar) {
       const scrollValue = leftTotal * frameInfo.pxpf;
       this.setScrollLeftFromScrollbar(scrollValue);
     }
@@ -758,7 +758,7 @@ class Timeline extends BaseModel {
   updateVisibleFrameRangeByDelta(delta) {
     const l = this.getLeftFrameEndpoint() + delta;
     const r = this.getRightFrameEndpoint() + delta;
-    if (l >= 0) {
+    if(l >= 0) {
       this.setVisibleFrameRange(l, r);
     }
   }
@@ -771,7 +771,7 @@ class Timeline extends BaseModel {
     const frameInfo = this.getFrameInfo();
     const pxOffsetLeft = frame * frameInfo.pxpf;
 
-    if (
+    if(
       frame !== undefined &&
       (pxOffsetLeft > this._scrollLeft + this._timelinePixelWidth ||
         pxOffsetLeft < this._scrollLeft)
@@ -784,14 +784,14 @@ class Timeline extends BaseModel {
 
   setVisibleFrameRange(l, r, shouldNotifyUpdates = true) {
     this._visibleFrameRange = [l, r];
-    if (r > this.getMaxFrame()) {
+    if(r > this.getMaxFrame()) {
       this.setMaxFrame(r);
     }
 
-    this.cache.unset("frameInfo");
-    if (shouldNotifyUpdates) {
+    this.cache.unset('frameInfo');
+    if(shouldNotifyUpdates) {
       Keyframe.clearAllViewPositions({ component: this.component });
-      this.emit("update", "timeline-frame-range");
+      this.emit('update', 'timeline-frame-range');
     }
     return this;
   }
@@ -803,7 +803,7 @@ class Timeline extends BaseModel {
 
   updateScrubberPositionByDelta(delta) {
     let currentFrame = this.getCurrentFrame() + delta;
-    if (currentFrame <= 0) {
+    if(currentFrame <= 0) {
       currentFrame = 0;
     }
     this.component.getCurrentTimeline().seek(currentFrame);
@@ -817,27 +817,27 @@ class Timeline extends BaseModel {
   }
 
   notifyFrameActionChange() {
-    this.emit("update", "timeline-frame-action");
+    this.emit('update', 'timeline-frame-action');
   }
 }
 
 Timeline.DEFAULT_OPTIONS = {
   required: {
     component: true,
-    name: true
-  }
+    name: true,
+  },
 };
 
 BaseModel.extend(Timeline);
 
 Timeline.eachTimelineKeyframeDescriptor = function eachTimelineKeyframeDescriptor(
   timelines,
-  iteratee
+  iteratee,
 ) {
-  for (const timelineName in timelines) {
-    for (const componentSelector in timelines[timelineName]) {
-      for (const propertyName in timelines[timelineName][componentSelector]) {
-        for (const keyframeMs in timelines[timelineName][componentSelector][
+  for(const timelineName in timelines) {
+    for(const componentSelector in timelines[timelineName]) {
+      for(const propertyName in timelines[timelineName][componentSelector]) {
+        for(const keyframeMs in timelines[timelineName][componentSelector][
           propertyName
         ]) {
           iteratee(
@@ -847,7 +847,7 @@ Timeline.eachTimelineKeyframeDescriptor = function eachTimelineKeyframeDescripto
             keyframeMs,
             propertyName,
             componentSelector,
-            timelineName
+            timelineName,
           );
         }
       }
@@ -856,50 +856,50 @@ Timeline.eachTimelineKeyframeDescriptor = function eachTimelineKeyframeDescripto
 };
 
 Timeline.getFrameModulus = pxpf => {
-  if (pxpf >= 20) {
+  if(pxpf >= 20) {
     return 1;
   }
-  if (pxpf >= 15) {
+  if(pxpf >= 15) {
     return 2;
   }
-  if (pxpf >= 10) {
+  if(pxpf >= 10) {
     return 5;
   }
-  if (pxpf >= 5) {
+  if(pxpf >= 5) {
     return 10;
   }
-  if (pxpf === 4) {
+  if(pxpf === 4) {
     return 15;
   }
-  if (pxpf === 3) {
+  if(pxpf === 3) {
     return 20;
   }
-  if (pxpf === 2) {
+  if(pxpf === 2) {
     return 30;
   }
   return 50;
 };
 
 Timeline.getMillisecondModulus = pxpf => {
-  if (pxpf >= 20) {
+  if(pxpf >= 20) {
     return 25;
   }
-  if (pxpf >= 15) {
+  if(pxpf >= 15) {
     return 50;
   }
-  if (pxpf >= 10) {
+  if(pxpf >= 10) {
     return 100;
   }
-  if (pxpf >= 5) {
+  if(pxpf >= 5) {
     return 200;
   }
-  if (pxpf >= 4) {
+  if(pxpf >= 4) {
     return 250;
   }
-  if (pxpf >= 3) {
+  if(pxpf >= 3) {
     return 500;
   }
-  if (pxpf >= 2) {
+  if(pxpf >= 2) {
     return 1000;
   }
   return 5000;
@@ -907,39 +907,39 @@ Timeline.getMillisecondModulus = pxpf => {
 
 Timeline.millisecondToNearestFrame = function millisecondToNearestFrame(
   msValue,
-  mspf
+  mspf,
 ) {
   return Math.round(msValue / mspf);
 };
 
 Timeline.UNIT_MAPPING = {
-  "translation.x": "px",
-  "translation.y": "px",
-  "translation.z": "px",
-  "rotation.z": "rad",
-  "rotation.y": "rad",
-  "rotation.x": "rad",
-  "scale.x": "",
-  "scale.y": "",
-  opacity: "",
-  shown: "",
-  backgroundColor: "",
-  color: "",
-  fill: "",
-  stroke: ""
+  'translation.x': 'px',
+  'translation.y': 'px',
+  'translation.z': 'px',
+  'rotation.z': 'rad',
+  'rotation.y': 'rad',
+  'rotation.x': 'rad',
+  'scale.x': '',
+  'scale.y': '',
+  opacity: '',
+  shown: '',
+  backgroundColor: '',
+  color: '',
+  fill: '',
+  stroke: '',
 };
 
 Timeline.inferUnitOfValue = function inferUnitOfValue(propertyName) {
   const unit = Timeline.UNIT_MAPPING[propertyName];
-  if (unit) {
+  if(unit) {
     return unit;
   }
-  return "";
+  return '';
 };
 
 Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
   timelineRow,
-  options
+  options,
 ) {
   const componentId = timelineRow.element.getComponentId();
 
@@ -979,7 +979,7 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     fallbackValue,
     reifiedBytecode,
     hostInstance,
-    hostStates
+    hostStates,
   );
 
   const baselineCurve = TimelineProperty.getBaselineCurve(
@@ -991,7 +991,7 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     fallbackValue,
     reifiedBytecode,
     hostInstance,
-    hostStates
+    hostStates,
   );
 
   const computedValue = TimelineProperty.getComputedValue(
@@ -1003,7 +1003,7 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     fallbackValue,
     reifiedBytecode,
     hostInstance,
-    hostStates
+    hostStates,
   );
 
   const assignedValueObject = TimelineProperty.getAssignedValueObject(
@@ -1012,7 +1012,7 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     propertyName,
     currentTimelineName,
     currentTimelineTime,
-    serializedBytecode
+    serializedBytecode,
   );
 
   const assignedValue = assignedValueObject && assignedValueObject.value;
@@ -1023,57 +1023,57 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     propertyName,
     currentTimelineName,
     currentTimelineTime,
-    serializedBytecode
+    serializedBytecode,
   );
 
   const bookendValue = bookendValueObject && bookendValueObject.value;
 
   let prettyValue;
-  if (assignedValue !== undefined) {
-    if (
+  if(assignedValue !== undefined) {
+    if(
       assignedValue &&
-      typeof assignedValue === "object" &&
+      typeof assignedValue === 'object' &&
       assignedValue.__function
     ) {
       let cleanValue = Expression.retToEq(assignedValue.__function.body.trim());
 
-      if (cleanValue.length > 6) {
-        cleanValue = cleanValue.slice(0, 6) + "…";
+      if(cleanValue.length > 6) {
+        cleanValue = cleanValue.slice(0, 6) + '…';
       }
 
       prettyValue = {
         text: cleanValue,
-        style: { whiteSpace: "nowrap" },
-        render: "react"
+        style: { whiteSpace: 'nowrap' },
+        render: 'react',
       };
     }
   }
 
-  if (prettyValue === undefined) {
-    if (assignedValue === undefined && bookendValue !== undefined) {
-      if (
+  if(prettyValue === undefined) {
+    if(assignedValue === undefined && bookendValue !== undefined) {
+      if(
         bookendValue &&
-        typeof bookendValue === "object" &&
+        typeof bookendValue === 'object' &&
         bookendValue.__function
       ) {
         prettyValue = {
-          text: "⚡",
-          style: { fontSize: "11px" },
-          render: "react"
+          text: '⚡',
+          style: { fontSize: '11px' },
+          render: 'react',
         };
       }
     }
   }
 
-  if (prettyValue === undefined) {
+  if(prettyValue === undefined) {
     const formattedPrettyValue =
-      typeof computedValue === "number"
-        ? numeral(computedValue || 0).format(options.numFormat || "0,0[.]0")
+      typeof computedValue === 'number'
+        ? numeral(computedValue || 0).format(options.numFormat || '0,0[.]0')
         : computedValue;
 
     prettyValue = {
       // TODO: remove this check when https://github.com/adamwdraper/Numeral-js/pull/629 is merged
-      text: isNaN(formattedPrettyValue) ? computedValue : formattedPrettyValue
+      text: isNaN(formattedPrettyValue) ? computedValue : formattedPrettyValue,
     };
   }
 
@@ -1093,20 +1093,20 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(
     computedValue,
     assignedValue,
     bookendValue,
-    prettyValue
+    prettyValue,
   };
 };
 
-Timeline.DEFAULT_NAME = "Default";
+Timeline.DEFAULT_NAME = 'Default';
 
 Timeline.TIME_DISPLAY_MODE = {
-  FRAMES: "frames",
-  SECONDS: "seconds"
+  FRAMES: 'frames',
+  SECONDS: 'seconds',
 };
 
 export default Timeline;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-import Expression from "./Expression.js";
-import Keyframe from "./Keyframe.js";
-import Property from "./Property.js";
+import Expression from './Expression.js';
+import Keyframe from './Keyframe.js';
+import Property from './Property.js';

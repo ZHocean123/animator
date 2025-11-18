@@ -2,26 +2,26 @@ import parseCode from './parseCode.js';
 import traverseAST from './traverseAST.js';
 import generateCode from './generateCode.js';
 
-function remapSource (source, remapper) {
-  if (!remapper) {
+function remapSource(source, remapper) {
+  if(!remapper) {
     return source;
   }
 
   // Otherwise, scan for imports and replace them with the local to that lib
   const ast = parseCode(source);
   traverseAST(ast, (node) => {
-    if (node.type === 'ImportDeclaration') {
-      if (node.source && node.source.type === 'StringLiteral') {
+    if(node.type === 'ImportDeclaration') {
+      if(node.source && node.source.type === 'StringLiteral') {
         node.source.value = remapper(node.source.value);
       }
-    } else if (node.type === 'CallExpression') {
-      if (node.callee && node.callee.type === 'Identifier' && node.callee.name === 'require') {
+    } else if(node.type === 'CallExpression') {
+      if(node.callee && node.callee.type === 'Identifier' && node.callee.name === 'require') {
         const dep = node.arguments[0];
-        if (dep && dep.type === 'StringLiteral') {
+        if(dep && dep.type === 'StringLiteral') {
           dep.value = remapper(dep.value);
-        } else if (dep.type === 'TemplateLiteral') {
+        } else if(dep.type === 'TemplateLiteral') {
           const part = dep.quasis[0];
-          if (part && part.value) {
+          if(part && part.value) {
             part.value.raw = remapper(part.value.raw);
           }
         }

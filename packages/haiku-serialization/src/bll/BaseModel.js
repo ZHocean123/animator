@@ -6,8 +6,8 @@ import DiskStorage from './storage/DiskStorage.js';
 import CryptoUtils from './../utils/CryptoUtils.js';
 import EmitterManager from './../utils/EmitterManager.js';
 import logger from './../utils/LoggerInstance.js';
-import expressionToRO from "@haiku/core/lib/reflection/expressionToRO.js";
-import reifyRO from "@haiku/core/lib/reflection/reifyRO.js";
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO.js';
+import reifyRO from '@haiku/core/lib/reflection/reifyRO.js';
 
 const SYNC_DEBOUNCE_TIME = 100; // ms
 
@@ -42,26 +42,26 @@ const SYNC_DEBOUNCE_TIME = 100; // ms
  *  of tangled React-specific UI logic that had become almost impossible to work with.)
  */
 class BaseModel extends EventEmitter {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super();
 
     EmitterManager.extend(this);
 
-    if (!this.constructor.extended) {
+    if(!this.constructor.extended) {
       throw new Error(`You must call BaseModel.extend(${this.constructor.name})`);
     }
 
-    if (!this.options) {
+    if(!this.options) {
       this.options = {};
     }
 
     this.setOptions(opts);
 
     // If validation is off, we know what we're doing and will add required props later
-    if (!this.options.validationOff) {
-      if (this.options.required) {
-        for (const requirement in this.options.required) {
-          if (props[requirement] === undefined) {
+    if(!this.options.validationOff) {
+      if(this.options.required) {
+        for(const requirement in this.options.required) {
+          if(props[requirement] === undefined) {
             throw new Error(`Property '${requirement}' is required`);
           }
         }
@@ -87,7 +87,7 @@ class BaseModel extends EventEmitter {
     // Assign initial attributes. Note that __sync is falsy until later
     this.assign(props);
 
-    if (!this.getPrimaryKey()) {
+    if(!this.getPrimaryKey()) {
       this.setPrimaryKey(this.generateUniqueId());
     }
 
@@ -105,7 +105,7 @@ class BaseModel extends EventEmitter {
     this.__destroyed = null;
     this._updateReceivers = {};
 
-    if (this.afterInitialize) {
+    if(this.afterInitialize) {
       this.afterInitialize();
     }
 
@@ -126,8 +126,8 @@ class BaseModel extends EventEmitter {
    * @param cb
    * @returns {function()}
    */
-  registerUpdateReceiver (source, cb) {
-    if (typeof cb !== 'function') {
+  registerUpdateReceiver(source, cb) {
+    if(typeof cb !== 'function') {
       return () => {};
     }
     this._updateReceivers[source] = cb;
@@ -136,85 +136,85 @@ class BaseModel extends EventEmitter {
     };
   }
 
-  notifyUpdateReceivers (what) {
+  notifyUpdateReceivers(what) {
     Object.keys(this._updateReceivers).forEach((receiver) => {
       this._updateReceivers[receiver](what);
     });
   }
 
-  emit (...args) {
+  emit(...args) {
     super.emit.call(this, ...args);
     this.constructor.emit(args[0], this, ...args.slice(1));
   }
 
-  mark () {
+  mark() {
     // This gets set to `false` whenever we are upserted (constructed or initialized)
     this.__marked = true;
     return true;
   }
 
-  sweep () {
-    if (this.__marked) {
+  sweep() {
+    if(this.__marked) {
       this.destroy();
       return true;
     }
     return false;
   }
 
-  generateUniqueId () {
+  generateUniqueId() {
     return lodash.uniqueId(this.constructor.name);
   }
 
-  forceUpdate () {
+  forceUpdate() {
     this.setUpdateTimestamp();
     this.cache.clear();
     return this;
   }
 
-  setUpdateTimestamp () {
+  setUpdateTimestamp() {
     this.__updated = Date.now();
     return this;
   }
 
-  getUpdateTimestamp () {
+  getUpdateTimestamp() {
     return this.__updated;
   }
 
-  getClassName () {
+  getClassName() {
     return this.constructor.name;
   }
 
-  getPrimaryKeyShort () {
+  getPrimaryKeyShort() {
     const key = this.getPrimaryKey();
     const parts = key.split(':');
     return parts[parts.length - 1];
   }
 
-  getPrimaryKey () {
+  getPrimaryKey() {
     return this[this.constructor.config.primaryKey];
   }
 
-  getKeySHA () {
+  getKeySHA() {
     return CryptoUtils.sha256(`${this.getClassName()}-${this.getPrimaryKey()}`);
   }
 
-  toString () {
+  toString() {
     return this.getPrimaryKey();
   }
 
-  setPrimaryKey (value) {
+  setPrimaryKey(value) {
     this[this.constructor.config.primaryKey] = value;
     return this;
   }
 
-  setOptions (opts) {
+  setOptions(opts) {
     Object.assign(this.options, this.constructor.DEFAULT_OPTIONS, opts);
   }
 
-  assign (props) {
-    if (props) {
-      for (const key in props) {
-        if (props[key] !== undefined) {
+  assign(props) {
+    if(props) {
+      for(const key in props) {
+        if(props[key] !== undefined) {
           this.set(key, props[key]);
         }
       }
@@ -224,12 +224,12 @@ class BaseModel extends EventEmitter {
     return this;
   }
 
-  set (key, value) {
+  set(key, value) {
     this[key] = value;
     this.syncDebounced();
   }
 
-  destroy () {
+  destroy() {
     this.removeFromParent();
     this.constructor.remove(this);
     this.constructor.clearCaches();
@@ -237,37 +237,37 @@ class BaseModel extends EventEmitter {
     this.syncDebounced();
   }
 
-  isDestroyed () {
+  isDestroyed() {
     return !!this.__destroyed;
   }
 
-  hasAll (criteria) {
-    if (!criteria) {
+  hasAll(criteria) {
+    if(!criteria) {
       return true;
     }
 
-    for (const key in criteria) {
-      if (criteria[key] !== this[key]) {
+    for(const key in criteria) {
+      if(criteria[key] !== this[key]) {
         return false;
       }
     }
     return true;
   }
 
-  hasAny (criteria) {
-    for (const key in criteria) {
-      if (criteria[key] === this[key]) {
+  hasAny(criteria) {
+    for(const key in criteria) {
+      if(criteria[key] === this[key]) {
         return true;
       }
     }
     return false;
   }
 
-  insertChild (entity) {
+  insertChild(entity) {
     const found = [];
 
     this.children.forEach((child, index) => {
-      if (
+      if(
         child && (
           child === entity ||
           child.getPrimaryKey() === entity.getPrimaryKey()
@@ -277,12 +277,12 @@ class BaseModel extends EventEmitter {
       }
     });
 
-    if (found.length > 0) {
+    if(found.length > 0) {
       found.forEach(({child, index}) => {
         // Replace the existing one with the new one, in the same slot
         this.children.splice(index, 1, entity);
         // If the child entity is garbage, collect it
-        if (child !== entity) {
+        if(child !== entity) {
           child.destroy();
         }
       });
@@ -295,13 +295,13 @@ class BaseModel extends EventEmitter {
     entity.parent = this;
   }
 
-  removeChild (entity) {
-    if (!this.children) {
+  removeChild(entity) {
+    if(!this.children) {
       return;
     }
 
-    for (let i = this.children.length - 1; i >= 0; i--) {
-      if (
+    for(let i = this.children.length - 1; i >= 0; i--) {
+      if(
         this.children[i] === entity ||
         this.children[i].getPrimaryKey() === entity.getPrimaryKey()
       ) {
@@ -310,8 +310,8 @@ class BaseModel extends EventEmitter {
     }
   }
 
-  removeFromParent () {
-    if (this.parent) {
+  removeFromParent() {
+    if(this.parent) {
       this.parent.removeChild(this);
     }
   }
@@ -322,44 +322,44 @@ class BaseModel extends EventEmitter {
    * @param channel {String} Channel to subscribe to
    * @param fn {Function} Handler function to remove
    */
-  off (channel, fn) {
+  off(channel, fn) {
     return this.removeListener(channel, fn);
   }
 
-  assertStorable () {
-    if (!this.constructor.toPOJO) {
+  assertStorable() {
+    if(!this.constructor.toPOJO) {
       throw new Error(`BaseModel subclass must implement 'toPOJO'`);
     }
 
-    if (!this.constructor.fromPOJO) {
+    if(!this.constructor.fromPOJO) {
       throw new Error(`BaseModel subclass must implement 'fromPOJO'`);
     }
 
-    if (!BaseModel.storage) {
+    if(!BaseModel.storage) {
       throw new Error(`BaseModel has no 'storage' configured`);
     }
 
-    if (!this.getStorage()) {
+    if(!this.getStorage()) {
       throw new Error(`BaseModel has no '${this.getStorageType()} storage' configured`);
     }
   }
 
-  getStorageType () {
+  getStorageType() {
     return this.__storage;
   }
 
-  setStorageType (type) {
-    if (!BaseModel.storage[type]) {
+  setStorageType(type) {
+    if(!BaseModel.storage[type]) {
       throw new Error(`BaseModel has no storage module '${type}'`);
     }
     this.__storage = type;
   }
 
-  getStorageModule () {
+  getStorageModule() {
     return BaseModel.storage[this.getStorageType()];
   }
 
-  store () {
+  store() {
     this.assertStorable();
     const pojo = this.constructor.toPOJO(this);
     const key = `${this.getClassName()}-${this.getKeySHA()}`;
@@ -367,18 +367,18 @@ class BaseModel extends EventEmitter {
     return storage.store(key, pojo);
   }
 
-  unstore () {
+  unstore() {
     this.assertStorable();
     const key = `${this.getClassName()}-${this.getKeySHA()}`;
     const storage = this.getStorageModule();
     const pojo = storage.unstore(key);
-    if (pojo) {
+    if(pojo) {
       this.constructor.fromPOJO(pojo);
     }
   }
 
-  sync () {
-    if (
+  sync() {
+    if(
       // Don't send syncs until we're globally ready to do so
       !BaseModel.__sync ||
       // Don't actually transmit if we aren't sync-ready yet
@@ -400,7 +400,7 @@ class BaseModel extends EventEmitter {
     ));
   }
 
-  getWireReadyPayload () {
+  getWireReadyPayload() {
     return {
       className: this.getClassName(),
       primaryKey: this.getPrimaryKey(),
@@ -408,7 +408,7 @@ class BaseModel extends EventEmitter {
     };
   }
 
-  getWireReadyObjectAttributes () {
+  getWireReadyObjectAttributes() {
     return BaseModel.getWireReadyObjectAttributes(this, true, true);
   }
 }
@@ -423,21 +423,21 @@ BaseModel.__sync = false; // Caution: singleton
 
 BaseModel.receiveSync = ({syncIntent, className, primaryKey, objectAttributes}) => {
   // Don't try to receive any syncs if we aren't ready at all yet
-  if (!BaseModel.__sync) {
+  if(!BaseModel.__sync) {
     logger.warn(`BaseModel sync not ready to ${syncIntent} ${className} ${primaryKey}`);
     return;
   }
 
-  if (!BaseModel.SYNC_INTENTS[syncIntent]) {
+  if(!BaseModel.SYNC_INTENTS[syncIntent]) {
     throw new Error(`BaseModel sync intent invalid; cannot receive`);
   }
 
   let instance;
 
-  switch (syncIntent) {
+  switch(syncIntent) {
     case BaseModel.SYNC_INTENTS.upsert:
       instance = BaseModel.upsertFromWireObjectAttributes({className, primaryKey, objectAttributes});
-      if (instance) {
+      if(instance) {
         instance.emit('local-model:handle-sync', {syncIntent});
       } else {
         logger.warn(`BaseModel sync could not ${syncIntent} ${className} ${primaryKey}`);
@@ -446,7 +446,7 @@ BaseModel.receiveSync = ({syncIntent, className, primaryKey, objectAttributes}) 
 
     case BaseModel.SYNC_INTENTS.destroy:
       instance = BaseModel.instanceFromModelSpec({className, primaryKey});
-      if (instance) {
+      if(instance) {
         instance.destroy();
         instance.emit('local-model:handle-sync', {syncIntent});
       } else {
@@ -459,18 +459,18 @@ BaseModel.receiveSync = ({syncIntent, className, primaryKey, objectAttributes}) 
 BaseModel.upsertFromWireObjectAttributes = ({className, primaryKey, objectAttributes}) => {
   const klass = BaseModel.getModelClassByClassName(className);
 
-  if (!klass) {
+  if(!klass) {
     // We may not have a class yet if we're not fully bootstrapped (race condition)
     return;
   }
 
   const upsertSpec = {};
 
-  for (const attrKey in objectAttributes) {
+  for(const attrKey in objectAttributes) {
     const attrVal = objectAttributes[attrKey];
 
     // Transform a reference to an instance into the instance itself
-    if (attrVal && attrVal.__model) {
+    if(attrVal && attrVal.__model) {
       upsertSpec[attrKey] = BaseModel.instanceFromModelSpec(attrVal.__model);
       continue;
     }
@@ -492,7 +492,7 @@ BaseModel.instanceFromModelSpec = ({className, primaryKey}) => {
 };
 
 BaseModel.getWireReadyObjectAttributes = (obj, isBase = false, goDeep = false) => {
-  if (
+  if(
     typeof obj === 'boolean' ||
     typeof obj === 'number' ||
     typeof obj === 'string' ||
@@ -502,16 +502,16 @@ BaseModel.getWireReadyObjectAttributes = (obj, isBase = false, goDeep = false) =
     return expressionToRO(obj);
   }
 
-  if (goDeep) {
-    if (Array.isArray(obj)) {
+  if(goDeep) {
+    if(Array.isArray(obj)) {
       return obj.map(BaseModel.getWireReadyObjectAttributes);
     }
 
     const out = {};
 
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (
+    for(const key in obj) {
+      if(obj.hasOwnProperty(key)) {
+        if(
           // Exclude any property blacklisted as reserved
           !RESERVED_PROPERTY_KEYS[key] &&
           // Exclude any property that matches our primary key name
@@ -520,7 +520,7 @@ BaseModel.getWireReadyObjectAttributes = (obj, isBase = false, goDeep = false) =
           const result = BaseModel.getWireReadyObjectAttributes(obj[key], false, false);
 
           // Undefined indicates no change when upserting, to we just exclude these
-          if (result !== undefined) {
+          if(result !== undefined) {
             out[key] = result;
           }
         }
@@ -530,7 +530,7 @@ BaseModel.getWireReadyObjectAttributes = (obj, isBase = false, goDeep = false) =
     return out;
   }
 
-  if (obj instanceof BaseModel && !goDeep) {
+  if(obj instanceof BaseModel && !goDeep) {
     return {
       __model: {
         className: obj.getClassName(),
@@ -577,8 +577,8 @@ BaseModel.storage = {
 
 BaseModel.extensions = [];
 
-BaseModel.extend = function extend (klass, opts) {
-  if (!klass.extended) {
+BaseModel.extend = function extend(klass, opts) {
+  if(!klass.extended) {
     createCollection(klass, opts);
 
     klass.emitter = new EventEmitter();
@@ -613,8 +613,8 @@ const createCollection = (klass, opts) => {
   const hashmapCollection = {};
 
   klass.idx = (instance) => {
-    for (let i = 0; i < arrayCollection.length; i++) {
-      if (arrayCollection[i] === instance) {
+    for(let i = 0; i < arrayCollection.length; i++) {
+      if(arrayCollection[i] === instance) {
         return i;
       }
     }
@@ -622,7 +622,7 @@ const createCollection = (klass, opts) => {
   };
 
   klass.setInstancePrimaryKey = (instance, primaryKey) => {
-    if (klass.has(instance)) {
+    if(klass.has(instance)) {
       delete hashmapCollection[instance.getPrimaryKey()];
       instance.setPrimaryKey(primaryKey);
       hashmapCollection[instance.getPrimaryKey()] = instance;
@@ -636,7 +636,7 @@ const createCollection = (klass, opts) => {
   klass.has = (instance) => hashmapCollection[instance.getPrimaryKey()] !== undefined;
 
   klass.add = (instance) => {
-    if (!klass.has(instance)) {
+    if(!klass.has(instance)) {
       arrayCollection.push(instance);
       hashmapCollection[instance.getPrimaryKey()] = instance;
     }
@@ -648,7 +648,7 @@ const createCollection = (klass, opts) => {
     // up adding multiple elements to the collection with the same id, which occurred
     // due to an implementation detail in Keyframe when dragging to 0
     const idx = klass.idx(instance);
-    if (idx !== -1) {
+    if(idx !== -1) {
       arrayCollection.splice(idx, 1);
     }
     delete hashmapCollection[instance.getPrimaryKey()];
@@ -685,7 +685,7 @@ const createCollection = (klass, opts) => {
 
     const found = klass.findById(primaryKey); // Criteria in case of id collisions :/
 
-    if (found) {
+    if(found) {
       found.assign(props);
       found.setOptions(opts);
 
@@ -693,7 +693,7 @@ const createCollection = (klass, opts) => {
       found.__initialized = Date.now();
       found.__marked = false;
 
-      if (found.afterInitialize) {
+      if(found.afterInitialize) {
         found.afterInitialize();
       }
 
@@ -716,7 +716,7 @@ const createCollection = (klass, opts) => {
   };
 
   klass.purge = () => {
-    while (arrayCollection.length > 0) {
+    while(arrayCollection.length > 0) {
       arrayCollection[0].destroy();
     }
   };

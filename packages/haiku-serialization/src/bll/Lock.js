@@ -15,21 +15,21 @@ const LOCKS = {
 const emitter = new EventEmitter();
 
 const request = (key, emit, cb) => {
-  if (!key) {
+  if(!key) {
     throw new Error('Lock key must be truthy');
   }
 
-  if (ACTIVE_LOCKS[key]) {
+  if(ACTIVE_LOCKS[key]) {
     return setTimeout(() => request(key, emit, cb), 0);
   }
 
   ACTIVE_LOCKS[key] = true;
-  if (emit) {
+  if(emit) {
     emitter.emit('lock-on', key);
   }
 
   const release = () => {
-    if (emit) {
+    if(emit) {
       emitter.emit('lock-off', key);
     }
     ACTIVE_LOCKS[key] = false;
@@ -42,12 +42,12 @@ const awaitFree = (keys, cb) => {
   let anyLocked = false;
 
   keys.forEach((key) => {
-    if (ACTIVE_LOCKS[key]) {
+    if(ACTIVE_LOCKS[key]) {
       anyLocked = true;
     }
   });
 
-  if (anyLocked) {
+  if(anyLocked) {
     return setTimeout(() => awaitFree(keys, cb), 100);
   }
 

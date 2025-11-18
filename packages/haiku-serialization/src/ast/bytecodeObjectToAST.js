@@ -1,6 +1,11 @@
-const objectToOAST = require('./objectToOAST');
+/**
+ * 将字节码对象转换为AST
+ * @module bytecodeObjectToAST
+ */
 
-function buildRequireStatement (identifier, modpath) {
+import objectToOAST from './objectToOAST.js';
+
+function buildRequireStatement(identifier, modpath) {
   return {
     type: 'VariableDeclaration',
     kind: 'var',
@@ -28,16 +33,16 @@ function buildRequireStatement (identifier, modpath) {
   };
 }
 
-function buildRequireStatementsFromImports (imports) {
+function buildRequireStatementsFromImports(imports) {
   const statements = [buildRequireStatement('Haiku', '@haiku/core')];
-  for (const modpath in imports) {
+  for(const modpath in imports) {
     const identifier = imports[modpath];
     statements.push(buildRequireStatement(identifier, modpath));
   }
   return statements;
 }
 
-module.exports = function bytecodeObjectToAST (
+export default function bytecodeObjectToAST(
   bytecode,
   imports = {},
   frontMatterNodes = [],
@@ -81,4 +86,4 @@ module.exports = function bytecodeObjectToAST (
   };
 
   return ast;
-};
+}

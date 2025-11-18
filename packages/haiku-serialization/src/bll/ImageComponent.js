@@ -9,36 +9,36 @@ const BYTECODE = require(MODPATH);
  * @class ImageComponent
  */
 class ImageComponent extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
     this.modpath = MODPATH;
     this.identifier = 'image';
   }
 
-  getTitle () {
+  getTitle() {
     const parts = this.relpath.split(path.sep);
     const last = parts[parts.length - 1];
     const basename = path.basename(last, path.extname(last));
     return basename;
   }
 
-  getAbspath () {
+  getAbspath() {
     return path.join(this.project.getFolder(), this.relpath);
   }
 
-  getLocalHref () {
+  getLocalHref() {
     return `web+haikuroot://${path.normalize(this.relpath)}`;
   }
 
-  queryImageSize (cb) {
+  queryImageSize(cb) {
     return imageSize(this.getAbspath(), cb);
   }
 
-  getReifiedBytecode () {
+  getReifiedBytecode() {
     return BYTECODE;
   }
 
-  doesMatchOrHostComponent (other, cb) {
+  doesMatchOrHostComponent(other, cb) {
     // Stub. There's not a case where the user is directly editing the image component's definition.
     return cb(null, false);
   }

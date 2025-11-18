@@ -1,4 +1,5 @@
-var HaikuVueAdapter = require('@haiku/core/dom/vue')
-var HaikuVueComponent = HaikuVueAdapter(require('./dom'))
+import HaikuVueAdapter from '@haiku/core/dom/vue/index.js'
+import domModule from './dom.js'
+var HaikuVueComponent = HaikuVueAdapter(domModule)
 if (HaikuVueComponent.default) HaikuVueComponent = HaikuVueComponent.default
-module.exports = HaikuVueComponent
+export default HaikuVueComponent

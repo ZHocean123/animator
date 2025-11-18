@@ -1,7 +1,13 @@
-let parseCode = require('./parseCode');
-let wrapInHaikuInject = require('./wrapInHaikuInject');
+/**
+ * 将函数转换为AST表达式
+ * @param {Function} fn - 函数
+ * @returns {Object} AST表达式节点
+ */
 
-function functionToASTExpression (fn) {
+import parseCode from './parseCode.js';
+import wrapInHaikuInject from './wrapInHaikuInject.js';
+
+function functionToASTExpression(fn) {
   const str = fn.toString().trim();
   const wrapped = '(\n' + str + '\n)';
   const ast = parseCode(wrapped);
@@ -10,7 +16,7 @@ function functionToASTExpression (fn) {
   // TODO: I'm not sure where this should really belong, but this seems ok for now?
   // If we have a function that has been flagged an 'injectee' we need to wrap it in
   // a Haiku.inject expression before it is written to the final file
-  if (fn.injectee) {
+  if(fn.injectee) {
     // Note that this assumes the function arguments are *Identifiers*, not ObjectPatterns
     return wrapInHaikuInject(expr);
   }
@@ -18,4 +24,4 @@ function functionToASTExpression (fn) {
   return expr;
 }
 
-module.exports = functionToASTExpression;
+export default functionToASTExpression;

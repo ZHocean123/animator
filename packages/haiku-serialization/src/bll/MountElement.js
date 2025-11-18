@@ -12,10 +12,10 @@ const BaseModel = require('./BaseModel');
  *  when the previous mount has been removed.
  */
 class MountElement extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
-    if (typeof window !== 'undefined') {
+    if(typeof window !== 'undefined') {
       this._$el = window.document.createElement('div');
       this._$el.setAttribute('id', this.getRenderId());
       this._$el.setAttribute('class', 'haiku-component-mount');
@@ -36,7 +36,7 @@ class MountElement extends BaseModel {
    * @method $el
    * @description Return the DOM element for this mount.
    */
-  $el () {
+  $el() {
     return this._$el;
   }
 
@@ -44,24 +44,24 @@ class MountElement extends BaseModel {
    * @method remountInto
    * @description Given a host DOM node, inject our render target DOM node into it
    */
-  remountInto ($host) {
+  remountInto($host) {
     // The caller may call ac.mountApplication without a node (headless),
     // in which case just skip this
-    if (!$host) {
+    if(!$host) {
       return null;
     }
 
     const $el = this.$el();
 
     // Relatedly, we also might be headless ourselves, in which case, skip
-    if ($el) {
+    if($el) {
       // First clear us out of our existing parent
-      if ($el.parentNode) {
+      if($el.parentNode) {
         $el.parentNode.removeChild($el);
       }
 
       // Then clear the given element (just to be safe)
-      while ($host.firstChild) {
+      while($host.firstChild) {
         $host.removeChild($host.firstChild);
       }
 
@@ -70,8 +70,8 @@ class MountElement extends BaseModel {
     }
   }
 
-  getInnerHTML () {
-    if (this.$el()) {
+  getInnerHTML() {
+    if(this.$el()) {
       return this.$el().innerHTML;
     }
 
@@ -79,8 +79,8 @@ class MountElement extends BaseModel {
     return '<div></div>';
   }
 
-  getBoundingClientRect () {
-    if (this.$el()) {
+  getBoundingClientRect() {
+    if(this.$el()) {
       const rect = this.$el().getBoundingClientRect();
 
       // Wrap in an object so it's serializable
@@ -106,19 +106,19 @@ class MountElement extends BaseModel {
     };
   }
 
-  setClass (klassName) {
-    if (this.$el()) {
+  setClass(klassName) {
+    if(this.$el()) {
       this.$el().className = `${klassName}`;
     }
   }
 
-  setOpacity (opacity) {
-    if (this.$el()) {
+  setOpacity(opacity) {
+    if(this.$el()) {
       this.$el().style.opacity = `${opacity}`;
     }
   }
 
-  getRenderId () {
+  getRenderId() {
     return `haiku-mount-${this.getPrimaryKey()}`;
   }
 
@@ -126,8 +126,8 @@ class MountElement extends BaseModel {
    * @method clear
    * @description Clear all children from this mount DOM element
    */
-  clear () {
-    while (this.$el() && this.$el().firstChild) {
+  clear() {
+    while(this.$el() && this.$el().firstChild) {
       this.$el().removeChild(this.$el().firstChild);
     }
   }

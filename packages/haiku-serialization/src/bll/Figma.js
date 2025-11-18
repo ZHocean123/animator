@@ -48,16 +48,16 @@ const PHONY_FIGMA_FILE = 'phony-haiku-helper-file.svg';
  *  Collection of static class methods and constants related to Figma assets.
  */
 class Figma {
-  constructor ({token, requestLib = request}) {
+  constructor({token, requestLib = request}) {
     this._token = token;
     this._requestLib = requestLib;
   }
 
-  set token (token) {
+  set token(token) {
     this._token = token;
   }
 
-  get token () {
+  get token() {
     return this._token;
   }
 
@@ -68,7 +68,7 @@ class Figma {
    * @param {string} params.projectFolder
    * @returns {Promise}
    */
-  importSVG ({url, projectFolder}) {
+  importSVG({url, projectFolder}) {
     const {id} = Figma.parseProjectURL(url);
     let assetBaseFolder;
 
@@ -102,7 +102,7 @@ class Figma {
    * @param {string} id
    * @returns {Promise}
    */
-  fetchDocument (id) {
+  fetchDocument(id) {
     const uri = API_BASE + 'files/' + id;
     return this.request({uri});
   }
@@ -111,7 +111,7 @@ class Figma {
    * Create necessary folders
    * @param {string} assetBaseFolder
    */
-  createFolders (assetBaseFolder) {
+  createFolders(assetBaseFolder) {
     return new Promise((resolve, reject) => {
       try {
         fse.emptyDirSync(assetBaseFolder);
@@ -128,7 +128,7 @@ class Figma {
         fse.ensureFileSync(path.join(sliceFolder, PHONY_FIGMA_FILE));
 
         resolve(true);
-      } catch (error) {
+      } catch(error) {
         reject(error);
       }
     });
@@ -140,12 +140,12 @@ class Figma {
    * @param {String} assetBaseFolder
    * @returns {Promise}
    */
-  writeSVGInDisk (elements, assetBaseFolder) {
+  writeSVGInDisk(elements, assetBaseFolder) {
     logger.info('[figma] writing SVGs in disk');
 
     return Promise.all(
       elements.map((element) => {
-        if (element) {
+        if(element) {
           // Mimic the behaior of our Sketch importer: move to the slices folder
           // everything that is marked for export
           const folder = FOLDERS[element.type] || FOLDERS.SLICE;
@@ -161,7 +161,7 @@ class Figma {
    * with actual SVG markup as a string property
    * @param {Array} elements
    */
-  getSVGContents (elements) {
+  getSVGContents(elements) {
     logger.info('[figma] downloading SVGs from cloud');
 
     const requests = elements.map((element) => {
@@ -186,11 +186,11 @@ class Figma {
    * @param {string} id
    * @returns {Promise}
    */
-  getSVGLinks (elements, id) {
+  getSVGLinks(elements, id) {
     return new Promise((resolve, reject) => {
       let ids = elements.map((element) => element.id);
 
-      if (ids.length === 0) {
+      if(ids.length === 0) {
         return reject({
           status: 424,
           err: 'It looks like the Figma document you imported doesn\'t have any groups or slices. Try adding some and re-syncing.',
@@ -201,7 +201,7 @@ class Figma {
       // for now it doesn't make sense to import a lot of items anyway due to performance
       // reasons. [Look in Asana][1] for the related ticket
       // [1]: https://app.asana.com/0/506410768732347/781835844490777
-      if (ids.length > MAX_ITEMS_TO_IMPORT) {
+      if(ids.length > MAX_ITEMS_TO_IMPORT) {
         ids = ids.slice(0, MAX_ITEMS_TO_IMPORT);
       }
 
@@ -222,15 +222,15 @@ class Figma {
     });
   }
 
-  sortElementsByPriorityToImport (arr) {
+  sortElementsByPriorityToImport(arr) {
     return arr.sort((a, b) => PRIORITY_TO_IMPORT.indexOf(a.type) - PRIORITY_TO_IMPORT.indexOf(b.type));
   }
 
-  findItems (arr, fileId) {
+  findItems(arr, fileId) {
     const result = [];
 
-    for (const item of arr) {
-      if (VALID_TYPES[item.type] || (item.exportSettings && item.exportSettings.length > 0)) {
+    for(const item of arr) {
+      if(VALID_TYPES[item.type] || (item.exportSettings && item.exportSettings.length > 0)) {
         result.push({
           id: item.id,
           name: Figma.getUniqueName(fileId, item.name),
@@ -238,7 +238,7 @@ class Figma {
         });
       }
 
-      if (item.children) {
+      if(item.children) {
         result.push(...this.findItems(item.children, fileId));
       }
     }
@@ -246,20 +246,20 @@ class Figma {
     return result;
   }
 
-  findInstantiableElements (file, fileId) {
+  findInstantiableElements(file, fileId) {
     uniqueNameResolver[fileId] = {};
     return this.findItems(file.document.children, fileId);
   }
 
-  request ({uri, auth = true}) {
+  request({uri, auth = true}) {
     const headers = auth ? {Authorization: 'Bearer ' + this.token} : {};
 
     return new Promise((resolve, reject) => {
       this._requestLib({uri, headers}, (error, response, body) => {
-        if (error || response.statusCode !== 200) {
+        if(error || response.statusCode !== 200) {
           try {
             reject(JSON.parse(body));
-          } catch (e) {
+          } catch(e) {
             reject({status: 500, err: 'There was an error connecting with Figma.'});
           }
         } else {
@@ -274,7 +274,7 @@ class Figma {
    * @param {string} rawURL must be a string in the format 'protocol://host/id/name
    * @returns {Object} an object containing the id and the name in the URL
    */
-  static parseProjectURL (rawURL) {
+  static parseProjectURL(rawURL) {
     logger.info('[figma] parsing project URL: ' + rawURL);
 
     try {
@@ -282,12 +282,12 @@ class Figma {
       // eslint-disable-next-line
       const [_, __, id, name] = url.pathname.split('/');
 
-      if (!id) {
+      if(!id) {
         return null;
       }
 
       return {id, name: name || FIGMA_DEFAULT_FILENAME};
-    } catch (e) {
+    } catch(e) {
       return null;
     }
   }
@@ -298,7 +298,7 @@ class Figma {
    * @param {string} fileName
    * @returns {string}
    */
-  static buildFigmaLink (fileID, fileName = '') {
+  static buildFigmaLink(fileID, fileName = '') {
     return `${FIGMA_URL}file/${fileID}/${fileName}`;
   }
 
@@ -306,7 +306,7 @@ class Figma {
    * Build a OAuth link
    * @returns {string}
    */
-  static buildAuthenticationLink () {
+  static buildAuthenticationLink() {
     const state = randomAlphabetical(15);
     const redirectURI = `haiku://oauth/figma&scope=file_read&state=${state}&response_type=code`;
     const url = `${FIGMA_URL}oauth?client_id=${FIGMA_CLIENT_ID}&redirect_uri=${redirectURI}`;
@@ -320,9 +320,9 @@ class Figma {
    * @param {string} params.state
    * @param {string} params.stateCheck
    */
-  static getAccessToken ({code, state, stateCheck}) {
+  static getAccessToken({code, state, stateCheck}) {
     return new Promise((resolve, reject) => {
-      if (state !== stateCheck) {
+      if(state !== stateCheck) {
         reject({status: 403, err: 'Invalid state code'});
       }
 
@@ -337,7 +337,7 @@ class Figma {
    * @param {string} path
    * @returns {boolean}
    */
-  static isFigmaFile (path) {
+  static isFigmaFile(path) {
     return !!path && path.match(IS_FIGMA_FILE_RE);
   }
 
@@ -346,7 +346,7 @@ class Figma {
    * @param {string} path
    * @returns {boolean}
    */
-  static isFigmaFolder (path) {
+  static isFigmaFolder(path) {
     return !!path && path.match(IS_FIGMA_FOLDER_RE);
   }
 
@@ -355,7 +355,7 @@ class Figma {
    * @param {string} relpath
    * @returns {string|boolean}
    */
-  static findIDFromPath (relpath) {
+  static findIDFromPath(relpath) {
     const basename = path.basename(relpath);
     const match = basename.match(/(\w+)-/);
     return match && match[1];
@@ -366,13 +366,13 @@ class Figma {
    * @param {string} relpath
    * @returns {string}
    */
-  static findDisplayNameFromPath (relpath) {
+  static findDisplayNameFromPath(relpath) {
     const basename = path.basename(relpath);
     const match = basename.match(/(\w+)-([\w-]+)\./);
     return match ? match[2] : FIGMA_DEFAULT_FILENAME;
   }
 
-  static buildFigmaLinkFromPath (relpath) {
+  static buildFigmaLinkFromPath(relpath) {
     const id = Figma.findIDFromPath(relpath);
     return Figma.buildFigmaLink(id);
   }
@@ -384,13 +384,13 @@ class Figma {
    * @param {string} name
    * @returns {string}
    */
-  static getUniqueName (fileId, name) {
-    if (!uniqueNameResolver[fileId]) {
+  static getUniqueName(fileId, name) {
+    if(!uniqueNameResolver[fileId]) {
       // This should never happen.
       uniqueNameResolver[fileId] = {};
     }
 
-    if (!uniqueNameResolver[fileId].hasOwnProperty(name)) {
+    if(!uniqueNameResolver[fileId].hasOwnProperty(name)) {
       uniqueNameResolver[fileId][name] = 0;
       return name;
     }

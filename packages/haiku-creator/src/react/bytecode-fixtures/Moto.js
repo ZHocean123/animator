@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   metadata: {
     relpath: 'bytecode.js',
     type: 'haiku',

@@ -16,7 +16,7 @@ export const HOMEDIR_TOUR_PATH = path.join(HOMEDIR_PATH, 'tour.json');
 export const HOMEDIR_SKETCH_DIALOG_PATH = path.join(HOMEDIR_PATH, 'sketch-dialog');
 
 export const didTakeTour = () => {
-  if (didTakeTourCache === null) {
+  if(didTakeTourCache === null) {
     didTakeTourCache = fse.existsSync(HOMEDIR_TOUR_PATH);
   }
   return didTakeTourCache;
@@ -38,7 +38,7 @@ export const createSketchDialogFile = () => {
 function isDir(abspath) {
   try {
     return fse.lstatSync(abspath).isDirectory();
-  } catch (exception) {
+  } catch(exception) {
     console.warn(exception);
     return false;
   }
@@ -46,38 +46,38 @@ function isDir(abspath) {
 
 export const enumerateAllProjectsByOrganization = (cb) => {
   return fse.readdir(HOMEDIR_PROJECTS_PATH, (err, orgEntries) => {
-    if (err) {
+    if(err) {
       return err;
     }
     const organizations = {};
     return async.each(orgEntries, (orgEntry, nextOrgEntry) => {
       const orgAbspath = path.join(HOMEDIR_PROJECTS_PATH, orgEntry);
-      if (!isDir(orgAbspath)) {
+      if(!isDir(orgAbspath)) {
         return nextOrgEntry();
       }
-      if (orgEntry[0] === '.') {
+      if(orgEntry[0] === '.') {
         return nextOrgEntry();
       }
       organizations[orgEntry] = [];
       return fse.readdir(orgAbspath, (err, projEntries) => {
-        if (err) {
+        if(err) {
           return nextOrgEntry();
         }
-        if (!projEntries) {
+        if(!projEntries) {
           return nextOrgEntry();
         }
         projEntries.forEach((projEntry) => {
           const projAbspath = path.join(orgAbspath, projEntry);
-          if (!isDir(projAbspath)) {
+          if(!isDir(projAbspath)) {
             return;
           }
-          if (projEntry[0] === '.') {
+          if(projEntry[0] === '.') {
             return;
           }
-          if (projEntry[0] === '~') {
+          if(projEntry[0] === '~') {
             return;
           }
-          if (projEntry.match(/\.bak/)) {
+          if(projEntry.match(/\.bak/)) {
             return;
           }
           organizations[orgEntry].push({
@@ -88,7 +88,7 @@ export const enumerateAllProjectsByOrganization = (cb) => {
         return nextOrgEntry();
       });
     }, (err) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       return cb(null, organizations);

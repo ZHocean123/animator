@@ -1,9 +1,9 @@
-import { default as HaikuComponent } from "@haiku/core/lib/HaikuComponent.js";
-import { default as expressionToRO } from "@haiku/core/lib/reflection/expressionToRO.js";
-import { Curve } from "@haiku/core/lib/api/index.js";
-import { isDecomposableCurve } from "haiku-formats/lib/exporters/curves.js";
-import { getCurveInterpolationPoints } from "haiku-formats/lib/exporters/curves.js";
-import BaseModel from "./BaseModel.js";
+import { default as HaikuComponent } from '@haiku/core/lib/HaikuComponent.js';
+import { default as expressionToRO } from '@haiku/core/lib/reflection/expressionToRO.js';
+import { Curve } from '@haiku/core/lib/api/index.js';
+import { isDecomposableCurve } from 'haiku-formats/lib/exporters/curves.js';
+import { getCurveInterpolationPoints } from 'haiku-formats/lib/exporters/curves.js';
+import BaseModel from './BaseModel.js';
 
 /**
  * @class Keyframe
@@ -35,16 +35,16 @@ class Keyframe extends BaseModel {
   }
 
   activate() {
-    if (!this._activated) {
+    if(!this._activated) {
       this._activated = true;
-      this.notifyUpdateReceivers("keyframe-activated");
+      this.notifyUpdateReceivers('keyframe-activated');
     }
   }
 
   deactivate() {
-    if (this._activated) {
+    if(this._activated) {
       this._activated = false;
-      this.notifyUpdateReceivers("keyframe-deactivated");
+      this.notifyUpdateReceivers('keyframe-deactivated');
     }
   }
 
@@ -53,30 +53,30 @@ class Keyframe extends BaseModel {
   }
 
   select() {
-    if (!this._selected) {
+    if(!this._selected) {
       this._selected = true;
-      this.notifyUpdateReceivers("keyframe-selected");
+      this.notifyUpdateReceivers('keyframe-selected');
     }
   }
 
   deselect() {
-    if (this._selected) {
+    if(this._selected) {
       this._selected = false;
-      this.notifyUpdateReceivers("keyframe-deselected");
+      this.notifyUpdateReceivers('keyframe-deselected');
     }
   }
 
   setBodySelected() {
-    if (!this._selectedBody) {
+    if(!this._selectedBody) {
       this._selectedBody = true;
-      this.notifyUpdateReceivers("keyframe-body-selected");
+      this.notifyUpdateReceivers('keyframe-body-selected');
     }
   }
 
   unsetBodySelected() {
-    if (this._selectedBody) {
+    if(this._selectedBody) {
       this._selectedBody = false;
-      this.notifyUpdateReceivers("keyframe-body-unselected");
+      this.notifyUpdateReceivers('keyframe-body-unselected');
     }
   }
 
@@ -123,7 +123,7 @@ class Keyframe extends BaseModel {
 
   move(msChange, msOrig, mspf) {
     const msFinal = msOrig + msChange;
-    if (msFinal >= 0) {
+    if(msFinal >= 0) {
       this.moveTo(msFinal, mspf);
     }
     return this;
@@ -131,7 +131,7 @@ class Keyframe extends BaseModel {
 
   moveTo(ms, mspf) {
     // No-op the rest of this procedure if we're already at the same keyframe
-    if (this.getMs() === ms) {
+    if(this.getMs() === ms) {
       return this;
     }
 
@@ -139,19 +139,19 @@ class Keyframe extends BaseModel {
 
     const msMargin = Math.round(mspf);
 
-    if (this.next()) {
-      if (this.getMs() >= this.next().getMs() - 1) {
+    if(this.next()) {
+      if(this.getMs() >= this.next().getMs() - 1) {
         const nextMs = this.getMs() + msMargin;
-        if (nextMs >= 0) {
+        if(nextMs >= 0) {
           this.next().moveTo(nextMs, mspf);
         }
       }
     }
 
-    if (this.prev()) {
-      if (this.getMs() <= this.prev().getMs() + 1) {
+    if(this.prev()) {
+      if(this.getMs() <= this.prev().getMs() + 1) {
         const prevMs = this.getMs() - msMargin;
-        if (prevMs >= 0) {
+        if(prevMs >= 0) {
           this.prev().moveTo(prevMs, mspf);
         }
       }
@@ -166,7 +166,7 @@ class Keyframe extends BaseModel {
   }
 
   removeCurve(metadata) {
-    if (this.next() && this.next().isActive()) {
+    if(this.next() && this.next().isActive()) {
       this.setCurve(null);
       this.component.splitSegment(
         this.element.getComponentId(),
@@ -175,10 +175,10 @@ class Keyframe extends BaseModel {
         this.row.getPropertyNameString(),
         this.getMs(),
         metadata,
-        () => {}
+        () => {},
       );
 
-      this.row.emit("update", "keyframe-remove-curve");
+      this.row.emit('update', 'keyframe-remove-curve');
     }
 
     return this;
@@ -196,10 +196,10 @@ class Keyframe extends BaseModel {
       null,
       curveName,
       metadata,
-      () => {}
+      () => {},
     );
 
-    this.row.emit("update", "keyframe-add-curve");
+    this.row.emit('update', 'keyframe-add-curve');
 
     return this;
   }
@@ -214,10 +214,10 @@ class Keyframe extends BaseModel {
       this.getMs(),
       curveName,
       metadata,
-      () => {}
+      () => {},
     );
 
-    this.row.emit("update", "keyframe-change-curve");
+    this.row.emit('update', 'keyframe-change-curve');
 
     return this;
   }
@@ -255,14 +255,14 @@ class Keyframe extends BaseModel {
    * @description Returns the curve descomposed
    */
   getCurveInterpolationPoints() {
-    if (this.isTransitionSegment()) {
+    if(this.isTransitionSegment()) {
       return getCurveInterpolationPoints(this.getCurve());
     }
   }
 
   isSoloKeyframe() {
     const prev = this.prev();
-    if (!prev) {
+    if(!prev) {
       return true;
     }
     return !prev.getCurve();
@@ -312,8 +312,8 @@ class Keyframe extends BaseModel {
   }
 
   setMs(ms) {
-    if (ms < 0) {
-      throw new Error("keyframes cannot be less than 0");
+    if(ms < 0) {
+      throw new Error('keyframes cannot be less than 0');
     }
 
     // Normalize to a millitime that lines up with a frametime
@@ -324,19 +324,19 @@ class Keyframe extends BaseModel {
     // Clear timeline caches; the max frame might have changed.
     Timeline.clearCaches();
 
-    if (normalized !== previous) {
+    if(normalized !== previous) {
       // Indicate that we need to be moved. Must set this before calling handleKeyframeMoves
       // otherwise the update might not make it correctly to the serialization layer
       this._needsMove = true;
 
-      this.notifyUpdateReceivers("keyframe-ms-set");
+      this.notifyUpdateReceivers('keyframe-ms-set');
 
-      if (this.prev()) {
-        this.prev().notifyUpdateReceivers("keyframe-neighbor-move");
+      if(this.prev()) {
+        this.prev().notifyUpdateReceivers('keyframe-neighbor-move');
       }
 
-      if (this.next()) {
-        this.next().notifyUpdateReceivers("keyframe-neighbor-move");
+      if(this.next()) {
+        this.next().notifyUpdateReceivers('keyframe-neighbor-move');
       }
     }
 
@@ -348,7 +348,7 @@ class Keyframe extends BaseModel {
   }
 
   getValue(serialized) {
-    if (serialized) {
+    if(serialized) {
       return expressionToRO(this.value);
     }
     return this.value;
@@ -356,14 +356,14 @@ class Keyframe extends BaseModel {
 
   getSpec(edited, serialized) {
     const spec = {
-      value: this.getValue(serialized)
+      value: this.getValue(serialized),
     };
 
-    if (edited) {
+    if(edited) {
       spec.edited = true;
     }
 
-    if (this.getCurve()) {
+    if(this.getCurve()) {
       spec.curve = this.getCurve();
     }
 
@@ -380,7 +380,7 @@ class Keyframe extends BaseModel {
   }
 
   isVisible(a, b) {
-    if (this.getMs() > b) {
+    if(this.getMs() > b) {
       return false;
     }
 
@@ -389,7 +389,7 @@ class Keyframe extends BaseModel {
   }
 
   isTweenable() {
-    if (typeof this.value === "string" || this.value instanceof String) {
+    if(typeof this.value === 'string' || this.value instanceof String) {
       const ourPropertyName = this.row.getPropertyNameString();
 
       // Some strings, such as color and path.d, are tweenable because core parses
@@ -401,7 +401,7 @@ class Keyframe extends BaseModel {
       );
     }
 
-    return typeof this.value !== "boolean";
+    return typeof this.value !== 'boolean';
   }
 
   next() {
@@ -417,10 +417,10 @@ class Keyframe extends BaseModel {
   }
 
   getPixelOffsetRight(base, pxpf, mspf) {
-    if (base === undefined || pxpf === undefined || mspf === undefined) {
+    if(base === undefined || pxpf === undefined || mspf === undefined) {
       throw new Error(`keyframe pixel offset right params missing`);
     }
-    if (this.next()) {
+    if(this.next()) {
       return (this.next().getFrame(mspf) - base) * pxpf;
     }
 
@@ -428,7 +428,7 @@ class Keyframe extends BaseModel {
   }
 
   getPixelOffsetLeft(base, pxpf, mspf) {
-    if (base === undefined || pxpf === undefined || mspf === undefined) {
+    if(base === undefined || pxpf === undefined || mspf === undefined) {
       throw new Error(`keyframe pixel offset left params missing`);
     }
     return (this.getFrame(mspf) - base) * pxpf;
@@ -437,7 +437,7 @@ class Keyframe extends BaseModel {
   storeViewPosition({ rect, offset }) {
     this._viewPosition = {
       left: rect.left + offset,
-      right: rect.right + offset
+      right: rect.right + offset,
     };
   }
 
@@ -459,8 +459,8 @@ class Keyframe extends BaseModel {
   }
 
   getElementHeadingRow() {
-    if (this.row && this.row.parent) {
-      if (this.row.parent.isClusterHeading()) {
+    if(this.row && this.row.parent) {
+      if(this.row.parent.isClusterHeading()) {
         return this.row.parent.parent;
       }
       return this.row.parent;
@@ -468,8 +468,8 @@ class Keyframe extends BaseModel {
   }
 
   getClusterHeadingRow() {
-    if (this.row && this.row.parent) {
-      if (this.row.parent.isClusterHeading()) {
+    if(this.row && this.row.parent) {
+      if(this.row.parent.isClusterHeading()) {
         return this.row.parent;
       }
     }
@@ -478,12 +478,12 @@ class Keyframe extends BaseModel {
   getCurveCapitalized() {
     const curve = this.getCurve();
 
-    if (Array.isArray(curve)) {
-      return "Custom";
+    if(Array.isArray(curve)) {
+      return 'Custom';
     }
 
-    if (typeof curve !== "string" && !(curve instanceof String)) {
-      return "";
+    if(typeof curve !== 'string' && !(curve instanceof String)) {
+      return '';
     }
 
     return curve.charAt(0).toUpperCase() + curve.slice(1);
@@ -497,51 +497,51 @@ class Keyframe extends BaseModel {
   }
 
   getLeftKeyframeColorState() {
-    if (this.isActive()) {
-      return "LIGHTEST_PINK";
+    if(this.isActive()) {
+      return 'LIGHTEST_PINK';
     }
 
-    if (this.isWithinCollapsedElementHeadingRow()) {
-      return "BLUE";
+    if(this.isWithinCollapsedElementHeadingRow()) {
+      return 'BLUE';
     }
 
-    if (this.isWithinCollapsedClusterHeadingRow()) {
-      return "DARK_ROCK";
+    if(this.isWithinCollapsedClusterHeadingRow()) {
+      return 'DARK_ROCK';
     }
 
-    return "ROCK";
+    return 'ROCK';
   }
 
   getRightKeyframeColorState() {
-    if (this.next() && this.next().isActive()) {
-      return "LIGHTEST_PINK";
+    if(this.next() && this.next().isActive()) {
+      return 'LIGHTEST_PINK';
     }
 
-    if (this.isWithinCollapsedElementHeadingRow()) {
-      return "BLUE";
+    if(this.isWithinCollapsedElementHeadingRow()) {
+      return 'BLUE';
     }
 
-    if (this.isWithinCollapsedClusterHeadingRow()) {
-      return "DARK_ROCK";
+    if(this.isWithinCollapsedClusterHeadingRow()) {
+      return 'DARK_ROCK';
     }
 
-    return "ROCK";
+    return 'ROCK';
   }
 
   getCurveColorState() {
-    if (this.isSelected() && this.isActive() && this.isCurveSelected()) {
-      return "LIGHTEST_PINK";
+    if(this.isSelected() && this.isActive() && this.isCurveSelected()) {
+      return 'LIGHTEST_PINK';
     }
 
-    if (this.isWithinCollapsedElementHeadingRow()) {
-      return "BLUE";
+    if(this.isWithinCollapsedElementHeadingRow()) {
+      return 'BLUE';
     }
 
-    if (this.isWithinCollapsedClusterHeadingRow()) {
-      return "DARK_ROCK";
+    if(this.isWithinCollapsedClusterHeadingRow()) {
+      return 'DARK_ROCK';
     }
 
-    return "ROCK";
+    return 'ROCK';
   }
 
   isCurveSelected() {
@@ -569,7 +569,7 @@ class Keyframe extends BaseModel {
     this._mouseDownState = {
       wasSelected,
       wasSelectedBody,
-      wasCurveTargeted
+      wasCurveTargeted,
     };
   }
 
@@ -626,15 +626,15 @@ class Keyframe extends BaseModel {
      * o~o~o
      */
 
-    if (prevKeyframe) {
-      if (prevKeyframe.isSelected()) {
-        if (prevKeyframe.isSelectedBody()) {
+    if(prevKeyframe) {
+      if(prevKeyframe.isSelected()) {
+        if(prevKeyframe.isSelectedBody()) {
           this.select();
         }
       }
     }
 
-    if (this.isSelected()) {
+    if(this.isSelected()) {
       this.activate();
     } else {
       this.deactivate();
@@ -644,12 +644,12 @@ class Keyframe extends BaseModel {
   handleMouseDown(
     { nativeEvent: { which } },
     { isShiftKeyDown, isControlKeyDown, isCommandKeyDown },
-    { isViaConstantBodyView, isViaTransitionBodyView }
+    { isViaConstantBodyView, isViaTransitionBodyView },
   ) {
-    if (isControlKeyDown || which === 3) {
+    if(isControlKeyDown || which === 3) {
       return this.handleContextMenu(
         { isShiftKeyDown, isControlKeyDown, isCommandKeyDown },
-        { isViaConstantBodyView, isViaTransitionBodyView }
+        { isViaConstantBodyView, isViaTransitionBodyView },
       );
     }
 
@@ -662,13 +662,13 @@ class Keyframe extends BaseModel {
     this.setMouseDownState({
       wasSelected: this.isSelected(),
       wasSelectedBody: this.isSelectedBody(),
-      wasCurveTargeted: isCurveTargeted
+      wasCurveTargeted: isCurveTargeted,
     });
 
     // Unless the shift key is down, a direct click normally clear others
-    if (!isShiftKeyDown && !isCommandKeyDown) {
+    if(!isShiftKeyDown && !isCommandKeyDown) {
       // But only if we're touching an unrelated (unselected) set of keyframes
-      if (!this.isSelected()) {
+      if(!this.isSelected()) {
         this.clearOtherKeyframes();
       }
     }
@@ -676,7 +676,7 @@ class Keyframe extends BaseModel {
     // Ensure we and neighbors are selected and activated since this may begin a drag
     this.select();
 
-    if (isCurveTargeted) {
+    if(isCurveTargeted) {
       this.setBodySelected();
     }
 
@@ -696,26 +696,26 @@ class Keyframe extends BaseModel {
       lastMouseButtonPressed,
       isShiftKeyDown,
       isControlKeyDown,
-      isCommandKeyDown
+      isCommandKeyDown,
     },
-    { isViaConstantBodyView, isViaTransitionBodyView }
+    { isViaConstantBodyView, isViaTransitionBodyView },
   ) {
-    if (!this.isMouseDown()) {
+    if(!this.isMouseDown()) {
       // We weren't the one who received the initial mouse down
       const otherKeyframe = Keyframe.where({
         _hasMouseDown: true,
-        component: this.component
+        component: this.component,
       })[0];
-      if (otherKeyframe && otherKeyframe !== this) {
+      if(otherKeyframe && otherKeyframe !== this) {
         otherKeyframe.handleMouseUp(
           { nativeEvent: { which } },
           {
             lastMouseButtonPressed,
             isShiftKeyDown,
             isControlKeyDown,
-            isCommandKeyDown
+            isCommandKeyDown,
           },
-          { isViaConstantBodyView, isViaTransitionBodyView }
+          { isViaConstantBodyView, isViaTransitionBodyView },
         );
       }
       return;
@@ -723,7 +723,7 @@ class Keyframe extends BaseModel {
 
     this.unsetMouseDown();
 
-    if (this.didHandleDragStop()) {
+    if(this.didHandleDragStop()) {
       this.unsetDidHandleDragStop();
       return;
     }
@@ -731,26 +731,26 @@ class Keyframe extends BaseModel {
     const {
       wasSelected,
       wasSelectedBody,
-      wasCurveTargeted
+      wasCurveTargeted,
     } = this.getMouseDownState();
 
     this.unsetMouseDownState();
 
-    if (!isShiftKeyDown && !isCommandKeyDown) {
+    if(!isShiftKeyDown && !isCommandKeyDown) {
       // Since mouseup commits the action, we don't check for selection state here
       this.clearOtherKeyframes();
     }
 
     // If shift is down on mouse up, we deselect current selections
-    if (isShiftKeyDown || isCommandKeyDown) {
-      if (wasCurveTargeted) {
-        if (wasSelectedBody) {
+    if(isShiftKeyDown || isCommandKeyDown) {
+      if(wasCurveTargeted) {
+        if(wasSelectedBody) {
           this.unsetBodySelected();
         } else {
           this.setBodySelected();
         }
       } else {
-        if (wasSelected) {
+        if(wasSelected) {
           this.unsetBodySelected();
           this.deselect();
         } else {
@@ -759,7 +759,7 @@ class Keyframe extends BaseModel {
       }
     } else {
       // We've explicitly activated the keyframe as opposed to the whole segment
-      if (!wasCurveTargeted) {
+      if(!wasCurveTargeted) {
         this.unsetBodySelected();
       }
     }
@@ -772,40 +772,40 @@ class Keyframe extends BaseModel {
 
   handleContextMenu(
     { isShiftKeyDown, isCommandKeyDown },
-    { isViaConstantBodyView, isViaTransitionBodyView }
+    { isViaConstantBodyView, isViaTransitionBodyView },
   ) {
     this.unsetMouseDown();
     this.unsetMouseDownState();
 
-    if (this.didHandleContextMenu()) {
+    if(this.didHandleContextMenu()) {
       this.unsetDidHandleContextMenu();
       return;
     }
 
     this.setDidHandleContextMenu();
 
-    if (this.isWithinCollapsedRow()) {
+    if(this.isWithinCollapsedRow()) {
       return;
     }
 
     const isCurveTargeted = isViaTransitionBodyView || isViaConstantBodyView;
 
     // Unless the shift key is down, a direct click normally clear others
-    if (!isShiftKeyDown && !isCommandKeyDown) {
+    if(!isShiftKeyDown && !isCommandKeyDown) {
       // But only if we're touching an unrelated (unselected) set of keyframes
 
-      if (isCurveTargeted && !this.isNextKeyframeSelected()) {
+      if(isCurveTargeted && !this.isNextKeyframeSelected()) {
         this.clearOtherKeyframes();
       }
 
-      if (!this.isSelected()) {
+      if(!this.isSelected()) {
         this.clearOtherKeyframes();
       }
     }
 
     // Ensure we and neighbors are selected and activated since this may begin a drag
     this.select();
-    if (isCurveTargeted) {
+    if(isCurveTargeted) {
       this.setBodySelected();
     }
 
@@ -822,19 +822,19 @@ class Keyframe extends BaseModel {
       lastMouseButtonPressed,
       isShiftKeyDown,
       isControlKeyDown,
-      isCommandKeyDown
+      isCommandKeyDown,
     },
-    { isViaConstantBodyView, isViaTransitionBodyView }
+    { isViaConstantBodyView, isViaTransitionBodyView },
   ) {
-    if (!wasDrag) {
+    if(!wasDrag) {
       return this.handleMouseUp(
         { nativeEvent: { which: 1 } }, // Mock
         { isShiftKeyDown, isControlKeyDown, isCommandKeyDown },
-        { isViaConstantBodyView, isViaTransitionBodyView }
+        { isViaConstantBodyView, isViaTransitionBodyView },
       );
     }
 
-    if (this.didHandleDragStop()) {
+    if(this.didHandleDragStop()) {
       this.unsetDidHandleDragStop();
       return;
     }
@@ -845,7 +845,7 @@ class Keyframe extends BaseModel {
 
   clearOtherKeyframes() {
     Keyframe.where({ component: this.component }).forEach(keyframe => {
-      if (keyframe !== this) {
+      if(keyframe !== this) {
         keyframe.deselectAndDeactivate();
       }
     });
@@ -857,21 +857,21 @@ class Keyframe extends BaseModel {
    */
   dump() {
     let str = `${this.row.getPropertyNameString()}[${this.getIndex()}]:${this.getMs()}/${this.getCurve() ||
-      "!"}`;
-    if (this.isTransitionSegment()) {
-      str += " {t}";
+      '!'}`;
+    if(this.isTransitionSegment()) {
+      str += ' {t}';
     }
-    if (this.isConstantSegment()) {
-      str += " {c}";
+    if(this.isConstantSegment()) {
+      str += ' {c}';
     }
-    if (this.isSoloKeyframe()) {
-      str += " {s}";
+    if(this.isSoloKeyframe()) {
+      str += ' {s}';
     }
-    if (this.prev()) {
-      str += " <";
+    if(this.prev()) {
+      str += ' <';
     }
-    if (this.next()) {
-      str += " >";
+    if(this.next()) {
+      str += ' >';
     }
     return str;
   }
@@ -885,8 +885,8 @@ Keyframe.DEFAULT_OPTIONS = {
     row: true,
     ms: true,
     index: true,
-    value: true
-  }
+    value: true,
+  },
 };
 
 BaseModel.extend(Keyframe);
@@ -914,12 +914,12 @@ Keyframe.buildKeyframeMoves = (criteria, serialized) => {
   const moves = {};
 
   const movables = Keyframe.where(
-    Object.assign({ _needsMove: true }, criteria)
+    Object.assign({ _needsMove: true }, criteria),
   );
 
   movables.forEach(movable => {
     // As an optimization, skip any that we have already moved below in case of dupes
-    if (!movable._needsMove) {
+    if(!movable._needsMove) {
       return null;
     }
 
@@ -927,26 +927,26 @@ Keyframe.buildKeyframeMoves = (criteria, serialized) => {
     const componentId = movable.element.getComponentId();
     const propertyName = movable.row.getPropertyNameString();
 
-    if (!moves[timelineName]) {
+    if(!moves[timelineName]) {
       moves[timelineName] = {};
     }
-    if (!moves[timelineName][componentId]) {
+    if(!moves[timelineName][componentId]) {
       moves[timelineName][componentId] = {};
     }
-    if (!moves[timelineName][componentId][propertyName]) {
+    if(!moves[timelineName][componentId][propertyName]) {
       moves[timelineName][componentId][propertyName] = {};
     }
 
     // Because the keyframe move action interprets excluded entries as *deletes*, we have to
     // also include all keyframes that are a part of the same timeline/component/property tuple
     Keyframe.where(criteria).forEach(partner => {
-      if (partner.timeline.getName() !== timelineName) {
+      if(partner.timeline.getName() !== timelineName) {
         return null;
       }
-      if (partner.element.getComponentId() !== componentId) {
+      if(partner.element.getComponentId() !== componentId) {
         return null;
       }
-      if (partner.row.getPropertyNameString() !== propertyName) {
+      if(partner.row.getPropertyNameString() !== propertyName) {
         return null;
       }
 
@@ -973,13 +973,13 @@ Keyframe.findIntersectingWithArea = ({
   component,
   area,
   offset,
-  viewCoordinatesProvider
+  viewCoordinatesProvider,
 }) => {
   return Keyframe.where({ component })
     .filter(keyframe => {
       const keyframeView = keyframe.getViewPosition();
 
-      if (!keyframeView.left || keyframe.element.isLocked()) {
+      if(!keyframeView.left || keyframe.element.isLocked()) {
         return false;
       }
 
@@ -988,7 +988,7 @@ Keyframe.findIntersectingWithArea = ({
       // to the rows expanding/collapsing. Since we don't have a similar behavior that
       // modifies the `x` position of a keyframe post-render this is a safe filter to
       // avoid performing the expensive `getBoundingClientRect` calculation on all keyframes
-      if (
+      if(
         keyframeView.left - offset.horizontal > area.right ||
         area.left > keyframeView.right - offset.horizontal
       ) {
@@ -1011,22 +1011,22 @@ Keyframe.marqueeSelect = ({
   component,
   area,
   offset,
-  viewCoordinatesProvider
+  viewCoordinatesProvider,
 }) => {
   const selected = Keyframe.findIntersectingWithArea({
     component,
     area,
     offset,
-    viewCoordinatesProvider
+    viewCoordinatesProvider,
   });
 
   Keyframe.any({
     component,
-    _selected: true
+    _selected: true,
   }).forEach(keyframe => {
-    if (!selected.has(keyframe.getUniqueKey())) {
+    if(!selected.has(keyframe.getUniqueKey())) {
       keyframe.deselect();
-      if (keyframe.isConstantSegment() || keyframe.isTransitionSegment()) {
+      if(keyframe.isConstantSegment() || keyframe.isTransitionSegment()) {
         keyframe.unsetBodySelected();
       }
       keyframe.updateActivationStatesInRow();
@@ -1035,7 +1035,7 @@ Keyframe.marqueeSelect = ({
 
   selected.forEach(keyframe => {
     keyframe.select();
-    if (keyframe.isConstantSegment() || keyframe.isTransitionSegment()) {
+    if(keyframe.isConstantSegment() || keyframe.isTransitionSegment()) {
       keyframe.setBodySelected();
     }
     keyframe.updateActivationStatesInRow();
@@ -1045,9 +1045,9 @@ Keyframe.marqueeSelect = ({
 Keyframe.epandRowsOfSelectedKeyframes = ({ component, from }) => {
   Keyframe.any({
     component,
-    _selected: true
+    _selected: true,
   }).forEach(keyframe => {
-    if (!keyframe.row._isExpanded) {
+    if(!keyframe.row._isExpanded) {
       keyframe.row.expand({ from });
     }
   });
@@ -1072,7 +1072,7 @@ Keyframe.groupIsSingleTween = keyframes => {
  * - Every curve can be represented via a single Bezier Curve (FIXME: allow chains of curves)
  */
 Keyframe.groupHasBezierEditableCurves = keyframes => {
-  if (!keyframes || keyframes.length === 0) {
+  if(!keyframes || keyframes.length === 0) {
     return false;
   }
 
@@ -1081,11 +1081,11 @@ Keyframe.groupHasBezierEditableCurves = keyframes => {
   return keyframes
     .filter(kf => kf.hasCurveBody())
     .every(
-      kf => kf.getCurve() === referenceCurve && !kf.hasDecomposableCurve()
+      kf => kf.getCurve() === referenceCurve && !kf.hasDecomposableCurve(),
     );
 };
 
 export default Keyframe;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-import Timeline from "./Timeline.js";
+import Timeline from './Timeline.js';

@@ -1,24 +1,24 @@
-import * as lodash from "lodash-es";
-import { default as HaikuElement } from "@haiku/core/lib/HaikuElement.js";
-import { default as Layout3D } from "@haiku/core/lib/Layout3D.js";
-import { cssQueryTree } from "@haiku/core/lib/HaikuNode.js";
+import * as lodash from 'lodash-es';
+import { default as HaikuElement } from '@haiku/core/lib/HaikuElement.js';
+import { default as Layout3D } from '@haiku/core/lib/Layout3D.js';
+import { cssQueryTree } from '@haiku/core/lib/HaikuNode.js';
 import {
-  default as composedTransformsToTimelineProperties
-} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
-import { default as functionToRFO } from "@haiku/core/lib/reflection/functionToRFO.js";
-import { LAYOUT_3D_SCHEMA } from "@haiku/core/lib/HaikuComponent.js";
-import { default as KnownDOMEvents } from "@haiku/core/lib/renderers/dom/Events.js";
-import titlecase from "titlecase";
-import decamelize from "decamelize";
-import Matrix from "gl-matrix";
-import polygonOverlap from "polygon-overlap";
-import logger from "./../utils/LoggerInstance.js";
-import BaseModel from "./BaseModel.js";
-import TransformCache from "./TransformCache.js";
+  default as composedTransformsToTimelineProperties,
+} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
+import { default as functionToRFO } from '@haiku/core/lib/reflection/functionToRFO.js';
+import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent.js';
+import { default as KnownDOMEvents } from '@haiku/core/lib/renderers/dom/Events.js';
+import titlecase from 'titlecase';
+import decamelize from 'decamelize';
+import Matrix from 'gl-matrix';
+import polygonOverlap from 'polygon-overlap';
+import logger from './../utils/LoggerInstance.js';
+import BaseModel from './BaseModel.js';
+import TransformCache from './TransformCache.js';
 import {
   Experiment,
-  experimentIsEnabled
-} from "haiku-common/lib/experiments/index.js";
+  experimentIsEnabled,
+} from 'haiku-common/lib/experiments/index.js';
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't
@@ -31,7 +31,7 @@ const DEFABLE_TAG_NAMES = {
   pattern: true,
   radialGradient: true,
   solidcolor: true,
-  filter: true
+  filter: true,
 };
 
 /**
@@ -46,17 +46,17 @@ const SVG_ONLY_ATTRIBUTES = {
   version: true,
   viewBox: true,
   xmlns: true,
-  width: true
+  width: true,
 };
 
-const HAIKU_ID_ATTRIBUTE = "haiku-id";
-const HAIKU_TITLE_ATTRIBUTE = "haiku-title";
-const HAIKU_LOCKED_ATTRIBUTE = "haiku-locked";
-const HAIKU_SOURCE_ATTRIBUTE = "haiku-source";
-const SYNC_LOCKED_ID_SUFFIX = "#lock";
-const TIMELINE_EVENT_PREFIX = "timeline:";
+const HAIKU_ID_ATTRIBUTE = 'haiku-id';
+const HAIKU_TITLE_ATTRIBUTE = 'haiku-title';
+const HAIKU_LOCKED_ATTRIBUTE = 'haiku-locked';
+const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
+const SYNC_LOCKED_ID_SUFFIX = '#lock';
+const TIMELINE_EVENT_PREFIX = 'timeline:';
 
-const EMPTY_ELEMENT = { elementName: "div", attributes: {}, children: [] };
+const EMPTY_ELEMENT = { elementName: 'div', attributes: {}, children: [] };
 
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -64,14 +64,14 @@ function isNumeric(n) {
 
 function getAncestry(ancestors, elementInstance) {
   ancestors.unshift(elementInstance);
-  if (elementInstance.parent) {
+  if(elementInstance.parent) {
     getAncestry(ancestors, elementInstance.parent);
   }
   return ancestors;
 }
 
 const cleanHaikuId = str =>
-  titlecase(decamelize((str + "").trim()).replace(/[\W_:]/g, " "));
+  titlecase(decamelize((str + '').trim()).replace(/[\W_:]/g, ' '));
 
 /**
  * @class Element
@@ -97,7 +97,7 @@ class Element extends BaseModel {
 
   $el() {
     const staticTemplateNode = this.getStaticTemplateNode();
-    if (typeof staticTemplateNode === "string") {
+    if(typeof staticTemplateNode === 'string') {
       return null;
     }
     const haikuId =
@@ -108,16 +108,16 @@ class Element extends BaseModel {
 
   afterInitialize() {
     // Make sure we add to the appropriate collections to avoid unexpected state issues
-    if (!this._visibleProperties) {
+    if(!this._visibleProperties) {
       this._visibleProperties = {};
     }
   }
 
   oneListener($el, uid, type, fn) {
-    if (!Element.cache.eventListeners[uid]) {
+    if(!Element.cache.eventListeners[uid]) {
       Element.cache.eventListeners[uid] = {};
     }
-    if (Element.cache.eventListeners[uid][type]) {
+    if(Element.cache.eventListeners[uid][type]) {
       $el.removeEventListener(type, Element.cache.eventListeners[uid][type]);
       delete Element.cache.eventListeners[uid][type];
     }
@@ -127,12 +127,12 @@ class Element extends BaseModel {
   }
 
   hoverOn(metadata, softly = false) {
-    if (!this._isHovered) {
+    if(!this._isHovered) {
       this.cache.clear();
       this._isHovered = true;
 
-      if (!softly) {
-        this.emit("update", "element-hovered", metadata);
+      if(!softly) {
+        this.emit('update', 'element-hovered', metadata);
       }
     }
     return this;
@@ -143,12 +143,12 @@ class Element extends BaseModel {
   }
 
   hoverOff(metadata, softly = false) {
-    if (this._isHovered) {
+    if(this._isHovered) {
       this.cache.clear();
       this._isHovered = false;
 
-      if (!softly) {
-        this.emit("update", "element-unhovered", metadata);
+      if(!softly) {
+        this.emit('update', 'element-unhovered', metadata);
       }
     }
   }
@@ -162,27 +162,27 @@ class Element extends BaseModel {
   }
 
   isShimElement() {
-    return this.parent && this.parent.getSource() === "<group>";
+    return this.parent && this.parent.getSource() === '<group>';
   }
 
   select(metadata, softly = false) {
-    if (this.isLocked()) {
+    if(this.isLocked()) {
       return;
     }
 
-    if (!this._isSelected) {
+    if(!this._isSelected) {
       this._isSelected = true;
 
-      if (softly) {
-        this.emit("update", "element-selected-softly", metadata);
+      if(softly) {
+        this.emit('update', 'element-selected-softly', metadata);
       } else {
         // Roundabout! Note that rows, when selected, will select their corresponding element
         const row = this.getHeadingRow();
-        if (row) {
+        if(row) {
           row.expandAndSelect(metadata);
         }
 
-        this.emit("update", "element-selected", metadata);
+        this.emit('update', 'element-selected', metadata);
       }
     }
   }
@@ -197,19 +197,19 @@ class Element extends BaseModel {
   }
 
   unselect(metadata, softly = false) {
-    if (this._isSelected) {
+    if(this._isSelected) {
       this._isSelected = false;
 
-      if (softly) {
-        this.emit("update", "element-unselected-softly", metadata);
+      if(softly) {
+        this.emit('update', 'element-unselected-softly', metadata);
       } else {
         // Roundabout! Note that rows, when deselected, will deselect their corresponding element
         const row = this.getHeadingRow();
-        if (row && row.isSelected()) {
+        if(row && row.isSelected()) {
           row.deselect(metadata);
         }
 
-        this.emit("update", "element-unselected", metadata);
+        this.emit('update', 'element-unselected', metadata);
       }
 
       // #FIXME: this is a bit overzealous.
@@ -231,9 +231,9 @@ class Element extends BaseModel {
   }
 
   getPropertyRowByPropertyName(propertyName) {
-    for (let i = 0; i < this._clusterAndPropertyRows.length; i++) {
+    for(let i = 0; i < this._clusterAndPropertyRows.length; i++) {
       const candidateRow = this._clusterAndPropertyRows[i];
-      if (candidateRow.isPropertyOfName(propertyName)) {
+      if(candidateRow.isPropertyOfName(propertyName)) {
         return candidateRow;
       }
     }
@@ -250,8 +250,8 @@ class Element extends BaseModel {
   isLockedViaParents() {
     // tslint:disable-next-line:no-this-assignment
     let p = this;
-    while (p) {
-      if (p.isLocked()) {
+    while(p) {
+      if(p.isLocked()) {
         return true;
       }
       p = p.parent;
@@ -264,9 +264,9 @@ class Element extends BaseModel {
       this.getComponentId(),
       !this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE],
       metadata,
-      cb
+      cb,
     );
-    this.emit("update", "element-locked-toggle");
+    this.emit('update', 'element-locked-toggle');
   }
 
   getStaticTemplateNode() {
@@ -287,13 +287,13 @@ class Element extends BaseModel {
 
   getVisibleEvents() {
     return Object.keys(this.getReifiedEventHandlers()).filter(
-      handler => !this.isTimelineEvent(handler)
+      handler => !this.isTimelineEvent(handler),
     );
   }
 
   getTimelineEvents() {
     return Object.keys(this.getReifiedEventHandlers()).filter(handler =>
-      this.isTimelineEvent(handler)
+      this.isTimelineEvent(handler),
     );
   }
 
@@ -311,8 +311,8 @@ class Element extends BaseModel {
 
   getReifiedEventHandlers() {
     const bytecode = this.component.getReifiedBytecode();
-    const selector = "haiku:" + this.getComponentId();
-    if (!bytecode.eventHandlers) {
+    const selector = 'haiku:' + this.getComponentId();
+    if(!bytecode.eventHandlers) {
       bytecode.eventHandlers = {};
     }
     return bytecode.eventHandlers[selector] || {};
@@ -323,18 +323,18 @@ class Element extends BaseModel {
   }
 
   getEventHandlerSaveStatus(eventName) {
-    if (!this._eventHandlerSaves) {
+    if(!this._eventHandlerSaves) {
       this._eventHandlerSaves = {};
     }
     return this._eventHandlerSaves[eventName];
   }
 
   setEventHandlerSaveStatus(eventName, statusValue) {
-    if (!this._eventHandlerSaves) {
+    if(!this._eventHandlerSaves) {
       this._eventHandlerSaves = {};
     }
     this._eventHandlerSaves[eventName] = statusValue;
-    this.emit("update", "element-event-handler-save-status-update");
+    this.emit('update', 'element-event-handler-save-status-update');
     return this;
   }
 
@@ -350,30 +350,30 @@ class Element extends BaseModel {
     });
 
     options.push({
-      label: "Favorites",
-      options: Element.HIGHER_ORDER_EVENTS
+      label: 'Favorites',
+      options: Element.HIGHER_ORDER_EVENTS,
     });
 
     const handlers = this.getReifiedEventHandlers();
 
-    for (const category in KnownDOMEvents) {
+    for(const category in KnownDOMEvents) {
       const suboptions = [];
 
       options.push({
         label: category,
-        options: suboptions
+        options: suboptions,
       });
 
-      for (const name in KnownDOMEvents[category]) {
+      for(const name in KnownDOMEvents[category]) {
         const candidate = KnownDOMEvents[category][name];
         predefined[name] = true;
 
         // If this is whitelisted to appear in the menu, show it.
         // If not, show it only if there is a handler explicitly defined for it.
-        if (candidate.menuable || handlers[name]) {
+        if(candidate.menuable || handlers[name]) {
           suboptions.push({
             label: candidate.human || name,
-            value: name
+            value: name,
           });
         }
       }
@@ -384,23 +384,23 @@ class Element extends BaseModel {
     });
 
     options.push({
-      label: "Component/Lifecycle",
-      options: Element.COMPONENT_EVENTS
+      label: 'Component/Lifecycle',
+      options: Element.COMPONENT_EVENTS,
     });
 
     const customEvents = [];
-    for (const name in handlers) {
-      if (!this.isTimelineEvent(name) && !predefined[name]) {
+    for(const name in handlers) {
+      if(!this.isTimelineEvent(name) && !predefined[name]) {
         customEvents.push({
           label: name,
-          value: name
+          value: name,
         });
       }
     }
 
     options.push({
-      label: "Custom Events",
-      options: customEvents
+      label: 'Custom Events',
+      options: customEvents,
     });
 
     return options;
@@ -417,43 +417,43 @@ class Element extends BaseModel {
 
     // These are cloned because we may mutate their references in place when we paste
     const clonedNode = lodash.cloneDeep(
-      Template.manaWithOnlyStandardProps(originalNode, true)
+      Template.manaWithOnlyStandardProps(originalNode, true),
     );
 
     const clonedBytecode = lodash.cloneDeepWith(
       this.component.fetchActiveBytecodeFile().getReifiedDecycledBytecode(),
       value => {
-        if (value instanceof Function && value.injectee) {
+        if(value instanceof Function && value.injectee) {
           return functionToRFO(value);
         }
-      }
+      },
     );
 
     const eventHandlers = Bytecode.getAppliedEventHandlersForNode(
       {},
       clonedBytecode,
-      clonedNode
+      clonedNode,
     );
 
     Object.keys(eventHandlers).forEach(element => {
       Object.keys(eventHandlers[element]).forEach(event => {
         eventHandlers[element][event].handler = functionToRFO(
-          eventHandlers[element][event].handler
+          eventHandlers[element][event].handler,
         );
       });
     });
 
     return {
-      kind: "bytecode",
+      kind: 'bytecode',
       data: {
         eventHandlers,
         timelines: Bytecode.getAppliedTimelinesForNode(
           {},
           clonedBytecode,
-          clonedNode
+          clonedNode,
         ),
-        template: clonedNode
-      }
+        template: clonedNode,
+      },
     };
   }
 
@@ -463,44 +463,44 @@ class Element extends BaseModel {
     const bytecode = Bytecode.clone(this.component.getReifiedBytecode());
     const template = Template.clone(
       {},
-      Template.manaWithOnlyStandardProps(this.getStaticTemplateNode(), false)
+      Template.manaWithOnlyStandardProps(this.getStaticTemplateNode(), false),
     );
     const states = Bytecode.getAppliedStatesForNode({}, bytecode, template);
     const helpers = Bytecode.getAppliedHelpersForNode({}, bytecode, template);
     const timelines = Bytecode.getAppliedTimelinesForNode(
       {},
       bytecode,
-      template
+      template,
     );
     const eventHandlers = Bytecode.getAppliedEventHandlersForNode(
       {},
       bytecode,
-      template
+      template,
     );
     return {
       helpers,
       states,
       timelines,
       eventHandlers,
-      template
+      template,
     };
   }
 
   isSyncLocked() {
     const node = this.getStaticTemplateNode();
-    if (node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+    if(node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
       return node.attributes[HAIKU_SOURCE_ATTRIBUTE].endsWith(
-        SYNC_LOCKED_ID_SUFFIX
+        SYNC_LOCKED_ID_SUFFIX,
       );
     }
     return false;
   }
 
   getStackingInfo() {
-    if (!this.parent) {
+    if(!this.parent) {
       return;
     }
-    if (!this.parent.getStaticTemplateNode()) {
+    if(!this.parent.getStaticTemplateNode()) {
       return;
     }
     return Template.getStackingInfo(
@@ -508,28 +508,28 @@ class Element extends BaseModel {
       this.parent.getStaticTemplateNode(),
       // TODO: If we ever support time-bound stacking, change these to their dynamic counterparts
       this.component.getInstantiationTimelineName(),
-      this.component.getInstantiationTimelineTime()
+      this.component.getInstantiationTimelineTime(),
     );
   }
 
   isAtFront() {
     const stackingInfo = this.getStackingInfo();
-    if (!stackingInfo) {
+    if(!stackingInfo) {
       return true;
     } // Can happen with artboard
     const myIndex = lodash.findIndex(stackingInfo, {
-      haikuId: this.getComponentId()
+      haikuId: this.getComponentId(),
     });
     return myIndex === stackingInfo.length - 1;
   }
 
   isAtBack() {
     const stackingInfo = this.getStackingInfo();
-    if (!stackingInfo) {
+    if(!stackingInfo) {
       return true;
     } // Can happen with artboard
     const myIndex = lodash.findIndex(stackingInfo, {
-      haikuId: this.getComponentId()
+      haikuId: this.getComponentId(),
     });
     return myIndex === 0;
   }
@@ -541,12 +541,12 @@ class Element extends BaseModel {
       0,
       this.component.project.getMetadata(),
       err => {
-        if (err) {
+        if(err) {
           return void 0;
         }
-      }
+      },
     );
-    this.emit("update", "element-send-to-back");
+    this.emit('update', 'element-send-to-back');
   }
 
   bringToFront() {
@@ -556,12 +556,12 @@ class Element extends BaseModel {
       0,
       this.component.project.getMetadata(),
       err => {
-        if (err) {
+        if(err) {
           return void 0;
         }
-      }
+      },
     );
-    this.emit("update", "element-bring-to-front");
+    this.emit('update', 'element-bring-to-front');
   }
 
   bringForward() {
@@ -571,12 +571,12 @@ class Element extends BaseModel {
       0,
       this.component.project.getMetadata(),
       err => {
-        if (err) {
+        if(err) {
           return void 0;
         }
-      }
+      },
     );
-    this.emit("update", "element-bring-forward");
+    this.emit('update', 'element-bring-forward');
   }
 
   sendBackward() {
@@ -586,12 +586,12 @@ class Element extends BaseModel {
       0,
       this.component.project.getMetadata(),
       err => {
-        if (err) {
+        if(err) {
           return void 0;
         }
-      }
+      },
     );
-    this.emit("update", "element-send-backward");
+    this.emit('update', 'element-send-backward');
   }
 
   // marginX and marginY represent the distance from the container
@@ -603,14 +603,14 @@ class Element extends BaseModel {
     const points = this.getBoxPointsTransformed();
 
     // account for stage margin to provide a screen-space bbox
-    if (marginX !== undefined && marginY !== undefined) {
+    if(marginX !== undefined && marginY !== undefined) {
       const mat = Matrix.mat2d.create();
       const margin = Matrix.vec2.create();
 
       Matrix.vec2.set(margin, -marginX, -marginY);
       Matrix.mat2d.translate(mat, mat, margin);
 
-      for (let i = 0; i < points.length; i++) {
+      for(let i = 0; i < points.length; i++) {
         const pointInput = Matrix.vec2.create();
         const pointOutput = Matrix.vec2.create();
         Matrix.vec2.set(pointInput, points[i].x, points[i].y);
@@ -632,22 +632,22 @@ class Element extends BaseModel {
       bottom,
       left,
       width,
-      height
+      height,
     };
   }
 
   isAutoSizeX() {
     const layout = this.getLayoutSpec();
-    return typeof layout.sizeAbsolute.x !== "number";
+    return typeof layout.sizeAbsolute.x !== 'number';
   }
 
   isAutoSizeY() {
     const layout = this.getLayoutSpec();
-    return typeof layout.sizeAbsolute.y !== "number";
+    return typeof layout.sizeAbsolute.y !== 'number';
   }
 
   getComputedSize() {
-    if (this.isTextNode()) {
+    if(this.isTextNode()) {
       return this.parent.getComputedSize();
     }
     return this.getHaikuElement().size;
@@ -674,7 +674,7 @@ class Element extends BaseModel {
         children:
           (targetNode.__memory && targetNode.__memory.children) ||
           targetNode.children,
-        __memory: targetNode.__memory
+        __memory: targetNode.__memory,
       },
       {
         // parentNode
@@ -687,14 +687,14 @@ class Element extends BaseModel {
               {},
             size:
               (this.parent && this.parent.getComputedSize()) ||
-              this.getComputedSize()
-          }
+              this.getComputedSize(),
+          },
         },
         elementName: parentNode.elementName,
         attributes: parentNode.attributes,
         children: parentNode.children,
-        __memory: parentNode.__memory
-      }
+        __memory: parentNode.__memory,
+      },
     );
   }
 
@@ -703,7 +703,7 @@ class Element extends BaseModel {
     const hostInstance = this.component.$instance;
 
     // Race condition when converting elements on stage to components
-    if (!hostInstance) {
+    if(!hostInstance) {
       return Layout3D.createLayoutSpec();
     }
 
@@ -717,7 +717,7 @@ class Element extends BaseModel {
       TimelineProperty.getPropertiesBase(
         bytecode.timelines,
         timelineName,
-        componentId
+        componentId,
       ) || {};
 
     const grabValue = outputName => {
@@ -729,10 +729,10 @@ class Element extends BaseModel {
         propertiesBase[outputName],
         timelineTime,
         !hostInstance.shouldPerformFullFlush(), // isPatchOperation
-        true // skipCache
+        true, // skipCache
       );
 
-      if (computedValue === undefined || computedValue === null) {
+      if(computedValue === undefined || computedValue === null) {
         return TimelineProperty.getFallbackValue(elementName, outputName);
       }
 
@@ -740,58 +740,58 @@ class Element extends BaseModel {
     };
 
     return {
-      shown: grabValue("shown"),
-      opacity: grabValue("opacity"),
+      shown: grabValue('shown'),
+      opacity: grabValue('opacity'),
       offset: {
-        x: grabValue("offset.x"),
-        y: grabValue("offset.y"),
-        z: grabValue("offset.z")
+        x: grabValue('offset.x'),
+        y: grabValue('offset.y'),
+        z: grabValue('offset.z'),
       },
       origin: {
-        x: grabValue("origin.x"),
-        y: grabValue("origin.y"),
-        z: grabValue("origin.z")
+        x: grabValue('origin.x'),
+        y: grabValue('origin.y'),
+        z: grabValue('origin.z'),
       },
       translation: {
-        x: grabValue("translation.x"),
-        y: grabValue("translation.y"),
-        z: grabValue("translation.z")
+        x: grabValue('translation.x'),
+        y: grabValue('translation.y'),
+        z: grabValue('translation.z'),
       },
       rotation: {
-        x: grabValue("rotation.x"),
-        y: grabValue("rotation.y"),
-        z: grabValue("rotation.z")
+        x: grabValue('rotation.x'),
+        y: grabValue('rotation.y'),
+        z: grabValue('rotation.z'),
       },
       scale: {
-        x: grabValue("scale.x"),
-        y: grabValue("scale.y"),
-        z: grabValue("scale.z")
+        x: grabValue('scale.x'),
+        y: grabValue('scale.y'),
+        z: grabValue('scale.z'),
       },
       shear: {
-        xy: grabValue("shear.xy"),
-        xz: grabValue("shear.xz"),
-        yz: grabValue("shear.yz")
+        xy: grabValue('shear.xy'),
+        xz: grabValue('shear.xz'),
+        yz: grabValue('shear.yz'),
       },
       sizeMode: {
-        x: grabValue("sizeMode.x"),
-        y: grabValue("sizeMode.y"),
-        z: grabValue("sizeMode.z")
+        x: grabValue('sizeMode.x'),
+        y: grabValue('sizeMode.y'),
+        z: grabValue('sizeMode.z'),
       },
       sizeProportional: {
-        x: grabValue("sizeProportional.x"),
-        y: grabValue("sizeProportional.y"),
-        z: grabValue("sizeProportional.z")
+        x: grabValue('sizeProportional.x'),
+        y: grabValue('sizeProportional.y'),
+        z: grabValue('sizeProportional.z'),
       },
       sizeDifferential: {
-        x: grabValue("sizeDifferential.x"),
-        y: grabValue("sizeDifferential.y"),
-        z: grabValue("sizeDifferential.z")
+        x: grabValue('sizeDifferential.x'),
+        y: grabValue('sizeDifferential.y'),
+        z: grabValue('sizeDifferential.z'),
       },
       sizeAbsolute: {
-        x: grabValue("sizeAbsolute.x"),
-        y: grabValue("sizeAbsolute.y"),
-        z: grabValue("sizeAbsolute.z")
-      }
+        x: grabValue('sizeAbsolute.x'),
+        y: grabValue('sizeAbsolute.y'),
+        z: grabValue('sizeAbsolute.z'),
+      },
     };
   }
 
@@ -808,43 +808,43 @@ class Element extends BaseModel {
       { x: w, y: h / 2, z: 0 },
       { x: 0, y: h, z: 0 },
       { x: w / 2, y: h, z: 0 },
-      { x: w, y: h, z: 0 }
+      { x: w, y: h, z: 0 },
     ];
   }
 
   getBoxPointsTransformed() {
     return HaikuElement.transformPointsInPlace(
       this.getBoundingBoxPoints(),
-      this.getOriginOffsetComposedMatrix()
+      this.getOriginOffsetComposedMatrix(),
     );
   }
 
   getOriginNotTransformed() {
-    return this.cache.fetch("getOriginNotTransformed", () => {
+    return this.cache.fetch('getOriginNotTransformed', () => {
       const layout = this.getComputedLayout();
       return {
         x: layout.size.x * layout.origin.x,
         y: layout.size.y * layout.origin.y,
-        z: layout.size.z * layout.origin.z
+        z: layout.size.z * layout.origin.z,
       };
     });
   }
 
   getOriginTransformed() {
-    return this.cache.fetch("getOriginTransformed", () => {
+    return this.cache.fetch('getOriginTransformed', () => {
       return HaikuElement.transformPointInPlace(
         this.getOriginNotTransformed(),
-        this.getOriginOffsetComposedMatrix()
+        this.getOriginOffsetComposedMatrix(),
       );
     });
   }
 
   getOriginOffsetComposedMatrix() {
-    return this.cache.fetch("getOriginOffsetComposedMatrix", () => {
+    return this.cache.fetch('getOriginOffsetComposedMatrix', () => {
       return Layout3D.multiplyArrayOfMatrices(
         this.getComputedLayoutAncestry()
           .reverse()
-          .map(layout => layout.matrix)
+          .map(layout => layout.matrix),
       );
     });
   }
@@ -867,7 +867,7 @@ class Element extends BaseModel {
       bytecode.timelines,
       this.component.getCurrentTimelineName(),
       this.getComponentId(),
-      propertyName
+      propertyName,
     );
   }
 
@@ -884,7 +884,7 @@ class Element extends BaseModel {
       fallbackValue,
       bytecode,
       host,
-      states
+      states,
     );
     // Re: the scale NaN/Infinity issue on a freshly instantiated component module,
     // The problem is probably upstream of here in core or ActiveComponent
@@ -894,17 +894,17 @@ class Element extends BaseModel {
   computePropertyGroupValueFromGroupDelta(propertyGroupDelta) {
     const propertyGroupValue = {};
 
-    for (const propertyName in propertyGroupDelta) {
+    for(const propertyName in propertyGroupDelta) {
       const existingPropertyValue = this.computePropertyValue(propertyName, 0);
       const deltaPropertyValue = propertyGroupDelta[propertyName].value;
 
-      if (isNumeric(existingPropertyValue) && isNumeric(deltaPropertyValue)) {
+      if(isNumeric(existingPropertyValue) && isNumeric(deltaPropertyValue)) {
         propertyGroupValue[propertyName] = {
-          value: MathUtils.rounded(existingPropertyValue + deltaPropertyValue)
+          value: MathUtils.rounded(existingPropertyValue + deltaPropertyValue),
         };
       } else {
         propertyGroupValue[propertyName] = {
-          value: existingPropertyValue
+          value: existingPropertyValue,
         };
       }
     }
@@ -916,11 +916,11 @@ class Element extends BaseModel {
     this.destroy();
 
     const row = this.getHeadingRow();
-    if (row) {
+    if(row) {
       row.delete();
     }
 
-    this.emit("update", "element-removed");
+    this.emit('update', 'element-removed');
   }
 
   isRepeater() {
@@ -929,11 +929,11 @@ class Element extends BaseModel {
   }
 
   getRepeaterKeyframes() {
-    return this.getPropertyKeyframesObject("controlFlow.repeat");
+    return this.getPropertyKeyframesObject('controlFlow.repeat');
   }
 
   isTextNode() {
-    return typeof this.getStaticTemplateNode() === "string";
+    return typeof this.getStaticTemplateNode() === 'string';
   }
 
   isComponent() {
@@ -942,30 +942,30 @@ class Element extends BaseModel {
 
   isNonRenderedComponent() {
     const bytecode = this.getHostedComponentBytecode();
-    if (!bytecode) {
+    if(!bytecode) {
       // Not even a component
       return false;
     }
-    if (!bytecode.metadata) {
+    if(!bytecode.metadata) {
       return false;
     }
     return !!bytecode.metadata.nonrendered;
   }
 
   isExternalComponent() {
-    if (!this.isComponent()) {
+    if(!this.isComponent()) {
       return false;
     }
     return !this.isLocalComponent();
   }
 
   isLocalComponent() {
-    if (!this.isComponent()) {
+    if(!this.isComponent()) {
       return false;
     }
     const sourceAttr = this.getSource();
     // Like npm, assume dot-paths equate to a local component
-    return sourceAttr && sourceAttr[0] === ".";
+    return sourceAttr && sourceAttr[0] === '.';
   }
 
   getSource() {
@@ -974,26 +974,26 @@ class Element extends BaseModel {
   }
 
   getHostedComponentBytecode() {
-    if (this.isTextNode()) {
+    if(this.isTextNode()) {
       return null;
     }
     const node = this.getStaticTemplateNode();
-    if (!node) {
+    if(!node) {
       return null;
     }
     const elementName = node.elementName;
-    if (!elementName) {
+    if(!elementName) {
       return null;
     }
-    if (typeof elementName !== "object") {
+    if(typeof elementName !== 'object') {
       return null;
     }
     return elementName;
   }
 
   getTitle() {
-    if (this.isTextNode()) {
-      return "<text>";
+    if(this.isTextNode()) {
+      return '<text>';
     } // HACK, but not sure what else to do
     return (
       this.getStaticTemplateNode().attributes[HAIKU_TITLE_ATTRIBUTE] ||
@@ -1006,27 +1006,27 @@ class Element extends BaseModel {
       this.getComponentId(),
       newTitle,
       metadata,
-      cb
+      cb,
     );
   }
 
   getNameString() {
-    if (this.isTextNode()) {
-      return "<text>";
+    if(this.isTextNode()) {
+      return '<text>';
     } // HACK, but not sure what else to do
-    if (this.isComponent()) {
-      return "div";
+    if(this.isComponent()) {
+      return 'div';
     } // this tends to be the default
     const node = this.getStaticTemplateNode();
-    if (node) {
+    if(node) {
       return node.elementName;
     }
-    return "div";
+    return 'div';
   }
 
   getSafeDomFriendlyName() {
     // If this element is component, then start by populating standard DOM properties
-    const elementName = this.isComponent() ? "div" : this.getNameString();
+    const elementName = this.isComponent() ? 'div' : this.getNameString();
 
     return elementName;
   }
@@ -1041,7 +1041,7 @@ class Element extends BaseModel {
 
   updateTargetingRows(updateEventName) {
     this.getAllRows().forEach(row => {
-      row.emit("update", updateEventName);
+      row.emit('update', updateEventName);
     });
   }
 
@@ -1056,11 +1056,11 @@ class Element extends BaseModel {
   get topmostHeadingRow() {
     const headingRow = this.getHeadingRow();
 
-    if (!this.parent) {
+    if(!this.parent) {
       return headingRow;
     }
 
-    if (headingRow) {
+    if(headingRow) {
       // TODO: since we are [not displaying][1] <g> elements, we _need_ to set
       // their `_isExpanded` property to `true`, otherwise the nested element [will
       // not be shown][2].
@@ -1088,15 +1088,15 @@ class Element extends BaseModel {
     const rows = [];
 
     const headingRow = this.getHeadingRow();
-    if (headingRow) {
+    if(headingRow) {
       rows.push(headingRow);
 
-      if (headingRow.children) {
+      if(headingRow.children) {
         headingRow.children.forEach(childRow => {
-          if (childRow.isCluster() || childRow.isProperty()) {
+          if(childRow.isCluster() || childRow.isProperty()) {
             rows.push(childRow);
 
-            if (childRow.children) {
+            if(childRow.children) {
               childRow.children.forEach(grandchildRow => {
                 rows.push(grandchildRow);
               });
@@ -1106,10 +1106,10 @@ class Element extends BaseModel {
       }
     }
 
-    if (doRecurse && experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)) {
+    if(doRecurse && experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)) {
       const deeprows = [];
       this.visitDescendants(descendantElement => {
-        if (!descendantElement.shouldBeDisplayed()) {
+        if(!descendantElement.shouldBeDisplayed()) {
           return;
         }
 
@@ -1129,7 +1129,7 @@ class Element extends BaseModel {
   }
 
   clearEntityCaches() {
-    if (this.children) {
+    if(this.children) {
       this.children.forEach(element => {
         element.cache.clear();
         element.clearEntityCaches();
@@ -1143,7 +1143,7 @@ class Element extends BaseModel {
   }
 
   getFirstNotShimParent(current = this) {
-    if (!current.parent || !current.parent.isShimElement()) {
+    if(!current.parent || !current.parent.isShimElement()) {
       return current.parent;
     }
 
@@ -1151,7 +1151,7 @@ class Element extends BaseModel {
   }
 
   rehydrateRows(options = {}) {
-    if (options.superficial || process.env.HAIKU_SUBPROCESS !== "timeline") {
+    if(options.superficial || process.env.HAIKU_SUBPROCESS !== 'timeline') {
       return;
     }
 
@@ -1175,12 +1175,12 @@ class Element extends BaseModel {
         timeline,
         children: [],
         property: null,
-        cluster: null
+        cluster: null,
       },
-      {}
+      {},
     );
 
-    if (parentElementHeadingRow) {
+    if(parentElementHeadingRow) {
       parentElementHeadingRow.insertChild(currentElementHeadingRow);
     }
 
@@ -1193,17 +1193,17 @@ class Element extends BaseModel {
 
     this.eachAddressableProperty((propertyGroupDescriptor, addressableName) => {
       this.hasAddressableProperties = true;
-      if (propertyGroupDescriptor.cluster) {
+      if(propertyGroupDescriptor.cluster) {
         // Properties that are 'clustered', like rotation.x,y,z
         const clusterId = Row.buildClusterUid(
           this,
           element,
-          propertyGroupDescriptor
+          propertyGroupDescriptor,
         );
 
         let clusterRow;
 
-        if (clusters[clusterId]) {
+        if(clusters[clusterId]) {
           clusterRow = Row.findById(clusterId);
         } else {
           clusterRow = Row.upsert(
@@ -1215,9 +1215,9 @@ class Element extends BaseModel {
               parent: currentElementHeadingRow,
               children: [],
               property: null, // This null is used to determine isClusterHeading
-              cluster: propertyGroupDescriptor.cluster
+              cluster: propertyGroupDescriptor.cluster,
             },
-            {}
+            {},
           );
 
           this._clusterAndPropertyRows.push(clusterRow);
@@ -1231,7 +1231,7 @@ class Element extends BaseModel {
               this,
               element,
               propertyGroupDescriptor,
-              addressableName
+              addressableName,
             ),
             element,
             component,
@@ -1239,9 +1239,9 @@ class Element extends BaseModel {
             parent: clusterRow,
             children: [],
             property: propertyGroupDescriptor,
-            cluster: propertyGroupDescriptor.cluster
+            cluster: propertyGroupDescriptor.cluster,
           },
-          {}
+          {},
         );
 
         this._clusterAndPropertyRows.push(clusterMember);
@@ -1258,9 +1258,9 @@ class Element extends BaseModel {
             parent: currentElementHeadingRow,
             children: [],
             property: propertyGroupDescriptor,
-            cluster: null
+            cluster: null,
           },
-          {}
+          {},
         );
 
         this._clusterAndPropertyRows.push(propertyRow);
@@ -1287,12 +1287,12 @@ class Element extends BaseModel {
   rehydrateChildren({ maxRehydrationDepth }) {
     const node = this.getStaticTemplateNode();
 
-    if (typeof node.elementName === "object") {
+    if(typeof node.elementName === 'object') {
       return;
     }
 
-    if (node && node.children) {
-      for (let i = 0; i < node.children.length; i++) {
+    if(node && node.children) {
+      for(let i = 0; i < node.children.length; i++) {
         const child = node.children[i];
 
         const element = Element.upsertElementFromVirtualElement(
@@ -1300,22 +1300,22 @@ class Element extends BaseModel {
           child, // staticTemplateNode
           this, // parent element
           i, // index in parent
-          `${this.getGraphAddress()}.${i}` // graph address
+          `${this.getGraphAddress()}.${i}`, // graph address
         );
 
         // If our node is replacing an existing one, we can grab its properties
-        if (child.__replacee) {
+        if(child.__replacee) {
           const replaceeHaikuId =
             child.__replacee.attributes &&
             child.__replacee.attributes[HAIKU_ID_ATTRIBUTE];
 
-          if (replaceeHaikuId) {
+          if(replaceeHaikuId) {
             const replaceeElement = Element.findByComponentAndHaikuId(
               this.component,
-              replaceeHaikuId
+              replaceeHaikuId,
             );
 
-            if (replaceeElement) {
+            if(replaceeElement) {
               // This ensures that the timeline displays correct JIT sub-element rows even after a design merge
               element._visibleProperties = replaceeElement._visibleProperties;
             }
@@ -1331,7 +1331,7 @@ class Element extends BaseModel {
   }
 
   rehydrate({ maxRehydrationDepth }) {
-    if (
+    if(
       this.getDepthAmongElements() <= maxRehydrationDepth ||
       (experimentIsEnabled(Experiment.ShowSubElementsInJitMenu) &&
         this.hasInternalPropertiesDefinedCached())
@@ -1351,44 +1351,44 @@ class Element extends BaseModel {
     const node = this.getStaticTemplateNode();
 
     Template.visitWithoutDescendingIntoSubcomponents(node, subnode => {
-      if (node === subnode) {
+      if(node === subnode) {
         return;
       }
 
       const selector = TimelineProperty.getSelectorForComponentId(
-        subnode.attributes[HAIKU_ID_ATTRIBUTE]
+        subnode.attributes[HAIKU_ID_ATTRIBUTE],
       );
 
       selectors[selector] = subnode;
     });
 
-    if (Object.keys(selectors).length < 1) {
+    if(Object.keys(selectors).length < 1) {
       return false;
     }
 
     const bytecode = this.component.getReifiedBytecode();
 
-    if (!bytecode || !bytecode.timelines) {
+    if(!bytecode || !bytecode.timelines) {
       return false;
     }
 
-    for (const timelineName in bytecode.timelines) {
-      for (const selector in bytecode.timelines[timelineName]) {
+    for(const timelineName in bytecode.timelines) {
+      for(const selector in bytecode.timelines[timelineName]) {
         const subnode = selectors[selector];
 
-        if (!subnode) {
+        if(!subnode) {
           continue;
         }
 
-        for (const propertyName in bytecode.timelines[timelineName][selector]) {
+        for(const propertyName in bytecode.timelines[timelineName][selector]) {
           const keyframesObject =
             bytecode.timelines[timelineName][selector][propertyName];
 
-          if (
+          if(
             Property.areAnyKeyframesDefined(
               subnode.elementName,
               propertyName,
-              keyframesObject
+              keyframesObject,
             )
           ) {
             return true;
@@ -1402,7 +1402,7 @@ class Element extends BaseModel {
   }
 
   hasInternalPropertiesDefinedCached() {
-    return this.cache.fetch("hasInternalPropertiesDefinedCached", () => {
+    return this.cache.fetch('hasInternalPropertiesDefinedCached', () => {
       return this.hasInternalPropertiesDefined();
     });
   }
@@ -1410,7 +1410,7 @@ class Element extends BaseModel {
   getDepthAmongElements() {
     let depth = 0;
     let parent = this.parent;
-    while (parent) {
+    while(parent) {
       depth += 1;
       parent = parent.parent;
     }
@@ -1430,19 +1430,19 @@ class Element extends BaseModel {
     const componentAddressables = {};
 
     // If this is a component, then add any of our componentAddressables states as builtinAddressables
-    if (this.isComponent()) {
+    if(this.isComponent()) {
       const node = this.getLiveRenderedNode();
-      if (node && node.elementName && node.elementName.states) {
-        for (const name in node.elementName.states) {
+      if(node && node.elementName && node.elementName.states) {
+        for(const name in node.elementName.states) {
           const state = node.elementName.states[name];
           componentAddressables[name] = {
             name,
-            type: "state",
+            type: 'state',
             prefix: name,
             suffix: undefined,
             fallback: state.value,
             typedef: state.type,
-            mock: state.mock
+            mock: state.mock,
           };
         }
       }
@@ -1458,11 +1458,11 @@ class Element extends BaseModel {
 
     const returnedAddressables = {};
 
-    for (const key1 in builtinAddressables) {
+    for(const key1 in builtinAddressables) {
       returnedAddressables[key1] = builtinAddressables[key1];
     }
 
-    for (const key2 in componentAddressables) {
+    for(const key2 in componentAddressables) {
       returnedAddressables[key2] = componentAddressables[key2];
     }
 
@@ -1481,7 +1481,7 @@ class Element extends BaseModel {
   //   }
   // ]
   getJITPropertyOptions() {
-    if (this.isNonRenderedComponent()) {
+    if(this.isNonRenderedComponent()) {
       return [];
     }
 
@@ -1489,11 +1489,11 @@ class Element extends BaseModel {
 
     // Because of bad code, I have to explicitly collect addressable properties for
     // sub-elements that wouldn't be shown in the JIT menu otherwise
-    if (this.getDepthAmongElements() > 1) {
+    if(this.getDepthAmongElements() > 1) {
       const complete = this.getCompleteAddressableProperties();
 
-      for (const key in complete) {
-        if (!this._visibleProperties[key]) {
+      for(const key in complete) {
+        if(!this._visibleProperties[key]) {
           exclusions[key] = complete[key];
         }
       }
@@ -1501,27 +1501,27 @@ class Element extends BaseModel {
 
     const grouped = {};
 
-    for (const propertyName in exclusions) {
+    for(const propertyName in exclusions) {
       const propertyObj = exclusions[propertyName];
 
-      if (!Property.includeInJIT(propertyName, this, propertyObj, null)) {
+      if(!Property.includeInJIT(propertyName, this, propertyObj, null)) {
         continue;
       }
 
       const prefix = propertyObj.prefix;
       const suffix = propertyObj.suffix;
 
-      if (!grouped[prefix]) {
+      if(!grouped[prefix]) {
         grouped[prefix] = {
           element: this,
           prefix,
           suffix,
-          label: Property.humanizePropertyNamePart(prefix)
+          label: Property.humanizePropertyNamePart(prefix),
         };
       }
 
-      if (suffix) {
-        if (!grouped[prefix].options) {
+      if(suffix) {
+        if(!grouped[prefix].options) {
           grouped[prefix].options = [];
         }
 
@@ -1530,24 +1530,24 @@ class Element extends BaseModel {
           prefix,
           suffix,
           label: Property.humanizePropertyNamePart(suffix),
-          value: propertyObj.name
+          value: propertyObj.name,
         });
       } else {
         grouped[prefix].value = propertyObj.name;
       }
     }
 
-    if (experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)) {
+    if(experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)) {
       // Expose properties of our sub-element in the timeline
-      if (!this.isRootElement() && !this.isComponent()) {
-        if (this.children && this.children.length > 0) {
+      if(!this.isRootElement() && !this.isComponent()) {
+        if(this.children && this.children.length > 0) {
           this.children.forEach(child => {
             const name = child.getSafeDomFriendlyName();
 
             // Exclude elements that are either 'useless' or should be
             // represented elsewhere in the displayed element tree,
             // or which don't warrant display at all (text nodes)
-            if (!Property.BUILTIN_DOM_SCHEMAS[name] || child.isTextNode()) {
+            if(!Property.BUILTIN_DOM_SCHEMAS[name] || child.isTextNode()) {
               return false;
             }
 
@@ -1555,16 +1555,16 @@ class Element extends BaseModel {
             // children into a single node, to keep the menu as simple as we can
             const insert = this.grabNextUsefulMenuInsert(child);
 
-            if (insert) {
+            if(insert) {
               const { key, label, options, element } = insert;
 
               grouped[key] = {
-                type: "element",
+                type: 'element',
                 element,
                 // Alpha ordering HACK; see groupedOptionsObjectToList
                 prefix: `zzzzz_element_${label}`,
                 label: `‹› ${label}`,
-                options
+                options,
               };
             }
           });
@@ -1577,13 +1577,13 @@ class Element extends BaseModel {
   }
 
   grabNextUsefulMenuInsert(child) {
-    if (child.isTextNode()) {
+    if(child.isTextNode()) {
       return null;
     }
 
     const options = child.getJITPropertyOptions();
 
-    if (options.length === 1 && options[0].type === "element") {
+    if(options.length === 1 && options[0].type === 'element') {
       return this.grabNextUsefulMenuInsert(options[0].element);
     }
 
@@ -1594,15 +1594,15 @@ class Element extends BaseModel {
       key,
       label,
       options,
-      element: child
+      element: child,
     };
   }
 
   eachAddressableProperty(iteratee) {
     const addressableProperties = this.getDisplayedAddressableProperties();
 
-    for (const propertyName in addressableProperties) {
-      if (addressableProperties[propertyName]) {
+    for(const propertyName in addressableProperties) {
+      if(addressableProperties[propertyName]) {
         iteratee(addressableProperties[propertyName], propertyName);
       }
     }
@@ -1613,11 +1613,11 @@ class Element extends BaseModel {
       const ap = a.prefix.toLowerCase();
       const bp = b.prefix.toLowerCase();
 
-      if (ap < bp) {
+      if(ap < bp) {
         return -1;
       }
 
-      if (ap > bp) {
+      if(ap > bp) {
         return 1;
       }
 
@@ -1640,10 +1640,10 @@ class Element extends BaseModel {
   optionsToItems(options) {
     return options.map(option => {
       const item = {
-        label: option.label
+        label: option.label,
       };
 
-      if (option.options) {
+      if(option.options) {
         item.submenu = this.optionsToItems(option.options);
       } else {
         item.onClick = () => {
@@ -1669,8 +1669,8 @@ class Element extends BaseModel {
   getExplicitlyVisibleAddressableProperties() {
     const complete = this.getCompleteAddressableProperties();
     const filtered = {};
-    for (const propertyName in complete) {
-      if (this._visibleProperties[propertyName]) {
+    for(const propertyName in complete) {
+      if(this._visibleProperties[propertyName]) {
         filtered[propertyName] = complete[propertyName];
       }
     }
@@ -1686,25 +1686,25 @@ class Element extends BaseModel {
     // The ones to exclude from the timeline, but show in the JIT menu
     const excluded = {};
 
-    for (const propertyName in complete) {
+    for(const propertyName in complete) {
       const propertyObject = complete[propertyName];
 
       Property.buildFilterObject(
         filtered,
         this, // hostElement
         propertyName,
-        propertyObject
+        propertyObject,
       );
 
       // Make sure to list any exclusions we did
-      if (!filtered[propertyName]) {
+      if(!filtered[propertyName]) {
         excluded[propertyName] = propertyObject;
       }
     }
 
     return {
       filtered,
-      excluded
+      excluded,
     };
   }
 
@@ -1714,19 +1714,19 @@ class Element extends BaseModel {
     this.rehydrateRows();
 
     const row = this.getPropertyRowByPropertyName(propertyName);
-    if (row) {
-      if (row.isWithinCollapsedRow()) {
+    if(row) {
+      if(row.isWithinCollapsedRow()) {
         row.parent.expand(this.component.project.getMetadata());
       }
       row.select(this.component.project.getMetadata());
     }
 
-    this.emit("update", "jit-property-added");
+    this.emit('update', 'jit-property-added');
   }
 
   hideAddressableProperty(propertyName) {
     this._visibleProperties[propertyName] = false;
-    this.emit("update", "jit-property-removed");
+    this.emit('update', 'jit-property-removed');
   }
 
   isRootElement() {
@@ -1767,8 +1767,8 @@ class Element extends BaseModel {
   getParentSvgElement() {
     // tslint:disable-next-line:no-this-assignment
     let currElem = this;
-    while (currElem) {
-      if (currElem.getNameString() === "svg") {
+    while(currElem) {
+      if(currElem.getNameString() === 'svg') {
         return currElem;
       }
       currElem = currElem.parent;
@@ -1778,25 +1778,25 @@ class Element extends BaseModel {
 
   getUngroupables() {
     const haikuElement = this.getHaikuElement();
-    switch (haikuElement.tagName) {
-      case "svg":
-      case "div":
+    switch(haikuElement.tagName) {
+      case 'svg':
+      case 'div':
         const ungroupables = [];
         this.getHaikuElement().visit(
           descendantHaikuElement => {
             const eligibleChildren = descendantHaikuElement.children.filter(
               element =>
-                element.tagName !== "defs" &&
+                element.tagName !== 'defs' &&
                 element.target &&
-                (haikuElement.tagName === "div" ||
-                  typeof element.target.getBBox === "function")
+                (haikuElement.tagName === 'div' ||
+                  typeof element.target.getBBox === 'function'),
             );
-            if (eligibleChildren.length > 1) {
+            if(eligibleChildren.length > 1) {
               ungroupables.push(...eligibleChildren);
               return false;
             }
           },
-          node => node.tagName !== "defs"
+          node => node.tagName !== 'defs',
         );
         return ungroupables;
       default:
@@ -1811,18 +1811,18 @@ class Element extends BaseModel {
   ungroup(metadata, cb = () => {}) {
     const nodes = [];
     this.ungroupWrapper(nodes);
-    switch (this.getStaticTemplateNode().elementName) {
-      case "svg":
+    switch(this.getStaticTemplateNode().elementName) {
+      case 'svg':
         this.ungroupSvg(nodes);
         break;
-      case "div":
+      case 'div':
         this.ungroupDiv(nodes);
         break;
       default:
         logger.warn(
           `[element] ignoring nonsense request to ungroup ${
             this.getStaticTemplateNode().elementName
-          }`
+          }`,
         );
     }
 
@@ -1830,27 +1830,27 @@ class Element extends BaseModel {
       this.getComponentId(),
       nodes,
       metadata,
-      cb
+      cb,
     );
   }
 
   ungroupWrapper(nodes) {
     const haikuElement = this.getHaikuElement();
     const baseStyles = haikuElement.attributes.style;
-    if (!baseStyles) {
+    if(!baseStyles) {
       return;
     }
 
     const style = {};
     Object.keys(baseStyles).forEach(styleName => {
-      switch (styleName) {
-        case "background":
-        case "backgroundColor":
+      switch(styleName) {
+        case 'background':
+        case 'backgroundColor':
           style[styleName] = baseStyles[styleName];
       }
     });
 
-    if (Object.keys(style).length === 0) {
+    if(Object.keys(style).length === 0) {
       // We didn't find any styles that would justify ungrouping the wrapper.
       return;
     }
@@ -1861,9 +1861,9 @@ class Element extends BaseModel {
         width: haikuElement.layout.size.x,
         height: haikuElement.layout.size.y,
         [HAIKU_SOURCE_ATTRIBUTE]:
-          haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE]
+          haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE],
       },
-      { style }
+      { style },
     );
 
     const layoutMatrix = this.getOriginOffsetComposedMatrix();
@@ -1875,22 +1875,22 @@ class Element extends BaseModel {
     nodes.push(
       Template.cleanMana(
         {
-          elementName: "svg",
+          elementName: 'svg',
           attributes,
           children: [
             {
-              elementName: "rect",
+              elementName: 'rect',
               attributes: {
                 width: haikuElement.layout.size.x,
                 height: haikuElement.layout.size.y,
-                fill: "none",
-                stroke: "none"
-              }
-            }
-          ]
+                fill: 'none',
+                stroke: 'none',
+              },
+            },
+          ],
         },
-        { resetIds: true }
-      )
+        { resetIds: true },
+      ),
     );
   }
 
@@ -1899,7 +1899,7 @@ class Element extends BaseModel {
       const layoutMatrix = Layout3D.multiplyArrayOfMatrices(
         // Under unknown conditions, some elements lack a layout.matrix,
         // which causes a crash during ungroup; hence this filter
-        haikuElement.layoutAncestryMatrices.reverse().filter(m => !!m)
+        haikuElement.layoutAncestryMatrices.reverse().filter(m => !!m),
       );
       const layout = haikuElement.layout;
       const attributes = {
@@ -1908,44 +1908,44 @@ class Element extends BaseModel {
         [HAIKU_TITLE_ATTRIBUTE]: haikuElement.attributes[HAIKU_TITLE_ATTRIBUTE],
         [HAIKU_SOURCE_ATTRIBUTE]:
           haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE],
-        "origin.x": layout.origin.x,
-        "origin.y": layout.origin.y,
-        "haiku-transclude": haikuElement.getComponentId()
+        'origin.x': layout.origin.x,
+        'origin.y': layout.origin.y,
+        'haiku-transclude': haikuElement.getComponentId(),
       };
       composedTransformsToTimelineProperties(attributes, [layoutMatrix]);
       // Make sure we have something here, so we can add to it.
-      if (!attributes["translation.x"]) {
-        attributes["translation.x"] = 0;
+      if(!attributes['translation.x']) {
+        attributes['translation.x'] = 0;
       }
-      if (!attributes["translation.y"]) {
-        attributes["translation.y"] = 0;
+      if(!attributes['translation.y']) {
+        attributes['translation.y'] = 0;
       }
       // Add our origin offset directly to the derived translation.
       const originX = layout.size.x * layout.origin.x;
       const originY = layout.size.y * layout.origin.y;
 
       // Ensure SVGs have overflow: visible.
-      if (haikuElement.tagName === "svg") {
-        attributes.style = { overflow: "visible" };
+      if(haikuElement.tagName === 'svg') {
+        attributes.style = { overflow: 'visible' };
         // (1 of 3) opacity is "special". Make sure it is preserved.
-        if (haikuElement.layout.opacity !== 1) {
+        if(haikuElement.layout.opacity !== 1) {
           attributes.opacity = haikuElement.layout.opacity;
         }
       }
 
-      attributes["translation.x"] +=
+      attributes['translation.x'] +=
         originX * layoutMatrix[0] + originY * layoutMatrix[4];
-      attributes["translation.y"] +=
+      attributes['translation.y'] +=
         originX * layoutMatrix[1] + originY * layoutMatrix[5];
       nodes.push({
         // Important: ensure we can serialize the node mana if we encounter a component.
         // #FIXME: Why isn't haikuElement.isComponent() correct, and why is the component pseudo tag name 'div'?
         elementName:
-          typeof haikuElement.type !== "string"
-            ? "__component__"
+          typeof haikuElement.type !== 'string'
+            ? '__component__'
             : haikuElement.tagName,
         attributes,
-        children: []
+        children: [],
       });
     });
   }
@@ -1958,20 +1958,20 @@ class Element extends BaseModel {
     const bytecode = this.component.getReifiedBytecode();
     // First isolate defs 'n' friends.
     svgElement.visit(descendantHaikuElement => {
-      if (
-        descendantHaikuElement.tagName === "style" &&
+      if(
+        descendantHaikuElement.tagName === 'style' &&
         descendantHaikuElement.memory &&
         descendantHaikuElement.memory.children
       ) {
         const styleNode = Template.cleanMana(
           lodash.cloneDeep(descendantHaikuElement.node),
-          { resetIds: true }
+          { resetIds: true },
         );
         styleNode.children = [descendantHaikuElement.memory.children[0]];
         extraNodes.push(styleNode);
-      } else if (
+      } else if(
         (descendantHaikuElement.parent &&
-          descendantHaikuElement.parent.tagName === "defs") ||
+          descendantHaikuElement.parent.tagName === 'defs') ||
         DEFABLE_TAG_NAMES[descendantHaikuElement.tagName]
       ) {
         defs.push(descendantHaikuElement.node);
@@ -1981,15 +1981,15 @@ class Element extends BaseModel {
     ungroupables.forEach(descendantHaikuElement => {
       const mergedAttributes = {};
       let parent = descendantHaikuElement.parent;
-      while (
+      while(
         parent &&
-        (parent.node.elementName === "g" || parent.node.elementName === "svg")
+        (parent.node.elementName === 'g' || parent.node.elementName === 'svg')
       ) {
-        for (const propertyName in bytecode.timelines[
+        for(const propertyName in bytecode.timelines[
           this.component.getCurrentTimelineName()
         ][`haiku:${parent.componentId}`]) {
-          if (
-            !propertyName.startsWith("style") &&
+          if(
+            !propertyName.startsWith('style') &&
             !SVG_ONLY_ATTRIBUTES[propertyName] &&
             !mergedAttributes.hasOwnProperty(propertyName)
           ) {
@@ -2002,9 +2002,9 @@ class Element extends BaseModel {
       const attributes = Object.keys(mergedAttributes).reduce(
         (accumulator, propertyName) => {
           // (2 of 3) opacity is "special". Make sure it is preserved.
-          if (
+          if(
             !LAYOUT_3D_SCHEMA.hasOwnProperty(propertyName) ||
-            propertyName === "opacity"
+            propertyName === 'opacity'
           ) {
             accumulator[propertyName] = this.component.getComputedPropertyValue(
               descendantHaikuElement.node,
@@ -2012,17 +2012,17 @@ class Element extends BaseModel {
               this.component.getCurrentTimelineName(),
               this.component.getCurrentTimelineTime(),
               propertyName,
-              undefined
+              undefined,
             );
           }
           return accumulator;
         },
-        {}
+        {},
       );
 
       // (3 of 3) opacity is "special". Make sure it is preserved.
-      if (
-        typeof descendantHaikuElement.opacity === "number" &&
+      if(
+        typeof descendantHaikuElement.opacity === 'number' &&
         descendantHaikuElement.opacity !== 1
       ) {
         attributes.opacity = descendantHaikuElement.opacity;
@@ -2035,21 +2035,21 @@ class Element extends BaseModel {
 
       // The fallbacks here ensure nonzero width/height by any means necessary. SVG getBBox() (and DOM cousins)
       // all fail to account for stroke, clipping masks, etc.
-      if (boundingBox.width < 1) {
+      if(boundingBox.width < 1) {
         boundingBox.width = Math.max(
-          descendantHaikuElement.attributes["stroke-width"] ||
-            attributes["stroke-width"] ||
+          descendantHaikuElement.attributes['stroke-width'] ||
+            attributes['stroke-width'] ||
             1,
-          1
+          1,
         );
       }
 
-      if (boundingBox.height < 1) {
+      if(boundingBox.height < 1) {
         boundingBox.height = Math.max(
-          descendantHaikuElement.attributes["stroke-width"] ||
-            attributes["stroke-width"] ||
+          descendantHaikuElement.attributes['stroke-width'] ||
+            attributes['stroke-width'] ||
             1,
-          1
+          1,
         );
       }
 
@@ -2064,7 +2064,7 @@ class Element extends BaseModel {
         (boundingBox.y + originY) * layoutMatrix[5];
       const layoutAncestryMatrices =
         descendantHaikuElement.layoutAncestryMatrices;
-      if (
+      if(
         layoutAncestryMatrices[layoutAncestryMatrices.length - 1] !==
         layoutMatrix
       ) {
@@ -2081,29 +2081,29 @@ class Element extends BaseModel {
         // Important: in case we have borders that spill outside the bounding box, allow SVG overflow so nothing
         // is clipped.
         style: {
-          overflow: "visible"
+          overflow: 'visible',
         },
         [HAIKU_SOURCE_ATTRIBUTE]: `${svgElement.attributes[HAIKU_SOURCE_ATTRIBUTE]}#${descendantHaikuElement.id}`,
         [HAIKU_TITLE_ATTRIBUTE]:
           descendantHaikuElement[HAIKU_TITLE_ATTRIBUTE] ||
           descendantHaikuElement.title ||
-          descendantHaikuElement.id
+          descendantHaikuElement.id,
       };
 
       composedTransformsToTimelineProperties(
         parentAttributes,
-        layoutAncestryMatrices
+        layoutAncestryMatrices,
       );
 
       // The following ensures that width/height receivers we might encounter inside an SVG (rect, image, use, etc.)
       // won't lose their sizing.
-      if (descendantHaikuElement.layout) {
-        if (descendantHaikuElement.layout.sizeAbsolute.x > 0) {
+      if(descendantHaikuElement.layout) {
+        if(descendantHaikuElement.layout.sizeAbsolute.x > 0) {
           descendantHaikuElement.attributes.width =
             descendantHaikuElement.layout.sizeAbsolute.x;
         }
 
-        if (descendantHaikuElement.layout.sizeAbsolute.y) {
+        if(descendantHaikuElement.layout.sizeAbsolute.y) {
           descendantHaikuElement.attributes.height =
             descendantHaikuElement.layout.sizeAbsolute.y;
         }
@@ -2116,45 +2116,45 @@ class Element extends BaseModel {
       //     preserved.
       const node = Template.cleanMana(
         {
-          elementName: "svg",
+          elementName: 'svg',
           attributes: parentAttributes,
           children: [
             {
-              elementName: "g",
+              elementName: 'g',
               attributes: Object.assign(attributes, {
                 transform: `translate(${-MathUtils.rounded(
-                  boundingBox.x
-                )} ${-MathUtils.rounded(boundingBox.y)})`
+                  boundingBox.x,
+                )} ${-MathUtils.rounded(boundingBox.y)})`,
               }),
               children: [
                 Object.assign({}, descendantHaikuElement.node, {
                   attributes: Object.assign(
                     {
-                      "haiku-transclude": descendantHaikuElement.getComponentId()
+                      'haiku-transclude': descendantHaikuElement.getComponentId(),
                     },
-                    descendantHaikuElement.attributes
+                    descendantHaikuElement.attributes,
                   ),
-                  children: []
-                })
-              ]
-            }
-          ]
+                  children: [],
+                }),
+              ],
+            },
+          ],
         },
-        { resetIds: true }
+        { resetIds: true },
       );
 
-      if (defs.length > 0) {
+      if(defs.length > 0) {
         node.children.unshift(
           Template.cleanMana(
             {
-              elementName: "defs",
+              elementName: 'defs',
               attributes: {},
-              children: defs.map(Template.reuseHotMana)
+              children: defs.map(Template.reuseHotMana),
             },
             // Note: by resetting IDs here, we willfully destroy any animations that are inside defs. Since this is an atypical
             // construct which can only be achieved by editing bytecode directly today, it's "acceptable".
-            { resetIds: true }
-          )
+            { resetIds: true },
+          ),
         );
       }
 
@@ -2169,14 +2169,14 @@ class Element extends BaseModel {
   }
 
   toXMLString() {
-    return Template.manaToHtml("", this.getLiveRenderedNode() || EMPTY_ELEMENT);
+    return Template.manaToHtml('', this.getLiveRenderedNode() || EMPTY_ELEMENT);
   }
 
   toJSONString() {
     return Template.manaToJson(
       this.getLiveRenderedNode() || EMPTY_ELEMENT,
       null,
-      2
+      2,
     );
   }
 
@@ -2186,11 +2186,11 @@ class Element extends BaseModel {
    */
   dump() {
     let str = `${this.getNameString()}:${this.getTitle()}:${this.getComponentId()}`;
-    if (this.isHovered()) {
-      str += " {h}";
+    if(this.isHovered()) {
+      str += ' {h}';
     }
-    if (this.isSelected()) {
-      str += " {s}";
+    if(this.isSelected()) {
+      str += ' {s}';
     }
     return str;
   }
@@ -2201,8 +2201,8 @@ Element.DEFAULT_OPTIONS = {
     component: true,
     uid: true,
     address: true,
-    componentId: true
-  }
+    componentId: true,
+  },
 };
 
 BaseModel.extend(Element);
@@ -2211,27 +2211,27 @@ Element.directlySelected = null;
 
 Element.cache = {
   domNodes: {},
-  eventListeners: {}
+  eventListeners: {},
 };
 
 Element.HIGHER_ORDER_EVENTS = [
-  { label: "Hover", value: "hover" },
-  { label: "Unhover", value: "unhover" }
+  { label: 'Hover', value: 'hover' },
+  { label: 'Unhover', value: 'unhover' },
 ];
 
 Element.COMPONENT_EVENTS = [
-  { label: "Will Mount", value: "component:will-mount" },
-  { label: "Did Mount", value: "component:did-mount" },
-  { label: "Will Unmount", value: "component:will-unmount" },
-  { label: "Did Initialize", value: "component:did-initialize" },
-  { label: "Frame", value: "frame" }
+  { label: 'Will Mount', value: 'component:will-mount' },
+  { label: 'Did Mount', value: 'component:did-mount' },
+  { label: 'Will Unmount', value: 'component:will-unmount' },
+  { label: 'Did Initialize', value: 'component:did-initialize' },
+  { label: 'Frame', value: 'frame' },
 ];
 
 Element.nodeIsGrouper = node => {
   return (
-    node.elementName === "svg" ||
-    node.elementName === "g" ||
-    node.elementName === "div"
+    node.elementName === 'svg' ||
+    node.elementName === 'g' ||
+    node.elementName === 'div'
   );
 };
 
@@ -2247,21 +2247,21 @@ Element.hoverOffAllElements = (criteria, metadata) => {
 Element.clearCaches = function clearCaches() {
   Element.cache = {
     domNodes: {},
-    eventListeners: {}
+    eventListeners: {},
   };
 };
 
 Element.findDomNode = function findDomNode(haikuId, element) {
   // Allow headless, e.g. in tests
-  if (!element) {
+  if(!element) {
     return null;
   }
 
-  if (Element.cache.domNodes[haikuId]) {
+  if(Element.cache.domNodes[haikuId]) {
     return Element.cache.domNodes[haikuId];
   }
 
-  const selector = "[" + HAIKU_ID_ATTRIBUTE + '="' + haikuId + '"]';
+  const selector = '[' + HAIKU_ID_ATTRIBUTE + '="' + haikuId + '"]';
 
   const found = element.querySelector(selector);
   Element.cache.domNodes[haikuId] = found;
@@ -2287,7 +2287,7 @@ Element.visitAll = (element, visitor) => {
  * Visit the descendants of the given element in depth-first order.
  */
 Element.visitDescendants = (element, visitor) => {
-  if (!element.children) {
+  if(!element.children) {
     return void 0;
   }
   element.children.forEach(child => {
@@ -2297,11 +2297,11 @@ Element.visitDescendants = (element, visitor) => {
 };
 
 Element.getRotationIn360 = radians => {
-  if (radians < 0) {
+  if(radians < 0) {
     radians += Math.PI * 2;
   }
   let rotationDegrees = ~~((radians * 180) / Math.PI);
-  if (rotationDegrees > 360) {
+  if(rotationDegrees > 360) {
     rotationDegrees = rotationDegrees % 360;
   }
   return rotationDegrees;
@@ -2312,7 +2312,7 @@ Element.boxToCornersAsPolygonPoints = ({ x, y, width, height }) => {
     [x, y],
     [x + width, y],
     [x + width, y + height],
-    [x, y + height]
+    [x, y + height],
   ];
 };
 
@@ -2324,7 +2324,7 @@ Element.pointsToPolygonPoints = points => {
 
 Element.distanceBetweenPoints = (p1, p2, zoomFactor) => {
   let distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-  if (zoomFactor) {
+  if(zoomFactor) {
     distance *= zoomFactor;
   }
   return distance;
@@ -2334,10 +2334,10 @@ Element.buildPrimaryKeyFromComponentParentIdAndStaticTemplateNode = (
   component,
   parentId,
   indexInParent,
-  staticTemplateNode
+  staticTemplateNode,
 ) => {
   let uid;
-  if (typeof staticTemplateNode === "string") {
+  if(typeof staticTemplateNode === 'string') {
     uid = `${parentId}/text:${indexInParent}`;
   } else {
     uid =
@@ -2355,7 +2355,7 @@ Element.buildPrimaryKeyFromComponentParentIdAndStaticTemplateNode = (
 
 Element.buildUidFromComponentAndDomElement = (component, $el) => {
   return `${component.getPrimaryKey()}::${$el.getAttribute(
-    HAIKU_ID_ATTRIBUTE
+    HAIKU_ID_ATTRIBUTE,
   )}`;
 };
 
@@ -2365,7 +2365,7 @@ Element.buildUidFromComponentAndHaikuId = (component, haikuId) => {
 
 Element.findByComponentAndHaikuId = (component, haikuId) => {
   return Element.findById(
-    Element.buildUidFromComponentAndHaikuId(component, haikuId)
+    Element.buildUidFromComponentAndHaikuId(component, haikuId),
   );
 };
 
@@ -2377,11 +2377,11 @@ Element.makeUid = (component, parent, index, staticTemplateNode) => {
   const parentHaikuId =
     parent && parent.attributes && parent.attributes[HAIKU_ID_ATTRIBUTE];
 
-  if (!parent) {
+  if(!parent) {
     parent =
       parentHaikuId &&
       Element.findById(
-        Element.buildUidFromComponentAndHaikuId(component, parentHaikuId)
+        Element.buildUidFromComponentAndHaikuId(component, parentHaikuId),
       );
   }
 
@@ -2389,15 +2389,15 @@ Element.makeUid = (component, parent, index, staticTemplateNode) => {
     component,
     parentHaikuId,
     index,
-    staticTemplateNode
+    staticTemplateNode,
   );
 
   return uid;
 };
 
 Element.getFriendlyLabel = node => {
-  if (!node || typeof node !== "object") {
-    return "";
+  if(!node || typeof node !== 'object') {
+    return '';
   }
 
   const id = node.attributes && node.attributes.id;
@@ -2405,26 +2405,26 @@ Element.getFriendlyLabel = node => {
   const title = node.attributes && node.attributes[HAIKU_TITLE_ATTRIBUTE];
 
   let name =
-    typeof node.elementName === "string" && node.elementName
+    typeof node.elementName === 'string' && node.elementName
       ? node.elementName
-      : "div";
-  if (Element.FRIENDLY_NAME_SUBSTITUTES[name]) {
+      : 'div';
+  if(Element.FRIENDLY_NAME_SUBSTITUTES[name]) {
     name = Element.FRIENDLY_NAME_SUBSTITUTES[name];
   }
 
-  if (id && !title) {
+  if(id && !title) {
     return cleanHaikuId(id);
   }
 
-  let out = "";
-  if (typeof id === "string") {
+  let out = '';
+  if(typeof id === 'string') {
     out += `${id} `;
   }
-  if (typeof title === "string") {
+  if(typeof title === 'string') {
     out += `${title} `;
   }
 
-  if (out.length === 0 && typeof name === "string") {
+  if(out.length === 0 && typeof name === 'string') {
     out += `${name}`;
   }
 
@@ -2436,20 +2436,20 @@ Element.upsertElementFromVirtualElement = (
   staticTemplateNode,
   parent,
   index,
-  address
+  address,
 ) => {
-  if (!component.project) {
-    throw new Error("component argument must have a `project` defined");
+  if(!component.project) {
+    throw new Error('component argument must have a `project` defined');
   }
 
-  if (!component.project.getPlatform()) {
+  if(!component.project.getPlatform()) {
     throw new Error(
-      "component project must be able to return a platform object"
+      'component project must be able to return a platform object',
     );
   }
 
-  if (!component.project.getMetadata()) {
-    throw new Error("component proct must be able to return a metadata object");
+  if(!component.project.getMetadata()) {
+    throw new Error('component proct must be able to return a metadata object');
   }
 
   const uid = Element.makeUid(component, parent, index, staticTemplateNode);
@@ -2457,7 +2457,7 @@ Element.upsertElementFromVirtualElement = (
   const metadata = component.project.getMetadata();
 
   const componentId =
-    typeof staticTemplateNode === "string"
+    typeof staticTemplateNode === 'string'
       ? uid
       : staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE];
 
@@ -2469,12 +2469,12 @@ Element.upsertElementFromVirtualElement = (
       address,
       component,
       parent,
-      children: [] // We *must* unset this or else stale elements will be left, messing up rehydration
+      children: [], // We *must* unset this or else stale elements will be left, messing up rehydration
     },
-    metadata
+    metadata,
   );
 
-  if (parent) {
+  if(parent) {
     parent.insertChild(element);
   }
 
@@ -2483,26 +2483,26 @@ Element.upsertElementFromVirtualElement = (
 
 Element.querySelectorAll = (selector, mana) => {
   return cssQueryTree(mana, selector, {
-    name: "elementName",
-    attributes: "attributes",
-    children: "children"
+    name: 'elementName',
+    attributes: 'attributes',
+    children: 'children',
   });
 };
 
 Element.FRIENDLY_NAME_SUBSTITUTES = {
-  g: "group",
-  tspan: "Text Span"
+  g: 'group',
+  tspan: 'Text Span',
 };
 
 // If elementName is bytecode (i.e. a nested component) return a fallback name
 // used for a bunch of lookups, otherwise return the given string element name
 Element.safeElementName = mana => {
-  if (!mana || typeof mana !== "object") {
-    return "div";
+  if(!mana || typeof mana !== 'object') {
+    return 'div';
   }
   // If bytecode, the fallback name is div
-  if (mana.elementName && typeof mana.elementName === "object") {
-    return "div"; // TODO: How will this bite us?
+  if(mana.elementName && typeof mana.elementName === 'object') {
+    return 'div'; // TODO: How will this bite us?
   }
   return mana.elementName;
 };
@@ -2510,10 +2510,10 @@ Element.safeElementName = mana => {
 Element.deselectAllOtherElements = (criteria, target, metadata) => {
   Element.where(Object.assign({ _isSelected: true }, criteria)).forEach(
     element => {
-      if (element.getComponentId() !== target.getComponentId()) {
+      if(element.getComponentId() !== target.getComponentId()) {
         element.unselect(metadata, true);
       }
-    }
+    },
   );
 };
 
@@ -2525,10 +2525,10 @@ Element.setDirectlySelected = (value) => {
 export default Element;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-import Bytecode from "./Bytecode.js";
-import MathUtils from "./MathUtils.js";
-import Property from "./Property.js";
-import Row from "./Row.js";
-import Template from "./Template.js";
-import TimelineProperty from "./TimelineProperty.js";
-import ElementSelectionProxy from "./ElementSelectionProxy.js";
+import Bytecode from './Bytecode.js';
+import MathUtils from './MathUtils.js';
+import Property from './Property.js';
+import Row from './Row.js';
+import Template from './Template.js';
+import TimelineProperty from './TimelineProperty.js';
+import ElementSelectionProxy from './ElementSelectionProxy.js';

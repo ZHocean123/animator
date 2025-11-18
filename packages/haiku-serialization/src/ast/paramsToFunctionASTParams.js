@@ -1,7 +1,13 @@
-function propMap (obj) {
+/**
+ * 将参数转换为函数AST参数
+ * @param {Array|Object} params - 参数数组或对象
+ * @returns {Array} 转换后的AST参数数组
+ */
+
+function propMap(obj) {
   const properties = [];
 
-  for (const key in obj) {
+  for(const key in obj) {
     properties.push({
       type: 'ObjectProperty',
       key: {
@@ -24,19 +30,19 @@ function propMap (obj) {
   return properties;
 }
 
-function paramToFunctionASTParam (param) {
-  if (typeof param === 'string') {
+function paramToFunctionASTParam(param) {
+  if(typeof param === 'string') {
     return {type: 'Identifier', name: param};
   }
 
-  if (Array.isArray(param)) {
+  if(Array.isArray(param)) {
     return {
       type: 'ArrayPattern',
       elements: param.map(paramToFunctionASTParam),
     };
   }
 
-  if (param && typeof param === 'object') {
+  if(param && typeof param === 'object') {
     return {
       type: 'ObjectPattern',
       properties: propMap(param),
@@ -44,11 +50,11 @@ function paramToFunctionASTParam (param) {
   }
 }
 
-function paramsToFunctionASTParams (params) {
-  if (!params || params.length < 1) {
+function paramsToFunctionASTParams(params) {
+  if(!params || params.length < 1) {
     return [];
   }
   return params.map(paramToFunctionASTParam);
 }
 
-module.exports = paramsToFunctionASTParams;
+export default paramsToFunctionASTParams;

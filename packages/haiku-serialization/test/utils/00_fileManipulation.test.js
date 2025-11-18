@@ -1,6 +1,6 @@
-const test = require('tape');
-const fs = require('fs');
-const fileManipulation = require('../../src/utils/fileManipulation');
+import test from 'tape';
+import fs from 'fs';
+import fileManipulation from '../../src/utils/fileManipulation.js';
 
 const ROOT = process.cwd();
 const FIXTURES = `${ROOT}/test/fixtures/fileManipulation`;

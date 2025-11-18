@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel.js';
-import {tokenizeDirective} from "@haiku/core/lib/reflection/Tokenizer.js";
+import {tokenizeDirective} from '@haiku/core/lib/reflection/Tokenizer.js';
 
 /**
  * @class Expression
@@ -20,7 +20,7 @@ Expression.EXPR_SIGNS = {
 };
 
 Expression.retToEq = (str) => {
-  if (str.substring(0, 7) === (Expression.EXPR_SIGNS.RET + ' ')) {
+  if(str.substring(0, 7) === (Expression.EXPR_SIGNS.RET + ' ')) {
     str = str.slice(7);
     str = (Expression.EXPR_SIGNS.EQ + ' ') + str;
   }
@@ -28,15 +28,15 @@ Expression.retToEq = (str) => {
 };
 
 const textContentNormalizer = (value) => {
-  if (typeof value === 'string') {
+  if(typeof value === 'string') {
     return value;
   }
 
-  if (typeof value === 'number') {
+  if(typeof value === 'number') {
     return value;
   }
 
-  if (value === null || value === undefined) {
+  if(value === null || value === undefined) {
     return '';
   }
 
@@ -102,16 +102,16 @@ Expression.isUnitToken = (str) => {
 
 Expression.normalizeTokensWithNumericFirstToken = (tokens, orig) => {
   // We assume the first token is already known to be a numbers
-  if (tokens.length < 2) {
+  if(tokens.length < 2) {
     return tokens[0];
   }
 
   // Assume we have a string like '99 bottles of beer on the wall'
-  if (tokens.length > 2) {
+  if(tokens.length > 2) {
     return orig;
   }
 
-  if (Expression.isUnitToken(tokens[1])) {
+  if(Expression.isUnitToken(tokens[1])) {
     return tokens[0];
   }
 
@@ -119,15 +119,15 @@ Expression.normalizeTokensWithNumericFirstToken = (tokens, orig) => {
 };
 
 Expression.normalizeParsedValue = (parsedValue, propertyName) => {
-  if (Number.isNaN(parsedValue)) {
+  if(Number.isNaN(parsedValue)) {
     return 1;
   }
 
-  if (typeof parsedValue === 'number' && !isFinite(parsedValue)) {
+  if(typeof parsedValue === 'number' && !isFinite(parsedValue)) {
     return 1;
   }
 
-  if (Expression.VALUE_NORMALIZERS[propertyName]) {
+  if(Expression.VALUE_NORMALIZERS[propertyName]) {
     return Expression.VALUE_NORMALIZERS[propertyName](parsedValue);
   }
 
@@ -147,22 +147,22 @@ Expression.isPxUnit = (unit) => {
 };
 
 const rotationTokenHandler = (tokens, raw) => {
-  if (tokens.length < 1) {
+  if(tokens.length < 1) {
     return 1;
   }
 
   const num = Expression.normalizeParsedValue(Number(tokens[0]));
   const unit = tokens[1];
 
-  if (typeof unit !== 'string') {
+  if(typeof unit !== 'string') {
     return num;
   }
 
-  if (Expression.isRadiansUnit(unit)) {
+  if(Expression.isRadiansUnit(unit)) {
     return num;
   }
 
-  if (Expression.isDegreesUnit(unit)) {
+  if(Expression.isDegreesUnit(unit)) {
     return num * (Math.PI / 180);
   }
 
@@ -170,7 +170,7 @@ const rotationTokenHandler = (tokens, raw) => {
 };
 
 const pxTokenHandler = (tokens, raw) => {
-  if (tokens.length < 1) {
+  if(tokens.length < 1) {
     return 1;
   }
 
@@ -201,15 +201,15 @@ const isPlainObject = (obj) => {
 
 Expression.parseValue = (userInput, propertyName) => {
   // Assume any non-string input (numbers, objects) has been pre-parsed
-  if (typeof userInput !== 'string') {
+  if(typeof userInput !== 'string') {
     return Expression.normalizeParsedValue(userInput, propertyName);
   }
 
-  if (userInput.trim() === 'undefined') {
+  if(userInput.trim() === 'undefined') {
     return;
   }
 
-  if (userInput.trim() === 'null') {
+  if(userInput.trim() === 'null') {
     return null;
   }
 
@@ -217,39 +217,39 @@ Expression.parseValue = (userInput, propertyName) => {
 
   // Don't allow functions; instead return the literal string in case someone
   // types words that match a known JavaScript constructor like Number, etc.
-  if (typeof parsedInput === 'function') {
+  if(typeof parsedInput === 'function') {
     return Expression.normalizeParsedValue(userInput);
   }
 
   // Avoid inadvertently parsing known global objects like `window`, etc.
-  if (parsedInput && !Array.isArray(parsedInput) && typeof parsedInput === 'object') {
-    if (isPlainObject(parsedInput)) {
+  if(parsedInput && !Array.isArray(parsedInput) && typeof parsedInput === 'object') {
+    if(isPlainObject(parsedInput)) {
       return Expression.normalizeParsedValue(parsedInput);
     }
 
     return Expression.normalizeParsedValue(userInput);
   }
 
-  if (parsedInput !== undefined) {
+  if(parsedInput !== undefined) {
     return Expression.normalizeParsedValue(parsedInput, propertyName);
   }
 
   try {
     const inputAsTokens = tokenizeDirective(userInput).map(({value}) => value);
 
-    if (Expression.TOKEN_HANDLERS[propertyName]) {
+    if(Expression.TOKEN_HANDLERS[propertyName]) {
       return Expression.normalizeParsedValue(
         Expression.TOKEN_HANDLERS[propertyName](inputAsTokens, userInput),
       );
     }
 
-    if (typeof inputAsTokens[0] === 'number') {
+    if(typeof inputAsTokens[0] === 'number') {
       return Expression.normalizeParsedValue(
         Expression.normalizeTokensWithNumericFirstToken(inputAsTokens, userInput),
         propertyName,
       );
     }
-  } catch (exception) {
+  } catch(exception) {
     return Expression.normalizeParsedValue(userInput);
   }
 
@@ -259,7 +259,7 @@ Expression.parseValue = (userInput, propertyName) => {
 Expression.safeJsonParse = (str) => {
   try {
     return JSON.parse(str);
-  } catch (exception) {
+  } catch(exception) {
     return undefined;
   }
 };
@@ -274,7 +274,7 @@ Expression.flexibleJsonParse = (str) => {
     const fn = new Function(body); // eslint-disable-line no-new-func
     const out = fn();
     return out;
-  } catch (exception) {
+  } catch(exception) {
     // no-op
   }
 

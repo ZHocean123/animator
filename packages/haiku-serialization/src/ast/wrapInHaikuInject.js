@@ -1,8 +1,14 @@
-const {
-  toText,
-} = require("@haiku/core/lib/reflection/JavaScriptIdentifier.js");
+/**
+ * 将节点包装为Haiku注入表达式
+ * @param {Object} node - AST节点
+ * @returns {Object} 包装后的调用表达式节点
+ */
 
-module.exports = function wrapInHaikuInject (node) {
+import {
+  toText,
+} from '@haiku/core/lib/reflection/JavaScriptIdentifier.js';
+
+export default function wrapInHaikuInject(node) {
   return {
     type: 'CallExpression',
     callee: {
@@ -31,4 +37,4 @@ module.exports = function wrapInHaikuInject (node) {
       };
     })),
   };
-};
+}

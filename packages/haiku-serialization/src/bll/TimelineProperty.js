@@ -1,4 +1,4 @@
-import {getFallback} from "@haiku/core/lib/HaikuComponent.js";
+import {getFallback} from '@haiku/core/lib/HaikuComponent.js';
 import logger from '../utils/LoggerInstance.js';
 
 const TimelineProperty = {};
@@ -21,7 +21,7 @@ TimelineProperty.addProperty = (
 ) => {
   const segmentsBase = TimelineProperty.findOrCreatePropertySegmentsBase(timelinesObject, timelineName, componentId, outputName);
 
-  if (!segmentsBase[0] || segmentsBase[0].value === undefined) {
+  if(!segmentsBase[0] || segmentsBase[0].value === undefined) {
     segmentsBase[0] = {};
     segmentsBase[0].value = TimelineProperty.getFallbackValue(elementName, outputName, startValue);
   }
@@ -30,13 +30,13 @@ TimelineProperty.addProperty = (
   const startSeg = segmentsBase[st] || {};
 
   startSeg.value = startValue;
-  if (curve) {
+  if(curve) {
     startSeg.curve = curve;
   }
   startSeg.edited = true; // Assigning edited ensures that auto-merged design updates don't clobber values changed by a human
   segmentsBase[st] = startSeg;
 
-  if (endTime) {
+  if(endTime) {
     const et = parseInt(endTime, 10);
     const endSeg = segmentsBase[et] || {};
 
@@ -53,8 +53,8 @@ TimelineProperty.getFallbackValue = (
   outputName,
   valueAssignedInThisOperation,
 ) => {
-  if (typeof elementName === 'object') {
-    if (outputName in elementName.states) {
+  if(typeof elementName === 'object') {
+    if(outputName in elementName.states) {
       return elementName.states[outputName].value;
     }
 
@@ -63,7 +63,7 @@ TimelineProperty.getFallbackValue = (
 
   const fallback = getFallback(elementName, outputName);
 
-  if (fallback !== undefined) {
+  if(fallback !== undefined) {
     return fallback;
   }
 
@@ -115,10 +115,10 @@ TimelineProperty.getComputedCurve = (
   hostInstance,
   states,
 ) => {
-  if (!bytecode) {
+  if(!bytecode) {
     return;
   }
-  if (!bytecode.timelines) {
+  if(!bytecode.timelines) {
     return;
   }
   return TimelineProperty.getPropertyCurveAtTime(bytecode.timelines, timelineName, componentId, elementName, propertyName, timelineTime, hostInstance, states);
@@ -135,13 +135,13 @@ TimelineProperty.getPropertyCurveAtTime = (
   states,
 ) => {
   const propertiesGroup = TimelineProperty.getPropertiesBase(timelinesObject, timelineName, componentId);
-  if (!propertiesGroup) {
+  if(!propertiesGroup) {
     return;
   }
-  if (!propertiesGroup[outputName]) {
+  if(!propertiesGroup[outputName]) {
     return;
   }
-  if (!propertiesGroup[outputName][time]) {
+  if(!propertiesGroup[outputName][time]) {
     return;
   }
   return propertiesGroup[outputName][time].curve;
@@ -157,10 +157,10 @@ TimelineProperty.getComputedValue = (
   bytecode,
   hostInstance,
 ) => {
-  if (!bytecode) {
+  if(!bytecode) {
     return fallbackValue;
   }
-  if (!bytecode.timelines) {
+  if(!bytecode.timelines) {
     return fallbackValue;
   }
   const value = TimelineProperty.getPropertyValueAtTime(bytecode.timelines, timelineName, componentId, elementName, propertyName, timelineTime, hostInstance);
@@ -182,9 +182,9 @@ TimelineProperty.getPropertyValueAtTime = (
     componentId,
   );
 
-  if (propertiesGroup) {
+  if(propertiesGroup) {
     try {
-      if (hostInstance) {
+      if(hostInstance) {
         const {
           computedValue,
         } = hostInstance.grabValue(
@@ -198,14 +198,14 @@ TimelineProperty.getPropertyValueAtTime = (
           true, // skipCache
         );
 
-        if (computedValue !== undefined && computedValue !== null) {
+        if(computedValue !== undefined && computedValue !== null) {
           return computedValue;
         }
         // Fall through to fallback if no computed value
       } else {
         logger.warn('[timeline property] host instance and value builder may be required to compute a value for ' + outputName);
       }
-    } catch (exception) {
+    } catch(exception) {
       logger.warn('[timeline property] unable to compute dynamic value for ' + timelineName + ' ' + componentId + ' ' + outputName + ' ' + time + ' [' + exception.message + ']');
     }
   }
@@ -221,7 +221,7 @@ TimelineProperty.addPropertyGroup = (
   deltaGroup,
   startTime,
 ) => {
-  for (const outputName in deltaGroup) {
+  for(const outputName in deltaGroup) {
     const outputVal = deltaGroup[outputName];
     TimelineProperty.addProperty(timelinesObject, timelineName, componentId, elementName, outputName, startTime, outputVal);
   }
@@ -240,13 +240,13 @@ TimelineProperty.getPropertySegmentsBase = (
   outputName,
 ) => {
   const selector = TimelineProperty.getSelectorForComponentId(componentId);
-  if (!timelinesObject) {
+  if(!timelinesObject) {
     return null;
   }
-  if (!timelinesObject[timelineName]) {
+  if(!timelinesObject[timelineName]) {
     return null;
   }
-  if (!timelinesObject[timelineName][selector]) {
+  if(!timelinesObject[timelineName][selector]) {
     return null;
   }
   return timelinesObject[timelineName][selector][outputName];
@@ -259,10 +259,10 @@ TimelineProperty.getPropertySegmentsBase = (
  */
 TimelineProperty.getPropertiesBase = (timelinesObject, timelineName, componentId) => {
   const selector = TimelineProperty.getSelectorForComponentId(componentId);
-  if (!timelinesObject) {
+  if(!timelinesObject) {
     return null;
   }
-  if (!timelinesObject[timelineName]) {
+  if(!timelinesObject[timelineName]) {
     return null;
   }
   return timelinesObject[timelineName][selector];
@@ -270,13 +270,13 @@ TimelineProperty.getPropertiesBase = (timelinesObject, timelineName, componentId
 
 TimelineProperty.findOrCreatePropertySegmentsBase = (timelinesObject, timelineName, componentId, outputName) => {
   const selector = TimelineProperty.getSelectorForComponentId(componentId);
-  if (!timelinesObject[timelineName]) {
+  if(!timelinesObject[timelineName]) {
     timelinesObject[timelineName] = {};
   }
-  if (!timelinesObject[timelineName][selector]) {
+  if(!timelinesObject[timelineName][selector]) {
     timelinesObject[timelineName][selector] = {};
   }
-  if (!timelinesObject[timelineName][selector][outputName]) {
+  if(!timelinesObject[timelineName][selector][outputName]) {
     timelinesObject[timelineName][selector][outputName] = {};
   }
   return timelinesObject[timelineName][selector][outputName];
@@ -284,16 +284,16 @@ TimelineProperty.findOrCreatePropertySegmentsBase = (timelinesObject, timelineNa
 
 TimelineProperty.getValueGroup = (componentId, timelineName, propertyName, bytecode) => {
   const selector = TimelineProperty.getSelectorForComponentId(componentId);
-  if (!bytecode) {
+  if(!bytecode) {
     return null;
   }
-  if (!bytecode.timelines) {
+  if(!bytecode.timelines) {
     return null;
   }
-  if (!bytecode.timelines[timelineName]) {
+  if(!bytecode.timelines[timelineName]) {
     return null;
   }
-  if (!bytecode.timelines[timelineName][selector]) {
+  if(!bytecode.timelines[timelineName][selector]) {
     return null;
   }
   return bytecode.timelines[timelineName][selector][propertyName];
@@ -301,7 +301,7 @@ TimelineProperty.getValueGroup = (componentId, timelineName, propertyName, bytec
 
 TimelineProperty.mergeProperties = (oldGroup, newGroup) => {
   // New group gets precedence over the old
-  for (const newPropName in newGroup) {
+  for(const newPropName in newGroup) {
     const newProp = newGroup[newPropName];
     oldGroup[newPropName] = newProp;
   }
@@ -319,7 +319,7 @@ TimelineProperty.getBaselineKeyframeStart = (
 
   const valueGroup = TimelineProperty.getValueGroup(componentId, timelineName, propertyName, bytecode);
 
-  if (!valueGroup) {
+  if(!valueGroup) {
     return keyframeStart;
   }
 
@@ -328,7 +328,7 @@ TimelineProperty.getBaselineKeyframeStart = (
   });
 
   mss.forEach((ms, index) => {
-    if (ms < timelineTime && ms > keyframeStart) {
+    if(ms < timelineTime && ms > keyframeStart) {
       keyframeStart = ms;
     }
   });
@@ -351,7 +351,7 @@ TimelineProperty.getAssignedBaselineKeyframeStart = (
 
   const valueGroup = TimelineProperty.getValueGroup(componentId, timelineName, propertyName, bytecode);
 
-  if (!valueGroup) {
+  if(!valueGroup) {
     return keyframeStart;
   }
 
@@ -360,7 +360,7 @@ TimelineProperty.getAssignedBaselineKeyframeStart = (
   });
 
   mss.forEach((ms, index) => {
-    if (ms <= timelineTime && ms > keyframeStart) {
+    if(ms <= timelineTime && ms > keyframeStart) {
       keyframeStart = ms;
     }
   });

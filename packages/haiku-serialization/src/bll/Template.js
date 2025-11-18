@@ -1,30 +1,30 @@
-import path from "path";
-import { find } from "lodash-es";
-import { merge } from "lodash-es";
-import pascalcase from "pascalcase";
-import { ATTRS_HYPH_TO_CAMEL } from "@haiku/core/lib/HaikuComponent.js";
-import SVGPoints from "@haiku/core/lib/helpers/SVGPoints.js";
-import convertManaLayout from "haiku-common/lib/layout/convertManaLayout.js";
-import { visitManaTree } from "@haiku/core/lib/HaikuNode.js";
-import { manaToXml } from "haiku-common/lib/layout/xmlUtils.js";
-import { assign } from "lodash-es";
-import { defaults } from "lodash-es";
-import BaseModel from "./BaseModel.js";
-import CryptoUtils from "./../utils/CryptoUtils.js";
-import titlecase from "titlecase";
-import decamelize from "decamelize";
+import path from 'path';
+import { find } from 'lodash-es';
+import { merge } from 'lodash-es';
+import pascalcase from 'pascalcase';
+import { ATTRS_HYPH_TO_CAMEL } from '@haiku/core/lib/HaikuComponent.js';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
+import convertManaLayout from 'haiku-common/lib/layout/convertManaLayout.js';
+import { visitManaTree } from '@haiku/core/lib/HaikuNode.js';
+import { manaToXml } from 'haiku-common/lib/layout/xmlUtils.js';
+import { assign } from 'lodash-es';
+import { defaults } from 'lodash-es';
+import BaseModel from './BaseModel.js';
+import CryptoUtils from './../utils/CryptoUtils.js';
+import titlecase from 'titlecase';
+import decamelize from 'decamelize';
 
-const GROUP_DELIMITER = ".";
+const GROUP_DELIMITER = '.';
 const MERGE_STRATEGIES = {
-  assign: "assign",
-  defaults: "defaults"
+  assign: 'assign',
+  defaults: 'defaults',
 };
 
-const ROOT_LOCATOR = "0";
-const HAIKU_ID_ATTRIBUTE = "haiku-id";
-const HAIKU_SOURCE_ATTRIBUTE = "haiku-source";
-const HAIKU_TITLE_ATTRIBUTE = "haiku-title";
-const HAIKU_SELECTOR_PREFIX = "haiku";
+const ROOT_LOCATOR = '0';
+const HAIKU_ID_ATTRIBUTE = 'haiku-id';
+const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
+const HAIKU_TITLE_ATTRIBUTE = 'haiku-title';
+const HAIKU_SELECTOR_PREFIX = 'haiku';
 
 const REF_MATCHER_RE = /^url\(#(.*)\)$/;
 
@@ -33,27 +33,27 @@ const TEMPLATE_METADATA_ATTRIBUTES = {
   encoding: true,
   standalone: true,
   xmlns: true,
-  "xmlns:xlink": true,
+  'xmlns:xlink': true,
   lang: true,
   charset: true,
   content: true,
-  "http-equiv": true,
+  'http-equiv': true,
   scheme: true,
   identifier: true,
-  "haiku-id": true,
-  "haiku-var": true,
-  "haiku-title": true,
-  "haiku-source": true,
-  "haiku-transclude": true,
-  "haiku-locked": true
+  'haiku-id': true,
+  'haiku-var': true,
+  'haiku-title': true,
+  'haiku-source': true,
+  'haiku-transclude': true,
+  'haiku-locked': true,
 };
 
 const SELECTOR_ATTRIBUTES = {
-  id: "id",
-  class: "class",
-  className: "class",
-  name: "name",
-  type: "type"
+  id: 'id',
+  class: 'class',
+  className: 'class',
+  name: 'name',
+  type: 'type',
 };
 
 function isSerializedFunction(object) {
@@ -62,7 +62,7 @@ function isSerializedFunction(object) {
 
 function extractReferenceIdFromUrlReference(stringValue) {
   const matches = REF_MATCHER_RE.exec(stringValue);
-  if (matches) {
+  if(matches) {
     return matches[1];
   }
   return null;
@@ -76,7 +76,7 @@ function extractReferenceIdFromUrlReference(stringValue) {
 class Template extends BaseModel {}
 
 Template.DEFAULT_OPTIONS = {
-  required: {}
+  required: {},
 };
 
 BaseModel.extend(Template);
@@ -86,18 +86,18 @@ Template.prepareManaAndBuildTimelinesObject = (
   hash,
   timelineName,
   timelineTime,
-  { doHashWork, title }
+  { doHashWork, title },
 ) => {
-  if (doHashWork) {
+  if(doHashWork) {
     // Each url(#whatever) needs to be unique to avoid styling collisions in the DOM
     Template.fixFragmentIdentifierReferences(mana, hash);
 
     Template.ensureTitleAndUidifyTree(
       mana,
       // We shouldn't assume that any node has a haiku-source attribute
-      path.posix.normalize(mana.attributes[HAIKU_SOURCE_ATTRIBUTE] || ""),
+      path.posix.normalize(mana.attributes[HAIKU_SOURCE_ATTRIBUTE] || ''),
       hash,
-      { title }
+      { title },
     );
   }
 
@@ -108,21 +108,21 @@ Template.prepareManaAndBuildTimelinesObject = (
   const timelinesObject = Template.hoistTreeAttributes(
     mana,
     timelineName,
-    timelineTime
+    timelineTime,
   );
 
   return timelinesObject;
 };
 
 Template.normalizePath = str => {
-  if (str[0] === ".") {
+  if(str[0] === '.') {
     return `./${path.normalize(str)}`;
   }
   return path.normalize(str);
 };
 
 Template.normalizePathOfPossiblyExternalModule = str => {
-  if (str[0] === "@") {
+  if(str[0] === '@') {
     return path.normalize(str);
   }
 
@@ -130,7 +130,7 @@ Template.normalizePathOfPossiblyExternalModule = str => {
 };
 
 Template.mirrorHaikuUids = (fromNode, toNode) => {
-  if (!toNode.attributes) {
+  if(!toNode.attributes) {
     toNode.attributes = {};
   }
 
@@ -138,29 +138,29 @@ Template.mirrorHaikuUids = (fromNode, toNode) => {
   toNode.attributes[HAIKU_ID_ATTRIBUTE] =
     fromNode.attributes[HAIKU_ID_ATTRIBUTE];
 
-  if (!fromNode.children || fromNode.children.length < 1) {
+  if(!fromNode.children || fromNode.children.length < 1) {
     return void 0;
   }
-  if (!toNode.children || toNode.children.length < 1) {
+  if(!toNode.children || toNode.children.length < 1) {
     return void 0;
   }
 
   // Different number of kids indicates structural change; impossible to do a consistent mirror
-  if (fromNode.children.length !== toNode.children.length) {
+  if(fromNode.children.length !== toNode.children.length) {
     return void 0;
   }
 
-  for (let i = 0; i < fromNode.children.length; i++) {
+  for(let i = 0; i < fromNode.children.length; i++) {
     const fromNodeChild = fromNode.children[i];
     const toNodeChild = toNode.children[i];
 
     // String children don't have attributes
-    if (typeof fromNodeChild === "string") {
+    if(typeof fromNodeChild === 'string') {
       continue;
     }
 
     // Different element name indicates structural change; impossible to do a consistent mirror
-    if (fromNodeChild.elementName !== toNodeChild.elementName) {
+    if(fromNodeChild.elementName !== toNodeChild.elementName) {
       continue;
     }
 
@@ -171,44 +171,44 @@ Template.mirrorHaikuUids = (fromNode, toNode) => {
 Template.manaWithOnlyMinimalProps = (
   mana,
   referenceSerializer,
-  includeChildren = true
+  includeChildren = true,
 ) => {
-  if (mana && typeof mana === "object") {
+  if(mana && typeof mana === 'object') {
     const out = {};
 
     out.elementName = mana.elementName;
 
     // When the element name is an object, that's a sub-component and we need to
     // swap it out for the reference, which should be a string
-    if (typeof mana.elementName === "object") {
+    if(typeof mana.elementName === 'object') {
       // When written to the file, we should end up with `elementName: fooBar,...`
       // This assumes that a require() statement gets added to the AST later
       out.elementName = {
-        __reference: referenceSerializer(out.elementName.__reference)
+        __reference: referenceSerializer(out.elementName.__reference),
       };
     }
 
     // Note that this mana object is the same object that the core is rendering, and
     // since it has to mutate that template we need to omit any property that will cause
     // hashing differences across processes. Only stable attributes are used here.
-    if (mana.attributes) {
+    if(mana.attributes) {
       out.attributes = {};
 
-      if (mana.attributes[HAIKU_ID_ATTRIBUTE]) {
+      if(mana.attributes[HAIKU_ID_ATTRIBUTE]) {
         out.attributes[HAIKU_ID_ATTRIBUTE] =
           mana.attributes[HAIKU_ID_ATTRIBUTE];
       }
 
-      if (mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+      if(mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
         out.attributes[HAIKU_SOURCE_ATTRIBUTE] =
           mana.attributes[HAIKU_SOURCE_ATTRIBUTE];
       }
     }
 
     // Don't include the children if this node is a component, since those aren't in scope
-    if (
+    if(
       includeChildren &&
-      typeof mana.elementName !== "object" &&
+      typeof mana.elementName !== 'object' &&
       mana.children
     ) {
       out.children = mana.children
@@ -216,14 +216,14 @@ Template.manaWithOnlyMinimalProps = (
           // Exclude any empty or content-string elements.
           // This sidesteps the problem where one process shows e.g. children:["BLAH"]
           // but another process shows children:[], which results in unstable hashes
-          return child && typeof child !== "string";
+          return child && typeof child !== 'string';
         })
         .map(child => {
           // Skip children of children. This should prevent mergeDesigns-related integrity crashes.
           return Template.manaWithOnlyMinimalProps(
             child,
             referenceSerializer,
-            false
+            false,
           );
         });
     } else {
@@ -233,7 +233,7 @@ Template.manaWithOnlyMinimalProps = (
     return out;
   }
 
-  if (typeof mana === "string") {
+  if(typeof mana === 'string') {
     return mana;
   }
 };
@@ -241,40 +241,40 @@ Template.manaWithOnlyMinimalProps = (
 Template.manaWithOnlyStandardProps = (
   mana,
   doOmitSubcomponentBytecode = true,
-  referenceSerializer
+  referenceSerializer,
 ) => {
-  if (mana && typeof mana === "object") {
+  if(mana && typeof mana === 'object') {
     const out = {};
 
     out.elementName = mana.elementName;
 
-    if (typeof mana.elementName === "object") {
-      if (doOmitSubcomponentBytecode) {
+    if(typeof mana.elementName === 'object') {
+      if(doOmitSubcomponentBytecode) {
         // When written to the file, we should end up with `elementName: fooBar,...`
         // This assumes that a require() statement gets added to the AST later
         out.elementName = {
           __reference: referenceSerializer
             ? referenceSerializer(out.elementName.__reference)
-            : out.elementName.__reference
+            : out.elementName.__reference,
         };
       }
     }
 
-    if (mana.attributes) {
+    if(mana.attributes) {
       out.attributes = {};
-      for (const key1 in TEMPLATE_METADATA_ATTRIBUTES) {
-        if (mana.attributes[key1]) {
+      for(const key1 in TEMPLATE_METADATA_ATTRIBUTES) {
+        if(mana.attributes[key1]) {
           out.attributes[key1] = mana.attributes[key1];
         }
       }
-      for (const key2 in SELECTOR_ATTRIBUTES) {
-        if (mana.attributes[key2]) {
+      for(const key2 in SELECTOR_ATTRIBUTES) {
+        if(mana.attributes[key2]) {
           out.attributes[key2] = mana.attributes[key2];
         }
       }
     }
 
-    if (typeof mana.elementName !== "object") {
+    if(typeof mana.elementName !== 'object') {
       out.children =
         mana.children &&
         mana.children
@@ -282,13 +282,13 @@ Template.manaWithOnlyStandardProps = (
             // Exclude any empty or content-string elements.
             // Mana with only standard props is used when generating the AST/code for the
             // component, or for copy/paste, and literal content strings to not belong in the template
-            return child && typeof child !== "string";
+            return child && typeof child !== 'string';
           })
           .map(child => {
             return Template.manaWithOnlyStandardProps(
               child,
               doOmitSubcomponentBytecode,
-              referenceSerializer
+              referenceSerializer,
             );
           });
     } else {
@@ -298,20 +298,20 @@ Template.manaWithOnlyStandardProps = (
     return out;
   }
 
-  if (typeof mana === "string") {
+  if(typeof mana === 'string') {
     return mana;
   }
 };
 
 Template.manaTreeToDepthFirstArray = function manaTreeToDepthFirstArray(
   arr,
-  mana
+  mana,
 ) {
-  if (!mana || typeof mana === "string") {
+  if(!mana || typeof mana === 'string') {
     return arr;
   }
   arr.push(mana);
-  for (let i = 0; i < mana.children.length; i++) {
+  for(let i = 0; i < mana.children.length; i++) {
     const child = mana.children[i];
     Template.manaTreeToDepthFirstArray(arr, child);
   }
@@ -332,7 +332,7 @@ Template.hoistTreeAttributes = (mana, timelineName, timelineTime) => {
   timelineStructure[timelineName] = {};
   const theTimelineObj = timelineStructure[timelineName];
 
-  for (const haikuId in elementsByHaikuId) {
+  for(const haikuId in elementsByHaikuId) {
     const node = elementsByHaikuId[haikuId];
     Template.hoistNodeAttributes(
       node,
@@ -340,7 +340,7 @@ Template.hoistTreeAttributes = (mana, timelineName, timelineTime) => {
       theTimelineObj,
       timelineName,
       timelineTime,
-      "assign"
+      'assign',
     );
   }
 
@@ -349,11 +349,11 @@ Template.hoistTreeAttributes = (mana, timelineName, timelineTime) => {
 
 Template.getControlAttributes = attributes => {
   const out = {};
-  for (const key in attributes) {
-    if (SELECTOR_ATTRIBUTES[key]) {
+  for(const key in attributes) {
+    if(SELECTOR_ATTRIBUTES[key]) {
       continue;
     }
-    if (TEMPLATE_METADATA_ATTRIBUTES[key]) {
+    if(TEMPLATE_METADATA_ATTRIBUTES[key]) {
       continue;
     }
     out[key] = attributes[key];
@@ -367,15 +367,15 @@ Template.hoistNodeAttributes = (
   timelineObj,
   timelineName,
   timelineTime,
-  mergeStrategy
+  mergeStrategy,
 ) => {
   const controlAttributes = Template.getControlAttributes(manaNode.attributes);
 
   // Hoist the text content attribute as a property as well, inferring from structure
-  if (
+  if(
     manaNode.children &&
     manaNode.children.length === 1 &&
-    typeof manaNode.children[0] === "string"
+    typeof manaNode.children[0] === 'string'
   ) {
     // Remove this text node from the actual tree since it's hoisted now
     controlAttributes.content = manaNode.children[0];
@@ -387,12 +387,12 @@ Template.hoistNodeAttributes = (
   const defaultAttributes = {};
 
   // Don't create any empty groups
-  if (
+  if(
     Object.keys(defaultAttributes).length > 0 ||
     Object.keys(controlAttributes).length > 0
   ) {
     const haikuIdSelector = Template.buildHaikuIdSelector(haikuId);
-    if (!timelineObj[haikuIdSelector]) {
+    if(!timelineObj[haikuIdSelector]) {
       timelineObj[haikuIdSelector] = {};
     }
     const timelineGroup = timelineObj[haikuIdSelector];
@@ -401,19 +401,19 @@ Template.hoistNodeAttributes = (
       timelineGroup,
       timelineTime,
       defaultAttributes,
-      mergeStrategy
+      mergeStrategy,
     );
     Template.insertAttributesIntoTimelineGroup(
       timelineGroup,
       timelineTime,
       controlAttributes,
-      mergeStrategy
+      mergeStrategy,
     );
   }
 
   // Clear off attributes that have been 'hoisted' into the control objects
-  for (const attrKey in manaNode.attributes) {
-    if (attrKey in controlAttributes) {
+  for(const attrKey in manaNode.attributes) {
+    if(attrKey in controlAttributes) {
       delete manaNode.attributes[attrKey];
     }
   }
@@ -425,8 +425,8 @@ Template.createHaikuId = (node, fqa, source, context) => {
   const label = Template.getFriendlyLabelLocal(node);
 
   // No label could happen if the node is blank or a string
-  if (label) {
-    return `${label} ${sha}`.replace(/\s+/g, "-"); // Hyphenize any whitespace
+  if(label) {
+    return `${label} ${sha}`.replace(/\s+/g, '-'); // Hyphenize any whitespace
   }
 
   return sha;
@@ -440,12 +440,12 @@ Template.isHaikuIdSelector = selector => {
   return (
     selector &&
     selector.slice(0, 5) === HAIKU_SELECTOR_PREFIX &&
-    selector[5] === ":"
+    selector[5] === ':'
   );
 };
 
 Template.haikuSelectorToHaikuId = selector => {
-  return selector.split(":")[1];
+  return selector.split(':')[1];
 };
 
 Template.getHash = (str, len = 6) => {
@@ -459,19 +459,19 @@ Template.getAllElementsByHaikuId = mana => {
     ROOT_LOCATOR,
     mana,
     (elementName, attributes, children, node) => {
-      if (attributes && attributes[HAIKU_ID_ATTRIBUTE]) {
+      if(attributes && attributes[HAIKU_ID_ATTRIBUTE]) {
         elements[attributes[HAIKU_ID_ATTRIBUTE]] = node;
       }
-    }
+    },
   );
   return elements;
 };
 
 Template.fixManaSourceAttribute = function fixManaSourceAttribute(
   mana,
-  relpath
+  relpath,
 ) {
-  if (!mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+  if(!mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
     mana.attributes[HAIKU_SOURCE_ATTRIBUTE] = path.posix.normalize(relpath);
   }
 };
@@ -485,16 +485,16 @@ Template.fixManaSourceAttribute = function fixManaSourceAttribute(
  * @return {Object} The mutated mana object
  */
 Template.fixTreeIdReferences = (mana, references) => {
-  if (Object.keys(references).length < 1) {
+  if(Object.keys(references).length < 1) {
     return mana;
   }
   visitManaTree(ROOT_LOCATOR, mana, (elementName, attributes) => {
-    if (!attributes) {
+    if(!attributes) {
       return void 0;
     }
-    for (const id in references) {
+    for(const id in references) {
       const fixed = references[id];
-      if (attributes.id === id) {
+      if(attributes.id === id) {
         attributes.id = fixed;
       }
     }
@@ -514,37 +514,37 @@ Template.fixTreeIdReferences = (mana, references) => {
 Template.fixFragmentIdentifierReferenceValue = function fixFragmentIdentifierReferenceValue(
   key,
   value,
-  randomizer
+  randomizer,
 ) {
-  if (typeof value !== "string") {
+  if(typeof value !== 'string') {
     return undefined;
   }
 
   const trimmed = value.trim();
 
   // Probably nothing to do if we got an empty string
-  if (trimmed.length < 1) {
+  if(trimmed.length < 1) {
     return undefined;
   }
 
   // If this is a URL reference like `url(...)`, try to parse it and return a fix payload if so
   const urlId = extractReferenceIdFromUrlReference(trimmed);
-  if (urlId && urlId.length > 0) {
+  if(urlId && urlId.length > 0) {
     return {
       originalId: urlId,
-      updatedId: urlId + "-" + randomizer,
-      updatedValue: "url(#" + urlId + "-" + randomizer + ")"
+      updatedId: urlId + '-' + randomizer,
+      updatedValue: 'url(#' + urlId + '-' + randomizer + ')',
     };
   }
 
   // xlink:hrefs are references to elements in the tree that can affect our style
-  if (key === "xlink:href" || key === "href") {
-    if (trimmed[0] === "#") {
+  if(key === 'xlink:href' || key === 'href') {
+    if(trimmed[0] === '#') {
       const xlinkId = trimmed.slice(1);
       return {
         originalId: xlinkId,
-        updatedId: xlinkId + "-" + randomizer,
-        updatedValue: "#" + xlinkId + "-" + randomizer
+        updatedId: xlinkId + '-' + randomizer,
+        updatedValue: '#' + xlinkId + '-' + randomizer,
       };
     }
   }
@@ -556,16 +556,16 @@ Template.fixFragmentIdentifierReferenceValue = function fixFragmentIdentifierRef
 Template.fixKeyframeValue = function fixKeyframeValue(
   elementNode,
   propertyName,
-  keyframeValue
+  keyframeValue,
 ) {
   const elementName = elementNode && elementNode.elementName;
-  if (elementName === "path" && propertyName === "d") {
+  if(elementName === 'path' && propertyName === 'd') {
     return SVGPoints.pathToPoints(keyframeValue);
   }
 
-  if (
-    (elementName === "polygon" || elementName === "polyline") &&
-    propertyName === "points"
+  if(
+    (elementName === 'polygon' || elementName === 'polyline') &&
+    propertyName === 'points'
   ) {
     return SVGPoints.polyPointsStringToPoints(keyframeValue);
   }
@@ -574,7 +574,7 @@ Template.fixKeyframeValue = function fixKeyframeValue(
 
 Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferences(
   mana,
-  randomizer
+  randomizer,
 ) {
   const references = {};
 
@@ -582,11 +582,11 @@ Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferen
     ROOT_LOCATOR,
     mana,
     (elementName, attributes, children, node) => {
-      if (!attributes) {
+      if(!attributes) {
         return void 0;
       }
 
-      for (const key in attributes) {
+      for(const key in attributes) {
         const value = attributes[key];
 
         // Add randomization to any url() or xlink:href etc to avoid collisions
@@ -594,16 +594,16 @@ Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferen
         const fix = Template.fixFragmentIdentifierReferenceValue(
           key,
           value,
-          randomizer
+          randomizer,
         );
-        if (fix === undefined) {
+        if(fix === undefined) {
           continue;
         }
 
         references[fix.originalId] = fix.updatedId;
         attributes[key] = fix.updatedValue;
       }
-    }
+    },
   );
 
   Template.fixTreeIdReferences(mana, references);
@@ -617,12 +617,12 @@ Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferen
 // was a first step. TODO: Please refactor!
 
 Template.visitTemplate = function visitTemplate(template, parent, iteratee) {
-  if (template) {
+  if(template) {
     iteratee(template, parent);
-    if (template.children) {
-      for (let i = 0; i < template.children.length; i++) {
+    if(template.children) {
+      for(let i = 0; i < template.children.length; i++) {
         const child = template.children[i];
-        if (!child || typeof child === "string") {
+        if(!child || typeof child === 'string') {
           continue;
         }
         Template.visitTemplate(child, template, iteratee);
@@ -635,19 +635,19 @@ Template.visitManaTreeSpecial = function visitManaTreeSpecial(
   address,
   hash,
   mana,
-  iteratee
+  iteratee,
 ) {
   address += `:[${hash}]${Template.safeElementNameLocal(mana)}(${
-    mana.attributes && mana.attributes.id ? "#" + mana.attributes.id : ""
+    mana.attributes && mana.attributes.id ? '#' + mana.attributes.id : ''
   })`;
   iteratee(mana, address);
-  if (!mana.children || mana.children.length < 1) {
+  if(!mana.children || mana.children.length < 1) {
     return void 0;
   }
-  for (let i = 0; i < mana.children.length; i++) {
+  for(let i = 0; i < mana.children.length; i++) {
     const child = mana.children[i];
-    if (child && typeof child === "object") {
-      Template.visitManaTreeSpecial(address, hash + "-" + i, child, iteratee);
+    if(child && typeof child === 'object') {
+      Template.visitManaTreeSpecial(address, hash + '-' + i, child, iteratee);
     }
   }
 };
@@ -655,15 +655,15 @@ Template.visitManaTreeSpecial = function visitManaTreeSpecial(
 /**
  * Visit all nodes in the given tree, beginning with the root node, in depth-first order
  */
-Template.visit = (node, visitor, index = 0, depth = 0, address = "0") => {
-  if (node) {
+Template.visit = (node, visitor, index = 0, depth = 0, address = '0') => {
+  if(node) {
     visitor(node, null, index, depth, address);
-    if (!node.children) {
+    if(!node.children) {
       return;
     }
-    for (let i = 0; i < node.children.length; i++) {
+    for(let i = 0; i < node.children.length; i++) {
       const child = node.children[i];
-      if (typeof child === "string") {
+      if(typeof child === 'string') {
         continue;
       }
       Template.visit(child, visitor, i, depth + 1, `${address}.${i}`);
@@ -673,16 +673,16 @@ Template.visit = (node, visitor, index = 0, depth = 0, address = "0") => {
 
 Template.inspectNodeName = node => {
   let name;
-  if (!node) {
-    name = "void";
-  } else if (!node.elementName) {
-    name = "none";
-  } else if (typeof node.elementName === "string") {
+  if(!node) {
+    name = 'void';
+  } else if(!node.elementName) {
+    name = 'none';
+  } else if(typeof node.elementName === 'string') {
     name = node.elementName;
-  } else if (node.elementName.__reference) {
+  } else if(node.elementName.__reference) {
     name = `ref(${node.elementName.__reference})`;
   } else {
-    name = "unknown";
+    name = 'unknown';
   }
   return name;
 };
@@ -690,29 +690,29 @@ Template.inspectNodeName = node => {
 Template.inspectAttribute = val => {
   try {
     return JSON.stringify(val);
-  } catch (e) {
-    return "!err!";
+  } catch(e) {
+    return '!err!';
   }
 };
 
 Template.inspectNodeAttributes = node => {
-  let attrs = "";
-  if (!node) {
-    attrs = "void";
-  } else if (!node.attributes) {
-    attrs = "none";
-  } else if (typeof node.attributes === "object") {
-    for (const key in node.attributes) {
+  let attrs = '';
+  if(!node) {
+    attrs = 'void';
+  } else if(!node.attributes) {
+    attrs = 'none';
+  } else if(typeof node.attributes === 'object') {
+    for(const key in node.attributes) {
       attrs += `${key}=${Template.inspectAttribute(node.attributes[key])} `;
     }
   } else {
-    attrs = "unknown";
+    attrs = 'unknown';
   }
   return attrs;
 };
 
 Template.inspect = mana => {
-  let out = "";
+  let out = '';
 
   Template.visit(mana, (node, parent, index, depth, address) => {
     const name = Template.inspectNodeName(node);
@@ -728,15 +728,15 @@ Template.visitWithoutDescendingIntoSubcomponents = (
   visitor,
   index = 0,
   depth = 0,
-  address = "0"
+  address = '0',
 ) => {
-  if (node) {
+  if(node) {
     visitor(node, null, index, depth, address);
-    if (typeof node.elementName === "string") {
-      if (node.children) {
-        for (let i = 0; i < node.children.length; i++) {
+    if(typeof node.elementName === 'string') {
+      if(node.children) {
+        for(let i = 0; i < node.children.length; i++) {
           const child = node.children[i];
-          if (typeof child === "string") {
+          if(typeof child === 'string') {
             continue;
           }
           Template.visitWithoutDescendingIntoSubcomponents(
@@ -744,7 +744,7 @@ Template.visitWithoutDescendingIntoSubcomponents = (
             visitor,
             i,
             depth + 1,
-            `${address}.${i}`
+            `${address}.${i}`,
           );
         }
       }
@@ -753,14 +753,14 @@ Template.visitWithoutDescendingIntoSubcomponents = (
 };
 
 Template.visitNodes = (node, parent, index, visitor) => {
-  if (node) {
+  if(node) {
     visitor(node, parent, index);
-    if (!node.children) {
+    if(!node.children) {
       return;
     }
-    for (let i = 0; i < node.children.length; i++) {
+    for(let i = 0; i < node.children.length; i++) {
       const child = node.children[i];
-      if (typeof child === "string") {
+      if(typeof child === 'string') {
         continue;
       }
       Template.visitNodes(child, node, i, visitor);
@@ -769,22 +769,22 @@ Template.visitNodes = (node, parent, index, visitor) => {
 };
 
 Template.ensureTopLevelDisplayAttributes = function ensureTopLevelDisplayAttributes(
-  mana
+  mana,
 ) {
   merge(mana.attributes, {
     style: {
-      position: "absolute",
-      margin: "0",
-      padding: "0",
-      border: "0"
-    }
+      position: 'absolute',
+      margin: '0',
+      padding: '0',
+      border: '0',
+    },
   });
   // If our context is SVG, ensure it has appropriate SVG attributes
-  if (Template.safeElementNameLocal(mana) === "svg") {
+  if(Template.safeElementNameLocal(mana) === 'svg') {
     merge(mana.attributes, {
-      version: "1.1",
-      xmlns: "http://www.w3.org/2000/svg",
-      "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      version: '1.1',
+      xmlns: 'http://www.w3.org/2000/svg',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     });
   }
 };
@@ -798,45 +798,45 @@ Template.ensureTopLevelDisplayAttributes = function ensureTopLevelDisplayAttribu
  * @param options {Object}
  */
 Template.ensureTitleAndUidifyTree = (mana, source, context, hash, options) => {
-  if (!options) {
+  if(!options) {
     options = {};
   }
 
   // First ensure the element has a title (this is used to display a human-friendly name in the ui)
-  if (!mana.attributes) {
+  if(!mana.attributes) {
     mana.attributes = {};
   }
-  if (options.title) {
+  if(options.title) {
     mana.attributes[HAIKU_TITLE_ATTRIBUTE] = options.title;
   }
-  if (!mana.attributes[HAIKU_TITLE_ATTRIBUTE]) {
+  if(!mana.attributes[HAIKU_TITLE_ATTRIBUTE]) {
     let title;
-    if (mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+    if(mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
       // The file name usually works as a good baseline, e.g. 'FooBar.svg'
       title = path.basename(
         mana.attributes[HAIKU_SOURCE_ATTRIBUTE],
-        path.extname(mana.attributes[HAIKU_SOURCE_ATTRIBUTE])
+        path.extname(mana.attributes[HAIKU_SOURCE_ATTRIBUTE]),
       );
     }
-    if (!title) {
-      if (mana.children) {
+    if(!title) {
+      if(mana.children) {
         // Sketch-sourced trees always have a title matching that artboard/slice's name
-        const el = find(mana.children, { elementName: "title" });
-        if (el && el.children && typeof el.children[0] === "string") {
+        const el = find(mana.children, { elementName: 'title' });
+        if(el && el.children && typeof el.children[0] === 'string') {
           title = el.children[0];
         }
       }
     }
-    if (!title) {
-      if (source && source.length > 1) {
+    if(!title) {
+      if(source && source.length > 1) {
         // The passed in source relpath should work ok
         title = path.basename(source, path.extname(source));
-        title = title.replace("Bytecode", ""); // Clean up the name if this is a bytecode-source doc
+        title = title.replace('Bytecode', ''); // Clean up the name if this is a bytecode-source doc
       }
     }
-    if (!title) {
+    if(!title) {
       // Otherwise, fall back to the element name
-      title = pascalcase(Element.safeElementName(mana) || "node");
+      title = pascalcase(Element.safeElementName(mana) || 'node');
     }
     mana.attributes[HAIKU_TITLE_ATTRIBUTE] = title;
   }
@@ -844,23 +844,23 @@ Template.ensureTitleAndUidifyTree = (mana, source, context, hash, options) => {
   // Now make sure all elements in the tree get a predictable identifier assigned. It is critical that
   // the UID generation be based on the existing tree's contents so that this same logic can run
   // in different processes and still give us an identical result, otherwise they will get out of sync
-  Template.visitManaTreeSpecial("*", hash, mana, (node, fqa) => {
-    if (typeof node !== "object") {
+  Template.visitManaTreeSpecial('*', hash, mana, (node, fqa) => {
+    if(typeof node !== 'object') {
       return void 0;
     }
-    if (!node.attributes) {
+    if(!node.attributes) {
       node.attributes = {};
     }
 
     // For cases like pasting a component, the caller might want to assign a fresh id even though
     // we may already have one assigned to the node, hence the forceAssignId option
-    if (!node.attributes[HAIKU_ID_ATTRIBUTE] || options.forceAssignId) {
+    if(!node.attributes[HAIKU_ID_ATTRIBUTE] || options.forceAssignId) {
       const haikuId = Template.createHaikuId(node, fqa, source, context);
       node.attributes[HAIKU_ID_ATTRIBUTE] = haikuId;
     }
 
-    if (node.attributes.id && options.idRandomizer) {
-      node.attributes.id += "-" + options.idRandomizer;
+    if(node.attributes.id && options.idRandomizer) {
+      node.attributes.id += '-' + options.idRandomizer;
     }
   });
 };
@@ -868,20 +868,20 @@ Template.ensureTitleAndUidifyTree = (mana, source, context, hash, options) => {
 Template.ensureRootDisplayAttributes = mana => {
   merge(mana.attributes, {
     style: {
-      position: "relative",
-      width: "550px", // default artboard size, see haiku-creator
-      height: "400px", // default artboard size, see haiku-creator
-      margin: "0",
-      padding: "0",
-      border: "0"
-    }
+      position: 'relative',
+      width: '550px', // default artboard size, see haiku-creator
+      height: '400px', // default artboard size, see haiku-creator
+      margin: '0',
+      padding: '0',
+      border: '0',
+    },
   });
   // If our context is SVG, ensure it has appropriate SVG attributes
-  if (Template.safeElementNameLocal(mana) === "svg") {
+  if(Template.safeElementNameLocal(mana) === 'svg') {
     merge(mana.attributes, {
-      version: "1.1",
-      xmlns: "http://www.w3.org/2000/svg",
-      "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      version: '1.1',
+      xmlns: 'http://www.w3.org/2000/svg',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     });
   }
 };
@@ -897,34 +897,34 @@ Template.cleanTemplate = mana => {
  * @returns {Boolean}
  */
 Template.areTemplatesEquivalent = (t1, t2) => {
-  if (!t1 && !t2) {
+  if(!t1 && !t2) {
     return true;
   }
-  if (t1 && !t2) {
+  if(t1 && !t2) {
     return false;
   }
-  if (!t1 && t2) {
+  if(!t1 && t2) {
     return false;
   }
-  if (t1.elementName !== t2.elementName) {
+  if(t1.elementName !== t2.elementName) {
     return false;
   }
-  if (!t1.children && !t2.children) {
+  if(!t1.children && !t2.children) {
     return true;
   }
-  if (t1.children && !t2.children) {
+  if(t1.children && !t2.children) {
     return false;
   }
-  if (!t1.children && t2.children) {
+  if(!t1.children && t2.children) {
     return false;
   }
-  if (t1.children.length !== t2.children.length) {
+  if(t1.children.length !== t2.children.length) {
     return false;
   }
-  for (let i = 0; i < t1.children.length; i++) {
+  for(let i = 0; i < t1.children.length; i++) {
     const c1 = t1.children[i];
     const c2 = t2.children[i];
-    if (!Template.areTemplatesEquivalent(c1, c2)) {
+    if(!Template.areTemplatesEquivalent(c1, c2)) {
       return false;
     }
   }
@@ -936,10 +936,10 @@ Template.allSourceNodes = function allSourceNodes(rootLocator, mana, iteratee) {
     rootLocator,
     mana,
     (elementName, attributes, children, node, locator, parent, index) => {
-      if (attributes && attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+      if(attributes && attributes[HAIKU_SOURCE_ATTRIBUTE]) {
         iteratee(node, attributes[HAIKU_SOURCE_ATTRIBUTE], parent, index);
       }
-    }
+    },
   );
 };
 
@@ -949,7 +949,7 @@ Template.visitManaTree = (mana, iteratee) => {
 
 Template.reuseHotMana = mana => {
   const clone = Template.clone({}, mana, (copy, original) => {
-    if (
+    if(
       original.layout &&
       original.layout.computed &&
       original.layout.computed.matrix
@@ -957,7 +957,7 @@ Template.reuseHotMana = mana => {
       // If we are reusing rendered mana with layout, hoist its computed matrix into the transform attribute.
       // Ingestion will automagically hoist these layout properties up to the timeline.
       copy.attributes.transform = `matrix3d(${original.layout.computed.matrix.join(
-        ","
+        ',',
       )})`;
     }
   });
@@ -968,23 +968,23 @@ Template.reuseHotMana = mana => {
 Template.clone = (out, mana, worker) => {
   // No point continuing if null or false;
   // it could also be "text": a string or number
-  if (!mana || typeof mana !== "object") {
+  if(!mana || typeof mana !== 'object') {
     return mana;
   }
 
   // Note that `elementName` is an object in case of a component instance
   out.elementName = mana.elementName;
 
-  if (mana.attributes) {
+  if(mana.attributes) {
     out.attributes = {};
 
-    for (const key in mana.attributes) {
+    for(const key in mana.attributes) {
       const prop = mana.attributes[key];
 
-      if (prop && typeof prop === "object") {
+      if(prop && typeof prop === 'object') {
         out.attributes[key] = {};
 
-        for (const subkey in prop) {
+        for(const subkey in prop) {
           out.attributes[key][subkey] = prop[subkey];
         }
       } else {
@@ -993,14 +993,14 @@ Template.clone = (out, mana, worker) => {
     }
   }
 
-  if (worker) {
+  if(worker) {
     worker(out, mana);
   }
 
-  if (mana.children) {
+  if(mana.children) {
     out.children = [];
 
-    for (let i = 0; i < mana.children.length; i++) {
+    for(let i = 0; i < mana.children.length; i++) {
       out.children[i] = Template.clone({}, mana.children[i], worker);
     }
   }
@@ -1012,12 +1012,12 @@ Template.insertAttributesIntoTimelineGroup = (
   timelineGroup,
   timelineTime,
   givenAttributes,
-  mergeStrategy
+  mergeStrategy,
 ) => {
-  for (const attributeName in givenAttributes) {
+  for(const attributeName in givenAttributes) {
     const attributeValue = givenAttributes[attributeName];
-    if (attributeValue && typeof attributeValue === "object") {
-      for (const subKey in attributeValue) {
+    if(attributeValue && typeof attributeValue === 'object') {
+      for(const subKey in attributeValue) {
         const subVal = attributeValue[subKey];
         const fullName = attributeName + GROUP_DELIMITER + subKey;
         Template.mergeOne(
@@ -1025,7 +1025,7 @@ Template.insertAttributesIntoTimelineGroup = (
           fullName,
           subVal,
           timelineTime,
-          mergeStrategy
+          mergeStrategy,
         );
       }
     } else {
@@ -1034,7 +1034,7 @@ Template.insertAttributesIntoTimelineGroup = (
         attributeName,
         attributeValue,
         timelineTime,
-        mergeStrategy
+        mergeStrategy,
       );
     }
   }
@@ -1045,20 +1045,20 @@ Template.mergeOne = (
   nameOrig,
   attributeValue,
   timelineTime,
-  mergeStrategy
+  mergeStrategy,
 ) => {
   const nameFinal = ATTRS_HYPH_TO_CAMEL[nameOrig] || nameOrig;
 
-  if (!timelineGroup[nameFinal]) {
+  if(!timelineGroup[nameFinal]) {
     timelineGroup[nameFinal] = timelineGroup[nameOrig] || {};
 
     // Clear off any legacy hyphen-case properties if we swapped for camel-case
-    if (nameOrig !== nameFinal) {
+    if(nameOrig !== nameFinal) {
       delete timelineGroup[nameOrig];
     }
   }
 
-  if (!timelineGroup[nameFinal][timelineTime]) {
+  if(!timelineGroup[nameFinal][timelineTime]) {
     timelineGroup[nameFinal][timelineTime] = {};
   }
 
@@ -1066,27 +1066,27 @@ Template.mergeOne = (
     nameFinal,
     timelineGroup[nameFinal][timelineTime],
     attributeValue,
-    mergeStrategy
+    mergeStrategy,
   );
 };
 
 const isObject = value => {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 };
 
 Template.mergeAppliedValue = (
   name,
   valueDescriptor,
   incomingValue,
-  mergeStrategy
+  mergeStrategy,
 ) => {
-  if (
+  if(
     isObject(valueDescriptor.value) &&
     isObject(incomingValue) &&
     !isSerializedFunction(valueDescriptor.value) &&
     !isSerializedFunction(incomingValue)
   ) {
-    switch (mergeStrategy) {
+    switch(mergeStrategy) {
       case MERGE_STRATEGIES.assign:
         assign(valueDescriptor.value, incomingValue);
         break;
@@ -1094,20 +1094,20 @@ Template.mergeAppliedValue = (
         defaults(valueDescriptor.value, incomingValue);
         break;
       default:
-        throw new Error("Merge strategy provided is missing or invalid");
+        throw new Error('Merge strategy provided is missing or invalid');
     }
   } else {
-    switch (mergeStrategy) {
+    switch(mergeStrategy) {
       case MERGE_STRATEGIES.assign:
         valueDescriptor.value = incomingValue;
         break;
       case MERGE_STRATEGIES.defaults:
-        if (valueDescriptor.value === undefined) {
+        if(valueDescriptor.value === undefined) {
           valueDescriptor.value = incomingValue;
         }
         break;
       default:
-        throw new Error("Merge strategy provided is missing or invalid");
+        throw new Error('Merge strategy provided is missing or invalid');
     }
   }
 };
@@ -1119,13 +1119,13 @@ Template.manaToJson = (mana, replacer, spacing) => {
 
 Template.cleanMana = (
   mana,
-  { resetIds = false, suppressSubcomponents = true } = {}
+  { resetIds = false, suppressSubcomponents = true } = {},
 ) => {
   const out = {};
-  if (!mana) {
+  if(!mana) {
     return null;
   }
-  if (typeof mana === "string") {
+  if(typeof mana === 'string') {
     return mana;
   }
 
@@ -1133,17 +1133,17 @@ Template.cleanMana = (
   // If the bytecode has any subcomponents, which are designated using the .elementName
   // in the same way the React designates components by the .type, then treat the
   // node as a simple <div>.
-  if (
+  if(
     mana.elementName &&
-    typeof mana.elementName === "object" &&
+    typeof mana.elementName === 'object' &&
     mana.elementName !== null
   ) {
-    if (suppressSubcomponents) {
-      out.elementName = "div";
+    if(suppressSubcomponents) {
+      out.elementName = 'div';
     } else {
       out.elementName = Bytecode.decycle(mana.elementName, {
         cleanManaOptions: { resetIds, suppressSubcomponents },
-        doCleanMana: true
+        doCleanMana: true,
       });
     }
   } else {
@@ -1151,14 +1151,14 @@ Template.cleanMana = (
   }
 
   out.attributes = mana.attributes;
-  if (resetIds) {
+  if(resetIds) {
     delete out.attributes[HAIKU_ID_ATTRIBUTE];
   }
 
   out.children =
     mana.children &&
     mana.children.map(childMana =>
-      Template.cleanMana(childMana, { resetIds, suppressSubcomponents })
+      Template.cleanMana(childMana, { resetIds, suppressSubcomponents }),
     );
   return out;
 };
@@ -1171,10 +1171,10 @@ Template.getStackingInfo = (
   bytecode,
   staticTemplateManaNode,
   timelineName,
-  timelineTime
+  timelineTime,
 ) => {
   return staticTemplateManaNode.children
-    .filter(child => child && typeof child !== "string")
+    .filter(child => child && typeof child !== 'string')
     .map((child, index) => {
       const haikuId = child.attributes[HAIKU_ID_ATTRIBUTE];
       const zIndex =
@@ -1184,43 +1184,43 @@ Template.getStackingInfo = (
             haikuId,
             timelineName,
             timelineTime,
-            "style.zIndex"
+            'style.zIndex',
           ),
-          10
+          10,
         ) || undefined;
       return {
         haikuId,
         zIndex,
-        index
+        index,
       };
     })
     .sort((a, b) => {
       // zIndexes should sort normally at the front of the list
-      if (a.zIndex !== undefined && b.zIndex !== undefined) {
+      if(a.zIndex !== undefined && b.zIndex !== undefined) {
         return a.zIndex - b.zIndex;
       }
 
       // Push undefined zIndexes to the end of the list, sorted by original order of appearance.
-      if ((a.zIndex === undefined) ^ (b.zIndex === undefined)) {
+      if((a.zIndex === undefined) ^ (b.zIndex === undefined)) {
         return a.zIndex === undefined ? 1 : -1;
       }
 
       return a.index - b.index;
     })
     .reduce((accumulator, { zIndex, haikuId }, currentIndex) => {
-      if (currentIndex === 0) {
+      if(currentIndex === 0) {
         return [
           {
             zIndex: Math.max(zIndex || 1, 1),
-            haikuId
-          }
+            haikuId,
+          },
         ];
       }
 
       const nextZ = accumulator[accumulator.length - 1].zIndex + 1;
       accumulator.push({
         zIndex: zIndex === undefined ? nextZ : Math.max(zIndex, nextZ),
-        haikuId
+        haikuId,
       });
       return accumulator;
     }, []);
@@ -1231,24 +1231,24 @@ Template.getPropertyValue = (
   componentId,
   timelineName,
   timelineTime,
-  propertyName
+  propertyName,
 ) => {
-  if (!bytecode) {
+  if(!bytecode) {
     return;
   }
-  if (!bytecode.timelines) {
+  if(!bytecode.timelines) {
     return;
   }
-  if (!bytecode.timelines[timelineName]) {
+  if(!bytecode.timelines[timelineName]) {
     return;
   }
-  if (!bytecode.timelines[timelineName][`haiku:${componentId}`]) {
+  if(!bytecode.timelines[timelineName][`haiku:${componentId}`]) {
     return;
   }
-  if (!bytecode.timelines[timelineName][`haiku:${componentId}`][propertyName]) {
+  if(!bytecode.timelines[timelineName][`haiku:${componentId}`][propertyName]) {
     return;
   }
-  if (
+  if(
     !bytecode.timelines[timelineName][`haiku:${componentId}`][propertyName][
       timelineTime
     ]
@@ -1261,36 +1261,36 @@ Template.getPropertyValue = (
 };
 
 Template.safeElementNameLocal = mana => {
-  if (!mana || typeof mana !== "object") {
-    return "div";
+  if(!mana || typeof mana !== 'object') {
+    return 'div';
   }
-  if (mana.elementName && typeof mana.elementName === "object") {
-    return "div";
+  if(mana.elementName && typeof mana.elementName === 'object') {
+    return 'div';
   }
   return mana.elementName;
 };
 
 const cleanHaikuIdLocal = str =>
-  titlecase(decamelize((String(str)).trim()).replace(/[\W_:]/g, " "));
+  titlecase(decamelize((String(str)).trim()).replace(/[\W_:]/g, ' '));
 
 Template.getFriendlyLabelLocal = node => {
-  if (!node || typeof node !== "object") {
-    return "";
+  if(!node || typeof node !== 'object') {
+    return '';
   }
   const id = node.attributes && node.attributes.id;
   const title = node.attributes && node.attributes[HAIKU_TITLE_ATTRIBUTE];
-  let name = typeof node.elementName === "string" && node.elementName ? node.elementName : "div";
-  if (id && !title) {
+  const name = typeof node.elementName === 'string' && node.elementName ? node.elementName : 'div';
+  if(id && !title) {
     return cleanHaikuIdLocal(id);
   }
-  let out = "";
-  if (typeof id === "string") {
+  let out = '';
+  if(typeof id === 'string') {
     out += `${id} `;
   }
-  if (typeof title === "string") {
+  if(typeof title === 'string') {
     out += `${title} `;
   }
-  if (out.length === 0 && typeof name === "string") {
+  if(out.length === 0 && typeof name === 'string') {
     out += `${name}`;
   }
   return cleanHaikuIdLocal(out);

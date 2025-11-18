@@ -1,5 +1,5 @@
-var Haiku = require("@haiku/core");
-module.exports = {
+import Haiku from '@haiku/core/index.js';
+export default {
   metadata: {
     folder: "/Users/matthew/Code/HaikuTeam/mono/packages/haiku-plumbing/test/fixtures/projects/blank-project/",
     uuid: "HAIKU_SHARE_UUID",

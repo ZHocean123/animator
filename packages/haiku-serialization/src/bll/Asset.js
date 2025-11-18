@@ -1,14 +1,20 @@
-const path = require("path");
-const toTitleCase = require("./helpers/toTitleCase");
-const BaseModel = require("./BaseModel");
-const Sketch = require("./Sketch");
-const Illustrator = require("./Illustrator");
-const { Figma, PHONY_FIGMA_FILE } = require("./Figma");
-const {
+/**
+ * Asset model class
+ * Encapsulates any object that needs to be displayed in the Library UI.
+ * Also abstracts some of the logic for asset nesting/grouping for display.
+ * Includes static methods for common asset-related tasks.
+ */
+import path from 'path';
+import toTitleCase from './helpers/toTitleCase.js';
+import BaseModel from './BaseModel.js';
+import Sketch from './Sketch.js';
+import Illustrator from './Illustrator.js';
+import { Figma, PHONY_FIGMA_FILE } from './Figma.js';
+import {
   Experiment,
-  experimentIsEnabled
-} = require("haiku-common/lib/experiments.js");
-const { isMac, isWindows } = require("haiku-common/lib/environments/os.js");
+  experimentIsEnabled,
+} from 'haiku-common/lib/experiments.js';
+import { isMac, isWindows } from 'haiku-common/lib/environments/os.js';
 
 const PAGES_REGEX = isWindows() ? /\\pages\\/ : /\/pages\//;
 const SLICES_REGEX = isWindows() ? /\\slices\\/ : /\/slices\//;
@@ -16,7 +22,7 @@ const ARTBOARDS_REGEX = isWindows() ? /\\artboards\\/ : /\/artboards\//;
 const GROUPS_REGEX = isWindows() ? /\\groups\\/ : /\/groups\//;
 const FRAMES_REGEX = isWindows() ? /\\frames\\/ : /\/frames\//;
 
-const MAIN_COMPONENT_NAME = "main";
+const MAIN_COMPONENT_NAME = 'main';
 
 /**
  * @class Asset
@@ -35,7 +41,7 @@ class Asset extends BaseModel {
   }
 
   getSceneName() {
-    if (!this.isComponent()) {
+    if(!this.isComponent()) {
       return;
     }
 
@@ -46,7 +52,7 @@ class Asset extends BaseModel {
   getAssetInfo() {
     const parts = this.relpath.split(path.sep);
     // It's definitely not a generated piece if its length doesn't match the pattern
-    if (parts.length !== 4) {
+    if(parts.length !== 4) {
       return { generator: null, relpath: null };
     }
 
@@ -58,10 +64,10 @@ class Asset extends BaseModel {
       : /\.(\w+)\.contents\//;
     const match = longSource.match(matchRegexp);
 
-    if (match) {
+    if(match) {
       return {
         generator: match[1],
-        generatorRelpath: shortSource.replace(/\.contents$/, "")
+        generatorRelpath: shortSource.replace(/\.contents$/, ''),
       };
     }
 
@@ -117,7 +123,7 @@ class Asset extends BaseModel {
     // See also Template#normalizePathOfPossiblyExternalModule
     // e.g. @haiku/core/components/controls/HTML
     // TODO: e.g. some-other-haiku-proj/moocow
-    if (this.getRelpath()[0] === "@") {
+    if(this.getRelpath()[0] === '@') {
       return this.getRelpath();
     }
 
@@ -130,22 +136,22 @@ class Asset extends BaseModel {
   }
 
   isComponentOtherThanMain() {
-    return this.isComponent() && this.relpath !== "code/main/code.js";
+    return this.isComponent() && this.relpath !== 'code/main/code.js';
   }
 
   isDesignsHostFolder() {
-    return this.relpath === "designs";
+    return this.relpath === 'designs';
   }
 
   isComponentsHostFolder() {
-    return this.relpath === "code";
+    return this.relpath === 'code';
   }
 
   addSketchChild(svgAsset) {
-    if (svgAsset.isSlice()) {
+    if(svgAsset.isSlice()) {
       this.slicesFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.slicesFolderAsset);
-    } else if (svgAsset.isArtboard()) {
+    } else if(svgAsset.isArtboard()) {
       this.artboardsFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.artboardsFolderAsset);
     } else {
@@ -154,13 +160,13 @@ class Asset extends BaseModel {
   }
 
   addFigmaChild(svgAsset) {
-    if (svgAsset.isSlice()) {
+    if(svgAsset.isSlice()) {
       this.slicesFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.slicesFolderAsset);
-    } else if (svgAsset.isGroup()) {
+    } else if(svgAsset.isGroup()) {
       this.groupsFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.groupsFolderAsset);
-    } else if (svgAsset.isFrame()) {
+    } else if(svgAsset.isFrame()) {
       this.framesFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.framesFolderAsset);
     }
@@ -175,33 +181,33 @@ class Asset extends BaseModel {
     const project = this.project;
     const result = Asset.findById(path.join(project.getFolder(), relpath));
 
-    if (result) {
+    if(result) {
       this.insertChild(result);
       return result;
     }
 
     const artboardsFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "artboards"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'artboards'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "artboards"),
-      displayName: "Artboards",
+      relpath: path.join('designs', relpath, 'artboards'),
+      displayName: 'Artboards',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const slicesFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "slices"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'slices'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "slices"),
-      displayName: "Slices",
+      relpath: path.join('designs', relpath, 'slices'),
+      displayName: 'Slices',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const sketchAsset = Asset.upsert({
@@ -215,7 +221,7 @@ class Asset extends BaseModel {
       children: [],
       slicesFolderAsset, // Hacky, but avoids extra 'upsert' logic
       artboardsFolderAsset,
-      dtModified: (dict[relpath] && dict[relpath].dtModified) || Date.now()
+      dtModified: (dict[relpath] && dict[relpath].dtModified) || Date.now(),
     });
 
     slicesFolderAsset.parent = artboardsFolderAsset.parent = sketchAsset;
@@ -228,45 +234,45 @@ class Asset extends BaseModel {
     const project = this.project;
 
     const result = Asset.findById(path.join(project.getFolder(), relpath));
-    if (result) {
+    if(result) {
       this.insertChild(result);
       return result;
     }
 
     const framesFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "frames"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'frames'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "frames"),
-      displayName: "Frames",
+      relpath: path.join('designs', relpath, 'frames'),
+      displayName: 'Frames',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const groupsFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "groups"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'groups'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "groups"),
-      displayName: "Groups",
+      relpath: path.join('designs', relpath, 'groups'),
+      displayName: 'Groups',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const slicesFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "slices"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'slices'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "slices"),
-      displayName: "Slices",
+      relpath: path.join('designs', relpath, 'slices'),
+      displayName: 'Slices',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const figmaAsset = Asset.upsert({
@@ -282,7 +288,7 @@ class Asset extends BaseModel {
       slicesFolderAsset, // Hacky, but avoids extra 'upsert' logic
       groupsFolderAsset,
       framesFolderAsset,
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     slicesFolderAsset.parent = groupsFolderAsset.parent = figmaAsset;
@@ -297,21 +303,21 @@ class Asset extends BaseModel {
     const project = this.project;
     const result = Asset.findById(path.join(project.getFolder(), relpath));
 
-    if (result) {
+    if(result) {
       this.insertChild(result);
       return result;
     }
 
     const artboardsFolderAsset = Asset.upsert({
-      uid: path.join(project.getFolder(), "designs", relpath, "artboards"),
+      uid: path.join(project.getFolder(), 'designs', relpath, 'artboards'),
       type: Asset.TYPES.CONTAINER,
       kind: Asset.KINDS.FOLDER,
       proximity: Asset.PROXIMITIES.LOCAL,
       project,
-      relpath: path.join("designs", relpath, "artboards"),
-      displayName: "Artboards",
+      relpath: path.join('designs', relpath, 'artboards'),
+      displayName: 'Artboards',
       children: [],
-      dtModified: Date.now()
+      dtModified: Date.now(),
     });
 
     const illustratorAsset = Asset.upsert({
@@ -324,7 +330,7 @@ class Asset extends BaseModel {
       displayName: path.basename(relpath),
       children: [],
       artboardsFolderAsset,
-      dtModified: (dict[relpath] && dict[relpath].dtModified) || Date.now()
+      dtModified: (dict[relpath] && dict[relpath].dtModified) || Date.now(),
     });
 
     artboardsFolderAsset.parent = illustratorAsset;
@@ -374,7 +380,7 @@ class Asset extends BaseModel {
 
   unshiftFolderAsset(folderAsset) {
     const foundAmongChildren = this.children.indexOf(folderAsset) !== -1;
-    if (folderAsset && !foundAmongChildren) {
+    if(folderAsset && !foundAmongChildren) {
       this.children.unshift(folderAsset);
     }
   }
@@ -383,7 +389,7 @@ class Asset extends BaseModel {
     let str = `${this.relpath}`;
     this.children.forEach(child => {
       const sublevel = child.dump();
-      str += `\n  ${sublevel.split("\n").join("\n  ")}`;
+      str += `\n  ${sublevel.split('\n').join('\n  ')}`;
     });
     return str;
   }
@@ -398,80 +404,80 @@ Asset.DEFAULT_OPTIONS = {
     relpath: true,
     displayName: true,
     children: true,
-    dtModified: true
-  }
+    dtModified: true,
+  },
 };
 
 BaseModel.extend(Asset);
 
 Asset.TYPES = {
-  CONTAINER: "container",
-  FILE: "file",
-  HACKY_MESSAGE: "hacky_message"
+  CONTAINER: 'container',
+  FILE: 'file',
+  HACKY_MESSAGE: 'hacky_message',
 };
 
 Asset.KINDS = {
-  FOLDER: "folder",
-  SKETCH: "sketch",
-  FIGMA: "figma",
-  ILLUSTRATOR: "ai",
-  IMAGE: "image",
-  FONT: "font",
-  VECTOR: "vector",
-  COMPONENT: "component",
-  OTHER: "other",
-  HACKY_MESSAGE: "hacky_message"
+  FOLDER: 'folder',
+  SKETCH: 'sketch',
+  FIGMA: 'figma',
+  ILLUSTRATOR: 'ai',
+  IMAGE: 'image',
+  FONT: 'font',
+  VECTOR: 'vector',
+  COMPONENT: 'component',
+  OTHER: 'other',
+  HACKY_MESSAGE: 'hacky_message',
 };
 
 Asset.PROXIMITIES = {
-  LOCAL: "local",
-  REMOTE: "remote"
+  LOCAL: 'local',
+  REMOTE: 'remote',
 };
 
 Asset.ingestAssets = (project, dict) => {
   Asset.purge();
 
   const componentFolderAsset = Asset.upsert({
-    uid: path.join(project.getFolder(), "code"),
+    uid: path.join(project.getFolder(), 'code'),
     type: Asset.TYPES.CONTAINER,
     kind: Asset.KINDS.FOLDER,
     proximity: Asset.PROXIMITIES.LOCAL,
     project,
-    relpath: "code",
-    displayName: "Components",
+    relpath: 'code',
+    displayName: 'Components',
     children: [],
-    dtModified: Date.now()
+    dtModified: Date.now(),
   });
 
   const designFolderAsset = Asset.upsert({
-    uid: path.join(project.getFolder(), "designs"),
+    uid: path.join(project.getFolder(), 'designs'),
     type: Asset.TYPES.CONTAINER,
     kind: Asset.KINDS.FOLDER,
     proximity: Asset.PROXIMITIES.LOCAL,
     project,
-    relpath: "designs",
-    displayName: "Designs",
+    relpath: 'designs',
+    displayName: 'Designs',
     children: [
       // The artboardsFolderAsset and slicesFolderAsset will live at the top, if needed
     ],
-    dtModified: Date.now()
+    dtModified: Date.now(),
   });
 
   const rootAssets = [designFolderAsset];
 
   rootAssets.unshift(componentFolderAsset);
 
-  for (const relpath in dict) {
+  for(const relpath in dict) {
     const extname = path.extname(relpath).toLowerCase();
 
-    if (isMac() && extname === ".sketch") {
+    if(isMac() && extname === '.sketch') {
       designFolderAsset.addSketchAsset(relpath, dict);
-    } else if (extname === ".ai") {
+    } else if(extname === '.ai') {
       designFolderAsset.addIllustratorAsset(relpath, dict);
-    } else if (extname === ".svg") {
+    } else if(extname === '.svg') {
       // Skip any Pages that may have been previously exported by Sketchtool
       // Our workflow only deals with Artboards/Slices, so that's all we display to reduce conceptual overhead
-      if (relpath.match(PAGES_REGEX)) {
+      if(relpath.match(PAGES_REGEX)) {
         continue;
       }
 
@@ -484,42 +490,42 @@ Asset.ingestAssets = (project, dict) => {
         relpath,
         displayName: path.basename(relpath, extname),
         children: [],
-        dtModified: dict[relpath].dtModified
+        dtModified: dict[relpath].dtModified,
       });
 
       const { generator, generatorRelpath } = svgAsset.getAssetInfo();
 
-      switch (generator) {
-        case "sketch":
+      switch(generator) {
+        case 'sketch':
           const sketchAsset = designFolderAsset.addSketchAsset(
             generatorRelpath,
-            dict
+            dict,
           );
           sketchAsset.addSketchChild(svgAsset);
           break;
-        case "figma":
+        case 'figma':
           const figmaAsset = designFolderAsset.addFigmaAsset(generatorRelpath);
-          if (figmaAsset) {
+          if(figmaAsset) {
             figmaAsset.addFigmaChild(svgAsset);
           }
           break;
-        case "ai":
+        case 'ai':
           const illustratorAsset = designFolderAsset.addIllustratorAsset(
             generatorRelpath,
-            dict
+            dict,
           );
           illustratorAsset.addIllustratorChild(svgAsset);
           break;
         default:
           designFolderAsset.insertChild(svgAsset);
       }
-    } else if (path.basename(relpath) === "code.js") {
+    } else if(path.basename(relpath) === 'code.js') {
       // Looks like a component
       const pathParts = relpath.split(path.sep);
       const namePart = pathParts[1];
 
       // Since the Main component can't be instantiated, we don't show it in the library
-      if (namePart !== MAIN_COMPONENT_NAME) {
+      if(namePart !== MAIN_COMPONENT_NAME) {
         componentFolderAsset.insertChild(
           Asset.upsert({
             uid: path.join(project.getFolder(), relpath),
@@ -530,15 +536,15 @@ Asset.ingestAssets = (project, dict) => {
             relpath,
             displayName: toTitleCase(namePart),
             children: [],
-            dtModified: dict[relpath].dtModified
-          })
+            dtModified: dict[relpath].dtModified,
+          }),
         );
       }
 
       componentFolderAsset.children = sortedChildrenOfComponentFolderAsset(
-        componentFolderAsset
+        componentFolderAsset,
       );
-    } else if (
+    } else if(
       IMAGE_ASSET_EXTNAMES[extname] &&
       experimentIsEnabled(Experiment.AllowBitmapImages)
     ) {
@@ -551,7 +557,7 @@ Asset.ingestAssets = (project, dict) => {
         relpath,
         displayName: path.basename(relpath, extname),
         children: [],
-        dtModified: dict[relpath].dtModified
+        dtModified: dict[relpath].dtModified,
       });
 
       designFolderAsset.insertChild(imageAsset);
@@ -567,10 +573,10 @@ const sortedChildrenOfComponentFolderAsset = asset => {
   const components = [];
 
   asset.children.forEach(child => {
-    if (child.isControl) {
+    if(child.isControl) {
       controls.push(child);
     } else {
-      if (child.displayName === "Main") {
+      if(child.displayName === 'Main') {
         main = child;
       } else {
         components.push(child);
@@ -580,7 +586,7 @@ const sortedChildrenOfComponentFolderAsset = asset => {
 
   // In case we don't find main on the first run, which can happen sometimes
   const out = [];
-  if (main) {
+  if(main) {
     out.push(main);
   }
 
@@ -591,10 +597,10 @@ const sortedChildrenOfComponentFolderAsset = asset => {
 
 const sortAssetsAlpha = assets => {
   return assets.sort((a, b) => {
-    if (a.displayName < b.displayName) {
+    if(a.displayName < b.displayName) {
       return -1;
     }
-    if (a.displayName > b.displayName) {
+    if(a.displayName > b.displayName) {
       return 1;
     }
     return 0;
@@ -610,7 +616,7 @@ Asset.isInternalDrop = dropEvent => {
   return (
     dropEvent &&
     dropEvent.dataTransfer &&
-    dropEvent.dataTransfer.types.indexOf("Files") === -1
+    dropEvent.dataTransfer.types.indexOf('Files') === -1
   );
 };
 
@@ -622,34 +628,34 @@ Asset.isSketchFile = fileFromDropEvent => {
   const extname = path
     .extname(fileFromDropEvent.getAsFile().name)
     .toLowerCase();
-  return extname === ".sketch";
+  return extname === '.sketch';
 };
 
 Asset.isValidFile = fileFromDropEvent => {
   const file = fileFromDropEvent.getAsFile();
-  if (!file) {
+  if(!file) {
     return false;
   }
   const abspath = file.name;
   return (
-    fileFromDropEvent.type === "image/svg+xml" ||
+    fileFromDropEvent.type === 'image/svg+xml' ||
     Asset.isSketchFile(fileFromDropEvent) ||
     Asset.isDesignAsset(abspath)
   );
 };
 
 Asset.preventDefaultDrag = dropEvent => {
-  if (Asset.isInternalDrop(dropEvent)) {
+  if(Asset.isInternalDrop(dropEvent)) {
     return null;
   }
   return dropEvent.preventDefault();
 };
 
 const IMAGE_ASSET_EXTNAMES = {
-  ".png": true,
-  ".jpg": true,
-  ".jpeg": true,
-  ".gif": true
+  '.png': true,
+  '.jpg': true,
+  '.jpeg': true,
+  '.gif': true,
 };
 
 Asset.isImage = filepath => {
@@ -663,11 +669,12 @@ Asset.isDesignAsset = abspath => {
   return (
     Sketch.isSketchFile(abspath) ||
     Illustrator.isIllustratorFile(abspath) ||
-    extname === ".svg" ||
+    extname === '.svg' ||
     Asset.isImage(abspath)
   );
 };
 
-module.exports = Asset;
+export default Asset;
 
-const Template = require("./Template");
+// Note: Template import moved to avoid circular dependency
+// const Template = require("./Template");

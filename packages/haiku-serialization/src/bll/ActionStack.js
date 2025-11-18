@@ -1,3 +1,7 @@
+/**
+ * ActionStack model class
+ * Manages undo/redo functionality for the application
+ */
 import * as lodash from 'lodash-es';
 
 const Experiment = {
@@ -8,9 +12,9 @@ const experimentIsEnabled = (experiment) => {
   return experiment === Experiment.OrderedActionStack ? false : false;
 };
 
-const BaseModel = require('./BaseModel');
+import BaseModel from './BaseModel.js';
 import * as Lock from './Lock.js';
-const logger = require('./../utils/LoggerInstance');
+import logger from './../utils/LoggerInstance.js';
 
 // No-op callback for arbitrary fire-and-forget actions
 const TIMER_TIMEOUT = 64;
@@ -30,19 +34,19 @@ const ACCUMULATORS = {
     const updates1 = match.params[2];
     const updates2 = params[2];
 
-    for (const timelineName in updates2) {
-      if (!updates1[timelineName]) {
+    for(const timelineName in updates2) {
+      if(!updates1[timelineName]) {
         updates1[timelineName] = {};
       }
-      for (const componentId in updates2[timelineName]) {
-        if (!updates1[timelineName][componentId]) {
+      for(const componentId in updates2[timelineName]) {
+        if(!updates1[timelineName][componentId]) {
           updates1[timelineName][componentId] = {};
         }
-        for (const propertyName in updates2[timelineName][componentId]) {
-          if (!updates1[timelineName][componentId][propertyName]) {
+        for(const propertyName in updates2[timelineName][componentId]) {
+          if(!updates1[timelineName][componentId][propertyName]) {
             updates1[timelineName][componentId][propertyName] = {};
           }
-          for (const keyframeMs in updates2[timelineName][componentId][propertyName]) {
+          for(const keyframeMs in updates2[timelineName][componentId][propertyName]) {
             updates1[timelineName][componentId][propertyName][keyframeMs] = updates2[timelineName][componentId][propertyName][keyframeMs];
           }
         }
@@ -56,20 +60,20 @@ const INVERTER_ACCUMULATORS = {
     const basis1 = baseInverter.params[1];
     const basis2 = newInverter.params[1];
 
-    for (const timelineName in basis2) {
-      if (!basis1[timelineName]) {
+    for(const timelineName in basis2) {
+      if(!basis1[timelineName]) {
         basis1[timelineName] = {};
       }
-      for (const componentId in basis2[timelineName]) {
-        if (!basis1[timelineName][componentId]) {
+      for(const componentId in basis2[timelineName]) {
+        if(!basis1[timelineName][componentId]) {
           basis1[timelineName][componentId] = {};
         }
-        for (const propertyName in basis2[timelineName][componentId]) {
-          if (!basis1[timelineName][componentId][propertyName]) {
+        for(const propertyName in basis2[timelineName][componentId]) {
+          if(!basis1[timelineName][componentId][propertyName]) {
             basis1[timelineName][componentId][propertyName] = {};
           }
-          for (const keyframeMs in basis2[timelineName][componentId][propertyName]) {
-            if (basis1[timelineName][componentId][propertyName][keyframeMs] !== undefined) {
+          for(const keyframeMs in basis2[timelineName][componentId][propertyName]) {
+            if(basis1[timelineName][componentId][propertyName][keyframeMs] !== undefined) {
               continue;
             }
             basis1[timelineName][componentId][propertyName][keyframeMs] = basis2[timelineName][componentId][propertyName][keyframeMs];
@@ -99,7 +103,7 @@ const shouldAccumulate = (method, params) => ACCUMULATORS[method] && !params[par
  *     - actions should be equivalent across processes (or we'll get crashes)
  */
 class ActionStack extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
     this.resetData();
     this.processActions();
@@ -112,7 +116,7 @@ class ActionStack extends BaseModel {
    * closed and then reopened again, otherwise it will have stale data from
    * the previous project editing session.
    */
-  resetData () {
+  resetData() {
     this.stopped = false;
     this.undoables = [];
     this.redoables = [];
@@ -131,14 +135,14 @@ class ActionStack extends BaseModel {
     };
   }
 
-  stop () {
+  stop() {
     this.stopped = true;
   }
 
-  processActions () {
+  processActions() {
     const action = this.actions[0];
 
-    if (!action) {
+    if(!action) {
       return (this.stopped)
         ? null
         : setTimeout(() => this.processActions(), TIMER_TIMEOUT);
@@ -146,9 +150,9 @@ class ActionStack extends BaseModel {
 
     // Psuedo-debounce fast actions to avoid stuttering on stage
     delete this.accumulatorTimeouts[action.method];
-    if (shouldAccumulate(action.method, action.params)) {
+    if(shouldAccumulate(action.method, action.params)) {
       // We may want to wait longer for more updates to accumulate
-      if (
+      if(
         action.timestamp &&
         (Date.now() - action.timestamp) < PROPERTY_GROUP_ACCUMULATION_TIME
       ) {
@@ -162,25 +166,25 @@ class ActionStack extends BaseModel {
     this.shiftAndProcessLatestAction();
   }
 
-  forceAccumulation () {
-    for (const method in this.accumulatorTimeouts) {
+  forceAccumulation() {
+    for(const method in this.accumulatorTimeouts) {
       clearTimeout(this.accumulatorTimeouts[method]);
       delete this.accumulatorTimeouts[method];
       this.shiftAndProcessLatestAction();
     }
   }
 
-  shiftAndProcessLatestAction () {
+  shiftAndProcessLatestAction() {
     const action = this.actions.shift();
 
-    if (action) {
+    if(action) {
       this.processAction(action);
     } else {
       this.processActions();
     }
   }
 
-  processAction (action) {
+  processAction(action) {
     const {
       method,
       params,
@@ -188,7 +192,7 @@ class ActionStack extends BaseModel {
     } = action;
 
     // If requested, notify the caller right before we resolve the action
-    if (before) {
+    if(before) {
       before();
     }
 
@@ -196,13 +200,13 @@ class ActionStack extends BaseModel {
     return this.emit('next', method, params, () => this.processActions());
   }
 
-  enqueueAction (method, params, before) {
-    if (shouldAccumulate(method, params)) {
-      for (let i = this.actions.length - 1; i >= 0; i--) {
+  enqueueAction(method, params, before) {
+    if(shouldAccumulate(method, params)) {
+      for(let i = this.actions.length - 1; i >= 0; i--) {
         // Find the most recent action that meets our criteria, and merge our payload with it
         const action = this.actions[i];
 
-        if (
+        if(
           action.method === method &&
           action.params[0] === params[0] && // folder
           action.params[1] === params[1] // relpath
@@ -223,52 +227,52 @@ class ActionStack extends BaseModel {
     });
 
     // If not an accumulator method, invoke it immediately
-    if (
+    if(
       this.actions.length < 2 &&
       !shouldAccumulate(method, params)) {
       this.shiftAndProcessLatestAction();
     }
   }
 
-  addDoable (doable, stack) {
+  addDoable(doable, stack) {
     stack.push(doable);
 
-    if (stack.length > MAX_UNDOABLES_LEN) {
+    if(stack.length > MAX_UNDOABLES_LEN) {
       stack.shift();
     }
 
     this.project.emit('update', 'updateMenu');
   }
 
-  addUndoable (undoable, ac) {
+  addUndoable(undoable, ac) {
     // TODO: reimplement this.undoables as a Map<ActiveComponent, Undoable[]>
     this.addDoable(Object.assign(undoable, {ac}), this.undoables);
   }
 
-  addRedoable (redoable, ac) {
+  addRedoable(redoable, ac) {
     // TODO: reimplement this.redoables as a Map<ActiveComponent, Undoable[]>
     this.addDoable(Object.assign(redoable, {ac}), this.redoables);
   }
 
-  popDoable (stack, ac) {
+  popDoable(stack, ac) {
     // If no active component context, just use the top of the stack.
-    if (!ac) {
+    if(!ac) {
       return stack.pop();
     }
 
     // If the top item on the stack has no active component context,
     // pop it. We assume that it represents a project-level change.
     const last = stack[stack.length - 1];
-    if (last && !last.ac) {
+    if(last && !last.ac) {
       return stack.pop();
     }
 
     // Pop the stack entry that belongs to the active component context.
     // (Like a text editor, our undo/redo is context-specific to the file.)
-    for (let i = stack.length - 1; i >= 0; i--) {
+    for(let i = stack.length - 1; i >= 0; i--) {
       const entry = stack[i];
 
-      if (entry.ac === ac) {
+      if(entry.ac === ac) {
         return stack.splice(i, 1)[0];
       }
     }
@@ -280,24 +284,24 @@ class ActionStack extends BaseModel {
     return null;
   }
 
-  popUndoable (ac) {
+  popUndoable(ac) {
     return this.popDoable(this.undoables, ac);
   }
 
-  popRedoable (ac) {
+  popRedoable(ac) {
     return this.popDoable(this.redoables, ac);
   }
 
-  getUndoables () {
+  getUndoables() {
     return this.undoables;
   }
 
-  getRedoables () {
+  getRedoables() {
     return this.redoables;
   }
 
-  buildMethodInverterAction (ac, method, params, metadata, when, output) {
-    if (
+  buildMethodInverterAction(ac, method, params, metadata, when, output) {
+    if(
       ActionStack.METHOD_INVERTERS[method] &&
       ActionStack.METHOD_INVERTERS[method][when]
     ) {
@@ -308,13 +312,13 @@ class ActionStack extends BaseModel {
         output, // If we're running 'after' the method has run
       );
 
-      if (inversion) {
+      if(inversion) {
         const [relpath] = params;
         inversion.params.unshift(relpath);
         inversion.params.push(metadata);
 
-        if (when === 'before' && INVERTER_ACCUMULATORS[method]) {
-          if (this.accumulatedInverters[method]) {
+        if(when === 'before' && INVERTER_ACCUMULATORS[method]) {
+          if(this.accumulatedInverters[method]) {
             INVERTER_ACCUMULATORS[method](this.accumulatedInverters[method], inversion);
           } else {
             this.accumulatedInverters[method] = inversion;
@@ -328,19 +332,19 @@ class ActionStack extends BaseModel {
     return null;
   }
 
-  shouldOrderRemoteUpdate (metadata) {
+  shouldOrderRemoteUpdate(metadata) {
     return experimentIsEnabled(Experiment.OrderedActionStack) &&
       metadata.hasOwnProperty('actionStackIndex') &&
       this.project.isRemoteRequest(metadata);
   }
 
-  advanceActionStackIndexForMetadata (metadata) {
+  advanceActionStackIndexForMetadata(metadata) {
     this.actionStackIndices[metadata.from]++;
   }
 
-  orderedAction (method, metadata, cb) {
-    if (this.shouldOrderRemoteUpdate(metadata)) {
-      if (this.actionStackIndices[metadata.from] !== metadata.actionStackIndex) {
+  orderedAction(method, metadata, cb) {
+    if(this.shouldOrderRemoteUpdate(metadata)) {
+      if(this.actionStackIndices[metadata.from] !== metadata.actionStackIndex) {
         logger.info(`[action stack] received out-of-order ${method}; deferring until other actions complete`);
         logger.info(`[action stack] requested index: ${metadata.actionStackIndex}`);
         logger.info(`[action stack] current index: ${this.actionStackIndices[metadata.from]}`);
@@ -355,13 +359,13 @@ class ActionStack extends BaseModel {
     return cb();
   }
 
-  handleActionInitiation (method, params, metadata, continuation) {
-    if (this.project.isRemoteRequest(metadata)) {
+  handleActionInitiation(method, params, metadata, continuation) {
+    if(this.project.isRemoteRequest(metadata)) {
       // If we're receiving an action whose originator (not us) modified its
       // undo/redo stack, we need to make sure we do that action as well
-      if (metadata.cursor === ActionStack.CURSOR_MODES.redo) {
+      if(metadata.cursor === ActionStack.CURSOR_MODES.redo) {
         this.popUndoable(this.project.getCurrentActiveComponent());
-      } else if (metadata.cursor === ActionStack.CURSOR_MODES.undo) {
+      } else if(metadata.cursor === ActionStack.CURSOR_MODES.undo) {
         this.popRedoable(this.project.getCurrentActiveComponent());
       }
     }
@@ -374,11 +378,11 @@ class ActionStack extends BaseModel {
     // The callback will fire immediately before the action is transmitted
     // This callback is named handleActionResolution
     const finish = (inverter) => this.orderedAction(method, metadata, () => continuation((err, out) => {
-      if (err) {
+      if(err) {
         return;
       }
 
-      if (!inverter) {
+      if(!inverter) {
         inverter = this.buildMethodInverterAction(ac, method, params, metadata, 'after', out);
       } else {
         delete this.accumulatedInverters[method];
@@ -386,9 +390,9 @@ class ActionStack extends BaseModel {
 
       let did = false;
 
-      if (inverter) {
+      if(inverter) {
         // Note that we use the cursor mode we snapshotted when the method was initiated
-        if (
+        if(
           // No cursor mode is equivalent to the default cursor mode
           !metadata.cursor
         ) {
@@ -396,15 +400,15 @@ class ActionStack extends BaseModel {
           // Reset the redo stack.
           this.redoables.length = 0;
           this.addUndoable(inverter, ac);
-        } else if (metadata.cursor === ActionStack.CURSOR_MODES.undo) {
+        } else if(metadata.cursor === ActionStack.CURSOR_MODES.undo) {
           did = true;
           this.addUndoable(inverter, ac);
-        } else if (metadata.cursor === ActionStack.CURSOR_MODES.redo) {
+        } else if(metadata.cursor === ActionStack.CURSOR_MODES.redo) {
           did = true;
           this.addRedoable(inverter, ac);
         }
 
-        if (did) {
+        if(did) {
           logger.info(
             `[action stack] inversion :::`,
             metadata.cursor,
@@ -416,7 +420,7 @@ class ActionStack extends BaseModel {
       }
     }));
 
-    if (SNAPSHOTTED_UNDOABLES[method]) {
+    if(SNAPSHOTTED_UNDOABLES[method]) {
       return ac.pushBytecodeSnapshot(() => finish({
         method: ac.popBytecodeSnapshot.name,
         params: [
@@ -429,10 +433,10 @@ class ActionStack extends BaseModel {
     return finish(this.buildMethodInverterAction(ac, method, params, metadata, 'before'));
   }
 
-  undo (options, metadata, cb) {
+  undo(options, metadata, cb) {
     this.forceAccumulation();
 
-    if (this.getUndoables().length < 1) {
+    if(this.getUndoables().length < 1) {
       return cb();
     }
 
@@ -441,14 +445,14 @@ class ActionStack extends BaseModel {
     return Lock.request(Lock.LOCKS.ActionStackUndoRedo, false, (release) => {
       const undoable = this.popUndoable(this.project.getCurrentActiveComponent());
 
-      if (!undoable) {
+      if(!undoable) {
         release();
         return cb();
       }
 
       const {method, params, ac} = undoable;
 
-      if (!ac) {
+      if(!ac) {
         release();
         return cb();
       }
@@ -464,10 +468,10 @@ class ActionStack extends BaseModel {
     });
   }
 
-  redo (options, metadata, cb) {
+  redo(options, metadata, cb) {
     this.forceAccumulation();
 
-    if (this.getRedoables().length < 1) {
+    if(this.getRedoables().length < 1) {
       return cb();
     }
 
@@ -476,14 +480,14 @@ class ActionStack extends BaseModel {
     return Lock.request(Lock.LOCKS.ActionStackUndoRedo, false, (release) => {
       const redoable = this.popRedoable(this.project.getCurrentActiveComponent());
 
-      if (!redoable) {
+      if(!redoable) {
         release();
         return cb();
       }
 
       const {method, params, ac} = redoable;
 
-      if (!ac) {
+      if(!ac) {
         release();
         return cb();
       }
@@ -554,7 +558,7 @@ ActionStack.METHOD_INVERTERS = {
 
   instantiateComponent: {
     after: (ac, [modpath, coords], output) => {
-      if (output) {
+      if(output) {
         return {
           method: ac.deleteComponents.name,
           params: [[output.attributes['haiku-id']]],
@@ -607,7 +611,7 @@ ActionStack.METHOD_INVERTERS = {
     before: (ac, [componentId, timelineName, elementName, propertyName, keyframeStartMs, keyframeValue, keyframeCurve, keyframeEndMs, keyframeEndValue]) => {
       const oldValue = ac.getKeyframeValue(componentId, timelineName, keyframeStartMs, propertyName);
       const oldCurve = ac.getKeyframeCurve(componentId, timelineName, keyframeStartMs, propertyName);
-      if (oldValue !== undefined) {
+      if(oldValue !== undefined) {
         return {
           method: ac.createKeyframe.name,
           params: [componentId, timelineName, elementName, propertyName, keyframeStartMs, oldValue, oldCurve, null, null, null],
@@ -655,7 +659,7 @@ ActionStack.METHOD_INVERTERS = {
   upsertStateValue: {
     before: (ac, [stateName, stateDescriptor]) => {
       const previousDescriptor = lodash.clone(ac.getStateDescriptor(stateName));
-      if (!previousDescriptor) {
+      if(!previousDescriptor) {
         return {
           method: ac.deleteStateValue.name,
           params: [stateName],
@@ -774,4 +778,4 @@ ActionStack.fromPOJO = (pojo) => {
   return ActionStack.upsert(pojo, {});
 };
 
-module.exports = ActionStack;
+export default ActionStack;

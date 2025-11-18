@@ -1,32 +1,32 @@
 class Cache {
-  constructor (data = {}) {
+  constructor(data = {}) {
     this.data = data;
   }
 
-  reset (data = {}) {
+  reset(data = {}) {
     this.data = data;
   }
 
-  clear () {
+  clear() {
     this.data = {};
   }
 
-  get (key) {
+  get(key) {
     return this.data[key];
   }
 
-  set (key, value) {
+  set(key, value) {
     this.data[key] = value;
   }
 
-  unset (key) {
+  unset(key) {
     this.data[key] = undefined;
   }
 
-  fetch (key, provider, postproc) {
+  fetch(key, provider, postproc) {
     const found = this.get(key);
 
-    if (found !== undefined) {
+    if(found !== undefined) {
       return (postproc) ? postproc(found) : found;
     }
 
@@ -37,15 +37,15 @@ class Cache {
     return (postproc) ? postproc(given) : given;
   }
 
-  async (key, provider, cb, postproc) {
+  async(key, provider, cb, postproc) {
     const found = this.get(key);
 
-    if (found !== undefined) {
+    if(found !== undefined) {
       return cb(null, (postproc) ? postproc(found) : found);
     }
 
     return provider((err, given) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
