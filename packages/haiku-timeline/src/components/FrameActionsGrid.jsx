@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import zIndex from './styles/zIndex';
 import FrameAction from './FrameAction';
 
 class FrameActionsGrid extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
 
@@ -12,17 +12,17 @@ class FrameActionsGrid extends React.PureComponent {
     this.upsertTimelineEvents();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     // When switching the active component, we also get a new timeline instance
     if (this.props.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -33,13 +33,13 @@ class FrameActionsGrid extends React.PureComponent {
     }
   }
 
-  upsertTimelineEvents () {
+  upsertTimelineEvents() {
     this.timelineEvents = this.rootElement
       .getTimelineEvents()
       .map((handler) => Number(handler.split(':')[2]));
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -55,7 +55,7 @@ class FrameActionsGrid extends React.PureComponent {
     }
   }
 
-  renderFrameActions (frameNumber, hoveredFrame) {
+  renderFrameActions(frameNumber, hoveredFrame) {
     if (this.timelineEvents.includes(frameNumber)) {
       return (
         <FrameAction
@@ -77,7 +77,7 @@ class FrameActionsGrid extends React.PureComponent {
     }
   }
 
-  render () {
+  render() {
     const timeline = this.props.timeline;
     const propertiesWidth = timeline.getPropertiesPixelWidth();
     const fullTimelineWidth = timeline.calculateFullTimelineWidth();
@@ -85,7 +85,7 @@ class FrameActionsGrid extends React.PureComponent {
 
     return (
       <div style={{
-        position: 'sticky' ,
+        position: 'sticky',
         top: 0,
         height: 12,
         backgroundColor: Palette.COAL,
@@ -99,11 +99,11 @@ class FrameActionsGrid extends React.PureComponent {
               <div
                 key={`frame-${frameNumber}`}
                 style={{
-                  position: 'absolute' ,
+                  position: 'absolute',
                   left: pixelOffsetLeft + propertiesWidth,
                   top: 34,
                 }}
-                >
+              >
                 {this.renderFrameActions(frameNumber, hoveredFrame)}
               </div>
             );

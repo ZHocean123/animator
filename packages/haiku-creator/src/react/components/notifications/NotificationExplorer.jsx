@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import {PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import {PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 
 const STYLES = {
   wrapper: {

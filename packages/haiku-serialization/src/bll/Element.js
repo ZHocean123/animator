@@ -4,7 +4,7 @@ import { default as Layout3D } from '@haiku/core/lib/Layout3D.js';
 import { cssQueryTree } from '@haiku/core/lib/HaikuNode.js';
 import {
   default as composedTransformsToTimelineProperties,
-} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
+} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.mjs';
 import { default as functionToRFO } from '@haiku/core/lib/reflection/functionToRFO.js';
 import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent.js';
 import { default as KnownDOMEvents } from '@haiku/core/lib/renderers/dom/Events.js';
@@ -18,7 +18,7 @@ import TransformCache from './TransformCache.js';
 import {
   Experiment,
   experimentIsEnabled,
-} from 'haiku-common/lib/experiments/index.js';
+} from 'haiku-common/lib/experiments/index.mjs';
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't

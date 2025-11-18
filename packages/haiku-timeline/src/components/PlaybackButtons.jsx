@@ -2,12 +2,12 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as lodash from 'lodash-es';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import SkipBackIconSVG from 'haiku-ui-common/lib/react/icons/SkipBackIconSVG.js';
-import SkipForwardIconSVG from 'haiku-ui-common/lib/react/icons/SkipForwardIconSVG.js';
-import PlayIconSVG from 'haiku-ui-common/lib/react/icons/PlayIconSVG.js';
-import PauseIconSVG from 'haiku-ui-common/lib/react/icons/PauseIconSVG.js';
-import RepeatIconSVG from 'haiku-ui-common/lib/react/icons/RepeatIconSVG.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import SkipBackIconSVG from 'haiku-ui-common/lib/react/icons/SkipBackIconSVG.mjs';
+import SkipForwardIconSVG from 'haiku-ui-common/lib/react/icons/SkipForwardIconSVG.mjs';
+import PlayIconSVG from 'haiku-ui-common/lib/react/icons/PlayIconSVG.mjs';
+import PauseIconSVG from 'haiku-ui-common/lib/react/icons/PauseIconSVG.mjs';
+import RepeatIconSVG from 'haiku-ui-common/lib/react/icons/RepeatIconSVG.mjs';
 
 const STYLES = {
   btn: {

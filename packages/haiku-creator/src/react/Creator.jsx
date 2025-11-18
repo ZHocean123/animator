@@ -32,31 +32,31 @@ import ProxyHelpScreen from "./components/ProxyHelpScreen";
 import ProxySettingsScreen from "./components/ProxySettingsScreen";
 import ChangelogModal from "./components/ChangelogModal";
 import NewProjectModal from "./components/NewProjectModal";
-import EnvoyClient from "haiku-sdk-creator/lib/envoy/EnvoyClient.js";
+import EnvoyClient from "haiku-sdk-creator/src/envoy/EnvoyClient.ts";
 import {
   EXPORTER_CHANNEL,
   ExporterFormat
-} from "haiku-sdk-creator/lib/exporter.js";
-import { USER_CHANNEL, UserSettings } from "haiku-sdk-creator/lib/bll/User.js"; // eslint-disable-line no-unused-vars
-import { PROJECT_CHANNEL } from "haiku-sdk-creator/lib/bll/Project.js";
-import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour.js";
-import { SERVICES_CHANNEL } from "haiku-sdk-creator/lib/services.js";
+} from "haiku-sdk-creator/lib/exporter.mjs";
+import { USER_CHANNEL, UserSettings } from "haiku-sdk-creator/lib/bll/User.mjs"; // eslint-disable-line no-unused-vars
+import { PROJECT_CHANNEL } from "haiku-sdk-creator/lib/bll/Project.mjs";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour/index.mjs";
+import { SERVICES_CHANNEL } from "haiku-sdk-creator/lib/services/index.mjs";
 import {
   ERROR_CHANNEL,
   isUserlandCulprit
-} from "haiku-sdk-creator/lib/bll/Error.js";
+} from "haiku-sdk-creator/lib/bll/Error.mjs";
 import {
   InteractionMode,
   isPreviewMode
-} from "haiku-ui-common/lib/interactionModes.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
-import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG.js";
+} from "haiku-ui-common/lib/interactionModes.mjs";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
+import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG.mjs";
 import ActivityMonitor from "../utils/activityMonitor.js";
 import * as requestElementCoordinates from "haiku-serialization/src/utils/requestElementCoordinates.js";
 import {
   buildProxyUrl,
   describeProxyFromUrl
-} from "haiku-common/src/proxies.js";
+} from "haiku-common/lib/proxies/index.mjs";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import * as opn from "opn";
 import ConfirmGroupUngroupPopup from "./components/Popups/ConfirmGroupUngroup";
@@ -64,10 +64,10 @@ import { FailWhale } from "./components/Popups/FailWhale";
 import {
   getAccountUrl,
   shouldEmitErrors
-} from "haiku-common/src/environments.js";
-import Globals from "haiku-ui-common/lib/Globals.js";
+} from "haiku-common/lib/environments/index.mjs";
+import Globals from "haiku-ui-common/lib/Globals.mjs";
 import { inkstone } from "@haiku/sdk-inkstone";
-import { isMac, isWindows } from "haiku-common/src/environments/os.js";
+import { isMac, isWindows } from "haiku-common/lib/environments/os.mjs";
 
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = "creator";

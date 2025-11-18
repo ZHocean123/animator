@@ -1,20 +1,20 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG.js';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG.mjs';
+import { Experiment, experimentIsEnabled } from 'haiku-common/lib/experiments.mjs';
 
 export default class SoloKeyframe extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleProps(props);
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     this.handleProps(nextProps);
   }
 
-  handleProps ({keyframe}) {
+  handleProps({ keyframe }) {
     if (
       keyframe !== this.props.keyframe ||
       !this.teardownKeyframeUpdateReceiver
@@ -28,32 +28,32 @@ export default class SoloKeyframe extends React.Component {
     }
   }
 
-  get domRef () {
+  get domRef() {
     return this[this.props.keyframe.getUniqueKey()];
   }
 
-  set domRef (domRef) {
+  set domRef(domRef) {
     this[this.props.keyframe.getUniqueKey()] = domRef;
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.teardownKeyframeUpdateReceiver();
     this.props.keyframe.clearViewPosition();
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const viewPosition = this.props.keyframe.getViewPosition();
     if (!viewPosition || !viewPosition.left) {
       this.storeViewPosition(this.domRef);
     }
   }
 
-  handleUpdate (what, ...args) {
+  handleUpdate(what, ...args) {
     if (!this.mounted) {
       return null;
     }
@@ -86,7 +86,7 @@ export default class SoloKeyframe extends React.Component {
     }
   };
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
     const leftPx = this.props.keyframe.getPixelOffsetLeft(0, frameInfo.pxpf, frameInfo.mspf);
 

@@ -5,8 +5,8 @@ import { shell } from "electron";
 import { TOUR_STYLES } from "../../styles/tourShared";
 import * as steps from "./Steps";
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
-import { TourUtils } from "haiku-common/lib/types/enums.js";
-import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour.js";
+import { TourUtils } from "haiku-common/lib/types/enums.mjs";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour/index.mjs";
 
 class Tour extends React.Component {
   constructor() {

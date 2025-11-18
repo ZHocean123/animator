@@ -2,8 +2,8 @@ import * as Color from 'color';
 import * as Radium from 'radium';
 import * as React from 'react';
 
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import { ModalHeader, ModalWrapper } from 'haiku-ui-common/lib/react/Modal/index.mjs';
 
 const STYLES = {
   wrapper: {
@@ -60,14 +60,14 @@ const STYLES = {
 };
 
 class ProxySettingsScreen extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.refs.host.value = this.props.proxyDescriptor.host || '';
     this.refs.port.value = this.props.proxyDescriptor.port || '';
     this.refs.username.value = this.props.proxyDescriptor.username || '';
     this.refs.password.value = this.props.proxyDescriptor.password || '';
   }
 
-  doSave () {
+  doSave() {
     this.props.onSave({
       host: this.refs.host.value,
       port: this.refs.port.value,
@@ -76,13 +76,13 @@ class ProxySettingsScreen extends React.Component {
     });
   }
 
-  doSaveOnKeypress (nativeClickEvent) {
+  doSaveOnKeypress(nativeClickEvent) {
     if (nativeClickEvent.charCode === 13) {
       this.doSave();
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <ModalWrapper style={STYLES.modalWrapper}>

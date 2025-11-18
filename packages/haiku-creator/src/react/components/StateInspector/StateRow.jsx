@@ -3,8 +3,8 @@ import * as Radium from 'radium';
 import onClickOutside from 'react-onclickoutside';
 import * as Color from 'color';
 import * as State from 'haiku-serialization/src/bll/State.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import { StackMenuSVG } from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 
 const STYLES = {
   stateWrapper: {
@@ -78,12 +78,12 @@ const STYLES = {
   },
 };
 
-function isBlank (str) {
+function isBlank(str) {
   return /^\s*$/.test(str);
 }
 
 class StateRow extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -96,17 +96,17 @@ class StateRow extends React.Component {
     };
 
     this.requestNameEdit = () => {
-      this.setState({editingTarget: 'name'});
+      this.setState({ editingTarget: 'name' });
       this.props.requestEdit();
     };
 
     this.requestValueEdit = () => {
-      this.setState({editingTarget: 'value'});
+      this.setState({ editingTarget: 'value' });
       this.props.requestEdit();
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({
       originalName: this.props.stateName,
       name: this.props.stateName,
@@ -115,7 +115,7 @@ class StateRow extends React.Component {
     });
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (!this.props.isNew) {
       this.setState({
         originalName: this.props.stateName,
@@ -126,7 +126,7 @@ class StateRow extends React.Component {
     }
   }
 
-  handleTabSwitch (event, side) {
+  handleTabSwitch(event, side) {
     if (event.keyCode === 9) {
       event.preventDefault();
 
@@ -140,7 +140,7 @@ class StateRow extends React.Component {
     }
   }
 
-  handleChange (event, side) {
+  handleChange(event, side) {
     if (event.keyCode === 27) { // esc key
       return this.props.requestBlur();
     }
@@ -152,10 +152,10 @@ class StateRow extends React.Component {
     if (event.key !== 'Enter') {
       if (side === 'name') {
         const trimmedName = event.target.value.trim();
-        this.setState({name: trimmedName});
+        this.setState({ name: trimmedName });
       } else { // Update the value
         desc.value = event.target.value.trim();
-        this.setState({desc});
+        this.setState({ desc });
       }
       return;
     }
@@ -169,7 +169,7 @@ class StateRow extends React.Component {
         return this.props.closeNewStateForm();
       }
 
-      return this.props.deleteStateValue(this.state.originalName, () => {});
+      return this.props.deleteStateValue(this.state.originalName, () => { });
     }
 
     // If made it this far, at least one of the fields is NOT blank, and we can attempt a submit
@@ -195,7 +195,7 @@ class StateRow extends React.Component {
         // TODO: Not sure if we want to set this as null or not
       }
 
-      this.setState({desc, name: this.state.name}, () => {
+      this.setState({ desc, name: this.state.name }, () => {
         this.submitChanges();
         if (this.props.isNew) {
           this.props.closeNewStateForm();
@@ -203,7 +203,7 @@ class StateRow extends React.Component {
         return this.props.requestBlur();
       });
     } else { // neither were blank
-      this.setState({desc, name: this.state.name}, () => {
+      this.setState({ desc, name: this.state.name }, () => {
         this.submitChanges();
         if (this.props.isNew) {
           this.props.closeNewStateForm();
@@ -216,7 +216,7 @@ class StateRow extends React.Component {
   /**
    * FIXME: we should not be triggering this listener on every click for every state row the entire time a project is open.
    */
-  submitChanges () {
+  submitChanges() {
     // If the name has changed and this is not a newly created state, instead of changing
     // the name of the current state, we delete the state and create a new state with the
     // new name and the old value.
@@ -231,7 +231,7 @@ class StateRow extends React.Component {
     }
   }
 
-  handleClickOutside () {
+  handleClickOutside() {
     if (this.props.isNew) {
       return this.props.closeNewStateForm();
     }
@@ -246,7 +246,7 @@ class StateRow extends React.Component {
     this.submitChanges();
   }
 
-  getEditableStateValue () {
+  getEditableStateValue() {
     if (this.state.desc) {
       return State.autoStringify(this.state.desc);
     }
@@ -258,9 +258,9 @@ class StateRow extends React.Component {
     return '';
   }
 
-  getDisplayableStateValue () {
+  getDisplayableStateValue() {
     if (this.state.valuePreEdit) {
-      return State.autoStringify({value: this.state.valuePreEdit});
+      return State.autoStringify({ value: this.state.valuePreEdit });
     }
 
     if (this.props.stateDescriptor) {
@@ -270,14 +270,14 @@ class StateRow extends React.Component {
     return '';
   }
 
-  isValidColor (color) {
+  isValidColor(color) {
     const dummyElement = document.createElement('span');
     dummyElement.style.backgroundColor = color;
 
     return dummyElement.style.backgroundColor !== '';
   }
 
-  generateColorCap () {
+  generateColorCap() {
     const maybeColor = this.getDisplayableStateValue();
 
     if (this.isValidColor(maybeColor)) {
@@ -289,11 +289,11 @@ class StateRow extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <form key={`${this.props.stateName}-state`}
-        onMouseOver={() => this.setState({isHovered: true})}
-        onMouseOut={() => this.setState({isHovered: false})}>
+        onMouseOver={() => this.setState({ isHovered: true })}
+        onMouseOut={() => this.setState({ isHovered: false })}>
         {!this.props.isEditing && !this.props.isNew
           ? <div style={STYLES.stateWrapper}>
             <div
@@ -314,7 +314,7 @@ class StateRow extends React.Component {
               <span key={`${this.props.stateName}-menu`}
                 style={[
                   STYLES.stateMenu,
-                  (!this.state.isHovered || true) && {display: 'none'}, // TODO: remove this '|| true' to show stack menu on hover and create popover
+                  (!this.state.isHovered || true) && { display: 'none' }, // TODO: remove this '|| true' to show stack menu on hover and create popover
                 ]}>
                 <StackMenuSVG color={Radium.getState(this.state, `${this.props.stateName}-menu`, ':hover') ? Palette.ROCK : Palette.ROCK_MUTED} />
               </span>
@@ -347,7 +347,7 @@ class StateRow extends React.Component {
               <span key={`${this.props.stateName}-menu`}
                 style={[
                   STYLES.stateMenu,
-                  !Radium.getState(this.state, `${this.props.stateName}-state`, ':hover') && {display: 'none'},
+                  !Radium.getState(this.state, `${this.props.stateName}-state`, ':hover') && { display: 'none' },
                 ]}>
                 <StackMenuSVG color={Radium.getState(this.state, `${this.props.stateName}-menu`, ':hover') ? Palette.ROCK : Palette.ROCK_MUTED} />
               </span>

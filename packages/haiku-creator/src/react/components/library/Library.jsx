@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 import * as lodash from "lodash-es";
 import * as Radium from "radium";
 import { shell, ipcRenderer } from "electron";
-import { UserSettings } from "haiku-sdk-creator/lib/bll/User.js";
+import { UserSettings } from "haiku-sdk-creator/lib/bll/User.mjs";
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
-import { isMac } from "haiku-common/lib/environments/os.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
-import { LoadingTopBar } from "haiku-ui-common/lib/react/LoadingTopBar.js";
+import { isMac } from "haiku-common/lib/environments/os.mjs";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
+import { LoadingTopBar } from "haiku-ui-common/lib/react/LoadingTopBar.mjs";
 import { didAskedForSketch } from "haiku-serialization/src/utils/HaikuHomeDir.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
 import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
@@ -20,7 +20,7 @@ import FileImporter from "./FileImporter";
 import DesignFileCreator from "./DesignFileCreator";
 import { statSync } from "fs";
 import { basename, extname } from "path";
-import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink.js";
+import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink.mjs";
 
 const openWithDefaultProgram = asset => {
   shell.openPath(asset.getAbspath());
@@ -379,7 +379,7 @@ class Library extends React.Component {
       this.props.projectModel.setCurrentActiveComponent(
         scenename,
         { from: "creator" },
-        () => {}
+        () => { }
       );
     }
   }

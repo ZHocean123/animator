@@ -1,4 +1,4 @@
-import { TourUtils } from "haiku-common/lib/types/enums.js";
+import { TourUtils } from "haiku-common/lib/types/enums.mjs";
 // @ts-ignore
 import {
   createTourFile,

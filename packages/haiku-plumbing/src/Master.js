@@ -4,7 +4,7 @@ import * as path from "path";
 import * as os from "os";
 import { debounce } from "lodash-es";
 import * as fse from "haiku-fs-extra";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.mjs";
 import HaikuComponent from "@haiku/core/lib/HaikuComponent.js";
 import * as walkFiles from "haiku-serialization/src/utils/walkFiles.js";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
@@ -31,7 +31,7 @@ import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.mjs
 import {
   ExporterFormat,
   EXPORTER_CHANNEL
-} from "haiku-sdk-creator/lib/exporter/index.js";
+} from "haiku-sdk-creator/lib/exporter/index.mjs";
 import { createCDNBundles } from "./project-folder/createCDNBundle.js";
 import {
   getHaikuCoreVersion,

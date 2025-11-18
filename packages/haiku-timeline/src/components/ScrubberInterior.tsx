@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import * as React from 'react';
 import zIndex from './styles/zIndex';
 
@@ -11,17 +11,17 @@ export interface ScrubberInteriorProps {
 export default class ScrubberInterior extends React.Component<ScrubberInteriorProps> {
   private mounted = false;
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps: ScrubberInteriorProps) {
+  componentWillReceiveProps(nextProps: ScrubberInteriorProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -45,7 +45,7 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
     }
   };
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
     const currFrame = this.props.timeline.getCurrentFrame();
     const pxOffset = currFrame * frameInfo.pxpf;

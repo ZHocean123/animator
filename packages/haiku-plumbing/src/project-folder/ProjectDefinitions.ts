@@ -1,7 +1,7 @@
-export * from "@haiku/sdk-client/lib/ProjectDefinitions.js";
+export * from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
 import moment from "moment";
 
-import { getProjectNameSafeShort } from "@haiku/sdk-client/lib/ProjectDefinitions.js";
+import { getProjectNameSafeShort } from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
 
 export const getEmbedName = (organizationName: string, projectName: string) => {
   return `HaikuComponentEmbed_${organizationName}_${getProjectNameSafeShort(

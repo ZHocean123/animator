@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import fse from 'haiku-fs-extra';
-import { isMac, isWindows } from 'haiku-common/lib/environments/os.js';
+import { isMac, isWindows } from 'haiku-common/lib/environments/os.mjs';
 import logger from '../utils/LoggerInstance.js';
 import { stringifyPath } from '../utils/fileManipulationStringify.js';
 import os from 'os';

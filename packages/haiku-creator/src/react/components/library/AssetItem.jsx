@@ -8,9 +8,9 @@ import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma } = figmaModule;
 import { Draggable } from "react-drag-and-drop";
 import AssetList from "./AssetList";
-import PopoverMenu from "haiku-ui-common/lib/electron/PopoverMenu.js";
-import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
+import PopoverMenu from "haiku-ui-common/lib/electron/PopoverMenu.mjs";
+import { isMac, isWindows } from "haiku-common/lib/environments/os.mjs";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
 import * as Popover from "react-popover";
 import {
   CollapseChevronRightSVG,
@@ -23,17 +23,17 @@ import {
   ComponentIconSVG,
   SyncIconSVG,
   FontIconSVG
-} from "haiku-ui-common/lib/react/OtherIcons.js";
+} from "haiku-ui-common/lib/react/OtherIcons.mjs";
 
-import ControlImage from "haiku-ui-common/lib/react/icons/ControlImage.js";
-import ControlText from "haiku-ui-common/lib/react/icons/ControlText.js";
-import ControlHTML from "haiku-ui-common/lib/react/icons/ControlHTML.js";
-// import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput.js'
+import ControlImage from "haiku-ui-common/lib/react/icons/ControlImage.mjs";
+import ControlText from "haiku-ui-common/lib/react/icons/ControlText.mjs";
+import ControlHTML from "haiku-ui-common/lib/react/icons/ControlHTML.mjs";
+// import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput.mjs'
 import FigmaPopover from "./importers/FigmaPopover";
 import {
   experimentIsEnabled,
   Experiment
-} from "haiku-common/src/experiments.js";
+} from "haiku-common/lib/experiments.mjs";
 
 const ASSET_ICONS = {
   ControlImage: () => {
@@ -355,7 +355,7 @@ class AssetItem extends React.Component {
             ...STYLES.threeDotMenu,
             opacity:
               this.props.asset.type === Asset.TYPES.CONTAINER ||
-              Radium.getState(this.state, "asset-item-row", ":hover")
+                Radium.getState(this.state, "asset-item-row", ":hover")
                 ? 1
                 : 0
           }}
@@ -466,9 +466,8 @@ class AssetItem extends React.Component {
           this.props.asset.getAbspath().replace(/\\/g, "/")
         )}?t=${this.props.asset.dtModified}`;
       } else {
-        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${
-          this.props.asset.dtModified
-        }`;
+        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${this.props.asset.dtModified
+          }`;
       }
       return (
         <span

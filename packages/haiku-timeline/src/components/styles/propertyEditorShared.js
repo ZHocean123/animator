@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import * as Color from 'color';
 
 export const EDITOR_STYLES = {

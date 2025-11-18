@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Radium from 'radium';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import ComponentTab from './ComponentTab';
 
 const STYLES = {

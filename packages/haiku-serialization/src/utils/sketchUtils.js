@@ -1,7 +1,7 @@
 import path from 'path';
 import { exec } from 'child_process';
 import logger from './LoggerInstance.js';
-// import { isMac } from "haiku-common/lib/environments/os.js";
+// import { isMac } from "haiku-common/lib/environments/os.mjs";
 const isMac = process.platform === 'darwin';
 
 const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`;

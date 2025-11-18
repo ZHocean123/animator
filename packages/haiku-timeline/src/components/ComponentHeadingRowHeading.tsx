@@ -1,6 +1,6 @@
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {ComponentIconSVG, RepeaterIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import {ComponentIconSVG, RepeaterIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 import * as React from 'react';
 
 export interface ComponentHeadingRowHeadingProps {

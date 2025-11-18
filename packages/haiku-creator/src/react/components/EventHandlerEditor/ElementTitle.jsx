@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric.js';
-import {TrashIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import truncate from 'haiku-ui-common/lib/helpers/truncate.js';
+import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric.mjs';
+import {TrashIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import truncate from 'haiku-ui-common/lib/helpers/truncate.mjs';
 
 const STYLES = {
   wrapper: {

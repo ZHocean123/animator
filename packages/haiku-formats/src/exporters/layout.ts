@@ -7,7 +7,7 @@ import { LAYOUT_3D_VANITIES } from "@haiku/core/lib/HaikuComponent.js";
 import Layout3D from "@haiku/core/lib/Layout3D.js";
 import composedTransformsToTimelineProperties, {
   ComposedTransformSpec
-} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.js";
+} from "haiku-common/lib/layout/composedTransformsToTimelineProperties.mjs";
 import { initialValueOr } from "./timelineUtils";
 
 const { createLayoutSpec, computeMatrix } = Layout3D;

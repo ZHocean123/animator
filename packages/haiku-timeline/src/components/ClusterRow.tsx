@@ -1,7 +1,7 @@
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
-import Globals from 'haiku-ui-common/lib/Globals.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import RightCarrotSVG from 'haiku-ui-common/lib/react/icons/RightCarrotSVG.js';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.mjs';
+import Globals from 'haiku-ui-common/lib/Globals.mjs';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import RightCarrotSVG from 'haiku-ui-common/lib/react/icons/RightCarrotSVG.mjs';
 import * as React from 'react';
 import ClusterInputField from './ClusterInputField';
 import ClusterRowHeading from './ClusterRowHeading';
@@ -11,14 +11,14 @@ import zIndex from './styles/zIndex';
 export interface ClusterRowProps {
   row: any;
   timeline: any;
-  showBezierEditor (): void;
+  showBezierEditor(): void;
   component: any;
   rowHeight: number;
 }
 
 export default class ClusterRow extends React.Component<ClusterRowProps> {
   expandAndSelect = () => {
-    this.props.row.expandAndSelect({from: 'timeline'});
+    this.props.row.expandAndSelect({ from: 'timeline' });
   };
 
   onContextMenu = (ctxMenuEvent: React.MouseEvent<any>) => {
@@ -26,13 +26,13 @@ export default class ClusterRow extends React.Component<ClusterRowProps> {
 
     PopoverMenu.emit('show', {
       type: 'cluster-row',
-      event: {offsetX: 0},
+      event: { offsetX: 0 },
       model: this.props.row,
       offset: Globals.mouse.x - this.props.timeline.getPropertiesPixelWidth(),
     });
   };
 
-  render () {
+  render() {
     const componentId = this.props.row.element.getComponentId();
     const clusterName = this.props.row.getClusterNameString();
 
@@ -70,7 +70,7 @@ export default class ClusterRow extends React.Component<ClusterRowProps> {
                 zIndex: 1005,
               }}
             >
-              <span className="utf-icon" style={{top: -2, left: -3}}>
+              <span className="utf-icon" style={{ top: -2, left: -3 }}>
                 <RightCarrotSVG />
               </span>
             </div>

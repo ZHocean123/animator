@@ -1,4 +1,4 @@
-import {HaikuProject, HaikuShareUrls, ProjectHandler} from 'haiku-sdk-creator/lib/bll/Project.js';
+import {HaikuProject, HaikuShareUrls, ProjectHandler} from 'haiku-sdk-creator/lib/bll/Project.mjs';
 import * as React from 'react';
 import {ModalHeader, ModalNotice, ModalWrapper} from '../Modal';
 import {RevealPanel} from '../RevealPanel';

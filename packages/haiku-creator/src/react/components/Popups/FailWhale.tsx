@@ -1,13 +1,13 @@
 // @ts-ignore
 import * as HaikuError from '@haiku/tina-haikuerror/react';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import {
   ModalHeader,
   ModalWrapper,
-} from 'haiku-ui-common/lib/react/Modal.js';
+} from 'haiku-ui-common/lib/react/Modal/index.mjs';
 import * as React from 'react';
-import {BTN_STYLES} from '../../styles/btnShared';
-import {DASH_STYLES} from '../../styles/dashShared';
+import { BTN_STYLES } from '../../styles/btnShared';
+import { DASH_STYLES } from '../../styles/dashShared';
 
 const STYLES = {
   modalWrapper: {
@@ -57,7 +57,7 @@ export interface FailWhaleProps {
 }
 
 export class FailWhale extends React.PureComponent<FailWhaleProps> {
-  render () {
+  render() {
     return (
       <div style={DASH_STYLES.overlay}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -79,7 +79,7 @@ export class FailWhale extends React.PureComponent<FailWhaleProps> {
               {this.props.uniqueId && (
                 <span> and reference error ID <code>{this.props.uniqueId}</code></span>
               )}
-            .
+              .
             </p>
             <div style={STYLES.buttonWrapper}>
               <button style={STYLES.button} onClick={this.props.restart}>

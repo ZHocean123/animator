@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter.js';
-import {InteractionMode} from 'haiku-ui-common/lib/interactionModes.js';
+import {InteractionMode} from 'haiku-ui-common/lib/interactionModes.mjs';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash.js';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 

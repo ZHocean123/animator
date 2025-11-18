@@ -8,14 +8,14 @@ import * as logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import StageTitleBar from './StageTitleBar';
 import ComponentMenu from './ComponentMenu/ComponentMenu';
 import CodeEditor from './CodeEditor/CodeEditor';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments.js';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import { Experiment, experimentIsEnabled } from 'haiku-common/lib/experiments/index.mjs';
+import { TOUR_CHANNEL } from 'haiku-sdk-creator/lib/tour/index.mjs';
 import {
   isPreviewMode,
   isEditMode,
   showGlassOnStage,
-} from 'haiku-ui-common/lib/interactionModes.js';
+} from 'haiku-ui-common/lib/interactionModes.mjs';
 
 const STAGE_BOX_STYLE = {
   overflow: 'hidden',
@@ -45,7 +45,7 @@ const clearAboutToChange = {
 const STAGE_MOUNT_HEIGHT_OFFSET = 68;
 
 class Stage extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.webview = null;
     this.onRequestWebviewCoordinates = this.onRequestWebviewCoordinates.bind(this);
@@ -65,7 +65,7 @@ class Stage extends React.Component {
   }
 
   // Check if currently edited file is open
-  tryToChangeCurrentActiveComponent (scenename) {
+  tryToChangeCurrentActiveComponent(scenename) {
     if (this.state.nonSavedContentOnCodeEditor) {
       this.setState({
         ...clearAboutToChange,
@@ -78,11 +78,11 @@ class Stage extends React.Component {
         this.props.setGlassInteractionToEditMode();
       }
 
-      this.props.projectModel.setCurrentActiveComponent(scenename, {from: 'creator'}, () => {});
+      this.props.projectModel.setCurrentActiveComponent(scenename, { from: 'creator' }, () => { });
     }
   }
 
-  tryToSwitchToEditMode () {
+  tryToSwitchToEditMode() {
     if (this.state.nonSavedContentOnCodeEditor) {
       this.setState({
         ...clearAboutToChange,
@@ -94,7 +94,7 @@ class Stage extends React.Component {
     }
   }
 
-  tryToSwitchToPreviewMode () {
+  tryToSwitchToPreviewMode() {
     if (this.state.nonSavedContentOnCodeEditor) {
       this.setState({
         ...clearAboutToChange,
@@ -106,11 +106,11 @@ class Stage extends React.Component {
     }
   }
 
-  focusCodeEditor () {
+  focusCodeEditor() {
     this.refs.codeeditor.focusCodeEditor();
   }
 
-  executeActionAfterCodeEditorSavePopup () {
+  executeActionAfterCodeEditorSavePopup() {
     // Change to target
     if (this.state.aboutToChangeToEditMode) {
       this.props.setGlassInteractionToEditMode();
@@ -122,13 +122,13 @@ class Stage extends React.Component {
         this.props.setGlassInteractionToEditMode();
       }
 
-      this.props.projectModel.setCurrentActiveComponent(this.state.aboutToChangeToComponent, {from: 'creator'}, () => {});
+      this.props.projectModel.setCurrentActiveComponent(this.state.aboutToChangeToComponent, { from: 'creator' }, () => { });
     }
 
     this.closeCodeEditorSavePopup();
   }
 
-  closeCodeEditorSavePopup () {
+  closeCodeEditorSavePopup() {
     // Exit popup
     this.setState({
       ...clearAboutToChange,
@@ -136,7 +136,7 @@ class Stage extends React.Component {
     });
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.injectWebview();
 
     const tourChannel = this.props.envoyClient.get(TOUR_CHANNEL);
@@ -149,20 +149,20 @@ class Stage extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.tourClient) {
       this.tourClient.off('tour:requestWebviewCoordinates', this.onRequestWebviewCoordinates);
     }
   }
 
-  onRequestWebviewCoordinates () {
-    const {top, left} = this.webview.getBoundingClientRect();
+  onRequestWebviewCoordinates() {
+    const { top, left } = this.webview.getBoundingClientRect();
     if (this.tourClient) {
-      this.tourClient.receiveWebviewCoordinates('glass', {top, left});
+      this.tourClient.receiveWebviewCoordinates('glass', { top, left });
     }
   }
 
-  injectWebview () {
+  injectWebview() {
     this.webview = document.createElement('webview');
 
     const query = qs.stringify(assign({}, this.props.haiku, {
@@ -190,7 +190,7 @@ class Stage extends React.Component {
         case 0:
           if (event.message.slice(0, 8) === '[notice]') {
             const msg = event.message.replace('[notice]', '').trim();
-            this.props.createNotice({type: 'info', title: 'Notice', message: msg});
+            this.props.createNotice({ type: 'info', title: 'Notice', message: msg });
           }
           break;
 
@@ -217,7 +217,7 @@ class Stage extends React.Component {
     this.mount.appendChild(this.webview);
   }
 
-  handleDrop (asset, clientX, clientY) {
+  handleDrop(asset, clientX, clientY) {
     const ac = (
       this.props.projectModel &&
       this.props.projectModel.getCurrentActiveComponent()
@@ -244,7 +244,7 @@ class Stage extends React.Component {
       // Instantiatees are translated with respect to the coordinate system of
       // the artboard, and the stage may have been zoomed/panned
       if (this.props.artboardDimensions) {
-        const {zoom, rect} = this.props.artboardDimensions;
+        const { zoom, rect } = this.props.artboardDimensions;
 
         coords.x -= rect.left;
         coords.y -= rect.top;
@@ -265,7 +265,7 @@ class Stage extends React.Component {
     }
   }
 
-  saveCodeFromEditorToDisk () {
+  saveCodeFromEditorToDisk() {
     this.refs.codeeditor.saveCodeFromEditorToDisk();
   }
 
@@ -273,7 +273,7 @@ class Stage extends React.Component {
     this.mount = element;
   };
 
-  render () {
+  render() {
     const interactionModeColor = isPreviewMode(this.props.interactionMode)
       ? Palette.LIGHTEST_PINK
       : isEditMode(this.props.interactionMode)
@@ -335,8 +335,9 @@ class Stage extends React.Component {
               backgroundColor: Palette.STAGE_GRAY,
               outline: '2px solid ' + interactionModeColor,
               visibility: showGlassOnStage(this.props.interactionMode) ? 'visible' : 'hidden',
-              opacity: showGlassOnStage(this.props.interactionMode) ? 1 : 0},
-              [showGlassOnStage(this.props.interactionMode) && STAGE_FADE_IN], [!showGlassOnStage(this.props.interactionMode) && STAGE_FADE_OUT],
+              opacity: showGlassOnStage(this.props.interactionMode) ? 1 : 0
+            },
+            [showGlassOnStage(this.props.interactionMode) && STAGE_FADE_IN], [!showGlassOnStage(this.props.interactionMode) && STAGE_FADE_OUT],
             ]}
           />
           {experimentIsEnabled(Experiment.CodeEditor) && <div
@@ -350,15 +351,16 @@ class Stage extends React.Component {
               backgroundColor: Palette.COAL,
               outline: '2px solid ' + interactionModeColor,
               visibility: showGlassOnStage(this.props.interactionMode) ? 'hidden' : 'visible',
-              opacity: showGlassOnStage(this.props.interactionMode) ? 0 : 1},
-              [!showGlassOnStage(this.props.interactionMode) && STAGE_FADE_IN], [showGlassOnStage(this.props.interactionMode) && STAGE_FADE_OUT],
+              opacity: showGlassOnStage(this.props.interactionMode) ? 0 : 1
+            },
+            [!showGlassOnStage(this.props.interactionMode) && STAGE_FADE_IN], [showGlassOnStage(this.props.interactionMode) && STAGE_FADE_OUT],
             ]}>
             <CodeEditor
               ref="codeeditor"
               interactionMode={this.props.interactionMode}
               projectModel={this.props.projectModel}
               setNonSavedContentOnCodeEditor={(nonSaved) => {
-                this.setState({nonSavedContentOnCodeEditor: nonSaved});
+                this.setState({ nonSavedContentOnCodeEditor: nonSaved });
               }}
               nonSavedContentOnCodeEditor={this.state.nonSavedContentOnCodeEditor}
               showPopupToSaveRawEditorContents={this.state.showPopupToSaveRawEditorContents}

@@ -5,13 +5,13 @@ import {shell} from 'electron';
 import {
   ModalWrapper,
   ModalHeader,
-} from 'haiku-ui-common/lib/react/Modal.js';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG.js';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.js';
+} from 'haiku-ui-common/lib/react/Modal/index.mjs';
+import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG.mjs';
+import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.mjs';
 import {BTN_STYLES} from '../styles/btnShared';
 import {DASH_STYLES} from '../styles/dashShared';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {PrettyScroll} from 'haiku-ui-common/lib/react/PrettyScroll.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import {PrettyScroll} from 'haiku-ui-common/lib/react/PrettyScroll.mjs';
 import * as Changelog from 'haiku-serialization/src/bll/Changelog.js';
 
 const STYLES = {

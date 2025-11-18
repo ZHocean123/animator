@@ -16,7 +16,7 @@ import * as nodeResolve from 'rollup-plugin-node-resolve';
 // @ts-ignore
 import * as uglify from 'rollup-plugin-uglify-es';
 
-import {HaikuProject} from 'haiku-sdk-creator/lib/bll/Project.js';
+import {HaikuProject} from 'haiku-sdk-creator/lib/bll/Project.mjs';
 import {
   getCopyrightNotice,
   getCurrentHumanTimestamp,

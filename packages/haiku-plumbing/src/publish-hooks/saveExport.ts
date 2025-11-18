@@ -1,5 +1,5 @@
-import {handleExporterSaveRequest} from 'haiku-formats/lib/exporters/index.js';
-import {ExporterFormat, type ExporterRequest} from 'haiku-sdk-creator/lib/exporter/index.js';
+import {handleExporterSaveRequest} from 'haiku-formats/lib/exporters/index.mjs';
+import {ExporterFormat, type ExporterRequest} from 'haiku-sdk-creator/lib/exporter/index.mjs';
 // @ts-ignore
 import ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent.js';
 // @ts-ignore

@@ -1,15 +1,15 @@
-import {shell} from 'electron';
-import {isMac} from 'haiku-common/lib/environments/os.js';
+import { shell } from 'electron';
+import { isMac } from 'haiku-common/lib/environments/os.mjs';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
 // @ts-ignore
 import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import {
   FigmaIconSVG,
   IllustratorIconSVG,
   SketchIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons.js';
+} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 import * as path from 'path';
 import * as React from 'react';
 // @ts-ignore
@@ -37,13 +37,13 @@ const STYLES = {
 
 class DesignFileCreator extends React.PureComponent<any, any> {
   sketchImport = () => {
-    const {primaryAssetPath} = this.props.projectModel.getNameVariations();
+    const { primaryAssetPath } = this.props.projectModel.getNameVariations();
     const projectPath = this.props.projectModel.getFolder();
     mixpanel.haikuTrack('creator:library:import:sketch');
     this.props.onStart();
 
     return this.props.websocket.request(
-      {method: 'copyDefaultSketchFile', params: [projectPath, primaryAssetPath]},
+      { method: 'copyDefaultSketchFile', params: [projectPath, primaryAssetPath] },
       (err: any) => {
         if (!isMac()) {
           return;
@@ -59,21 +59,21 @@ class DesignFileCreator extends React.PureComponent<any, any> {
   };
 
   illustratorImport = () => {
-    const {defaultIllustratorAssetPath} = this.props.projectModel.getNameVariations();
+    const { defaultIllustratorAssetPath } = this.props.projectModel.getNameVariations();
     const projectPath = this.props.projectModel.getFolder();
     mixpanel.haikuTrack('creator:library:import:illustrator');
     this.props.onStart();
 
     return this.props.websocket.request(
-      {method: 'copyDefaultIllustratorFile', params: [projectPath, defaultIllustratorAssetPath]},
+      { method: 'copyDefaultIllustratorFile', params: [projectPath, defaultIllustratorAssetPath] },
       // Please note that Illustrator files are opened by default during the first import
       // because we need to run a jsx script inside Illustrator, thus we don't need to do anything
       // here. If you want to disable auto open, check Illustrator#importSVG
-      (err: any) => {},
+      (err: any) => { },
     );
   };
 
-  get sketchButton () {
+  get sketchButton() {
     return (
       <button
         style={STYLES.btn}
@@ -88,7 +88,7 @@ class DesignFileCreator extends React.PureComponent<any, any> {
     );
   }
 
-  get illustratorButton () {
+  get illustratorButton() {
     return (
       <button
         style={STYLES.btn}
@@ -103,7 +103,7 @@ class DesignFileCreator extends React.PureComponent<any, any> {
     );
   }
 
-  get figmaButton () {
+  get figmaButton() {
     return (
       <FigmaPopover
         onImportFigmaAsset={this.props.onImportFigmaAsset}
@@ -124,16 +124,16 @@ class DesignFileCreator extends React.PureComponent<any, any> {
     );
   }
 
-  render () {
+  render() {
     return (
-        <div style={STYLES.container}>
-          <p><i>Create a design file to start:</i></p>
-          <div>
-            {isMac() && this.sketchButton}
-            {this.figmaButton}
-            {this.illustratorButton}
-          </div>
+      <div style={STYLES.container}>
+        <p><i>Create a design file to start:</i></p>
+        <div>
+          {isMac() && this.sketchButton}
+          {this.figmaButton}
+          {this.illustratorButton}
         </div>
+      </div>
     );
   }
 }

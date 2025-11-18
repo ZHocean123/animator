@@ -1,7 +1,7 @@
 /* global monaco */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import SyntaxEvaluator from './SyntaxEvaluator';
 import Snippets from './Snippets';
 
@@ -41,7 +41,7 @@ const STYLES = {
 };
 
 class Editor extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.handleEditorChange = this.handleEditorChange.bind(this);
@@ -53,14 +53,14 @@ class Editor extends React.Component {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.editor = monaco.editor.create(this._context, {
       value: this.props.contents || '',
       language: 'javascript',
       lineNumbers: 'off',
       links: false,
       theme: 'haiku',
-      minimap: {enabled: false},
+      minimap: { enabled: false },
       autoIndent: false,
       contextmenu: false,
       codeLens: false,
@@ -81,19 +81,19 @@ class Editor extends React.Component {
     // this.editor.onMouseMove listener declared in Snippets.js
 
     // Avoid listening for  cmd|ctrl+ctrl on action editor, because it is used as shortcut
-    this.editor.addCommand([monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], () => {});
+    this.editor.addCommand([monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], () => { });
 
     this.forceUpdate();
   }
 
-  handleEditorChange () {
+  handleEditorChange() {
     setTimeout(() => {
-      this.setState({contents: this.editor.getValue()});
+      this.setState({ contents: this.editor.getValue() });
       this.props.onContentChange(this.serialize());
     });
   }
 
-  serialize (eventName = this.props.selectedEventName) {
+  serialize(eventName = this.props.selectedEventName) {
     return {
       id: this.props.id,
       event: eventName,
@@ -107,7 +107,7 @@ class Editor extends React.Component {
     };
   }
 
-  remove () {
+  remove() {
     this.props.onRemove(this.serialize());
   }
 
@@ -119,12 +119,12 @@ class Editor extends React.Component {
     this.evaluator = evaluator;
   };
 
-  render () {
+  render() {
     return (
       <div
         id={this.props.id}
       >
-        <div style={{...STYLES.amble, ...STYLES.preamble}}>
+        <div style={{ ...STYLES.amble, ...STYLES.preamble }}>
           {`function (${this.props.params.join(', ')}) {`}
         </div>
         <div
@@ -137,7 +137,7 @@ class Editor extends React.Component {
             ref={this.setContextRef}
           />
         </div>
-        <div style={{...STYLES.amble, ...STYLES.postamble}}>
+        <div style={{ ...STYLES.amble, ...STYLES.postamble }}>
           {'}'}
           <SyntaxEvaluator
             onChange={this.setEvaluator}

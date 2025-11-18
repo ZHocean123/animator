@@ -1,6 +1,6 @@
 import fse from "fs-extra";
 const { copySync, existsSync, rmdirSync } = fse;
-import { HaikuProject } from "haiku-sdk-creator/lib/bll/Project.js";
+import { HaikuProject } from "haiku-sdk-creator/lib/bll/Project.mjs";
 import { join } from "path";
 
 export function duplicateProject(

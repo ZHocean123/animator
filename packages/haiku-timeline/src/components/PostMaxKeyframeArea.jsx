@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Color from 'color';
 import zIndex from './styles/zIndex';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 
 export default class PostMaxKeyframeArea extends React.Component {
   constructor (props) {

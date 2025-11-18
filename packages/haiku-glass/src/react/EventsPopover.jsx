@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {ChevronLeftIconSVG, ChevronRightIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import {ChevronLeftIconSVG, ChevronRightIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 
 const popoverWidth = 210;
 const popoverHeight = '200px';

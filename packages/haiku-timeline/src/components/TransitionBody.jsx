@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import * as Color from 'color';
 import * as lodash from 'lodash-es';
 import zIndex from './styles/zIndex';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import TimelineDraggable from './TimelineDraggable';
-import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG.js';
-import Globals from 'haiku-ui-common/lib/Globals.js';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments.js';
-import BezierDerivativeGraph from 'haiku-ui-common/lib/react/Bezier/BezierDerivativeGraph.js';
+import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG.mjs';
+import Globals from 'haiku-ui-common/lib/Globals.mjs';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.mjs';
+import { Experiment, experimentIsEnabled } from 'haiku-common/lib/experiments.mjs';
+import BezierDerivativeGraph from 'haiku-ui-common/lib/react/Bezier/BezierDerivativeGraph.mjs';
 
 import {
   EaseInElasticSVG,
@@ -18,7 +18,7 @@ import {
   EaseInBounceSVG,
   EaseInOutBounceSVG,
   EaseOutBounceSVG,
-} from 'haiku-ui-common/lib/react/icons/CurveSVGS.js';
+} from 'haiku-ui-common/lib/react/icons/CurveSVGS.mjs';
 
 const CURVESVGS = {
   EaseInElasticSVG,
@@ -38,18 +38,18 @@ const STYLE = {
 };
 
 export default class TransitionBody extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.isDragging = false;
     this.handleProps(props);
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     this.handleProps(nextProps);
   }
 
-  handleProps ({keyframe}) {
+  handleProps({ keyframe }) {
     if (
       keyframe !== this.props.keyframe ||
       !this.teardownKeyframeUpdateReceiver
@@ -66,23 +66,23 @@ export default class TransitionBody extends React.Component {
           this.handleUpdate(what);
         });
       } else {
-        this.teardownNextKeyframeUpdateReceiver = () => {};
+        this.teardownNextKeyframeUpdateReceiver = () => { };
       }
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.teardownKeyframeUpdateReceiver();
     this.teardownNextKeyframeUpdateReceiver();
     this.props.keyframe.clearViewPosition();
   }
 
-  handleUpdate (what, ...args) {
+  handleUpdate(what, ...args) {
     if (!this.mounted) {
       return null;
     }
@@ -105,15 +105,15 @@ export default class TransitionBody extends React.Component {
     }
   }
 
-  get domRef () {
+  get domRef() {
     return this[this.props.keyframe.getUniqueKey()];
   }
 
-  set domRef (domRef) {
+  set domRef(domRef) {
     this[this.props.keyframe.getUniqueKey()] = domRef;
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const viewPosition = this.props.keyframe.getViewPosition();
     if (!viewPosition || !viewPosition.left) {
       this.storeViewPosition(this.domRef);
@@ -134,13 +134,13 @@ export default class TransitionBody extends React.Component {
 
   showBezierEditor = (dblClickEvent) => {
     if (!this.props.keyframe.hasDecomposableCurve()) {
-      this.props.showBezierEditor({x: dblClickEvent.clientX, y: dblClickEvent.clientY}, [this.props.keyframe]);
+      this.props.showBezierEditor({ x: dblClickEvent.clientX, y: dblClickEvent.clientY }, [this.props.keyframe]);
     } else {
       console.log('[notice] Bounce/Elastic curves cannot be edited with the curve editor');
     }
   };
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
 
     const uniqueKey = this.props.keyframe.getUniqueKey();
@@ -173,7 +173,7 @@ export default class TransitionBody extends React.Component {
           // This logic is here to allow transitions to be dragged without having
           // to select them first.
           if (!this.props.preventDragging) {
-            this.props.keyframe.handleMouseDown(mouseEvent, {...Globals}, {isViaTransitionBodyView: true});
+            this.props.keyframe.handleMouseDown(mouseEvent, { ...Globals }, { isViaTransitionBodyView: true });
           }
         }}
         onStart={(dragEvent, dragData) => {
@@ -185,12 +185,12 @@ export default class TransitionBody extends React.Component {
         onStop={(dragEvent, dragData, wasDrag, lastMouseButtonPressed) => {
           if (!this.props.preventDragging) {
             this.isDragging = false;
-            this.props.keyframe.handleDragStop(dragData, {wasDrag, lastMouseButtonPressed, ...Globals}, {isViaKeyframeDraggerView: true});
+            this.props.keyframe.handleDragStop(dragData, { wasDrag, lastMouseButtonPressed, ...Globals }, { isViaKeyframeDraggerView: true });
           }
         }}
         onDrag={lodash.throttle((dragEvent, dragData) => {
           if (!this.props.preventDragging && this.isDragging) {
-            this.props.component.dragSelectedKeyframes(frameInfo.pxpf, frameInfo.mspf, dragData, {alias: 'timeline'});
+            this.props.component.dragSelectedKeyframes(frameInfo.pxpf, frameInfo.mspf, dragData, { alias: 'timeline' });
           }
         }, THROTTLE_TIME)}>
         <span
@@ -199,7 +199,7 @@ export default class TransitionBody extends React.Component {
           ref={this.storeViewPosition}
           onContextMenu={(ctxMenuEvent) => {
             ctxMenuEvent.stopPropagation();
-            this.props.keyframe.handleContextMenu({...Globals}, {isViaTransitionBodyView: true});
+            this.props.keyframe.handleContextMenu({ ...Globals }, { isViaTransitionBodyView: true });
             PopoverMenu.emit('show', {
               type: 'keyframe-transition',
               event: ctxMenuEvent.nativeEvent,
@@ -210,7 +210,7 @@ export default class TransitionBody extends React.Component {
           }}
           onMouseUp={(mouseEvent) => {
             mouseEvent.stopPropagation();
-            this.props.keyframe.handleMouseUp(mouseEvent, {...Globals}, {isViaTransitionBodyView: true});
+            this.props.keyframe.handleMouseUp(mouseEvent, { ...Globals }, { isViaTransitionBodyView: true });
           }}
           onMouseEnter={(reactEvent) => {
             if (this[uniqueKey]) {
@@ -224,7 +224,7 @@ export default class TransitionBody extends React.Component {
           }}
           onDoubleClick={this.showBezierEditor}
           style={{
-            position: 'absolute' ,
+            position: 'absolute',
             left: pxOffsetLeft + 4,
             width: pxOffsetRight - pxOffsetLeft - 2,
             top: 1,
@@ -239,7 +239,7 @@ export default class TransitionBody extends React.Component {
           <span
             className={`pill ${this.props.keyframe.isWithinCollapsedRow() ? '' : 'js-avoid-marquee-init'}`}
             style={{
-              position: 'absolute' ,
+              position: 'absolute',
               zIndex: 1001,
               width: '100%',
               height: '100%',
@@ -251,7 +251,7 @@ export default class TransitionBody extends React.Component {
           <span
             className="js-avoid-marquee-init"
             style={{
-              position: 'absolute' ,
+              position: 'absolute',
               left: -5,
               width: 9,
               height: 24,
@@ -260,7 +260,7 @@ export default class TransitionBody extends React.Component {
             <span
               className="keyframe-diamond js-avoid-marquee-init"
               style={{
-                position: 'absolute' ,
+                position: 'absolute',
                 top: 5,
                 left: 1,
                 cursor: (this.props.keyframe.isWithinCollapsedRow()) ? 'pointer' : 'move',
@@ -269,7 +269,7 @@ export default class TransitionBody extends React.Component {
             </span>
           </span>
           <span style={{
-            position: 'absolute' ,
+            position: 'absolute',
             zIndex: 1002,
             width: '100%',
             height: '100%',
@@ -283,7 +283,7 @@ export default class TransitionBody extends React.Component {
           <span
             className="js-avoid-marquee-init"
             style={{
-              position: 'absolute' ,
+              position: 'absolute',
               right: -5,
               width: 9,
               height: 24,
@@ -293,7 +293,7 @@ export default class TransitionBody extends React.Component {
             <span
               className="keyframe-diamond js-avoid-marquee-init"
               style={{
-                position: 'absolute' ,
+                position: 'absolute',
                 top: 5,
                 left: 1,
                 cursor: (this.props.keyframe.isWithinCollapsedRow())

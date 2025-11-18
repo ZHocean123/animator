@@ -1,6 +1,6 @@
 import fse from "fs-extra";
 const { existsSync } = fse;
-import { HaikuShareUrls } from "haiku-sdk-creator/lib/bll/Project.js";
+import { HaikuShareUrls } from "haiku-sdk-creator/lib/bll/Project.mjs";
 import { join } from "path";
 import * as React from "react";
 import Palette from "../../../Palette";

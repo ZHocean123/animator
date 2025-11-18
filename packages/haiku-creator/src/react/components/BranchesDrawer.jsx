@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as lodash from 'lodash-es';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {BranchIconSVG, CommentsIconSVG, EditsIconSVG, TeammatesIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import {BranchIconSVG, CommentsIconSVG, EditsIconSVG, TeammatesIconSVG} from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 
 const fauxBranchState = [
   [false, false, true],

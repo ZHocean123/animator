@@ -1,5 +1,5 @@
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.mjs';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import * as React from 'react';
 import zIndex from './styles/zIndex';
 
@@ -36,7 +36,7 @@ export default class PropertyManager extends React.Component<PropertyManagerProp
     });
   };
 
-  render () {
+  render() {
     return (
       <div
         className="property-manager"

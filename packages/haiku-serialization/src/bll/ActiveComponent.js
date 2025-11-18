@@ -31,9 +31,9 @@ const toTitleCase = require('./helpers/toTitleCase');
 const {
   Experiment,
   experimentIsEnabled,
-} = require('haiku-common/lib/experiments.js');
+} = require('haiku-common/lib/experiments.mjs');
 const Lock = require('./Lock');
-const SustainedWarningChecker = require('haiku-common/lib/sustained-checker/SustainedWarningChecker.js')
+const SustainedWarningChecker = require('haiku-common/lib/sustained-checker/SustainedWarningChecker.mjs')
   .default;
 
 const KEYFRAME_MOVE_DEBOUNCE_TIME = 100;

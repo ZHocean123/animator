@@ -1,9 +1,9 @@
 /* global monaco */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import {shell} from 'electron';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.js';
+import { shell } from 'electron';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu.mjs';
 
 const STYLES = {
   wrapper: {
@@ -37,7 +37,7 @@ const STYLES = {
 };
 
 class Snippets extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.snippetOptions = [
@@ -92,7 +92,7 @@ class Snippets extends React.PureComponent {
     ];
   }
 
-  componentDidUpdate (newProps) {
+  componentDidUpdate(newProps) {
     if (newProps.editor && !this.props.editor) {
 
       newProps.editor.getDomNode().appendChild(this._rightGradientDiv);
@@ -125,19 +125,19 @@ class Snippets extends React.PureComponent {
     }
   }
 
-  hasCursorPosition () {
-    const {lineNumber, column} = this.props.editor.getPosition();
+  hasCursorPosition() {
+    const { lineNumber, column } = this.props.editor.getPosition();
     return lineNumber !== 1 && column !== 1;
   }
 
-  insertSnippet (injectable) {
+  insertSnippet(injectable) {
     if (typeof injectable === 'function') {
       return injectable();
     }
 
     let range;
 
-    const {lineNumber, column} = this.props.editor.getPosition();
+    const { lineNumber, column } = this.props.editor.getPosition();
 
     if (this.hasCursorPosition()) {
       range = new monaco.Range(lineNumber, column, lineNumber, column);
@@ -169,10 +169,10 @@ class Snippets extends React.PureComponent {
   };
 
   launchPopoverMenu = (event) => {
-    PopoverMenu.launch({event, items: this.snippetOptions});
+    PopoverMenu.launch({ event, items: this.snippetOptions });
   };
 
-  render () {
+  render() {
     return (
       <div>
         <div style={STYLES.wrapper} ref={this.setPlusRef}

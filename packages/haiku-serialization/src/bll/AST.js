@@ -8,7 +8,7 @@ const parseCode = require('./../ast/parseCode');
 const {
   Experiment,
   experimentIsEnabled,
-} = require('haiku-common/lib/experiments.js');
+} = require('haiku-common/lib/experiments.mjs');
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var';

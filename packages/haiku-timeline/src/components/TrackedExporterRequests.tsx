@@ -1,6 +1,6 @@
 import {shell} from 'electron';
-import {ExporterRequest} from 'haiku-sdk-creator/lib/exporter.js';
-import {LoadingButton} from 'haiku-ui-common/lib/react/LoadingButton.js';
+import {ExporterRequest} from 'haiku-sdk-creator/lib/exporter.mjs';
+import {LoadingButton} from 'haiku-ui-common/lib/react/LoadingButton.mjs';
 import * as React from 'react';
 
 const STYLES = {

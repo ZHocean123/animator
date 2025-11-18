@@ -13,8 +13,8 @@ import { Figma, PHONY_FIGMA_FILE } from './Figma.js';
 import {
   Experiment,
   experimentIsEnabled,
-} from 'haiku-common/lib/experiments.js';
-import { isMac, isWindows } from 'haiku-common/lib/environments/os.js';
+} from 'haiku-common/lib/experiments.mjs';
+import { isMac, isWindows } from 'haiku-common/lib/environments/os.mjs';
 
 const PAGES_REGEX = isWindows() ? /\\pages\\/ : /\/pages\//;
 const SLICES_REGEX = isWindows() ? /\\slices\\/ : /\/slices\//;

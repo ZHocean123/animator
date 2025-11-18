@@ -1,11 +1,11 @@
 import * as Color from 'color';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import * as React from 'react';
 // @ts-ignore
 import * as Popover from 'react-popover';
-import {DASH_STYLES} from '../../styles/dashShared';
+import { DASH_STYLES } from '../../styles/dashShared';
 import FigmaImporter from './importers/FigmaImporter';
 import FileSystemImporter from './importers/FileSystemImporter';
 
@@ -49,10 +49,10 @@ const STYLES = {
 };
 
 export interface FileImporterProps {
-  onFileDrop (paths: string[]): void;
-  conglomerateComponent (options: any): void;
-  onImportFigmaAsset (url: string, warnOnComplexFile?: boolean): void;
-  onAskForFigmaAuth (): void;
+  onFileDrop(paths: string[]): void;
+  conglomerateComponent(options: any): void;
+  onImportFigmaAsset(url: string, warnOnComplexFile?: boolean): void;
+  onAskForFigmaAuth(): void;
   figma: any;
 }
 
@@ -62,12 +62,12 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
   };
 
   showPopover = () => {
-    this.setState({isPopoverOpen: true});
+    this.setState({ isPopoverOpen: true });
     mixpanel.haikuTrack('creator:file-importer:open-all');
   };
 
   hidePopover = () => {
-    this.setState({isPopoverOpen: false});
+    this.setState({ isPopoverOpen: false });
   };
 
   onFileDrop = (filePaths: string[]) => {
@@ -85,7 +85,7 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
     });
   };
 
-  get popoverBody () {
+  get popoverBody() {
     return (
       <div
         style={{
@@ -122,7 +122,7 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
     );
   }
 
-  render () {
+  render() {
     return (
       <Popover
         onOuterAction={this.hidePopover}

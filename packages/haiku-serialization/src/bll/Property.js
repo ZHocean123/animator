@@ -5,7 +5,7 @@ import BaseModel from './BaseModel.js';
 import {
   Experiment,
   experimentIsEnabled,
-} from 'haiku-common/lib/experiments/index.js';
+} from 'haiku-common/lib/experiments/index.mjs';
 
 function decam(s) {
   return decamelize(s).replace(/[\W_]/g, ' ');

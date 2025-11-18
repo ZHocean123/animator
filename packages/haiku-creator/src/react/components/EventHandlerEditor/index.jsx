@@ -1,18 +1,18 @@
 /* global monaco */
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import ElementTitle from './ElementTitle';
 import Editor from './Editor';
 import EditorActions from './EditorActions';
 import EventSelector from './EventSelector';
 import HandlerManager from './HandlerManager';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric.js';
+import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric.mjs';
 import {
   ModalWrapper,
   ModalHeader,
   ModalFooter,
-} from 'haiku-ui-common/lib/react/Modal.js';
-import {RevealPanel} from 'haiku-ui-common/lib/react/RevealPanel.js';
+} from 'haiku-ui-common/lib/react/Modal/index.mjs';
+import {RevealPanel} from 'haiku-ui-common/lib/react/RevealPanel.mjs';
 import {
   EDITOR_WIDTH,
   EVALUATOR_STATES,

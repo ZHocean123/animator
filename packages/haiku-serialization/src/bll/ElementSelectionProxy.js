@@ -11,14 +11,14 @@ import { default as Layout3D } from '@haiku/core/lib/Layout3D.js';
 import { default as HaikuElement } from '@haiku/core/lib/HaikuElement.js';
 import {
   default as composedTransformsToTimelineProperties,
-} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.js';
+} from 'haiku-common/lib/layout/composedTransformsToTimelineProperties.mjs';
 import {
   default as invertMatrix,
 } from 'haiku-vendor-legacy/lib/gl-mat4/invert.js';
 import {
   Experiment,
   experimentIsEnabled,
-} from 'haiku-common/lib/experiments/index.js';
+} from 'haiku-common/lib/experiments/index.mjs';
 import { Figma } from './Figma.js';
 import Sketch from './Sketch.js';
 import Illustrator from './Illustrator.js';

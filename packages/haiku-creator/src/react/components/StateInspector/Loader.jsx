@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 
 // TODO: Make into a real loader, and move into ui-common
 

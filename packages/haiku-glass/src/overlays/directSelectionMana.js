@@ -1,10 +1,10 @@
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import Layout3D from '@haiku/core/lib/Layout3D.js';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints.js';
-import {mat4_multiply_vec4} from '@haiku/core/lib/helpers/PathUtils.js';
+import { mat4_multiply_vec4 } from '@haiku/core/lib/helpers/PathUtils.js';
 import transpose from 'haiku-vendor-legacy/lib/gl-mat4/transpose.js';
 
-const anchorPoint = (index, meta, selected, scale, {x, y}) => ({
+const anchorPoint = (index, meta, selected, scale, { x, y }) => ({
   elementName: 'g',
   attributes: {
     transform: `scale(${scale}) translate(${x - 12.5} ${y - 12.5})`,
@@ -60,15 +60,15 @@ const getLogicalAnchorsFromPoints = (points) => {
   return points;
 };
 
-export const rect = (id, {x, y, width, height, rx, ry}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const rect = (id, { x, y, width, height, rx, ry }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   const transposed = Layout3D.createMatrix();
   transpose(transposed, transform);
 
-  const p1 = mat4_multiply_vec4(transposed, {x: Number(x), y: Number(y), z: 0, w: 1});
-  const p2 = mat4_multiply_vec4(transposed, {x: Number(x) + Number(width), y: Number(y), z: 0, w: 1});
-  const p3 = mat4_multiply_vec4(transposed, {x: Number(x), y: Number(y) + Number(height), z: 0, w: 1});
-  const p4 = mat4_multiply_vec4(transposed, {x: Number(x) + Number(width), y: Number(y) + Number(height), z: 0, w: 1});
+  const p1 = mat4_multiply_vec4(transposed, { x: Number(x), y: Number(y), z: 0, w: 1 });
+  const p2 = mat4_multiply_vec4(transposed, { x: Number(x) + Number(width), y: Number(y), z: 0, w: 1 });
+  const p3 = mat4_multiply_vec4(transposed, { x: Number(x), y: Number(y) + Number(height), z: 0, w: 1 });
+  const p4 = mat4_multiply_vec4(transposed, { x: Number(x) + Number(width), y: Number(y) + Number(height), z: 0, w: 1 });
 
   return {
     elementName: 'g',
@@ -102,11 +102,11 @@ export const rect = (id, {x, y, width, height, rx, ry}, layoutAncestry, controlP
   };
 };
 
-export const circle = (id, {cx, cy, r}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const circle = (id, { cx, cy, r }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   const transposed = Layout3D.createMatrix();
   transpose(transposed, transform);
-  const point = mat4_multiply_vec4(transposed, {x: Number(cx) + Number(r), y: Number(cy), z: 0, w: 1});
+  const point = mat4_multiply_vec4(transposed, { x: Number(cx) + Number(r), y: Number(cy), z: 0, w: 1 });
 
   return {
     elementName: 'g',
@@ -134,14 +134,14 @@ export const circle = (id, {cx, cy, r}, layoutAncestry, controlPointScale, selec
   };
 };
 
-export const ellipse = (id, {cx, cy, rx, ry}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const ellipse = (id, { cx, cy, rx, ry }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   const transposed = Layout3D.createMatrix();
   transpose(transposed, transform);
-  const p1 = mat4_multiply_vec4(transposed, {x: Number(cx) - Number(rx), y: Number(cy), z: 0, w: 1});
-  const p2 = mat4_multiply_vec4(transposed, {x: Number(cx) + Number(rx), y: Number(cy), z: 0, w: 1});
-  const p3 = mat4_multiply_vec4(transposed, {x: Number(cx), y: Number(cy) + Number(ry), z: 0, w: 1});
-  const p4 = mat4_multiply_vec4(transposed, {x: Number(cx), y: Number(cy) - Number(ry), z: 0, w: 1});
+  const p1 = mat4_multiply_vec4(transposed, { x: Number(cx) - Number(rx), y: Number(cy), z: 0, w: 1 });
+  const p2 = mat4_multiply_vec4(transposed, { x: Number(cx) + Number(rx), y: Number(cy), z: 0, w: 1 });
+  const p3 = mat4_multiply_vec4(transposed, { x: Number(cx), y: Number(cy) + Number(ry), z: 0, w: 1 });
+  const p4 = mat4_multiply_vec4(transposed, { x: Number(cx), y: Number(cy) - Number(ry), z: 0, w: 1 });
   return {
     elementName: 'g',
     attributes: {
@@ -172,13 +172,13 @@ export const ellipse = (id, {cx, cy, rx, ry}, layoutAncestry, controlPointScale,
   };
 };
 
-export const polygon = (id, {points}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const polygon = (id, { points }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   transpose(transform, transform);
   const pts = SVGPoints.polyPointsStringToPoints(points);
   for (const i in pts) {
     const pt = pts[i];
-    const vec = {x: pt[0], y: pt[1], z: 0, w: 1};
+    const vec = { x: pt[0], y: pt[1], z: 0, w: 1 };
     const out = mat4_multiply_vec4(transform, vec);
     pt[0] = out.x;
     pt[1] = out.y;
@@ -201,27 +201,27 @@ export const polygon = (id, {points}, layoutAncestry, controlPointScale, selecte
         },
       },
       ...pts.map((pt, i) => {
-        return anchorPoint(i, null, selectedAnchorIndices && selectedAnchorIndices.includes(i), controlPointScale, {x: pt[0], y: pt[1]});
+        return anchorPoint(i, null, selectedAnchorIndices && selectedAnchorIndices.includes(i), controlPointScale, { x: pt[0], y: pt[1] });
       }),
     ],
   };
 };
 
-export const path = (id, {d}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const path = (id, { d }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   transpose(transform, transform);
 
   const points = SVGPoints.pathToPoints(d);
   for (const i in points) {
     const pt = points[i];
-    const vec = {x: pt.x, y: pt.y, z: 0, w: 1};
+    const vec = { x: pt.x, y: pt.y, z: 0, w: 1 };
     const out = mat4_multiply_vec4(transform, vec);
     pt.x = out.x;
     pt.y = out.y;
 
     if (pt.curve && pt.curve.x1 !== undefined && pt.curve.x2 !== undefined) {
-      const vec1 = {x: pt.curve.x1, y: pt.curve.y1, z: 0, w: 1};
-      const vec2 = {x: pt.curve.x2, y: pt.curve.y2, z: 0, w: 1};
+      const vec1 = { x: pt.curve.x1, y: pt.curve.y1, z: 0, w: 1 };
+      const vec2 = { x: pt.curve.x2, y: pt.curve.y2, z: 0, w: 1 };
       const out1 = mat4_multiply_vec4(transform, vec1);
       const out2 = mat4_multiply_vec4(transform, vec2);
       pt.curve.x1 = out1.x;
@@ -233,8 +233,8 @@ export const path = (id, {d}, layoutAncestry, controlPointScale, selectedAnchorI
   const handles = [];
   for (let i = 0; i < points.length; i++) {
     if (points[i].curve) {
-      handles.push({x: points[i].curve.x1, y: points[i].curve.y1, pointIndex: i, handleIndex: 0});
-      handles.push({x: points[i].curve.x2, y: points[i].curve.y2, pointIndex: i, handleIndex: 1});
+      handles.push({ x: points[i].curve.x1, y: points[i].curve.y1, pointIndex: i, handleIndex: 0 });
+      handles.push({ x: points[i].curve.x2, y: points[i].curve.y2, pointIndex: i, handleIndex: 1 });
     }
   }
   const anchors = getLogicalAnchorsFromPoints(points);
@@ -287,11 +287,11 @@ export const path = (id, {d}, layoutAncestry, controlPointScale, selectedAnchorI
   };
 };
 
-export const line = (id, {x1, y1, x2, y2}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const line = (id, { x1, y1, x2, y2 }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   transpose(transform, transform);
-  const p1 = mat4_multiply_vec4(transform, {x: Number(x1), y: Number(y1), z: 0, w: 1});
-  const p2 = mat4_multiply_vec4(transform, {x: Number(x2), y: Number(y2), z: 0, w: 1});
+  const p1 = mat4_multiply_vec4(transform, { x: Number(x1), y: Number(y1), z: 0, w: 1 });
+  const p2 = mat4_multiply_vec4(transform, { x: Number(x2), y: Number(y2), z: 0, w: 1 });
 
   return {
     elementName: 'g',
@@ -318,13 +318,13 @@ export const line = (id, {x1, y1, x2, y2}, layoutAncestry, controlPointScale, se
   };
 };
 
-export const polyline = (id, {points}, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
+export const polyline = (id, { points }, layoutAncestry, controlPointScale, selectedAnchorIndices) => {
   const transform = Layout3D.multiplyArrayOfMatrices(layoutAncestry.reverse());
   transpose(transform, transform);
   const pts = SVGPoints.polyPointsStringToPoints(points);
   for (const i in pts) {
     const pt = pts[i];
-    const vec = {x: pt[0], y: pt[1], z: 0, w: 1};
+    const vec = { x: pt[0], y: pt[1], z: 0, w: 1 };
     const out = mat4_multiply_vec4(transform, vec);
     pt[0] = out.x;
     pt[1] = out.y;
@@ -346,10 +346,10 @@ export const polyline = (id, {points}, layoutAncestry, controlPointScale, select
         },
       },
       ...pts.map((pt, i) => {
-        return anchorPoint(i, null, selectedAnchorIndices && selectedAnchorIndices.includes(i), controlPointScale, {x: pt[0], y: pt[1]});
+        return anchorPoint(i, null, selectedAnchorIndices && selectedAnchorIndices.includes(i), controlPointScale, { x: pt[0], y: pt[1] });
       }),
     ],
   };
 };
 
-export default {ellipse, circle, polygon, rect, path, line, polyline};
+export default { ellipse, circle, polygon, rect, path, line, polyline };

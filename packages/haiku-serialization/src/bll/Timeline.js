@@ -2,7 +2,7 @@ import numeral from 'numeral';
 import TimelineProperty from 'haiku-serialization/src/bll/TimelineProperty.js';
 import BaseModel from './BaseModel.js';
 import MathUtils from './MathUtils.js';
-import { default as formatSeconds } from 'haiku-ui-common/lib/helpers/formatSeconds.js';
+import { default as formatSeconds } from 'haiku-ui-common/lib/helpers/formatSeconds.mjs';
 import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 
 const DURATION_DRAG_INCREASE = 20; // Increase by this much per each duration increase

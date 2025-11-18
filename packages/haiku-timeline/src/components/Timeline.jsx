@@ -14,8 +14,8 @@ import * as Keyframe from "haiku-serialization/src/bll/Keyframe.js";
 import * as Property from "haiku-serialization/src/bll/Property.js";
 import * as requestElementCoordinates from "haiku-serialization/src/utils/requestElementCoordinates.js";
 import * as EmitterManager from "haiku-serialization/src/utils/EmitterManager.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
-import PopoverMenu from "haiku-ui-common/lib/electron/PopoverMenu.js";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
+import PopoverMenu from "haiku-ui-common/lib/electron/PopoverMenu.mjs";
 import BezierPopup from "./BezierPopup";
 import ControlsArea from "./ControlsArea";
 import ComponentRows from "./ComponentRows";
@@ -42,7 +42,7 @@ import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import {
   Experiment,
   experimentIsEnabled
-} from "haiku-common/src/experiments.js";
+} from "haiku-common/lib/experiments.mjs";
 import zIndex from "./styles/zIndex";
 import Globals from "haiku-ui-common/lib/Globals.mjs";
 
@@ -205,9 +205,9 @@ class Timeline extends React.Component {
           // therefore we stop the marquee selection by returning `false`.
           return !(
             event.clientX <
-              this.getActiveComponent()
-                .getCurrentTimeline()
-                .getPropertiesPixelWidth() ||
+            this.getActiveComponent()
+              .getCurrentTimeline()
+              .getPropertiesPixelWidth() ||
             typeof event.target.className !== "string" ||
             event.target.className.includes("js-avoid-marquee-init")
           );
@@ -306,7 +306,7 @@ class Timeline extends React.Component {
       window,
       "drop",
       event => {
-        this.project.linkExternalAssetOnDrop(event, () => {});
+        this.project.linkExternalAssetOnDrop(event, () => { });
       },
       false
     );
@@ -446,7 +446,7 @@ class Timeline extends React.Component {
           this.project.setCurrentActiveComponent(
             message.data,
             { from: "timeline" },
-            () => {}
+            () => { }
           );
           break;
 
@@ -545,7 +545,7 @@ class Timeline extends React.Component {
 
         case "component:reload":
           if (this.getActiveComponent()) {
-            this.getActiveComponent().moduleReplace(() => {});
+            this.getActiveComponent().moduleReplace(() => { });
           }
           break;
 
@@ -640,7 +640,7 @@ class Timeline extends React.Component {
       this.project.setCurrentActiveComponent(
         process.env.AUTOSTART,
         { from: "timeline" },
-        () => {}
+        () => { }
       );
     }
   }
@@ -1209,7 +1209,7 @@ class Timeline extends React.Component {
       Keyframe.deselectAndDeactivateAllKeyframes({
         component: this.getActiveComponent()
       });
-      this.project.undo({}, { from: "timeline" }, () => {});
+      this.project.undo({}, { from: "timeline" }, () => { });
     }
   }
 
@@ -1218,7 +1218,7 @@ class Timeline extends React.Component {
       Keyframe.deselectAndDeactivateAllKeyframes({
         component: this.getActiveComponent()
       });
-      this.project.redo({}, { from: "timeline" }, () => {});
+      this.project.redo({}, { from: "timeline" }, () => { });
     }
   }
 
@@ -1284,9 +1284,8 @@ class Timeline extends React.Component {
       >
         <ControlsArea
           timeline={this.getActiveComponent().getCurrentTimeline()}
-          activeComponentDisplayName={`${
-            this.props.userconfig.project
-          } (${this.getActiveComponent().getTitle()})`}
+          activeComponentDisplayName={`${this.props.userconfig.project
+            } (${this.getActiveComponent().getTitle()})`}
           selectedTimelineName={this.getActiveComponent()
             .getCurrentTimeline()
             .getName()}
@@ -1296,7 +1295,7 @@ class Timeline extends React.Component {
               oldTimelineName,
               newTimelineName,
               { from: "timeline" },
-              () => {}
+              () => { }
             );
           }}
           createTimeline={timelineName => {
@@ -1304,21 +1303,21 @@ class Timeline extends React.Component {
               timelineName,
               {},
               { from: "timeline" },
-              () => {}
+              () => { }
             );
           }}
           duplicateTimeline={timelineName => {
             this.getActiveComponent().duplicateTimeline(
               timelineName,
               { from: "timeline" },
-              () => {}
+              () => { }
             );
           }}
           deleteTimeline={timelineName => {
             this.getActiveComponent().deleteTimeline(
               timelineName,
               { from: "timeline" },
-              () => {}
+              () => { }
             );
           }}
           selectTimeline={currentTimelineName => {

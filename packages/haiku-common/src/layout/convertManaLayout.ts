@@ -2,7 +2,7 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import { BytecodeNode, PrimitiveType } from "@haiku/core/lib/api.js";
+import { BytecodeNode, PrimitiveType } from "@haiku/core/lib/api/index.js";
 import { visitManaTree } from "@haiku/core/lib/HaikuNode.js";
 import { SVG_SIZEABLES } from "@haiku/core/lib/layout/applyCssLayout.js";
 import Layout3D, { AUTO_SIZING_TOKEN } from "@haiku/core/lib/Layout3D.js";

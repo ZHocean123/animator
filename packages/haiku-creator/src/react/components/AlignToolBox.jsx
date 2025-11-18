@@ -3,9 +3,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as Popover from 'react-popover';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {BTN_STYLES} from '../styles/btnShared';
-import {AlignDistributeIcons} from 'haiku-ui-common/lib/react/OtherIcons.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import { BTN_STYLES } from '../styles/btnShared';
+import { AlignDistributeIcons } from 'haiku-ui-common/lib/react/OtherIcons.mjs';
 
 const STYLES = {
   alignDistributeBtn: {
@@ -31,7 +31,7 @@ const STYLES = {
 };
 
 class AlignToolBox extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.clickPopover = this.clickPopover.bind(this);
@@ -43,7 +43,7 @@ class AlignToolBox extends React.PureComponent {
     };
   }
 
-  clickPopover () {
+  clickPopover() {
     if (this.state.isPopoverOpen) {
       this.hidePopover();
     } else {
@@ -51,17 +51,17 @@ class AlignToolBox extends React.PureComponent {
     }
   }
 
-  showPopover () {
-    this.setState({isPopoverOpen: true});
+  showPopover() {
+    this.setState({ isPopoverOpen: true });
     mixpanel.haikuTrack('creator:align-tool-box:open');
   }
 
-  hidePopover () {
-    this.setState({isPopoverOpen: false});
+  hidePopover() {
+    this.setState({ isPopoverOpen: false });
     mixpanel.haikuTrack('creator:align-tool-box:close');
   }
 
-  performAlign (xEdge, yEdge) {
+  performAlign(xEdge, yEdge) {
     const toStage = this.refs.to_stage_toggle && this.refs.to_stage_toggle.checked; // TODO:  get selection value of checkbox
     this.props.websocket.send({
       type: 'broadcast',
@@ -74,7 +74,7 @@ class AlignToolBox extends React.PureComponent {
     });
   }
 
-  performDistribute (xEdge, yEdge) {
+  performDistribute(xEdge, yEdge) {
     const toStage = this.refs.to_stage_toggle && this.refs.to_stage_toggle.checked;
     this.props.websocket.send({
       type: 'broadcast',
@@ -100,11 +100,11 @@ class AlignToolBox extends React.PureComponent {
   performDistributeHMid = () => this.performDistribute(undefined, .5);
   performDistributeHBottom = () => this.performDistribute(undefined, 1);
 
-  get popoverBody () {
+  get popoverBody() {
     return (
       <div style={STYLES.alignPanel}>
-        <div style={{margin: '0 3px 2px 0'}}>Align:</div>
-        <div style={{height: 27}}>
+        <div style={{ margin: '0 3px 2px 0' }}>Align:</div>
+        <div style={{ height: 27 }}>
           <button
             onClick={this.performAlignVLeft}
             key="btn-align-v-left"
@@ -163,67 +163,67 @@ class AlignToolBox extends React.PureComponent {
             </span>
           </button>
         </div>
-        <div style={{margin: '5px 3px 2px 0'}}>Distribute:</div>
-          <div style={{height: 27}}>
-            <button
-              onClick={this.performDistributeHTop}
-              key="btn-dist-v-left"
-              title="Distribute vertical-left"
-              style={STYLES.alignDistributeBtn}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeHTop />
-              </span>
-            </button>
-            <button
-              onClick={this.performDistributeHMid}
-              key="btn-dist-v-mid"
-              title="Distribute vertical-center"
-              style={STYLES.alignDistributeBtn}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeHMid />
-              </span>
-            </button>
-            <button
-              onClick={this.performDistributeHBottom}
-              key="btn-dist-v-right"
-              title="Distribute vertical-right"
-              style={{
-                ...STYLES.alignDistributeBtn,
-                marginRight: 18,
-              }}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeHBottom />
-              </span>
-            </button>
-            <button
-              onClick={this.performDistributeVLeft}
-              key="btn-dist-h-top"
-              title="Distribute horizontal-top"
-              style={STYLES.alignDistributeBtn}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeVLeft />
-              </span>
-            </button>
-            <button
-              onClick={this.performDistributeVMid}
-              key="btn-dist-h-mid"
-              title="Distribute horizontal-middle"
-              style={STYLES.alignDistributeBtn}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeVMid />
-              </span>
-            </button>
-            <button
-              onClick={this.performDistributeVRight}
-              key="btn-dist-h-bottom"
-              title="Distribute horizontal-bottom"
-              style={STYLES.alignDistributeBtn}>
-              <span style={STYLES.alignDistributeIconWrapper}>
-                <AlignDistributeIcons.DistributeVRight />
-              </span>
-            </button>
+        <div style={{ margin: '5px 3px 2px 0' }}>Distribute:</div>
+        <div style={{ height: 27 }}>
+          <button
+            onClick={this.performDistributeHTop}
+            key="btn-dist-v-left"
+            title="Distribute vertical-left"
+            style={STYLES.alignDistributeBtn}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeHTop />
+            </span>
+          </button>
+          <button
+            onClick={this.performDistributeHMid}
+            key="btn-dist-v-mid"
+            title="Distribute vertical-center"
+            style={STYLES.alignDistributeBtn}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeHMid />
+            </span>
+          </button>
+          <button
+            onClick={this.performDistributeHBottom}
+            key="btn-dist-v-right"
+            title="Distribute vertical-right"
+            style={{
+              ...STYLES.alignDistributeBtn,
+              marginRight: 18,
+            }}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeHBottom />
+            </span>
+          </button>
+          <button
+            onClick={this.performDistributeVLeft}
+            key="btn-dist-h-top"
+            title="Distribute horizontal-top"
+            style={STYLES.alignDistributeBtn}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeVLeft />
+            </span>
+          </button>
+          <button
+            onClick={this.performDistributeVMid}
+            key="btn-dist-h-mid"
+            title="Distribute horizontal-middle"
+            style={STYLES.alignDistributeBtn}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeVMid />
+            </span>
+          </button>
+          <button
+            onClick={this.performDistributeVRight}
+            key="btn-dist-h-bottom"
+            title="Distribute horizontal-bottom"
+            style={STYLES.alignDistributeBtn}>
+            <span style={STYLES.alignDistributeIconWrapper}>
+              <AlignDistributeIcons.DistributeVRight />
+            </span>
+          </button>
         </div>
-        <div style={{margin: '9px 3px 2px 0'}}>
+        <div style={{ margin: '9px 3px 2px 0' }}>
           <label>
             <input type="checkbox" ref="to_stage_toggle" /> To Stage
           </label>
@@ -232,7 +232,7 @@ class AlignToolBox extends React.PureComponent {
     );
   }
 
-  render () {
+  render() {
     return (
       <Popover
         onOuterAction={this.hidePopover}
@@ -243,17 +243,17 @@ class AlignToolBox extends React.PureComponent {
         body={this.popoverBody}
       >
         <button
-            key="show-align-panel-button"
-            aria-label="Show align options"
-            data-tooltip={true}
-            data-tooltip-bottom-right={true}
-            id="show-align-panel-button"
-            onClick={this.clickPopover}
-            style={STYLES.alignDistributeBtn}>
-            <span style={{...STYLES.alignDistributeIconWrapper, transform: 'scale(0.5)', opacity: 0.602}}>
-              <AlignDistributeIcons.AlignVLeft />
-            </span>
-          </button>
+          key="show-align-panel-button"
+          aria-label="Show align options"
+          data-tooltip={true}
+          data-tooltip-bottom-right={true}
+          id="show-align-panel-button"
+          onClick={this.clickPopover}
+          style={STYLES.alignDistributeBtn}>
+          <span style={{ ...STYLES.alignDistributeIconWrapper, transform: 'scale(0.5)', opacity: 0.602 }}>
+            <AlignDistributeIcons.AlignVLeft />
+          </span>
+        </button>
       </Popover>
     );
   }

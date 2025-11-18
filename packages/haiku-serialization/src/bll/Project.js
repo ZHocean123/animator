@@ -26,7 +26,7 @@ const {
   getProjectNameLowerCase,
   readPackageJson,
   getAngularSelectorName,
-} = require('@haiku/sdk-client/lib/ProjectDefinitions.js.js');
+} = require('@haiku/sdk-client/lib/ProjectDefinitions.js.mjs');
 
 const SILENT_METHODS = {
   hoverElement: true,

@@ -1,5 +1,5 @@
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import {throttle} from 'lodash-es';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import { throttle } from 'lodash-es';
 import * as React from 'react';
 import RowManager from './RowManager';
 
@@ -7,11 +7,11 @@ export interface ComponentRowsProps {
   rowHeight: number;
   propertiesPixelWidth: number;
   mixpanel: any;
-  getActiveComponent (): any;
-  showEventHandlersEditor (): void;
-  onDoubleClickToMoveGauge (): void;
-  setEditingRowTitleStatus (): void;
-  showBezierEditor (): void;
+  getActiveComponent(): any;
+  showEventHandlersEditor(): void;
+  onDoubleClickToMoveGauge(): void;
+  setEditingRowTitleStatus(): void;
+  showBezierEditor(): void;
 }
 
 export default class ComponentRows extends React.Component<ComponentRowsProps> {
@@ -22,16 +22,16 @@ export default class ComponentRows extends React.Component<ComponentRowsProps> {
     currentDraggingComponent: '',
   };
 
-  componentDidMount () {
+  componentDidMount() {
     this.timelineViewport = document.getElementById('timeline');
   }
 
   enterDragState = (componentID: string) => {
-    this.setState({forceCollapse: true, currentDraggingComponent: componentID});
+    this.setState({ forceCollapse: true, currentDraggingComponent: componentID });
   };
 
   leaveDragState = () => {
-    this.setState({forceCollapse: false, currentDraggingComponent: ''});
+    this.setState({ forceCollapse: false, currentDraggingComponent: '' });
   };
 
   onDragOver = (event: React.DragEvent<any>) => {
@@ -54,7 +54,7 @@ export default class ComponentRows extends React.Component<ComponentRowsProps> {
     });
   }, 60);
 
-  render () {
+  render() {
     const activeComponent = this.props.getActiveComponent();
     const groups = activeComponent.getDisplayableRowsGroupedByElementInZOrder();
 

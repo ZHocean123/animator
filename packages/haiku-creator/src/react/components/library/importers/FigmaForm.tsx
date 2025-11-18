@@ -3,7 +3,7 @@ import * as figmaModule from "haiku-serialization/src/bll/Figma.js";
 const { Figma } = figmaModule;
 // @ts-ignore
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
 import * as React from "react";
 import { BTN_STYLES } from "../../../styles/btnShared";
 import { DASH_STYLES } from "../../../styles/dashShared";

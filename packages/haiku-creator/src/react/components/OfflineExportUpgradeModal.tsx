@@ -1,10 +1,10 @@
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel.js';
-import Palette from 'haiku-ui-common/lib/Palette.js';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.js';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
+import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.mjs';
+import { ModalFooter, ModalHeader, ModalWrapper } from 'haiku-ui-common/lib/react/Modal/index.mjs';
 import * as React from 'react';
-import {BTN_STYLES} from '../styles/btnShared';
+import { BTN_STYLES } from '../styles/btnShared';
 
 const STYLES = {
   wrapper: {
@@ -42,12 +42,12 @@ const STYLES = {
 
 export interface OfflineExportUpgradeModalProps {
   explorePro: (source?: string) => void;
-  metadata: {extension: string, framerate: number};
+  metadata: { extension: string, framerate: number };
   onClose: () => void;
 }
 
 export class OfflineExportUpgradeModal extends React.PureComponent<OfflineExportUpgradeModalProps> {
-  private get source () {
+  private get source() {
     return `offline-export:${this.props.metadata.extension}:${this.props.metadata.framerate}`;
   }
 
@@ -55,11 +55,11 @@ export class OfflineExportUpgradeModal extends React.PureComponent<OfflineExport
     this.props.explorePro(this.source);
   };
 
-  componentDidMount () {
+  componentDidMount() {
     mixpanel.haikuTrack(`creator:upgrade-cta-shown:${this.source}`);
   }
 
-  render () {
+  render() {
     return (
       <ModalWrapper style={STYLES.wrapper} onEsc={this.props.onClose}>
         <ModalHeader><h2>Subscription required</h2></ModalHeader>
@@ -76,11 +76,11 @@ export class OfflineExportUpgradeModal extends React.PureComponent<OfflineExport
                   transform: 'translateY(1px)',
                 }}
               >
-                <ExternalLinkIconSVG color={Palette.LIGHT_BLUE}/>
+                <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
               </span>
             </span>
             {(this.props.metadata.framerate === 15) &&
-              <div style={{marginTop: 12}}>
+              <div style={{ marginTop: 12 }}>
                 Note that a medium quality GIF is made available with every project
                 publish. You may access it by publishing your project via the button
                 located on the top right of the menu bar.
@@ -89,7 +89,7 @@ export class OfflineExportUpgradeModal extends React.PureComponent<OfflineExport
           </div>
         </div>
         <ModalFooter>
-          <div style={{display: 'inline-block'}}>
+          <div style={{ display: 'inline-block' }}>
             <button
               key="discard-code"
               id="discard-code"

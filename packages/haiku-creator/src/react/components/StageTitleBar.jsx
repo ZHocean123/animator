@@ -7,7 +7,7 @@ import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.mjs";
 import {
   Experiment,
   experimentIsEnabled
-} from "haiku-common/src/experiments.js";
+} from "haiku-common/lib/experiments/index.mjs";
 import { EXPORTER_CHANNEL } from "haiku-sdk-creator/lib/exporter.mjs";
 import Palette from "haiku-ui-common/lib/Palette.mjs";
 import * as Color from "color";

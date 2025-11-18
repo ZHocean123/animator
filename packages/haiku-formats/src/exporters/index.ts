@@ -2,7 +2,7 @@ import { HaikuBytecode } from "@haiku/core/lib/api/index.js";
 import {
   ExporterFormat,
   ExporterRequest
-} from "haiku-sdk-creator/lib/exporter/index.js";
+} from "haiku-sdk-creator/lib/exporter/index.mjs";
 
 import { BodymovinExporter } from "./bodymovin/bodymovinExporter";
 import { GifExporter } from "./gif/gifExporter";

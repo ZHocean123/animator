@@ -1,9 +1,9 @@
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 import zIndex from './styles/zIndex';
 
 export type MouseCallback = (event?: MouseEvent) => boolean;
-export type MarqueeCallback = (rect?: DOMRect|ClientRect) => null;
+export type MarqueeCallback = (rect?: DOMRect | ClientRect) => null;
 export interface MarqueeConstructorArguments {
   onStart: MouseCallback;
   onChange: MarqueeCallback;
@@ -12,8 +12,8 @@ export interface MarqueeConstructorArguments {
 }
 
 class Marquee {
-  private initialCursorPos = {x: 0, y: 0};
-  private initialScroll = {x: 0, y: 0};
+  private initialCursorPos = { x: 0, y: 0 };
+  private initialScroll = { x: 0, y: 0 };
   private onStart: MouseCallback;
   private onChange: MarqueeCallback;
   private onFinish: MarqueeCallback;
@@ -21,7 +21,7 @@ class Marquee {
   private selector: HTMLDivElement;
   private areaClass = 'marquee-selection-active';
 
-  constructor ({onStart, onChange, onFinish, area}: MarqueeConstructorArguments) {
+  constructor({ onStart, onChange, onFinish, area }: MarqueeConstructorArguments) {
     this.onStart = onStart;
     this.onChange = onChange;
     this.onFinish = onFinish;
@@ -29,7 +29,7 @@ class Marquee {
     this.selector = this.createSelector();
   }
 
-  start () {
+  start() {
     this.area.addEventListener('mousedown', this.startUp);
   }
 
@@ -48,7 +48,7 @@ class Marquee {
     document.addEventListener('mouseup', this.reset);
   };
 
-  private getStartingPositions (event: MouseEvent) {
+  private getStartingPositions(event: MouseEvent) {
     this.initialCursorPos = this.getCursorPos(event, this.area);
     this.initialScroll = this.getScroll(this.area);
     const top = this.initialCursorPos.x + this.initialScroll.x;
@@ -76,7 +76,7 @@ class Marquee {
     this.onChange(this.selector.getBoundingClientRect());
   };
 
-  private createSelector () {
+  private createSelector() {
     const selector = document.createElement('div');
     selector.style.position = 'absolute';
     selector.style.background = Color(Palette.ROCK).alpha(0.25).rgb().toString();
@@ -88,7 +88,7 @@ class Marquee {
     return selector;
   }
 
-  private getPosition (event: MouseEvent) {
+  private getPosition(event: MouseEvent) {
     const cursorPosNew = this.getCursorPos(event, this.area);
     const scrollNew = this.getScroll(this.area);
 
@@ -145,9 +145,9 @@ class Marquee {
     this.selector.style.display = 'none';
   };
 
-  private getCursorPos (event: MouseEvent, area: HTMLElement) {
+  private getCursorPos(event: MouseEvent, area: HTMLElement) {
     if (!event) {
-      return {x: 0, y: 0};
+      return { x: 0, y: 0 };
     }
 
     const areaRect = area.getBoundingClientRect();
@@ -158,14 +158,14 @@ class Marquee {
     };
   }
 
-  private getScroll (area: HTMLElement) {
+  private getScroll(area: HTMLElement) {
     return {
       y: area.scrollTop,
       x: area.scrollLeft,
     };
   }
 
-  private updatePos (node: HTMLElement, pos: DOMRect) {
+  private updatePos(node: HTMLElement, pos: DOMRect) {
     node.style.left = pos.x + 'px';
     node.style.top = pos.y + 'px';
     node.style.width = pos.width + 'px';

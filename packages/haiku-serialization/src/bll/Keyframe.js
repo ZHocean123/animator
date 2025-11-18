@@ -1,8 +1,8 @@
 import { default as HaikuComponent } from '@haiku/core/lib/HaikuComponent.js';
 import { default as expressionToRO } from '@haiku/core/lib/reflection/expressionToRO.js';
 import { Curve } from '@haiku/core/lib/api/index.js';
-import { isDecomposableCurve } from 'haiku-formats/lib/exporters/curves.js';
-import { getCurveInterpolationPoints } from 'haiku-formats/lib/exporters/curves.js';
+import { isDecomposableCurve } from 'haiku-formats/lib/exporters/curves.mjs';
+import { getCurveInterpolationPoints } from 'haiku-formats/lib/exporters/curves.mjs';
 import BaseModel from './BaseModel.js';
 
 /**

@@ -3,25 +3,25 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import * as Radium from "radium";
 import * as Popover from "react-popover";
-import { ProjectError } from "haiku-sdk-creator/lib/bll/Project.js";
-import Palette from "haiku-ui-common/lib/Palette.js";
+import { ProjectError } from "haiku-sdk-creator/lib/bll/Project.mjs";
+import Palette from "haiku-ui-common/lib/Palette.mjs";
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import NotificationExplorer from "./notifications/NotificationExplorer";
 import ProjectThumbnail from "./ProjectThumbnail";
-import { TourUtils } from "haiku-common/lib/types/enums.js";
-import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour.js";
+import { TourUtils } from "haiku-common/lib/types/enums.mjs";
+import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour/index.mjs";
 import {
   UserIconSVG,
   LogOutSVG,
   PresentIconSVG
-} from "haiku-ui-common/lib/react/OtherIcons.js";
-import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG.js";
-import ExternalLinkSVG from "haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.js";
+} from "haiku-ui-common/lib/react/OtherIcons.mjs";
+import AnimatorSVG from "haiku-ui-common/lib/react/icons/AnimatorSVG.mjs";
+import ExternalLinkSVG from "haiku-ui-common/lib/react/icons/ExternalLinkIconSVG.mjs";
 import { DASH_STYLES } from "../styles/dashShared";
 import { BTN_STYLES } from "../styles/btnShared";
 import LockoutModal from "./LockoutModal";
-import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink.js";
-import { Paginator } from "haiku-ui-common/lib/react/Paginator.js";
+import { ExternalLink } from "haiku-ui-common/lib/react/ExternalLink.mjs";
+import { Paginator } from "haiku-ui-common/lib/react/Paginator.mjs";
 import * as NoCon from "@haiku/taylor-nocon/react"; // Actual Ku Credit: Ms Tina!
 
 const STYLES = {
@@ -211,7 +211,7 @@ class ProjectBrowser extends React.Component {
           });
           // Oops, we actually didn't delete this project. Let's put it back.
           projectToDelete.isDeleted = false;
-          this.setState({ projectsList }, () => {});
+          this.setState({ projectsList }, () => { });
           return;
         }
 
@@ -506,10 +506,10 @@ class ProjectBrowser extends React.Component {
                 allowInteractions={
                   this.props.expiredTrialNonPro
                     ? !(
-                        this.state.areProjectsLoading ||
-                        !projectObject.repositoryUrl ||
-                        projectObject.isFork
-                      )
+                      this.state.areProjectsLoading ||
+                      !projectObject.repositoryUrl ||
+                      projectObject.isFork
+                    )
                     : !this.state.areProjectsLoading
                 }
                 organizationName={this.props.organizationName}
@@ -775,8 +775,7 @@ class ProjectBrowser extends React.Component {
           {trialDaysRemaining > 0 && (
             <span style={{ marginRight: 8 }}>
               {trialDaysRemaining +
-                ` day${trialDaysRemaining === 1 ? "" : "s"} remain${
-                  trialDaysRemaining === 1 ? "s" : ""
+                ` day${trialDaysRemaining === 1 ? "" : "s"} remain${trialDaysRemaining === 1 ? "s" : ""
                 } in your free trial`}
             </span>
           )}

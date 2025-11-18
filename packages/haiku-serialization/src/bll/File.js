@@ -11,7 +11,7 @@ import * as Lock from './Lock.js';
 const Cache = require('./Cache');
 const {
   bootstrapSceneFilesSync,
-} = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync.js.js');
+} = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync.js.mjs');
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.

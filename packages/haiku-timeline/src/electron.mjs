@@ -5,7 +5,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
-import TopMenu from "haiku-common/lib/electron/TopMenu.js";
+import TopMenu from "haiku-common/lib/electron/TopMenu.mjs";
 
 /**
  * This file is bypassed when loaded in the full app.

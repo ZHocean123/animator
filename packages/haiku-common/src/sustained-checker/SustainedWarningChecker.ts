@@ -4,7 +4,7 @@
  *
  * TODO: Move this file to haiku-creator
  */
-import {BytecodeSummonable} from '@haiku/core/lib/api.js';
+import {BytecodeSummonable} from '@haiku/core/lib/api/index.js';
 import HaikuComponent from '@haiku/core/lib/HaikuComponent.js';
 
 export enum SustainedWarningKind {
