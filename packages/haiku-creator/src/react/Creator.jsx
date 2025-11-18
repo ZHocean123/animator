@@ -72,7 +72,7 @@ import { isMac, isWindows } from "haiku-common/src/environments/os.js";
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = "creator";
 
-const pkg = require("./../../package.json");
+const pkg = require("../../package.json");
 
 const mixpanel = require("haiku-serialization/src/utils/Mixpanel");
 
