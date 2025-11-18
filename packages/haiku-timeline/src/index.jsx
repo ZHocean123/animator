@@ -6,10 +6,10 @@ import * as qs from "qs";
 import * as Websocket from "haiku-serialization/src/ws/Websocket.js";
 import * as MockWebsocket from "haiku-serialization/src/ws/MockWebsocket.js";
 import Timeline from "./components/Timeline";
-import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.js";
+import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.mjs";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
-import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.js";
-import { shouldEmitErrors } from "haiku-common/src/environments.js";
+import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
+import { shouldEmitErrors } from "haiku-common/src/environments/index.js";
 
 // We are in a webview; use query string parameters for boot-up configuration
 const search = (window.location.search || "").split("?")[1] || "";
@@ -19,7 +19,7 @@ if (config.dotenv) {
   Object.assign(global.process.env, config.dotenv);
 }
 
-const mixpanel = require("haiku-serialization/src/utils/Mixpanel");
+import mixpanel from "haiku-serialization/src/utils/Mixpanel";
 
 global.sentryReporter = new SentryReporter();
 window.Raven.config(

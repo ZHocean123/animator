@@ -1,16 +1,16 @@
 import { client } from "@haiku/sdk-client";
 import { inkstone } from "@haiku/sdk-inkstone";
-import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.js";
+import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.mjs";
 
 import {
   DEFAULT_BRANCH_NAME,
   fetchProjectConfigInfo,
   getHaikuComponentInitialVersion,
   storeConfigValues
-} from "@haiku/sdk-client/lib/ProjectDefinitions.js";
+} from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
 
-import { bootstrapSceneFilesSync } from "@haiku/sdk-client/lib/bootstrapSceneFilesSync.js";
-import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
+import { bootstrapSceneFilesSync } from "@haiku/sdk-client/lib/bootstrapSceneFilesSync.mjs";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.mjs";
 
 import chalk from "chalk";
 import { execSync } from "child_process";

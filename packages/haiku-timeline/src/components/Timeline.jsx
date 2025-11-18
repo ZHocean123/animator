@@ -33,18 +33,18 @@ import PropertiesPanelResizer from "./PropertiesPanelResizer";
 import {
   InteractionMode,
   isPreviewMode
-} from "haiku-ui-common/lib/interactionModes.js";
-import EnvoyClient from "haiku-sdk-creator/lib/envoy/EnvoyClient.js";
-import { ERROR_CHANNEL } from "haiku-sdk-creator/lib/bll/Error.js";
-import { USER_CHANNEL, UserSettings } from "haiku-sdk-creator/lib/bll/User.js";
-import { EXPORTER_CHANNEL } from "haiku-sdk-creator/lib/exporter/index.js";
+} from "haiku-ui-common/lib/interactionModes.mjs";
+import EnvoyClient from "haiku-sdk-creator/lib/envoy/EnvoyClient.mjs";
+import { ERROR_CHANNEL } from "haiku-sdk-creator/lib/bll/Error.mjs";
+import { USER_CHANNEL, UserSettings } from "haiku-sdk-creator/lib/bll/User.mjs";
+import { EXPORTER_CHANNEL } from "haiku-sdk-creator/lib/exporter/index.mjs";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import {
   Experiment,
   experimentIsEnabled
 } from "haiku-common/src/experiments.js";
 import zIndex from "./styles/zIndex";
-import Globals from "haiku-ui-common/lib/Globals.js";
+import Globals from "haiku-ui-common/lib/Globals.mjs";
 
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = "timeline";

@@ -7,9 +7,9 @@ import { shouldEmitErrors } from "haiku-common/src/environments.js";
 import * as Websocket from "haiku-serialization/src/ws/Websocket.js";
 import * as MockWebsocket from "haiku-serialization/src/ws/MockWebsocket.js";
 import Glass from "./Glass";
-import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.js";
+import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.mjs";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
-import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.js";
+import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
 const mixpanel = require("haiku-serialization/src/utils/Mixpanel");
 
 // We are in a webview; use query string parameters for boot-up configuration

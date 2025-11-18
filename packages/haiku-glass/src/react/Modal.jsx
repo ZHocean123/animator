@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette.js';
+import Palette from 'haiku-ui-common/lib/Palette.mjs';
 
 export const MODAL_STYLES = {
   wrapper: {
@@ -61,7 +61,7 @@ export default class Modal extends React.Component {
       <div
         className="glass-modal"
         style={{
-          position: 'fixed' as const,
+          position: 'fixed',
           display: 'table',
           top: 0,
           left: 0,
@@ -73,7 +73,7 @@ export default class Modal extends React.Component {
           className="glass-modal-inner"
           style={{
             display: 'table-cell',
-            textAlign: 'center' as const,
+            textAlign: 'center',
             verticalAlign: 'middle',
           }}>
           {this.props.children}

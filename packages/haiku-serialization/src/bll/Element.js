@@ -2517,6 +2517,11 @@ Element.deselectAllOtherElements = (criteria, target, metadata) => {
   );
 };
 
+// Setter function for ESM compatibility
+Element.setDirectlySelected = (value) => {
+  Element.directlySelected = value;
+};
+
 export default Element;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME

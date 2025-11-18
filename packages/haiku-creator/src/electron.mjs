@@ -1,9 +1,8 @@
 import * as EventEmitter from "events";
-import * as http from "http";
-import * as https from "https";
 import * as path from "path";
 import { parse } from "url";
 import { inherits } from "util";
+import { setBothGlobalAgents } from "./utils/httpProxy.js";
 
 import {
   BrowserWindow,
@@ -19,18 +18,19 @@ import * as qs from "qs";
 
 import * as fs from "fs";
 
-import { isProxied, ProxyType } from "haiku-common/lib/proxies.js";
-import TopMenu from "haiku-common/lib/electron/TopMenu.js";
+import { isProxied, ProxyType } from "haiku-common/lib/proxies/index.mjs";
+import TopMenu from "haiku-common/lib/electron/TopMenu.mjs";
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import * as ensureTrailingSlash from "haiku-serialization/src/utils/ensureTrailingSlash.js";
 import logger from "haiku-serialization/src/utils/LoggerInstance.js";
-import { isMac, isWindows } from "haiku-common/lib/environments/os.js";
+import { isMac, isWindows } from "haiku-common/lib/environments/os.mjs";
 import _ from "lodash-es";
 import fse from "fs-extra";
 const { writeJSON } = fse;
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { autoUpdater } from "electron-updater";
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 
 if (!app) {
   throw new Error("You can only run electron.js from an electron process");
@@ -301,9 +301,7 @@ function createWindow() {
   // its own websocket connections to our plumbing server, etc.
   browserWindow.webContents.on("did-finish-load", () => {
     const ses = session.fromPartition("persist:name");
-    https.globalAgent = http.globalAgent = new ElectronProxyAgent(
-      session.defaultSession
-    );
+    setBothGlobalAgents(new ElectronProxyAgent(session.defaultSession));
 
     ses.resolveProxy(haiku.plumbing.url, proxy => {
       haiku.proxy = {

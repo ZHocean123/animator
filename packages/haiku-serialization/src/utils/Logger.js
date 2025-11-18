@@ -2,8 +2,8 @@ import path from 'node:path';
 import winston from 'winston';
 import jsonStringify from 'fast-safe-stringify';
 import { EventEmitter } from 'events';
-import { isProduction } from 'haiku-common/lib/environments/index.js';
-import { isWindows } from 'haiku-common/lib/environments/os.js';
+import { isProduction } from 'haiku-common/lib/environments/index.mjs';
+import { isWindows } from 'haiku-common/lib/environments/os.mjs';
 import 'colors';
 
 const formatJsonLogToString = (message) => {

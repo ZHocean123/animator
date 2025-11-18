@@ -7,34 +7,34 @@ import * as qs from "qs";
 import * as WebSocket from "ws";
 import { EventEmitter } from "events";
 import { fileURLToPath } from "node:url";
-import EnvoyServer from "haiku-sdk-creator/lib/envoy/EnvoyServer.js";
-import EnvoyLogger from "haiku-sdk-creator/lib/envoy/EnvoyLogger.js";
+import EnvoyServer from "haiku-sdk-creator/lib/envoy/EnvoyServer.mjs";
+import EnvoyLogger from "haiku-sdk-creator/lib/envoy/EnvoyLogger.mjs";
 import {
   EXPORTER_CHANNEL,
   ExporterHandler
-} from "haiku-sdk-creator/lib/exporter/index.js";
+} from "haiku-sdk-creator/lib/exporter/index.mjs";
 import {
   ERROR_CHANNEL,
   ErrorHandler
-} from "haiku-sdk-creator/lib/bll/Error.js";
-import { USER_CHANNEL, UserHandler } from "haiku-sdk-creator/lib/bll/User.js";
+} from "haiku-sdk-creator/lib/bll/Error.mjs";
+import { USER_CHANNEL, UserHandler } from "haiku-sdk-creator/lib/bll/User.mjs";
 import {
   PROJECT_CHANNEL,
   ProjectHandler
-} from "haiku-sdk-creator/lib/bll/Project.js";
+} from "haiku-sdk-creator/lib/bll/Project.mjs";
 import {
   GLASS_CHANNEL,
   GlassHandler
-} from "haiku-sdk-creator/lib/glass/index.js";
+} from "haiku-sdk-creator/lib/glass/index.mjs";
 import {
   TIMELINE_CHANNEL,
   TimelineHandler
-} from "haiku-sdk-creator/lib/timeline/index.js";
-import { TOUR_CHANNEL, TourHandler } from "haiku-sdk-creator/lib/tour/index.js";
+} from "haiku-sdk-creator/lib/timeline/index.mjs";
+import { TOUR_CHANNEL, TourHandler } from "haiku-sdk-creator/lib/tour/index.mjs";
 import {
   SERVICES_CHANNEL,
   ServicesHandler
-} from "haiku-sdk-creator/lib/services/index.js";
+} from "haiku-sdk-creator/lib/services/index.mjs";
 import { inkstone } from "@haiku/sdk-inkstone";
 import { client as sdkClient } from "@haiku/sdk-client";
 import * as serializeError from "haiku-serialization/src/utils/serializeError.js";
@@ -43,7 +43,7 @@ import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
 import { awaitAllLocksFree } from "haiku-serialization/src/bll/Lock.js";
 import Master from "./Master.js";
-import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.js";
+import { createProjectFiles } from "@haiku/sdk-client/lib/createProjectFiles.mjs";
 import {
   copyDefaultSketchFile,
   copyDefaultIllustratorFile
@@ -383,7 +383,7 @@ export default class Plumbing extends EventEmitter {
             } else if (process.versions && !!process.versions.electron) {
               // We are in electron main (e.g. in a test context).
               global.process.env.HAIKU_ENV = JSON.stringify(haiku);
-              import("haiku-creator/src/electron.js");
+              import("haiku-creator/lib/electron.mjs");
             }
           }
 

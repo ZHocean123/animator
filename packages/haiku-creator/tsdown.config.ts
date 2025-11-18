@@ -1,11 +1,12 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['src/**/*.(t|m?j)s', 'src/**/*.(t|j)sx'],
+  entry: ['src/**/*.(t|j|mj)s', 'src/**/*.(t|j)sx'],
   outDir: 'lib',
   format: ['esm'],
   clean: true,
   dts: false,
+  hash: false,
   target: "ES2022",
   external: [
     // Workspace dependencies - mark as external to avoid bundling
@@ -15,6 +16,7 @@ export default defineConfig({
     "haiku-sdk-creator",
     "haiku-serialization",
     "haiku-timeline",
-    "haiku-ui-common"
+    "haiku-ui-common",
+    "@haiku/sdk-inkstone"
   ]
 });

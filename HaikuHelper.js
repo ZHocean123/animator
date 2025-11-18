@@ -1,6 +1,6 @@
-import Plumbing from 'haiku-plumbing/lib/Plumbing.js';
-import envInfo from 'haiku-plumbing/lib/envInfo.js';
-import haikuInfo from 'haiku-plumbing/lib/haikuInfo.js';
+import Plumbing from 'haiku-plumbing/lib/Plumbing.mjs';
+import envInfo from 'haiku-plumbing/lib/envInfo.mjs';
+import haikuInfo from 'haiku-plumbing/lib/haikuInfo.mjs';
 import path from 'path';
 import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 

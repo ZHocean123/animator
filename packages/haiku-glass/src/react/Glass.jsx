@@ -53,8 +53,8 @@ remote.initialize();
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
 import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir.js';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient.js';
-import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error.js';
+import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient.mjs';
+import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error.mjs';
 
 // #FIXME: Why is this the responsibility of Glass???
 fse.mkdirpSync(HOMEDIR_PATH);
@@ -323,7 +323,7 @@ export class Glass extends React.Component {
           this.handleInteractionModeChange();
           break;
         case 'mergeDesigns':
-          (Element.directlySelected = null);
+          Element.setDirectlySelected(null);
           break;
         case 'setLockedStatusForComponent':
           // Unselect element after locking it
@@ -358,7 +358,7 @@ export class Glass extends React.Component {
 
   handleActiveComponentReady () {
     // Reset direct selection before mounting new component
-    (Element.directlySelected = null);
+    Element.setDirectlySelected(null);
 
     this.mountHaikuComponent();
     this.updateMenu();
@@ -942,7 +942,7 @@ overlays.push({
         }
         const selectedElement = component.findElementByComponentId(directlySelectedComponentId);
         if (selectedElement) {
-          Element.directlySelected = selectedElement.getHaikuElement();
+          Element.setDirectlySelected(selectedElement.getHaikuElement());
         }
       });
     }
@@ -964,7 +964,7 @@ overlays.push({
         }
         const selectedElement = component.findElementByComponentId(directlySelectedComponentId);
         if (selectedElement) {
-          Element.directlySelected = selectedElement.getHaikuElement();
+          Element.setDirectlySelected(selectedElement.getHaikuElement());
         }
       });
     }
@@ -1652,7 +1652,7 @@ overlays.push({
                   )) {
                   clickedItemFound = descendant;
                   if (isDoubleClick && elementTargeted.isSelected()) {
-                    Element.directlySelected = descendant;
+                    Element.setDirectlySelected(descendant);
                   }
                   return false; // stop searching
                 }
@@ -1662,7 +1662,7 @@ overlays.push({
                 !clickedItemFound ||
                 (Element.directlySelected !== null && clickedItemFound !== Element.directlySelected)
               ) {
-                Element.directlySelected = null;
+                Element.setDirectlySelected(null);
               }
 
               // --- Insert new vertex when the selected item is unchanged ---
@@ -3018,7 +3018,7 @@ overlays.push({
       // Make sure it's not locked
       const originalEl = Element.findByComponentAndHaikuId(this.getActiveComponent(), Element.directlySelected.attributes['haiku-id']);
       if (originalEl && originalEl.isLockedViaParents()) {
-        Element.directlySelected = null;
+        Element.setDirectlySelected(null);
         return overlays;
       }
 
@@ -3746,7 +3746,7 @@ overlays.push({
                 }}>
                 {`${this.props.userconfig.project || '[n/a]'} (`}
               </span>
-              <span style={{position: 'relative' as const, top: 3, marginLeft: 2, marginRight: 2}}>
+              <span style={{position: 'relative', top: 3, marginLeft: 2, marginRight: 2}}>
                 <ComponentIconSVG/>
               </span>
               <span
