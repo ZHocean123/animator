@@ -21,7 +21,7 @@ import * as fs from "fs";
 import { isProxied, ProxyType } from "haiku-common/lib/proxies/index.mjs";
 import TopMenu from "haiku-common/lib/electron/TopMenu.mjs";
 import * as mixpanel from "haiku-serialization/src/utils/Mixpanel.js";
-import * as ensureTrailingSlash from "haiku-serialization/src/utils/ensureTrailingSlash.js";
+import ensureTrailingSlash from "haiku-serialization/src/utils/ensureTrailingSlash.js";
 import logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import { isMac, isWindows } from "haiku-common/lib/environments/os.mjs";
 import _ from "lodash-es";
@@ -29,6 +29,8 @@ import fse from "fs-extra";
 const { writeJSON } = fse;
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 import pkg from 'electron-updater';
 const { autoUpdater } = pkg;
 
@@ -248,12 +250,22 @@ function createWindow() {
 
   browserWindow = new BrowserWindow({
     title: "Haiku Animator",
-    show: false, // Don't show the window until we are ready-to-show (see below)
+    show: false,
     titleBarStyle: "hiddenInset",
     minWidth: 700,
     minHeight: 650,
-    backgroundColor: "#343f41"
+    backgroundColor: "#343f41",
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+      preload: path.join(__dirname, "..", "..", "preload", "index.js")
+    }
   });
+
+  try {
+    const remoteMain = require('@electron/remote/main');
+    remoteMain.enable(browserWindow.webContents);
+  } catch {}
 
   const topmenu = new TopMenu(browserWindow.webContents);
 
@@ -291,7 +303,12 @@ function createWindow() {
 
   browserWindow.setTitle("Haiku Animator");
   browserWindow.maximize();
-  browserWindow.loadURL(appUrl);
+  if (process.env.RENDERER_VITE_DEV_SERVER_URL) {
+    browserWindow.loadURL(process.env.RENDERER_VITE_DEV_SERVER_URL);
+  } else {
+    const outHtml = path.join(__dirname, "..", "..", "renderer", "creator", "index.html");
+    browserWindow.loadFile(outHtml);
+  }
 
   if (process.env.DEV === "1" || process.env.DEV === "creator") {
     browserWindow.openDevTools();

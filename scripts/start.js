@@ -117,6 +117,7 @@ if (yargs.argv.default === true) {
 const haikuURI = args.find((arg) => arg.startsWith('haiku://'));
 
 const availablePresets = {
+  default: 'blank',
   glass: 'primitives-misc-1-glass',
   timeline: 'complex-timeline',
   blank: 'blank',
@@ -126,7 +127,12 @@ const availablePresets = {
 if (FOLDER_CHOICES.hasOwnProperty(yargs.argv.preset)) {
   inputs.folderChoice = yargs.argv.preset;
 } else if (availablePresets[yargs.argv.preset]) {
-  inputs.devChoice = yargs.argv.preset;
+  // For 'default' preset, use 'everything' devChoice and the preset's folder
+  if (yargs.argv.preset === 'default') {
+    inputs.devChoice = 'everything';
+  } else {
+    inputs.devChoice = yargs.argv.preset;
+  }
   inputs.folderChoice = availablePresets[yargs.argv.preset] || global.process.env.HAIKU_PROJECT_FOLDER;
 } else if (yargs.argv.preset === 'fast') {
   inputs.skipInitialBuild = true;

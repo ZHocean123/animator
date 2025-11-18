@@ -25,6 +25,7 @@ switch (platform) {
     process.env.CSC_LINK = `file://${deploy.vault}/${deploy.certificate}`;
     process.env.CSC_KEY_PASSWORD = fse.readFileSync(path.join(deploy.vault, `${deploy.certificate}.password`)).toString().trim();
 
+    cp.execSync('pnpm electron-vite build', {cwd: ROOT, stdio: 'inherit'});
     cp.execSync(`pnpm electron-builder --mac --publish=never`, {cwd: ROOT, stdio: 'inherit'});
     // The latest build chain breaks our zip archive, so we need to manually zip it.
     const distRoot = path.resolve(ROOT, 'dist');
@@ -36,9 +37,11 @@ switch (platform) {
     // TODO: sign packages on Windows
     // process.env.WIN_CSC_LINK = `file://${deploy.vault}/${deploy.certificate}`
     // process.env.WIN_CSC_KEY_PASSWORD = fse.readFileSync(path.join(deploy.vault, `${deploy.certificate}.password`)).toString().trim()
+    cp.execSync('pnpm electron-vite build', {cwd: ROOT, stdio: 'inherit'});
     cp.execSync('pnpm electron-builder --windows --publish=never --config.forceCodeSigning=false --x64 --ia32', {cwd: ROOT, stdio: 'inherit'});
     break;
   case 'linux':
+    cp.execSync('pnpm electron-vite build', {cwd: ROOT, stdio: 'inherit'});
     cp.execSync(`pnpm electron-builder --linux --publish=never`, {cwd: ROOT, stdio: 'inherit'});
     break;
   default:

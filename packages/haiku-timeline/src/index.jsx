@@ -9,7 +9,7 @@ import Timeline from "./components/Timeline";
 import { SentryReporter } from "haiku-sdk-creator/lib/bll/Error.mjs";
 import * as logger from "haiku-serialization/src/utils/LoggerInstance.js";
 import { fetchProjectConfigInfo } from "@haiku/sdk-client/lib/ProjectDefinitions.mjs";
-import { shouldEmitErrors } from "haiku-common/src/environments/index.js";
+import { shouldEmitErrors } from "haiku-common/src/environments/index.ts";
 
 // We are in a webview; use query string parameters for boot-up configuration
 const search = (window.location.search || "").split("?")[1] || "";

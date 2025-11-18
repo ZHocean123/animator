@@ -3,6 +3,7 @@ node_modules
 *.log
 dist/*
 source/*
+out/*
 ~tmp
 .last-sync
 packages/**/.last-compile

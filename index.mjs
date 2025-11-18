@@ -2,7 +2,7 @@ import path from 'path';
 import cp from 'child_process';
 import os from 'os';
 import {createRequire} from 'module';
-import {fileURLToPath} from 'url';
+import {fileURLToPath, pathToFileURL} from 'url';
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +40,11 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     process.exit(1);
   }
 
+  try {
+    const remoteMain = require('@electron/remote/main');
+    remoteMain.initialize();
+  } catch {}
+
   if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
     dialog.showErrorBox(
       'Move to Applications folder',
@@ -61,7 +66,7 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     haikuHelperArgs.execArgv = ['--inspect=9221'];
   }
 
-  global.haikuHelper = cp.fork(path.join(__dirname, 'HaikuHelper'), haikuHelperArgs);
+  global.haikuHelper = cp.fork(path.resolve(__dirname, '..', '..', 'HaikuHelper.js'), haikuHelperArgs);
   global.haikuHelper.on('message', (data) => {
     if (!data || typeof data !== 'object' || !data.message) {
       return;

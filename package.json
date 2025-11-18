@@ -8,7 +8,7 @@
   ],
   "version": "5.1.2",
   "description": "Haiku Animator",
-  "main": "index.mjs",
+  "main": "./out/main/index.js",
   "author": "Haiku Systems Inc.",
   "license": "AGPL",
   "engines": {
@@ -27,7 +27,7 @@
     "push": "node ./scripts/push.js",
     "semver": "node ./scripts/semver.js",
     "setup": "node ./scripts/setup.js",
-    "start": "node ./scripts/start.js",
+    "start": "electron-vite preview",
     "compile-all": "node ./scripts/compile-all.js",
     "lint-all": "node ./scripts/lint-all.js",
     "test-all": "node ./scripts/test-all.js",
@@ -39,7 +39,11 @@
     "cm:diff": "node -e \"console.log('diff 已生成于 reports/require-to-import.patch')\"",
     "cm:tsc": "tsc --noEmit",
     "cm:lint": "eslint \"**/*.{js,ts,jsx,tsx}\" --max-warnings=0",
-    "cm:smoke": "node ./scripts/start-electron.js"
+    "cm:smoke": "node ./scripts/start-electron.js",
+    "dev": "electron-vite dev",
+    "prebuild": "electron-vite build",
+    "test:migration": "node ./scripts/test-migration.cjs",
+    "bench:build": "node ./scripts/bench-build.cjs"
   },
   "pnpm": {
     "overrides": {
@@ -99,6 +103,8 @@
     "dotenv": "^5.0.1",
     "electron": "^33.2.1",
     "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "vite": "^5.0.0",
     "electron-notarize": "^1.2.0",
     "electron-rebuild": "^3.2.0",
     "eslint": "^9.39.1",
@@ -137,7 +143,7 @@
     "appId": "com.Haiku.HaikuForDesignersAndEngineers",
     "copyright": "Copyright (c) 2018 Haiku",
     "directories": {
-      "app": "source"
+      "app": "out"
     },
     "npmRebuild": false,
     "nodeGypRebuild": false,
