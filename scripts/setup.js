@@ -5,12 +5,12 @@ const path = require('path');
 const log = require('./helpers/log');
 const runFlakyCommand = require('./helpers/runFlakyCommand');
 
-const processOptions = {cwd: global.process.cwd(), stdio: 'inherit'};
+const processOptions = { cwd: global.process.cwd(), stdio: 'inherit' };
 
 runFlakyCommand(() => {
-  cp.execSync('yarn install', processOptions);
+  cp.execSync('pnpm install', processOptions);
   log.hat('installed dependencies');
-}, 'mono yarn install', 10);
+}, 'mono pnpm install', 10);
 
 const gitHooksPath = path.join(global.process.cwd(), '.git', 'hooks');
 const repoHooksPath = path.join(global.process.cwd(), 'hooks');

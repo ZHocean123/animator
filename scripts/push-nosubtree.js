@@ -6,11 +6,11 @@ const log = require('./helpers/log');
 const nowVersion = require('./helpers/nowVersion');
 
 const ROOT = global.process.cwd();
-const processOptions = {cwd: ROOT, stdio: 'inherit'};
+const processOptions = { cwd: ROOT, stdio: 'inherit' };
 
 // Compile packages.
-cp.execSync('yarn install --frozen-lockfile', processOptions);
-cp.execSync('yarn compile-all --force', processOptions);
+cp.execSync('pnpm install --frozen-lockfile', processOptions);
+cp.execSync('pnpm compile-all --force', processOptions);
 openSourcePackages.forEach((pack) => {
   const compileCommand = `node ./scripts/compile-package.js --package=${pack.name}`;
   if (!openSourceProjects.has(pack.name) || pack.name.startsWith('haiku-')) {

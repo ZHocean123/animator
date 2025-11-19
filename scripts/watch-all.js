@@ -1,6 +1,6 @@
 const async = require('async');
 const cp = require('child_process');
-const {join} = require('path');
+const { join } = require('path');
 const argv = require('yargs').argv;
 
 const log = require('./helpers/log');
@@ -15,37 +15,23 @@ if (!process.env.NODE_ENV) {
 const appOwnedDeps = ['haiku-creator', 'haiku-plumbing'];
 const devChoiceExclusions = {
   glass: appOwnedDeps.concat(['haiku-timeline']),
-  timeline: appOwnedDeps.concat(['haiku-glass']),
-  everything: [],
-};
-const devChoice = argv.devChoice || 'everything';
-const children = [];
-
-const runInstruction = (pack, cb) => {
-  const cmd = 'yarn';
-  const useTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
-  const cwd = useTscWatch ? global.process.cwd() : pack.abspath;
-  const args = useTscWatch ?
-    [
-      'tsc-watch',
-      '-p',
-      pack.abspath,
-      '--onSuccess',
+  pack.abspath,
+  '--onSuccess',
       `"node ${join(cwd, 'scripts', 'write-last-compiled')} --outputPath=${join(pack.abspath, '.last-compile')}"`
     ] :
-    ['develop'];
-  const proc = cp.spawn(cmd, args, {cwd, env: process.env, stdio: 'inherit', shell: true});
-  children.push({
-    info: {cwd, cmd, args},
-    proc,
-  });
-  cb();
+['develop'];
+const proc = cp.spawn(cmd, args, { cwd, env: process.env, stdio: 'inherit', shell: true });
+children.push({
+  info: { cwd, cmd, args },
+  proc,
+});
+cb();
 };
 
 let allWatchersActive = false;
 
 async.each(allPackages, (pack, done) => {
-  const {shortname} = pack;
+  const { shortname } = pack;
   if (devChoiceExclusions[devChoice] && devChoiceExclusions[devChoice].includes(shortname)) {
     done();
     return;
@@ -59,7 +45,7 @@ async.each(allPackages, (pack, done) => {
       done();
       break;
     default:
-      // Standard, new way of doing things: `yarn develop`.
+      // Standard, new way of doing things: `pnpm develop`.
       runInstruction(pack, done);
       break;
   }

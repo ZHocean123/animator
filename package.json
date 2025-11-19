@@ -16,9 +16,9 @@
     "changelog": "node ./scripts/changelog.js",
     "demos": "node ./scripts/demos.js",
     "doctor": "node ./scripts/doctor.js",
-    "go": "yarn start default",
+    "go": "pnpm start default",
     "lint": "tslint scripts/**.js scripts/**.ts -t stylish",
-    "fix": "yarn lint --fix",
+    "fix": "pnpm lint --fix",
     "push": "node ./scripts/push.js",
     "semver": "node ./scripts/semver.js",
     "setup": "node ./scripts/setup.js",
@@ -30,27 +30,29 @@
     "lint-report": "node ./scripts/lint-report.js",
     "test-report": "node ./scripts/test-report.js"
   },
-  "resolutions": {
-    "@haiku/core": "^5.0.0",
-    "**/@types/react": "15.6.11",
-    "@types/node": "10.12.30"
+  "pnpm": {
+    "overrides": {
+      "@haiku/core": "^5.0.0",
+      "@types/react": "15.6.11",
+      "@types/node": "10.12.30"
+    }
   },
   "dependencies": {
-    "@haiku/cli": "5.1.2",
-    "@haiku/core": "5.1.2",
+    "@haiku/cli": "workspace:*",
+    "@haiku/core": "workspace:*",
     "@haiku/player": "^3.0.4",
-    "@haiku/sdk-client": "5.1.2",
-    "@haiku/sdk-inkstone": "5.1.2",
-    "haiku-common": "5.1.2",
-    "haiku-creator": "5.1.2",
-    "haiku-formats": "5.1.2",
-    "haiku-fs-extra": "5.1.2",
-    "haiku-glass": "5.1.2",
-    "haiku-plumbing": "5.1.2",
-    "haiku-sdk-creator": "5.1.2",
-    "haiku-serialization": "5.1.2",
-    "haiku-timeline": "5.1.2",
-    "haiku-ui-common": "5.1.2"
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
+    "haiku-common": "workspace:*",
+    "haiku-creator": "workspace:*",
+    "haiku-formats": "workspace:*",
+    "haiku-fs-extra": "workspace:*",
+    "haiku-glass": "workspace:*",
+    "haiku-plumbing": "workspace:*",
+    "haiku-sdk-creator": "workspace:*",
+    "haiku-serialization": "workspace:*",
+    "haiku-timeline": "workspace:*",
+    "haiku-ui-common": "workspace:*"
   },
   "devDependencies": {
     "async": "^2.5.0",

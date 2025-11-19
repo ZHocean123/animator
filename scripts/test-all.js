@@ -12,7 +12,7 @@ async.eachSeries(allPackages, (pack, next) => {
 
   try {
     log.log('running tests in ' + pack.name);
-    cp.execSync('yarn run test', {cwd: pack.abspath, stdio: 'inherit'});
+    cp.execSync('pnpm test', { cwd: pack.abspath, stdio: 'inherit' });
   } catch (exception) {
     log.err(exception.message);
   }

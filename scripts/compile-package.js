@@ -28,7 +28,7 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-cp.execSync('yarn compile', {cwd: PACKAGE_PATH, stdio: 'inherit'});
+cp.execSync('pnpm compile', { cwd: PACKAGE_PATH, stdio: 'inherit' });
 
 if (argv.uglify) {
   const globule = path.join(PACKAGE_PATH, argv.uglify);
@@ -42,7 +42,7 @@ if (argv.uglify) {
       log.log('uglifying ' + file);
 
       try {
-        const {code} = uglify2.minify(fse.readFileSync(file).toString());
+        const { code } = uglify2.minify(fse.readFileSync(file).toString());
         if (!code) {
           throw new Error('Encountered error during minification');
         }

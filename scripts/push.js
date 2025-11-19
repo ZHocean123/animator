@@ -12,7 +12,7 @@ if (branch !== 'master') {
 }
 
 const ROOT = global.process.cwd();
-const processOptions = {cwd: ROOT, stdio: 'inherit'};
+const processOptions = { cwd: ROOT, stdio: 'inherit' };
 
 // Perform hard reset.
 cp.execSync(`git reset --hard origin/master`);
@@ -27,11 +27,11 @@ cp.execSync(`git add -u`, processOptions);
 // git commit might fail if there is no changelog. Not a big deal.
 try {
   cp.execSync(`git commit -m "auto: Updates changelog."`, processOptions);
-} catch (e) {}
+} catch (e) { }
 
 // Compile packages.
-cp.execSync('yarn install --frozen-lockfile', processOptions);
-cp.execSync('yarn compile-all --force', processOptions);
+cp.execSync('pnpm install --frozen-lockfile', processOptions);
+cp.execSync('pnpm compile-all --force', processOptions);
 openSourcePackages.forEach((pack) => {
   const compileCommand = `node ./scripts/compile-package.js --package=${pack.name}`;
   if (!openSourceProjects.has(pack.name) || pack.name.startsWith('haiku-')) {
