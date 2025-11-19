@@ -7,7 +7,7 @@ export interface ImportSpec {
 
 export interface TokenExchange {
   code: string;
-  state: number;
+  state: string;
   stateCheck: string;
 }
 

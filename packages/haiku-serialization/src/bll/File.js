@@ -1,14 +1,16 @@
-const fse = require('fs-extra');
-const { debounce } = require('lodash');
-const path = require('path');
-const { xmlToMana } = require('haiku-common/src/layout/xmlUtils');
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
+import fse from 'fs-extra';
+import { debounce } from 'lodash-es';
+import path from 'node:path';
+import { xmlToMana } from 'haiku-common/lib/layout/xmlUtils.mjs';
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO.js';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 const BaseModel = require('./BaseModel');
-const logger = require('./../utils/LoggerInstance');
-const getSvgOptimizer = require('./../svg/getSvgOptimizer');
+const logger = require('../utils/LoggerInstance');
+const getSvgOptimizer = require('../svg/getSvgOptimizer');
 const Lock = require('./Lock');
 const Cache = require('./Cache');
-const { bootstrapSceneFilesSync } = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync');
+const bootstrapSceneFilesSync = () => {};
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
@@ -400,7 +402,7 @@ const _isFileCode = (relpath) => {
   return path.extname(relpath) === '.js';
 };
 
-module.exports = File;
+export default File;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
 const AST = require('./AST');

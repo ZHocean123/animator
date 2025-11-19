@@ -10,12 +10,12 @@
     "skipLibCheck": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "strict": false,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ES5",
+    "target": "esnext",
     "types": [
       "node"
     ],

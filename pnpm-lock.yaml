@@ -803,6 +803,12 @@ importers:
       '@types/qs':
         specifier: ^6.5.1
         version: 6.14.0
+      '@types/react':
+        specifier: 15.6.11
+        version: 15.6.11
+      '@types/react-dom':
+        specifier: 15.5.6
+        version: 15.5.6
       '@types/uuid':
         specifier: ^3.2.1
         version: 3.4.13
@@ -2112,6 +2118,9 @@ packages:
     resolution: {integrity: sha512-QFGzyXqUFtIQsVsjd4PG3Ks+4DBCYDwd0rV/tdS4nnvPf/pzZrEtM1uwZZfjwg3dVrrJ2J3hWR3KzkEVOI0I/g==}
     peerDependencies:
       '@types/react': 15.6.11
+
+  '@types/react-dom@15.5.6':
+    resolution: {integrity: sha512-dP4vEDEH4rL+uUl6f//c6mjepTVdJ6Ldx3z0dZbw047T5Z+o2PZDW/Qd+I4PkTmIgk7YNAZC/TFnm3IHT5UAhw==}
 
   '@types/react@15.6.11':
     resolution: {integrity: sha512-Jon6bpJiiKFJNgwa+2XvlLcEugLJ9Y4042Ck4q26moe0YIN3S680fVeQr5Xb9YW+LR8E6fizAu3G5n38nzoFpg==}
@@ -8333,6 +8342,10 @@ snapshots:
     dependencies:
       '@types/react': 15.6.11
       '@types/reactcss': 1.2.13(@types/react@15.6.11)
+
+  '@types/react-dom@15.5.6':
+    dependencies:
+      '@types/react': 15.6.11
 
   '@types/react@15.6.11': {}
 

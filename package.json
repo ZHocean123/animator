@@ -35,7 +35,15 @@
       "@haiku/core": "^5.0.0",
       "@types/react": "15.6.11",
       "@types/node": "10.12.30"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "@ronomon/base64",
+      "ejs",
+      "nodegit"
+    ],
+    "onlyBuiltDependencies": [
+      "electron"
+    ]
   },
   "dependencies": {
     "@haiku/cli": "workspace:*",

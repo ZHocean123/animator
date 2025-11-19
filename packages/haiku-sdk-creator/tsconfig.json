@@ -12,7 +12,7 @@
     "preserveConstEnums": false,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ESNext",
+    "target": "esnext",
     "types": [
       "node"
     ],

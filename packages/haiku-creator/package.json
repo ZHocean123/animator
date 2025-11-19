@@ -64,6 +64,8 @@
   "devDependencies": {
     "@types/fs-extra": "^4.0.8",
     "@types/node": "10.12.30",
+    "@types/react": "15.6.11",
+    "@types/react-dom": "15.5.6",
     "@types/node-fetch": "^2.1.1",
     "@types/qs": "^6.5.1",
     "@types/uuid": "^3.2.1",

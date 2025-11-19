@@ -61,7 +61,7 @@ export class UserHandler extends EnvoyHandler {
     return this.identity.organization;
   }
 
-  getTrialDaysRemaining (): MaybeAsync<number> {
+  getTrialDaysRemaining (): number {
     const org = this.identity.organization;
     if (!org) { // not authenticated
       return 0;
@@ -82,7 +82,7 @@ export class UserHandler extends EnvoyHandler {
     return Math.ceil(remainingDays);
   }
 
-  isTrialExpired (): MaybeAsync<boolean> {
+  isTrialExpired (): boolean {
     // if the user is pro or not authenticated, the answer is false
     const org = this.identity.organization;
     if (!org || org.Role !== inkstone.organization.Role.FREE) {

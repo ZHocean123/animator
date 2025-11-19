@@ -9,7 +9,7 @@ import {DASH_STYLES} from '../../styles/dashShared';
 import FigmaImporter from './importers/FigmaImporter';
 import FileSystemImporter from './importers/FileSystemImporter';
 
-const STYLES: React.CSSProperties = {
+const STYLES: {[key: string]: React.CSSProperties} = {
   popover: {
     background: Palette.COAL,
     borderRadius: '4px',
