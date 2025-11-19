@@ -43,8 +43,8 @@ typescript.forEachChild(sourceFile, (node) => {
     fs.writeFileSync(
       experimentIndexPath,
       experimentSource.slice(0, enumEndPosition) +
-        `,\n  ${experimentName} = '${experimentName}'` +
-        experimentSource.slice(enumEndPosition),
+      `,\n  ${experimentName} = '${experimentName}'` +
+      experimentSource.slice(enumEndPosition),
     );
   }
 });
@@ -53,7 +53,7 @@ log.hat(`Added experiment ${experimentName}!
 
 Usage:
 
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common/src/experiments';
 ...
 if (experimentIsEnabled(Experiment.${experimentName})) { ... }
 

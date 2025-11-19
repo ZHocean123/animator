@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const STYLES = {
   button: {
@@ -18,7 +18,7 @@ const STYLES = {
 };
 
 class EditorActions extends React.PureComponent {
-  render () {
+  render() {
     return (
       <div style={STYLES.buttonsWrapper}>
         <button
@@ -33,7 +33,7 @@ class EditorActions extends React.PureComponent {
               this.props.onSave();
             }
           }}
-          style={{...STYLES.button, ...STYLES.doneButton, opacity: this.props.isSaveDisabled ? 0.5 : 1}}
+          style={{ ...STYLES.button, ...STYLES.doneButton, opacity: this.props.isSaveDisabled ? 0.5 : 1 }}
           title={this.props.title}
         >
           Done

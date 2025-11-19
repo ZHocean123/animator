@@ -4,8 +4,8 @@ const cloneDeepWith = require('lodash.clonedeepwith');
 const merge = require('lodash.merge');
 const BaseModel = require('./BaseModel');
 const enhance = require('@haiku/core/lib/reflection/enhance').default;
-const {xmlToMana} = require('haiku-common/lib/layout/xmlUtils');
-const {default: convertManaLayout} = require('haiku-common/lib/layout/convertManaLayout');
+const { xmlToMana } = require('haiku-common/src/layout/xmlUtils');
+const { default: convertManaLayout } = require('haiku-common/src/layout/convertManaLayout');
 const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
 const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default;
 const logger = require('haiku-serialization/src/utils/LoggerInstance');
@@ -16,23 +16,23 @@ const DEFAULT_TIMELINE_NAME = 'Default';
 const DEFAULT_TIMELINE_TIME = 0;
 const DEFAULT_ROOT_NODE_NAME = 'div';
 const FALLBACK_TEMPLATE = '<' + DEFAULT_ROOT_NODE_NAME + '></' + DEFAULT_ROOT_NODE_NAME + '>';
-const DEFAULT_CONTEXT_SIZE = {width: 550, height: 400};
+const DEFAULT_CONTEXT_SIZE = { width: 550, height: 400 };
 const DO_REIFY_FUNCTIONS = true;
 const DEFAULT_CURVE = 'easeInOutQuad';
 
-function isEmpty (val) {
+function isEmpty(val) {
   return val === undefined;
 }
 
 // TODO: There might be cases where somebody's added a keyframe value whose intent
 // is to be a reference, i.e. a variable referencing something defined in closure.
 // We can possibly handle that in the future in some cases...
-function referenceEvaluatorMissing (arg) {
+function referenceEvaluatorMissing(arg) {
   logger.warn('[bytecode] reference evaluator is not implemented');
   return arg;
 }
 
-function ensureManaChildrenArray (mana) {
+function ensureManaChildrenArray(mana) {
   const previous = mana.children;
   const children = [];
   mana.children = children;
@@ -47,7 +47,7 @@ function ensureManaChildrenArray (mana) {
  * @description
  *  Collection of static class methods for bytecode manipulation.
  */
-class Bytecode extends BaseModel {}
+class Bytecode extends BaseModel { }
 
 Bytecode.DEFAULT_OPTIONS = {
   required: {},
@@ -290,7 +290,7 @@ const ATTRS_TO_EXCLUDE_FROM_ID_PADDING = {
   'haiku-var': true,
 };
 
-function transferReferences (obj, originalReference, updatedReference) {
+function transferReferences(obj, originalReference, updatedReference) {
   if (obj[`#${originalReference}`]) {
     obj[`#${updatedReference}`] = obj[`#${originalReference}`];
     delete obj[`#${originalReference}`];
@@ -415,11 +415,11 @@ Bytecode.mergeTimelines = (t1, t2, doMergeValueFn) => {
               if (targetObj.value !== sourceObj.value) {
                 if (doMergeValueFn) {
                   if (doMergeValueFn(propertyName, targetObj.value, sourceObj.value)) {
-                    changesMade.push({timelineName, timelineSelector, propertyName, keyframeMs, value: sourceObj.value});
+                    changesMade.push({ timelineName, timelineSelector, propertyName, keyframeMs, value: sourceObj.value });
                     targetObj.value = sourceObj.value;
                   }
                 } else {
-                  changesMade.push({timelineName, timelineSelector, propertyName, keyframeMs, value: sourceObj.value});
+                  changesMade.push({ timelineName, timelineSelector, propertyName, keyframeMs, value: sourceObj.value });
                   targetObj.value = sourceObj.value;
                 }
               }
@@ -493,7 +493,7 @@ Bytecode.pasteBytecode = (destination, pasted) => {
   // In case of a paste, we need to add a new child rather than merging into existing elements
   if (pasted.template) {
     if (!destination.template) {
-      destination.template = {elementName: 'div', attributes: {}, children: []};
+      destination.template = { elementName: 'div', attributes: {}, children: [] };
     }
     if (!destination.template.children) {
       destination.template.children = [];
@@ -552,7 +552,7 @@ Bytecode.snapshot = (bytecode) => {
   });
 };
 
-Bytecode.decycle = (reified, {cleanManaOptions = {}, doCleanMana}) => {
+Bytecode.decycle = (reified, { cleanManaOptions = {}, doCleanMana }) => {
   const decycled = {};
 
   if (!reified) {
@@ -623,7 +623,7 @@ Bytecode.reinitialize = (folder, relpath, bytecode = {}, config = {}) => {
     mana = bytecode.template || xmlToMana(FALLBACK_TEMPLATE);
   } else {
     // If nothing had been set, what is the risk of just setting it here?
-    mana = {elementName: 'div', attributes: {}, children: []};
+    mana = { elementName: 'div', attributes: {}, children: [] };
   }
 
   bytecode.template = mana;
@@ -697,7 +697,7 @@ Bytecode.reinitialize = (folder, relpath, bytecode = {}, config = {}) => {
     Template.normalizePath(relpath), // Fallback for title
     Template.normalizePath(relpath), // Seed string for hash/id generation
     '0',
-    {title: config.title},
+    { title: config.title },
   );
 
   const contextHaikuId = bytecode.template.attributes[HAIKU_ID_ATTRIBUTE];
@@ -1118,7 +1118,7 @@ Bytecode.splitSegment = (bytecode, componentId, timelineName, elementName, prope
 
   if (property[keyframeMs]) {
     const orig = property[keyframeMs];
-    property[keyframeMs] = {value: orig.value};
+    property[keyframeMs] = { value: orig.value };
     if (orig.edited) {
       property[keyframeMs].edited = true;
     }
@@ -1328,8 +1328,8 @@ Bytecode.addDefaultCurveIfNecessary = (
 
   if (property) {
     const orderedKeyframes = Object.keys(property)
-    .map(Number)
-    .sort((a, b) => a - b);
+      .map(Number)
+      .sort((a, b) => a - b);
 
     const lastKeyframe = orderedKeyframes
       .filter((time) => time < newKeyframeTime)

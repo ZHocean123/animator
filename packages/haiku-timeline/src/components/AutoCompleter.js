@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const MAX_AUTOCOMPLETE_HEIGHT = 195;
 
 export default class AutoCompleter extends React.Component {
-  getContextStyle () {
+  getContextStyle() {
     const num = this.props.autoCompletions.length;
     let height = num * this.props.lineHeight;
     if (num > 0) {
@@ -28,18 +28,18 @@ export default class AutoCompleter extends React.Component {
     return style;
   }
 
-  renderAutoCompletions () {
+  renderAutoCompletions() {
     if (this.props.autoCompletions.length < 1) {
       return '';
     }
 
-    return this.props.autoCompletions.map(({name, highlighted}, index) => {
+    return this.props.autoCompletions.map(({ name, highlighted }, index) => {
       return (
         <div
           key={index}
           onClick={(clickEvent) => {
             clickEvent.stopPropagation();
-            this.props.onClick({name, highlighted});
+            this.props.onClick({ name, highlighted });
           }}
           style={{
             color: (highlighted) ? Palette.SUNSTONE : Palette.DARKER_ROCK,
@@ -55,7 +55,7 @@ export default class AutoCompleter extends React.Component {
     });
   }
 
-  render () {
+  render() {
     return (
       <div
         id="expression-input-autocomplete-context"

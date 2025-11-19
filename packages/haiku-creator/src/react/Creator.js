@@ -1,8 +1,8 @@
-import {remote, shell, ipcRenderer, clipboard, webFrame} from 'electron';
+import { remote, shell, ipcRenderer, clipboard, webFrame } from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {StyleRoot} from 'radium';
-import {CSSTransition} from 'react-transition-group';
+import { StyleRoot } from 'radium';
+import { CSSTransition } from 'react-transition-group';
 import * as lodash from 'lodash';
 import * as EventEmitter from 'event-emitter';
 import * as path from 'path';
@@ -21,37 +21,37 @@ import Stage from './components/Stage';
 import Timeline from './components/Timeline';
 import Toast from './components/notifications/Toast';
 import Tour from './components/Tour/Tour';
-import {DASH_STYLES} from './styles/dashShared';
+import { DASH_STYLES } from './styles/dashShared';
 import AutoUpdater from './components/AutoUpdater';
 import ProjectLoader from './components/ProjectLoader';
 import ProxyHelpScreen from './components/ProxyHelpScreen';
 import ProxySettingsScreen from './components/ProxySettingsScreen';
 import ChangelogModal from './components/ChangelogModal';
 import NewProjectModal from './components/NewProjectModal';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {EXPORTER_CHANNEL, ExporterFormat} from 'haiku-sdk-creator/lib/exporter';
-import {USER_CHANNEL, UserSettings} from 'haiku-sdk-creator/lib/bll/User'; // eslint-disable-line no-unused-vars
-import {PROJECT_CHANNEL} from 'haiku-sdk-creator/lib/bll/Project';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
-import {SERVICES_CHANNEL} from 'haiku-sdk-creator/lib/services';
-import {ERROR_CHANNEL, isUserlandCulprit} from 'haiku-sdk-creator/lib/bll/Error';
+import EnvoyClient from 'haiku-sdk-creator/src/envoy/EnvoyClient';
+import { EXPORTER_CHANNEL, ExporterFormat } from 'haiku-sdk-creator/src/exporter';
+import { USER_CHANNEL, UserSettings } from 'haiku-sdk-creator/src/bll/User'; // eslint-disable-line no-unused-vars
+import { PROJECT_CHANNEL } from 'haiku-sdk-creator/src/bll/Project';
+import { TOUR_CHANNEL } from 'haiku-sdk-creator/src/tour';
+import { SERVICES_CHANNEL } from 'haiku-sdk-creator/src/services';
+import { ERROR_CHANNEL, isUserlandCulprit } from 'haiku-sdk-creator/src/bll/Error';
 import {
   InteractionMode,
   isPreviewMode,
-} from 'haiku-ui-common/lib/interactionModes';
-import Palette from 'haiku-ui-common/lib/Palette';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
+} from 'haiku-ui-common/src/interactionModes';
+import Palette from 'haiku-ui-common/src/Palette';
+import AnimatorSVG from 'haiku-ui-common/src/react/icons/AnimatorSVG';
 import ActivityMonitor from '../utils/activityMonitor.js';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {buildProxyUrl, describeProxyFromUrl} from 'haiku-common/lib/proxies';
+import { buildProxyUrl, describeProxyFromUrl } from 'haiku-common/src/proxies';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as opn from 'opn';
 import ConfirmGroupUngroupPopup from './components/Popups/ConfirmGroupUngroup';
-import {FailWhale} from './components/Popups/FailWhale';
-import {getAccountUrl, shouldEmitErrors} from 'haiku-common/lib/environments';
-import Globals from 'haiku-ui-common/lib/Globals';
-import {inkstone} from '@haiku/sdk-inkstone';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import { FailWhale } from './components/Popups/FailWhale';
+import { getAccountUrl, shouldEmitErrors } from 'haiku-common/src/environments';
+import Globals from 'haiku-ui-common/src/Globals';
+import { inkstone } from '@haiku/sdk-inkstone';
+import { isMac, isWindows } from 'haiku-common/src/environments/os';
 
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = 'creator';
@@ -60,7 +60,7 @@ const pkg = require('./../../package.json');
 
 const mixpanel = require('haiku-serialization/src/utils/Mixpanel');
 
-const {dialog} = remote;
+const { dialog } = remote;
 
 const isNumeric = (n) => {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -81,7 +81,7 @@ const MAX_FORK_ATTEMPTS = 15;
 const FIGMA_IMPORT_TIMEOUT = 1000 * 60 * 5; /* 5 minutes */
 
 export default class Creator extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.authenticateUser = this.authenticateUser.bind(this);
@@ -120,10 +120,10 @@ export default class Creator extends React.Component {
 
     this.debouncedForceUpdate = lodash.debounce(() => {
       this.forceUpdate();
-    }, 100, {leading: false, trailing: true});
+    }, 100, { leading: false, trailing: true });
 
     // Stores creator widget state, so when we leave preview, it can be restored
-    this.lastWidgetState = {activeNav: 'library', interactionMode: InteractionMode.GLASS_EDIT};
+    this.lastWidgetState = { activeNav: 'library', interactionMode: InteractionMode.GLASS_EDIT };
 
     this.state = {
       error: null,
@@ -241,7 +241,7 @@ export default class Creator extends React.Component {
         view: 'glass',
         name: 'global-menu:open-dev-tools',
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:close-dev-tools', lodash.debounce(() => {
       if (remote.getCurrentWindow().isDevToolsFocused()) {
@@ -259,7 +259,7 @@ export default class Creator extends React.Component {
         view: 'glass',
         name: 'global-menu:close-dev-tools',
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:carbonite-snapshot', lodash.debounce(() => {
       if (global.sentryReporter && this.error) {
@@ -283,22 +283,22 @@ export default class Creator extends React.Component {
           }
         });
       }
-    }, 1000, {leading: true, trailing: false}));
+    }, 1000, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:open-finder', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-finder`);
       this.openFinder();
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:open-terminal', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-terminal`);
       this.openTerminal();
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:open-text-editor', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-text-editor`);
       this.openTextEditor();
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:check-updates', lodash.debounce(() => {
       logger.info(`[creator] global-menu:check-updates`);
@@ -315,17 +315,17 @@ export default class Creator extends React.Component {
       if (isWindows()) {
         ipcRenderer.send('app:check-updates');
       }
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:show-changelog', lodash.debounce(() => {
       logger.info(`[creator] global-menu:show-changelog`);
       this.showChangelogModal();
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:set-active-component', lodash.debounce((ipcEvent, scenename) => {
       logger.info(`[creator] global-menu:set-active-component`);
       this.tryToChangeCurrentActiveComponent(scenename);
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:zoom-in', lodash.debounce(() => {
       logger.info(`[creator] global-menu:zoom-in`);
@@ -336,7 +336,7 @@ export default class Creator extends React.Component {
         view: 'glass',
         name: 'global-menu:zoom-in',
       });
-    }, 50, {leading: true, trailing: false}));
+    }, 50, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:zoom-out', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to zoom
@@ -347,7 +347,7 @@ export default class Creator extends React.Component {
         view: 'glass',
         name: 'global-menu:zoom-out',
       });
-    }, 50, {leading: true, trailing: false}));
+    }, 50, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:reset-viewport', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to zoom
@@ -358,7 +358,7 @@ export default class Creator extends React.Component {
         view: 'timeline',
         name: 'global-menu:reset-viewport',
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:group', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to group
@@ -369,7 +369,7 @@ export default class Creator extends React.Component {
         view: 'timeline',
         name: 'global-menu:group',
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:ungroup', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to ungroup
@@ -380,7 +380,7 @@ export default class Creator extends React.Component {
         view: 'timeline',
         name: 'global-menu:ungroup',
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:undo', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to undo
@@ -392,7 +392,7 @@ export default class Creator extends React.Component {
         name: 'global-menu:undo',
         time: Date.now(),
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:redo', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to undo
@@ -404,7 +404,7 @@ export default class Creator extends React.Component {
         name: 'global-menu:redo',
         time: Date.now(),
       });
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:copy', lodash.debounce(() => {
       // Only delegate copy if we don't have anything in selection
@@ -419,7 +419,7 @@ export default class Creator extends React.Component {
       } else {
         clipboard.writeText(window.getSelection().toString());
       }
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:cut', lodash.debounce(() => {
       // Only delegate cut if we don't have anything in selection
@@ -432,7 +432,7 @@ export default class Creator extends React.Component {
           name: 'global-menu:cut',
         });
       }
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:selectAll', lodash.debounce(() => {
       // Only select all if we haven't activated a text element
@@ -445,7 +445,7 @@ export default class Creator extends React.Component {
           name: 'global-menu:selectAll',
         });
       }
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('global-menu:paste', lodash.debounce(() => {
       // Only paste if we haven't activated a text element
@@ -458,7 +458,7 @@ export default class Creator extends React.Component {
           name: 'global-menu:paste',
         });
       }
-    }, MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false}));
+    }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }));
 
     ipcRenderer.on('open-url:fork', (_, forkPath) => {
       // Incoming path should have format: /:organizationName/:projectName
@@ -494,7 +494,7 @@ export default class Creator extends React.Component {
         if (this.state.projectModel) {
           this.state.projectModel.linkExternalAssetOnDrop(event, (error) => {
             if (error) {
-              this.setState({error});
+              this.setState({ error });
             }
             this.forceUpdate();
           });
@@ -543,7 +543,7 @@ export default class Creator extends React.Component {
     shell.openExternal(getAccountUrl('checkout'));
   };
 
-  isTextInputFocused () {
+  isTextInputFocused() {
     const tagName = (
       document.activeElement &&
       document.activeElement.tagName &&
@@ -558,29 +558,29 @@ export default class Creator extends React.Component {
     );
   }
 
-  isTextSelected () {
+  isTextSelected() {
     return window.getSelection().type === 'Range';
   }
 
-  isCreatorExplicitlyFocused () {
+  isCreatorExplicitlyFocused() {
     return document.hasFocus() && !this.isWebviewFocused();
   }
 
-  isWebviewFocused () {
+  isWebviewFocused() {
     return this.isTimelineFocused() || this.isGlassFocused();
   }
 
-  isTimelineFocused () {
+  isTimelineFocused() {
     const webview = this.getTimelineWebview();
     return webview && webview === document.activeElement;
   }
 
-  isGlassFocused () {
+  isGlassFocused() {
     const webview = this.getGlassWebview();
     return webview && webview === document.activeElement;
   }
 
-  getTimelineWebview () {
+  getTimelineWebview() {
     return (
       this.refs &&
       this.refs.timeline &&
@@ -590,7 +590,7 @@ export default class Creator extends React.Component {
     );
   }
 
-  getGlassWebview () {
+  getGlassWebview() {
     return (
       this.refs &&
       this.refs.stage &&
@@ -600,11 +600,11 @@ export default class Creator extends React.Component {
     );
   }
 
-  getActiveComponent () {
+  getActiveComponent() {
     return this.state.projectModel && this.state.projectModel.getCurrentActiveComponent();
   }
 
-  openFinder () {
+  openFinder() {
     if (this.state.projectModel) {
       try {
         logger.info('[creator] finder opening', shell.openItem(this.state.projectModel.getFolder()));
@@ -614,17 +614,17 @@ export default class Creator extends React.Component {
     }
   }
 
-  openTerminal () {
+  openTerminal() {
     if (this.state.projectModel) {
       try {
-        logger.info('[creator] terminal opening', opn(this.state.projectModel.getFolder(), {app: 'terminal'}));
+        logger.info('[creator] terminal opening', opn(this.state.projectModel.getFolder(), { app: 'terminal' }));
       } catch (exception) {
         logger.error(exception);
       }
     }
   }
 
-  openTextEditor () {
+  openTextEditor() {
     if (this.state.projectModel) {
       const relpath = this.state.projectModel.getCurrentActiveComponentRelpath();
       if (relpath) {
@@ -635,7 +635,7 @@ export default class Creator extends React.Component {
     }
   }
 
-  openFileInTextEditor (abspath) {
+  openFileInTextEditor(abspath) {
     const editorEnv = process.env.EDITOR;
 
     // TODO: App names are platform-specific; need to support Windows and Linux too
@@ -668,24 +668,24 @@ export default class Creator extends React.Component {
     }
 
     try {
-      logger.info(`[creator] editor ${editorEnv || '?'}->${editorApp} opening`, opn(abspath, {app: editorApp}));
+      logger.info(`[creator] editor ${editorEnv || '?'}->${editorApp} opening`, opn(abspath, { app: editorApp }));
     } catch (exception) {
       logger.error(exception);
     }
   }
 
-  checkOnlineStatus () {
+  checkOnlineStatus() {
     // In case this gets called too early.
     if (!this.user) {
       return;
     }
 
     this.user.checkOnline().then((isOnline) => {
-      this.setState({isOnline});
+      this.setState({ isOnline });
     });
   }
 
-  handleEnvoyUserReady () {
+  handleEnvoyUserReady() {
     if (!this.user) {
       return;
     }
@@ -693,11 +693,11 @@ export default class Creator extends React.Component {
     // kick off initial report
     this.onActivityReport(true, true);
 
-    this.user.on(`${USER_CHANNEL}:load`, ({user, organization}) => {
-      mixpanel.mergeToPayload({distinct_id: user.Username});
+    this.user.on(`${USER_CHANNEL}:load`, ({ user, organization }) => {
+      mixpanel.mergeToPayload({ distinct_id: user.Username });
       mixpanel.haikuTrack('creator:opened');
-      window.Raven.setUserContext({email: user.Username});
-      window.Raven.setExtraContext({organizationName: organization.Name});
+      window.Raven.setUserContext({ email: user.Username });
+      window.Raven.setExtraContext({ organizationName: organization.Name });
       this.user.checkPrivateProjectLimit().then((privateProjectLimit) => {
         this.setState({
           privateProjectLimit,
@@ -706,7 +706,7 @@ export default class Creator extends React.Component {
           organizationName: organization.Name,
         });
 
-        this.setState({isUserAuthenticated: true});
+        this.setState({ isUserAuthenticated: true });
       });
 
 
@@ -722,13 +722,13 @@ export default class Creator extends React.Component {
         const pro = org.Role !== inkstone.organization.Role.FREE;
         if (!pro) {
           this.user.getTrialDaysRemaining().then((trialDaysRemaining) => {
-            this.setState({trialDaysRemaining});
+            this.setState({ trialDaysRemaining });
           });
         }
       });
     });
 
-    this.user.load().then(({user, organization}) => {
+    this.user.load().then(({ user, organization }) => {
 
       this.setState({
         readyForAuth: true,
@@ -743,7 +743,7 @@ export default class Creator extends React.Component {
           const handleFailure = (launchError) => {
             if (launchError) {
               logger.error(launchError);
-              this.setState({folderLoadingError: launchError});
+              this.setState({ folderLoadingError: launchError });
               return this.createNotice({
                 type: 'error',
                 title: 'Oh no!',
@@ -780,11 +780,11 @@ export default class Creator extends React.Component {
         this.user.setConfig(UserSettings.LastViewedChangelog, lastViewedChangelog);
       }
 
-      this.setState({lastViewedChangelog});
+      this.setState({ lastViewedChangelog });
     });
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.websocket.on('broadcast', (message) => {
       switch (message.name) {
         case 'remote-model:receive-sync':
@@ -793,7 +793,7 @@ export default class Creator extends React.Component {
 
         case 'component:reload':
           if (this.getActiveComponent()) {
-            this.getActiveComponent().moduleReplace(() => {});
+            this.getActiveComponent().moduleReplace(() => { });
           }
           break;
 
@@ -802,7 +802,7 @@ export default class Creator extends React.Component {
           break;
 
         case 'dimensions-reset':
-          this.setState({artboardDimensions: message.data});
+          this.setState({ artboardDimensions: message.data });
           break;
 
         case 'show-event-handlers-editor':
@@ -866,7 +866,7 @@ export default class Creator extends React.Component {
           global.sentryReporter.envoy = error;
         }
         this.error = error;
-        this.error.on(`${ERROR_CHANNEL}:error`, ({uniqueId, message, culprit}) => {
+        this.error.on(`${ERROR_CHANNEL}:error`, ({ uniqueId, message, culprit }) => {
           if (shouldEmitErrors() && !isUserlandCulprit(culprit)) {
             this.setState({
               showFailWhale: true,
@@ -897,14 +897,14 @@ export default class Creator extends React.Component {
         this.envoyProject = project;
         project.on(`${PROJECT_CHANNEL}:saved`, (projectObject) => {
           if (this.state.projectObject && this.state.projectObject.projectName === projectObject.projectName) {
-            this.setState({projectObject, projectFolder: projectObject.projectPath});
+            this.setState({ projectObject, projectFolder: projectObject.projectPath });
           }
         });
       },
     );
 
-    this.envoyClient.get(SERVICES_CHANNEL, {timeout: FIGMA_IMPORT_TIMEOUT}).then((servicesEnvoyClient) => {
-      this.setState({servicesEnvoyClient});
+    this.envoyClient.get(SERVICES_CHANNEL, { timeout: FIGMA_IMPORT_TIMEOUT }).then((servicesEnvoyClient) => {
+      this.setState({ servicesEnvoyClient });
     });
 
     this.envoyClient.get(TOUR_CHANNEL).then((tourChannel) => {
@@ -924,14 +924,14 @@ export default class Creator extends React.Component {
     });
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.tourChannel.off('tour:requestElementCoordinates', this.handleFindElementCoordinates);
     this.tourChannel.off('tour:requestWebviewCoordinates', this.handleFindWebviewCoordinates);
     this.tourChannel.off('tour:requestShowStep', this.setGlassInteractionToEditMode);
     this.activityMonitor.stopWatchers();
   }
 
-  handleConnectedProjectModelStateChange ({from, folder, what, value}) {
+  handleConnectedProjectModelStateChange({ from, folder, what, value }) {
     if (!this._projectStates[folder]) {
       this._projectStates[folder] = {};
     }
@@ -943,7 +943,7 @@ export default class Creator extends React.Component {
       : true; // ...Otherwise it is simply a status of true
   }
 
-  haveAllProjectsRegisteredStateNameForFolder (folder, what, value = true) {
+  haveAllProjectsRegisteredStateNameForFolder(folder, what, value = true) {
     return (
       this._projectStates[folder] &&
       this._projectStates[folder][what] &&
@@ -959,7 +959,7 @@ export default class Creator extends React.Component {
    * @description Long-poll our local registry until all of the subviews for the given folder
    * have registered as having entered the named state.
    */
-  awaitAllProjectModelsState (folder, what, value = true, cb) {
+  awaitAllProjectModelsState(folder, what, value = true, cb) {
     if (
       this.state.projectModel && // Sanity check
       this.state.projectModel.getFolder() === folder &&
@@ -973,7 +973,7 @@ export default class Creator extends React.Component {
     }, 100);
   }
 
-  unsetAllProjectModelsState (folder, what) {
+  unsetAllProjectModelsState(folder, what) {
     if (!this._projectStates[folder]) {
       return null;
     }
@@ -981,7 +981,7 @@ export default class Creator extends React.Component {
     this._projectStates[folder][what] = {};
   }
 
-  handleFindElementCoordinates ({selector, webview}) {
+  handleFindElementCoordinates({ selector, webview }) {
     requestElementCoordinates({
       currentWebview: 'creator',
       requestedWebview: webview,
@@ -994,11 +994,11 @@ export default class Creator extends React.Component {
     });
   }
 
-  handleFindWebviewCoordinates () {
-    this.tourChannel.receiveWebviewCoordinates('creator', {top: 0, left: 0});
+  handleFindWebviewCoordinates() {
+    this.tourChannel.receiveWebviewCoordinates('creator', { top: 0, left: 0 });
   }
 
-  renderNotice (content, i) {
+  renderNotice(content, i) {
     return (
       <Toast
         toastType={content.type}
@@ -1013,7 +1013,7 @@ export default class Creator extends React.Component {
     );
   }
 
-  mixpanelReportPreviewMode (interactionMode) {
+  mixpanelReportPreviewMode(interactionMode) {
     let interactionName = '';
     switch (interactionMode) {
       case InteractionMode.GLASS_EDIT:
@@ -1036,7 +1036,7 @@ export default class Creator extends React.Component {
     ipcRenderer.send('restart');
   };
 
-  handleInteractionModeChange (interactionMode) {
+  handleInteractionModeChange(interactionMode) {
     if (this.state.interactionMode === interactionMode) {
       return;
     }
@@ -1047,33 +1047,33 @@ export default class Creator extends React.Component {
     // - Pressing design button: go to desing and restore left panel
     // - Pressing code button: go to code editor and open state inspector on left panel
     if (interactionMode === InteractionMode.GLASS_PREVIEW) {
-      this.forceHideEventHandlersEditor({trySave: true});
+      this.forceHideEventHandlersEditor({ trySave: true });
     } else if (this.state.interactionMode === InteractionMode.GLASS_PREVIEW && interactionMode === InteractionMode.GLASS_EDIT) {
-      this.setState({activeNav: this.lastWidgetState.activeNav});
+      this.setState({ activeNav: this.lastWidgetState.activeNav });
     } else if (interactionMode === InteractionMode.GLASS_EDIT) {
-      this.setState({activeNav: 'library'});
+      this.setState({ activeNav: 'library' });
     } else if (interactionMode === InteractionMode.CODE_EDITOR) {
-      this.setState({activeNav: 'state_inspector'});
+      this.setState({ activeNav: 'state_inspector' });
     }
 
-    this.lastWidgetState = {interactionMode: this.state.interactionMode, activeNav: this.state.activeNav};
+    this.lastWidgetState = { interactionMode: this.state.interactionMode, activeNav: this.state.activeNav };
 
     this.mixpanelReportPreviewMode(interactionMode);
 
-    this.setState({interactionMode}, () => {
+    this.setState({ interactionMode }, () => {
       if (interactionMode === InteractionMode.CODE_EDITOR) {
         this.refs.stage.focusCodeEditor();
       }
     });
   }
 
-  setInteractionMode (interactionMode) {
+  setInteractionMode(interactionMode) {
     if (this.state.projectModel) {
-      this.state.projectModel.setInteractionMode(interactionMode, {from: 'creator', integrity: false}, () => {});
+      this.state.projectModel.setInteractionMode(interactionMode, { from: 'creator', integrity: false }, () => { });
     }
   }
 
-  togglePreviewMode () {
+  togglePreviewMode() {
     // We delegate to state, so stage can check if code editor has any content
     if (isPreviewMode(this.state.interactionMode)) {
       this.setInteractionMode(this.lastWidgetState.interactionMode);
@@ -1082,27 +1082,27 @@ export default class Creator extends React.Component {
     }
   }
 
-  setGlassInteractionToPreviewMode () {
+  setGlassInteractionToPreviewMode() {
     this.setInteractionMode(InteractionMode.GLASS_PREVIEW);
   }
 
-  setGlassInteractionToEditMode () {
+  setGlassInteractionToEditMode() {
     this.setInteractionMode(InteractionMode.GLASS_EDIT);
   }
 
-  setGlassInteractionToCodeEditorMode () {
+  setGlassInteractionToCodeEditorMode() {
     this.setInteractionMode(InteractionMode.CODE_EDITOR);
   }
 
-  switchActiveNav (activeNav) {
-    this.setState({activeNav});
+  switchActiveNav(activeNav) {
+    this.setState({ activeNav });
 
     mixpanel.haikuTrack('creator:project:left-nav-switch', {
       option: activeNav,
     });
   }
 
-  authenticateUser (username, password, cb) {
+  authenticateUser(username, password, cb) {
     if (!this.user) {
       return cb({
         code: 500,
@@ -1110,15 +1110,15 @@ export default class Creator extends React.Component {
       });
     }
 
-    this.user.authenticate(username, password).then(({user, organization}) => {
-      mixpanel.haikuTrack('creator:user-authenticated', {username: user.Username});
-      ipcRenderer.send('topmenu:update', {isUserAuthenticated: true});
+    this.user.authenticate(username, password).then(({ user, organization }) => {
+      mixpanel.haikuTrack('creator:user-authenticated', { username: user.Username });
+      ipcRenderer.send('topmenu:update', { isUserAuthenticated: true });
     }).catch((error) => {
       cb(error);
     });
   }
 
-  showProxySettings () {
+  showProxySettings() {
     this.setState({
       showProxySettings: true,
     });
@@ -1136,9 +1136,9 @@ export default class Creator extends React.Component {
     }
 
     if (this.state.projectModel) {
-      this.teardownMaster({shouldFinishTour: false});
+      this.teardownMaster({ shouldFinishTour: false });
     } else {
-      this.setState({dashboardVisible: true, doShowProjectLoader: false});
+      this.setState({ dashboardVisible: true, doShowProjectLoader: false });
     }
 
     // Put it at the bottom of the event loop
@@ -1147,11 +1147,11 @@ export default class Creator extends React.Component {
     });
   };
 
-  resendEmailConfirmation (username) {
-    return this.props.websocket.request({method: 'resendEmailConfirmation', params: [username]}, () => {});
+  resendEmailConfirmation(username) {
+    return this.props.websocket.request({ method: 'resendEmailConfirmation', params: [username] }, () => { });
   }
 
-  authenticationComplete () {
+  authenticationComplete() {
     if (typeof this._postAuthCallback === 'function') {
       this._postAuthCallback();
       delete this._postAuthCallback;
@@ -1159,33 +1159,33 @@ export default class Creator extends React.Component {
 
     this.handleEnvoyUserReady();
 
-    return this.setState({isUserAuthenticated: true});
+    return this.setState({ isUserAuthenticated: true });
   }
 
-  loadProjects (silent, cb) {
+  loadProjects(silent, cb) {
     if (!this.envoyProject) {
       return cb(null, []);
     }
 
     // If "silent", do not show the loading state.
-    this.setState(silent ? {} : {areProjectsLoading: true}, () => {
+    this.setState(silent ? {} : { areProjectsLoading: true }, () => {
       this.envoyProject.getProjectsList().then((projectsList) => {
-        this.setState({areProjectsLoading: false, hasLoadedOnce: true, projectsList});
-        ipcRenderer.send('topmenu:update', {projectsList, isProjectOpen: false, isUserAuthenticated: this.state.isUserAuthenticated});
+        this.setState({ areProjectsLoading: false, hasLoadedOnce: true, projectsList });
+        ipcRenderer.send('topmenu:update', { projectsList, isProjectOpen: false, isUserAuthenticated: this.state.isUserAuthenticated });
         return cb(null, projectsList);
       }).catch((error) => {
         mixpanel.haikuTrack('creator:project-list:unable-to-retrieve', {
           username: this.state.username,
           organization: this.state.organizationName,
         });
-        this.setState({areProjectsLoading: false});
+        this.setState({ areProjectsLoading: false });
         return cb(error, []);
       });
     });
   }
 
-  onProjectLaunchError () {
-    this.setState({projectLaunching: false, doShowProjectLoader: false, dashboardVisible: true}, () => {
+  onProjectLaunchError() {
+    this.setState({ projectLaunching: false, doShowProjectLoader: false, dashboardVisible: true }, () => {
       this.createNotice({
         type: 'error',
         title: 'Oh no!',
@@ -1197,11 +1197,11 @@ export default class Creator extends React.Component {
   }
 
   onProjectsList = (projectsList) => {
-    ipcRenderer.send('topmenu:update', {projectsList});
+    ipcRenderer.send('topmenu:update', { projectsList });
   };
 
-  createProject (projectName, duplicate = false, callback) {
-    this.setState({doShowProjectLoader: true});
+  createProject(projectName, duplicate = false, callback) {
+    this.setState({ doShowProjectLoader: true });
     this.envoyProject.createProject(projectName).then((newProject) => {
       if (duplicate && this.state.projectToDuplicate !== null) {
         this.props.websocket.request(
@@ -1217,7 +1217,7 @@ export default class Creator extends React.Component {
         callback(null, newProject);
       }
     }).catch((error) => {
-      this.setState({doShowProjectLoader: false});
+      this.setState({ doShowProjectLoader: false });
       console.log(error);
       this.createNotice({
         type: 'error',
@@ -1230,7 +1230,7 @@ export default class Creator extends React.Component {
     });
   }
 
-  launchProject (projectObject, cb) {
+  launchProject(projectObject, cb) {
     // VERY IMPORTANT - if not set to true, we can end up in a situation where we overwrite freshly cloned content from the remote!
     projectObject.skipContentCreation = true;
 
@@ -1240,14 +1240,14 @@ export default class Creator extends React.Component {
     });
 
     if (projectObject.isFork && !projectObject.forkComplete) {
-      return this.openNewlyForkedProject(projectObject, 0, () => {});
+      return this.openNewlyForkedProject(projectObject, 0, () => { });
     }
 
-    const {projectName, projectPath} = projectObject;
+    const { projectName, projectPath } = projectObject;
 
     // Add extra context to Sentry reports, this info is also used by carbonite.
     if (window.Raven) {
-      window.Raven.setExtraContext({projectName, projectPath});
+      window.Raven.setExtraContext({ projectName, projectPath });
     }
 
     mixpanel.haikuTrack('creator:project:launching', {
@@ -1259,7 +1259,7 @@ export default class Creator extends React.Component {
     // Async: ensure our web+haikuroot:// URLs work as expected.
     ipcRenderer.send('protocol:register', projectObject.projectPath);
 
-    return this.props.websocket.request({method: 'bootstrapProject', params: [projectObject]}, (err) => {
+    return this.props.websocket.request({ method: 'bootstrapProject', params: [projectObject] }, (err) => {
       if (err) {
         return this.onProjectLaunchError();
       }
@@ -1270,7 +1270,7 @@ export default class Creator extends React.Component {
         projectName,
       });
 
-      return this.props.websocket.request({method: 'startProject', params: [projectObject]}, (startProjectError, applicationImage) => {
+      return this.props.websocket.request({ method: 'startProject', params: [projectObject] }, (startProjectError, applicationImage) => {
         if (startProjectError) {
           return this.onProjectLaunchError();
         }
@@ -1312,7 +1312,7 @@ export default class Creator extends React.Component {
               projectObject,
               projectName,
             }, () => {
-              this.setState({doShowProjectLoader: false, projectLaunching: true});
+              this.setState({ doShowProjectLoader: false, projectLaunching: true });
               // Once the Timeline/Stage are being rendered, we await the point that their
               // own Project models have loaded before initiating a switch to the current
               // active component. This also waits for MasterProcess to be bootstrapped
@@ -1321,13 +1321,13 @@ export default class Creator extends React.Component {
                 if (ac) {
                   // Even if we already have an active component set up and assigned in memory,
                   // we still need to notify Timeline/Stage since they have been completely recreated
-                  ac.setAsCurrentActiveComponent({from: 'creator'}, () => { });
+                  ac.setAsCurrentActiveComponent({ from: 'creator' }, () => { });
                 } else {
                   // And if we don't have anything assigned, assume we're editing the main component
-                  this.state.projectModel.setCurrentActiveComponent('main', {from: 'creator'}, () => { });
+                  this.state.projectModel.setCurrentActiveComponent('main', { from: 'creator' }, () => { });
                 }
 
-                ipcRenderer.send('topmenu:update', {isProjectOpen: true});
+                ipcRenderer.send('topmenu:update', { isProjectOpen: true });
               });
             });
 
@@ -1386,15 +1386,15 @@ export default class Creator extends React.Component {
     });
   }
 
-  handleComponentDeactivating () {
+  handleComponentDeactivating() {
     this.getActiveComponent().removeAllListeners('sustained-check:start');
   }
 
-  updateMenu () {
+  updateMenu() {
     ipcRenderer.send('topmenu:update', this.state.projectModel.describeTopMenu());
   }
 
-  handleActiveComponentReady () {
+  handleActiveComponentReady() {
     this.mountHaikuComponent();
 
     // Reset not found identifiers in case we are switching current active component
@@ -1444,7 +1444,7 @@ export default class Creator extends React.Component {
     }
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     // The Timeline UI doesn't display the component, so we don't bother giving it a ref
     this.getActiveComponent().mountApplication(null, {
       freeze: true, // No display means no need for overflow settings, etc
@@ -1457,7 +1457,7 @@ export default class Creator extends React.Component {
     });
   }
 
-  launchFolder (projectOptions, cb) {
+  launchFolder(projectOptions, cb) {
     mixpanel.haikuTrack('creator:folder:launching', {
       username: this.state.username,
       project: projectOptions.projectName,
@@ -1466,7 +1466,7 @@ export default class Creator extends React.Component {
     return this.launchProject(projectOptions, cb);
   }
 
-  removeNotice (index, id) {
+  removeNotice(index, id) {
     const notices = this.state.notices;
     if (index !== undefined) {
       this.setState({
@@ -1482,7 +1482,7 @@ export default class Creator extends React.Component {
     }
   }
 
-  shouldNoticeBeSkipped (notice) {
+  shouldNoticeBeSkipped(notice) {
     // Assume that any notice without a string or a react element isn't usable, so just skip it
     if (!notice || typeof notice.message !== 'string' && !React.isValidElement(notice.message)) {
       return true;
@@ -1518,7 +1518,7 @@ export default class Creator extends React.Component {
    *   lightScheme: bool (optional, defaults to dark)
    * }
    */
-  createNotice (notice) {
+  createNotice(notice) {
     if (this.shouldNoticeBeSkipped(notice)) {
       return;
     }
@@ -1568,23 +1568,23 @@ export default class Creator extends React.Component {
       notices.unshift(notice);
     }
 
-    this.setState({notices});
+    this.setState({ notices });
 
     return notice;
   }
 
-  onLibraryDragEnd (asset) {
-    this.setState({assetDragging: null});
+  onLibraryDragEnd(asset) {
+    this.setState({ assetDragging: null });
     if (asset) {
       this.refs.stage.handleDrop(asset, this._lastMouseX, this._lastMouseY);
     }
   }
 
-  onLibraryDragStart (asset) {
-    this.setState({assetDragging: asset});
+  onLibraryDragStart(asset) {
+    this.setState({ assetDragging: asset });
   }
 
-  onAutoUpdateCheckComplete () {
+  onAutoUpdateCheckComplete() {
     this.setState({
       updater: {
         ...this.state.updater,
@@ -1593,7 +1593,7 @@ export default class Creator extends React.Component {
     });
   }
 
-  onActivityReport (userWasActive, shouldSkipOptIn = false) {
+  onActivityReport(userWasActive, shouldSkipOptIn = false) {
     if (userWasActive && this.user) {
       this.user.reportActivity();
     }
@@ -1607,28 +1607,28 @@ export default class Creator extends React.Component {
     });
   }
 
-  onTimelineMounted () {
-    this.setState({isTimelineReady: true});
+  onTimelineMounted() {
+    this.setState({ isTimelineReady: true });
   }
 
-  onTimelineUnmounted () {
-    this.setState({isTimelineReady: false});
+  onTimelineUnmounted() {
+    this.setState({ isTimelineReady: false });
   }
 
-  onNavigateToDashboard () {
+  onNavigateToDashboard() {
     // Redundant with a future call, but ensures we will show the loading spinner ASAP.
-    this.setState({tearingDown: true});
-    this.user.load().then(({user, organization}) => {
+    this.setState({ tearingDown: true });
+    this.user.load().then(({ user, organization }) => {
       this.setState({
         readyForAuth: true,
         isUserAuthenticated: user && organization,
       });
-      this.teardownMaster({shouldFinishTour: true});
-      ipcRenderer.send('topmenu:update', {subComponents: [], undoState: {canUndo: false, canRedo: false}, isProjectOpen: false});
+      this.teardownMaster({ shouldFinishTour: true });
+      ipcRenderer.send('topmenu:update', { subComponents: [], undoState: { canUndo: false, canRedo: false }, isProjectOpen: false });
     });
   }
 
-  awaitAuthAndFire (cb) {
+  awaitAuthAndFire(cb) {
     if (!this.state.readyForAuth || !this.state.isUserAuthenticated) {
       this._postAuthCallback = cb;
     } else {
@@ -1636,8 +1636,8 @@ export default class Creator extends React.Component {
     }
   }
 
-  showForkingError () {
-    this.setState({projectLaunching: false, doShowProjectLoader: false, dashboardVisible: true});
+  showForkingError() {
+    this.setState({ projectLaunching: false, doShowProjectLoader: false, dashboardVisible: true });
     this.createNotice({
       type: 'error',
       title: 'Oh no!',
@@ -1647,8 +1647,8 @@ export default class Creator extends React.Component {
     });
   }
 
-  forkProject (organizationName, projectName) {
-    mixpanel.haikuTrack('creator:fork-project', {organizationName, projectName});
+  forkProject(organizationName, projectName) {
+    mixpanel.haikuTrack('creator:fork-project', { organizationName, projectName });
     const doFork = () => {
       this.awaitAuthAndFire(() => {
         if (!this.envoyProject) {
@@ -1668,14 +1668,14 @@ export default class Creator extends React.Component {
     };
 
     if (this.state.projectModel) {
-      this.teardownMaster({shouldFinishTour: true, doShowProjectLoader: true}, doFork);
+      this.teardownMaster({ shouldFinishTour: true, doShowProjectLoader: true }, doFork);
     } else {
-      this.setState({doShowProjectLoader: true});
+      this.setState({ doShowProjectLoader: true });
       doFork();
     }
   }
 
-  openNewlyForkedProject (haikuProject, numAttempts, cb) {
+  openNewlyForkedProject(haikuProject, numAttempts, cb) {
     const forkedProjectName = haikuProject.projectName;
     const recheck = () => {
       if (numAttempts > MAX_FORK_ATTEMPTS) {
@@ -1704,9 +1704,9 @@ export default class Creator extends React.Component {
     });
   }
 
-  teardownMaster ({shouldFinishTour}, cb) {
+  teardownMaster({ shouldFinishTour }, cb) {
     ipcRenderer.send('protocol:unregister');
-    this.setState({tearingDown: true});
+    this.setState({ tearingDown: true });
     // Delete identifier not found notice on teardown
     this.deleteIdentifierNotFoundNotice();
 
@@ -1715,10 +1715,10 @@ export default class Creator extends React.Component {
     // Previously we were relying on dropped connections to deallocate websockets,
     // which made it difficult to know how to handle actual errors
     return this.props.websocket.request(
-      {method: 'teardownMaster', params: [this.state.projectModel.getFolder()]},
+      { method: 'teardownMaster', params: [this.state.projectModel.getFolder()] },
       () => {
         logger.info('[creator] master torn down');
-        this.setState({dashboardVisible: true, tearingDown: false, notices: []});
+        this.setState({ dashboardVisible: true, tearingDown: false, notices: [] });
         this.onTimelineUnmounted();
 
         this.unsetAllProjectModelsState(this.state.projectModel.getFolder(), 'project:ready');
@@ -1751,7 +1751,7 @@ export default class Creator extends React.Component {
           interactionMode: InteractionMode.GLASS_EDIT, // So that the asset library will not be obscured on reentry
         });
 
-        window.Raven.setExtraContext({projectName: undefined, projectPath: undefined});
+        window.Raven.setExtraContext({ projectName: undefined, projectPath: undefined });
 
         if (cb) {
           cb();
@@ -1760,20 +1760,20 @@ export default class Creator extends React.Component {
     );
   }
 
-  deleteIdentifierNotFoundNotice () {
+  deleteIdentifierNotFoundNotice() {
     if (this.identifiersNotFoundNotice) {
       this.removeNotice(undefined, this.identifiersNotFoundNotice.id);
       this.identifiersNotFoundNotice = undefined;
     }
   }
 
-  renderStartupDefaultScreen () {
+  renderStartupDefaultScreen() {
     return (
-      <div style={{position: 'absolute', width: '100%', height: '100%', backgroundColor: Palette.COAL}}>
-        <div style={{position: 'absolute', width: '50%', height: '50%', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+      <div style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: Palette.COAL }}>
+        <div style={{ position: 'absolute', width: '50%', height: '50%', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <AnimatorSVG />
         </div>
-        <div style={{color: '#FAFCFD', textAlign: 'center', display: 'inline-block', fontSize: '14px', width: '100%', height: 50, position: 'absolute', bottom: 50, left: 0}}>{this.state.softwareVersion}</div>
+        <div style={{ color: '#FAFCFD', textAlign: 'center', display: 'inline-block', fontSize: '14px', width: '100%', height: 50, position: 'absolute', bottom: 50, left: 0 }}>{this.state.softwareVersion}</div>
       </div>
     );
   }
@@ -1792,52 +1792,52 @@ export default class Creator extends React.Component {
           isProjectOpen: false,
           isUserAuthenticated: false,
           subComponents: [],
-          undoState: {canUndo: true, canRedo: true}, // allow undo/redo on login form.
+          undoState: { canUndo: true, canRedo: true }, // allow undo/redo on login form.
         });
       });
     }
   };
 
-  clearAuth () {
-    this.setState({readyForAuth: true, isUserAuthenticated: false, username: ''});
+  clearAuth() {
+    this.setState({ readyForAuth: true, isUserAuthenticated: false, username: '' });
   }
 
-  tryToChangeCurrentActiveComponent (scenename) {
+  tryToChangeCurrentActiveComponent(scenename) {
     // Delegate to Stage, as it contains nonSavedContentOnCodeEditor state
     this.refs.stage.tryToChangeCurrentActiveComponent(scenename);
   }
 
   showChangelogModal = () => {
-    this.setState({showChangelogModal: true}, () => {
+    this.setState({ showChangelogModal: true }, () => {
       const lastViewedChangelog = process.env.HAIKU_RELEASE_VERSION;
-      this.setState({lastViewedChangelog});
+      this.setState({ lastViewedChangelog });
       this.user.setConfig(UserSettings.LastViewedChangelog, lastViewedChangelog);
     });
 
     mixpanel.haikuTrack('creator:changelog:shown');
   };
 
-  renderChangelogModal () {
+  renderChangelogModal() {
     return this.state.showChangelogModal ? (
       <ChangelogModal
         onClose={() => {
-          this.setState({showChangelogModal: false});
+          this.setState({ showChangelogModal: false });
         }}
         lastViewedChangelog={this.state.lastViewedChangelog}
       />
     ) : null;
   }
 
-  showNewProjectModal (isDuplicateProjectModal = false, duplicateProjectName = '', projectToDuplicate = null) {
+  showNewProjectModal(isDuplicateProjectModal = false, duplicateProjectName = '', projectToDuplicate = null) {
     if (!this.state.isUserAuthenticated || !this.envoyProject || !this.user || this.state.expiredTrialNonPro) {
       return;
     }
-    this.setState({showNewProjectModal: true, isDuplicateProjectModal, duplicateProjectName, projectToDuplicate});
+    this.setState({ showNewProjectModal: true, isDuplicateProjectModal, duplicateProjectName, projectToDuplicate });
     mixpanel.haikuTrack('creator:new-project:shown');
   }
 
-  hideNewProjectModal () {
-    this.setState({showNewProjectModal: false, isDuplicateProjectModal: false, duplicateProjectName: null});
+  hideNewProjectModal() {
+    this.setState({ showNewProjectModal: false, isDuplicateProjectModal: false, duplicateProjectName: null });
   }
 
   onCreateProject = (projectName, duplicate) => {
@@ -1849,18 +1849,18 @@ export default class Creator extends React.Component {
 
       if (this.state.projectModel) {
         this.teardownMaster(
-          {shouldFinishTour: true},
+          { shouldFinishTour: true },
           () => {
-            this.launchProject(projectObject, () => {});
+            this.launchProject(projectObject, () => { });
           },
         );
       } else {
-        this.launchProject(projectObject, () => {});
+        this.launchProject(projectObject, () => { });
       }
     });
   };
 
-  renderNewProjectModal () {
+  renderNewProjectModal() {
     return (
       this.state.showNewProjectModal && (
         <NewProjectModal
@@ -1876,7 +1876,7 @@ export default class Creator extends React.Component {
     );
   }
 
-  get proxyDescriptor () {
+  get proxyDescriptor() {
     // Note: in the current setup, we boot all users who are unable to connect directly to the local websocket server
     // before they can benefit from the pre-filling of of the proxy descriptor based on the proxy upgrade request
     // identified during bootup. If we ever figure out how to allow the socket traffic to flow through a proxy, as a
@@ -1884,7 +1884,7 @@ export default class Creator extends React.Component {
     return describeProxyFromUrl(this.props.haiku.dotenv.http_proxy || this.props.haiku.proxy.url);
   }
 
-  set proxyDescriptor (proxyDescriptor) {
+  set proxyDescriptor(proxyDescriptor) {
     this.props.websocket.request(
       {
         method: 'setenv',
@@ -1894,7 +1894,7 @@ export default class Creator extends React.Component {
       },
       (error, dotenv) => {
         if (error) {
-          mixpanel.haikuTrack('creator:proxy-settings:error', {error});
+          mixpanel.haikuTrack('creator:proxy-settings:error', { error });
           logger.warn('[creator] unable to persist proxy settings', error);
           this.createNotice({
             type: 'error',
@@ -1912,7 +1912,7 @@ export default class Creator extends React.Component {
             closeText: 'Okay',
             lightScheme: true,
           });
-          Object.assign(this.props.haiku, {dotenv});
+          Object.assign(this.props.haiku, { dotenv });
         }
 
         this.setState({
@@ -1922,12 +1922,12 @@ export default class Creator extends React.Component {
     );
   }
 
-  saveEventHandlers (targetElement, serializedEvents) {
+  saveEventHandlers(targetElement, serializedEvents) {
     const selectorName = 'haiku:' + targetElement.getComponentId();
-    this.getActiveComponent().batchUpsertEventHandlers(selectorName, serializedEvents, {from: 'creator'}, () => {});
+    this.getActiveComponent().batchUpsertEventHandlers(selectorName, serializedEvents, { from: 'creator' }, () => { });
   }
 
-  forceHideEventHandlersEditor ({trySave} = {trySave: false}) {
+  forceHideEventHandlersEditor({ trySave } = { trySave: false }) {
     if (trySave && this.editor && !this.editor.canBeClosedExternally()) {
       this.editor.doSave();
     }
@@ -1950,7 +1950,7 @@ export default class Creator extends React.Component {
     }
   };
 
-  showEventHandlersEditor (clickEvent, targetElement, options) {
+  showEventHandlersEditor(clickEvent, targetElement, options) {
     if (isPreviewMode(this.state.interactionMode) || !targetElement) {
       return;
     }
@@ -1969,7 +1969,7 @@ export default class Creator extends React.Component {
     });
   }
 
-  handleShowEventHandlersEditor (elementUID, options, frame) {
+  handleShowEventHandlersEditor(elementUID, options, frame) {
     // The EventHandlerEditor uses this field to know whether to launch in frame mode vs event mode
     if (isNumeric(frame)) {
       options.frame = frame;
@@ -1982,21 +1982,21 @@ export default class Creator extends React.Component {
     );
   }
 
-  handleShowConfirmGroupPopup (groupOrUngroup) {
+  handleShowConfirmGroupPopup(groupOrUngroup) {
     mixpanel.haikuTrack(`creator:show-confirm-group-ungroup-popup:${groupOrUngroup}`);
-    this.setState({showConfirmGroupUngroupPopup: true, groupOrUngroup});
-    this.state.projectModel.broadcastPayload({name: 'confirm-group-ungroup-popup-open', groupOrUngroup});
+    this.setState({ showConfirmGroupUngroupPopup: true, groupOrUngroup });
+    this.state.projectModel.broadcastPayload({ name: 'confirm-group-ungroup-popup-open', groupOrUngroup });
   }
 
-  hideConfirmGroupUngroupPopup (userConfirmedGroup, groupOrUngroup) {
+  hideConfirmGroupUngroupPopup(userConfirmedGroup, groupOrUngroup) {
     if (userConfirmedGroup) {
       mixpanel.haikuTrack('creator:glass:group_upgroup_answer_y');
     } else {
       mixpanel.haikuTrack('creator:glass:group_upgroup_answer_n');
     }
 
-    this.setState({showConfirmGroupUngroupPopup: false});
-    this.state.projectModel.broadcastPayload({name: 'confirm-group-ungroup-popup-closed', confirmed: userConfirmedGroup, groupOrUngroup});
+    this.setState({ showConfirmGroupUngroupPopup: false });
+    this.state.projectModel.broadcastPayload({ name: 'confirm-group-ungroup-popup-closed', confirmed: userConfirmedGroup, groupOrUngroup });
   }
 
   boundShowProxySettings = () => {
@@ -2008,9 +2008,9 @@ export default class Creator extends React.Component {
       isBlankComponent,
       skipInstantiateInHost,
     } = {
-      isBlankComponent: false,
-      skipInstantiateInHost: false,
-    },
+        isBlankComponent: false,
+        skipInstantiateInHost: false,
+      },
   ) => {
     this.props.websocket.send({
       type: 'broadcast',
@@ -2022,19 +2022,19 @@ export default class Creator extends React.Component {
     });
   };
 
-  get showAuthenticationUI () {
+  get showAuthenticationUI() {
     return this.state.readyForAuth && (!this.state.isUserAuthenticated || !this.state.username);
   }
 
-  get showGenericLoader () {
+  get showGenericLoader() {
     return this.state.areProjectsLoading && this.state.hasLoadedOnce;
   }
 
-  shouldShowProjectLoader () {
+  shouldShowProjectLoader() {
     return this.state.doShowProjectLoader || this.state.projectLaunching || this.showGenericLoader;
   }
 
-  render () {
+  render() {
     if (this.state.showProxySettings) {
       return (
         <StyleRoot>
@@ -2053,12 +2053,12 @@ export default class Creator extends React.Component {
     }
 
     return (
-      <div style={{position: 'relative', width: '100%', height: '100%'}}>
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
         <CSSTransition
           classNames="toast"
-          timeout={{enter: 500, exit: 300}}
+          timeout={{ enter: 500, exit: 300 }}
         >
-          <div style={{position: 'absolute', right: 0, top: 44, width: 300}}>
+          <div style={{ position: 'absolute', right: 0, top: 44, width: 300 }}>
             {lodash.map(this.state.notices, this.renderNotice)}
           </div>
         </CSSTransition>
@@ -2073,11 +2073,11 @@ export default class Creator extends React.Component {
           />
         }
         {isMac() && <AutoUpdater
-            onComplete={this.onAutoUpdateCheckComplete}
-            check={this.state.updater.shouldCheck}
-            skipOptIn={this.state.updater.shouldSkipOptIn}
-            runOnBackground={this.state.updater.shouldRunOnBackground}
-          />
+          onComplete={this.onAutoUpdateCheckComplete}
+          check={this.state.updater.shouldCheck}
+          skipOptIn={this.state.updater.shouldSkipOptIn}
+          runOnBackground={this.state.updater.shouldRunOnBackground}
+        />
         }
         {this.state.dashboardVisible && this.envoyClient && this.envoyProject && this.state.username && <ProjectBrowser
           ref="ProjectBrowser"
@@ -2114,8 +2114,8 @@ export default class Creator extends React.Component {
             message={this.showGenericLoader ? 'Loading…' : 'Initializing project…'}
           />
         )}
-        {!this.state.dashboardVisible && !this.state.doShowProjectLoader && this.state.projectModel && <div style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0}}>
-          <div className="layout-box" style={{overflow: 'visible'}}>
+        {!this.state.dashboardVisible && !this.state.doShowProjectLoader && this.state.projectModel && <div style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0 }}>
+          <div className="layout-box" style={{ overflow: 'visible' }}>
             <SplitPanel split="horizontal" minSize={300} defaultSize={'62vh'}>
               <SplitPanel split="vertical" minSize={300} defaultSize={300}>
                 <SideBar
@@ -2164,31 +2164,31 @@ export default class Creator extends React.Component {
                     websocket={this.props.websocket}
                     visible={this.state.activeNav === 'state_inspector'} />
                 </SideBar>
-                <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                    {
-                      !isPreviewMode(this.state.interactionMode) && (
-                        <EventHandlerEditor
-                          element={this.state.targetElement}
-                          save={(targetElement, serializedEvent) => {
-                            this.saveEventHandlers(targetElement, serializedEvent);
-                          }}
-                          close={this.safelyHideEventHandlersEditor}
-                          visible={this.state.showEventHandlerEditor}
-                          options={this.state.eventHandlerEditorOptions}
-                          ref={(editor) => {
-                            this.editor = editor;
-                          }}
-                        />
-                      )
-                    }
-                    {
-                      this.state.showConfirmGroupUngroupPopup &&
-                        <ConfirmGroupUngroupPopup
-                          user={this.user}
-                          setGroupUngroupAnswerAndClose={this.hideConfirmGroupUngroupPopup}
-                          groupOrUngroup={this.state.groupOrUngroup}
-                        />
-                    }
+                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                  {
+                    !isPreviewMode(this.state.interactionMode) && (
+                      <EventHandlerEditor
+                        element={this.state.targetElement}
+                        save={(targetElement, serializedEvent) => {
+                          this.saveEventHandlers(targetElement, serializedEvent);
+                        }}
+                        close={this.safelyHideEventHandlersEditor}
+                        visible={this.state.showEventHandlerEditor}
+                        options={this.state.eventHandlerEditorOptions}
+                        ref={(editor) => {
+                          this.editor = editor;
+                        }}
+                      />
+                    )
+                  }
+                  {
+                    this.state.showConfirmGroupUngroupPopup &&
+                    <ConfirmGroupUngroupPopup
+                      user={this.user}
+                      setGroupUngroupAnswerAndClose={this.hideConfirmGroupUngroupPopup}
+                      groupOrUngroup={this.state.groupOrUngroup}
+                    />
+                  }
                   <Stage
                     ref="stage"
                     supportOfflineExport={true} // supportOfflineExport is now stub/legacy logic after switching from Free Tier to Free Trial
@@ -2224,7 +2224,7 @@ export default class Creator extends React.Component {
                     conglomerateComponent={this.conglomerateComponent}
                   />
                   {(this.state.assetDragging)
-                    ? <div style={{width: '100%', height: '100%', backgroundColor: 'white', opacity: 0.01, position: 'absolute', top: 0, left: 0}} />
+                    ? <div style={{ width: '100%', height: '100%', backgroundColor: 'white', opacity: 0.01, position: 'absolute', top: 0, left: 0 }} />
                     : ''}
                 </div>
               </SplitPanel>

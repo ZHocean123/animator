@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {createSketchDialogFile} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
+import { createSketchDialogFile } from 'haiku-serialization/src/utils/HaikuHomeDir';
+import { DOWNLOAD_STYLES as STYLES } from '../styles/downloadShared';
+import { ExternalLink } from 'haiku-ui-common/src/react/ExternalLink';
 
 const DOWNLOAD_URL = 'https://download.sketchapp.com/sketch.zip';
 
@@ -14,7 +14,7 @@ class SketchDownloader extends React.PureComponent {
     this.props.onDismiss(!this.checkInput.checked);
   };
 
-  render () {
+  render() {
     return (
       <div>
         <div style={STYLES.container}>

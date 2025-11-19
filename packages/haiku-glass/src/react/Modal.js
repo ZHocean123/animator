@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 export const MODAL_STYLES = {
   wrapper: {
@@ -52,7 +52,7 @@ export const MODAL_STYLES = {
 };
 
 export default class Modal extends React.Component {
-  render () {
+  render() {
     if (!this.props.isOpen) {
       return <span />;
     }

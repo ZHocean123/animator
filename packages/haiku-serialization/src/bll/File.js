@@ -1,20 +1,20 @@
 const fse = require('fs-extra');
-const {debounce} = require('lodash');
+const { debounce } = require('lodash');
 const path = require('path');
-const {xmlToMana} = require('haiku-common/lib/layout/xmlUtils');
+const { xmlToMana } = require('haiku-common/src/layout/xmlUtils');
 const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default;
 const BaseModel = require('./BaseModel');
 const logger = require('./../utils/LoggerInstance');
 const getSvgOptimizer = require('./../svg/getSvgOptimizer');
 const Lock = require('./Lock');
 const Cache = require('./Cache');
-const {bootstrapSceneFilesSync} = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync');
+const { bootstrapSceneFilesSync } = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync');
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
 // ^^ Leave this message in this file so we can grep for it if necessary
 
-const DEFAULT_CONTEXT_SIZE = {width: 550, height: 400};
+const DEFAULT_CONTEXT_SIZE = { width: 550, height: 400 };
 const DISK_FLUSH_TIMEOUT = 500;
 const AWAIT_CONTENT_FLUSH_TIMEOUT = 0;
 
@@ -32,7 +32,7 @@ const FILE_TYPES = {
  *  Worth a refactor. Many methods here belong in ActiveComponent or elsewhere.
  */
 class File extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     const scenename = this.project.relpathToSceneName(this.relpath);
@@ -74,7 +74,7 @@ class File extends BaseModel {
     // Important: Please see afterInitialize for assigned properties
   }
 
-  destroy (cleanup = false) {
+  destroy(cleanup = false) {
     this.mod.destroy();
     this.ast.destroy();
 
@@ -87,7 +87,7 @@ class File extends BaseModel {
   }
 
   // Hook called automatically by BaseModel during construction or upsert
-  afterInitialize () {
+  afterInitialize() {
     // Track how many times we've updated our in-memory content.
     // This runs as an afterInitialize hook because when the user navigates from
     // the dashboard to the editor, this object will be reused, meaning that the
@@ -96,7 +96,7 @@ class File extends BaseModel {
     this._numBytecodeUpdates = 0;
   }
 
-  updateInMemoryHotModule (bytecode, cb) {
+  updateInMemoryHotModule(bytecode, cb) {
     // In no circumstance do we want to write bad bytecode to in-memory pointer.
     // so instead of returning an error message, we crash the app in hope
     // that a full restart will resolve the condition leading to this.
@@ -114,14 +114,14 @@ class File extends BaseModel {
     });
   }
 
-  requestAsyncContentFlush (flushSpec = {}) {
+  requestAsyncContentFlush(flushSpec = {}) {
     if (this.options.doWriteToDisk) {
       this.pendingRequestedFlush = true;
       this.debouncedFlushContent();
     }
   }
 
-  awaitNoFurtherContentFlushes (cb) {
+  awaitNoFurtherContentFlushes(cb) {
     // If there isn't pending flush request or write request, keep waiting (setTimeout allows going
     // back to nodejs event loop, so write debouncedFlushContent/async write can be executed)
     if (this.pendingRequestedFlush || this.pendingWrite) {
@@ -134,11 +134,11 @@ class File extends BaseModel {
     return cb();
   }
 
-  updateContents (contents) {
+  updateContents(contents) {
     this.contents = contents;
   }
 
-  trackContentsAndGetCode () {
+  trackContentsAndGetCode() {
     this.updateContents(
       this.ast.updateWithBytecodeAndReturnCode(
         this.mod.fetchInMemoryExport(), // The current bytecode
@@ -149,7 +149,7 @@ class File extends BaseModel {
     return this.contents; // The updated contents
   }
 
-  flushContent () {
+  flushContent() {
     this.trackContentsAndGetCode(); // <~ Populates this.contents
 
     this.assertContents(this.contents);
@@ -165,19 +165,19 @@ class File extends BaseModel {
     });
   }
 
-  flushContentForceSync () {
+  flushContentForceSync() {
     this.trackContentsAndGetCode(); // <~ Populates this.contents
 
     this.writeSync();
   }
 
-  maybeFlushContentForceSync () {
+  maybeFlushContentForceSync() {
     if (this.options.doWriteToDisk) {
       this.flushContentForceSync();
     }
   }
 
-  assertBytecode (bytecode) {
+  assertBytecode(bytecode) {
     // If we have a blank bytecode object after the first couple of updates,
     // that usually means we're about to end up with a "Red Wall of Death"
     if (this._numBytecodeUpdates > 1) {
@@ -187,7 +187,7 @@ class File extends BaseModel {
     }
   }
 
-  assertContents (contents) {
+  assertContents(contents) {
     if (typeof contents !== 'string') {
       throw new Error(`Code was invalid ${this.getAbspath()}`);
     }
@@ -198,7 +198,7 @@ class File extends BaseModel {
     }
   }
 
-  write (cb) {
+  write(cb) {
     if (!this.options.doWriteToDisk) {
       throw new Error('[file] illegal write requested');
     }
@@ -215,7 +215,7 @@ class File extends BaseModel {
     });
   }
 
-  writeSync () {
+  writeSync() {
     if (!this.options.doWriteToDisk) {
       throw new Error('[file] illegal write requested');
     }
@@ -227,23 +227,23 @@ class File extends BaseModel {
     this.dtLastWriteEnd = Date.now();
   }
 
-  getAbspath () {
+  getAbspath() {
     return path.join(this.folder, this.relpath);
   }
 
-  getFolder () {
+  getFolder() {
     return path.dirname(this.getAbspath());
   }
 
-  isCode () {
+  isCode() {
     return this.type === FILE_TYPES.code;
   }
 
-  isDesign () {
+  isDesign() {
     return this.type === FILE_TYPES.design;
   }
 
-  getImportPathTo (source) {
+  getImportPathTo(source) {
     // In case of builtin/installed components, we don't want to prefix with the dot :/
     // See also Asset#getLocalizedRelpath, Template#normalizePathOfPossiblyExternalModule
     // e.g. @haiku/core/components/controls/HTML
@@ -260,7 +260,7 @@ class File extends BaseModel {
    * @description Return the reified form of the bytecode, that is, with actual functions, references,
    * and instances present as they would be if it were being executed in memory.
    */
-  getReifiedBytecode () {
+  getReifiedBytecode() {
     // NOTE: Due to a legacy issue there used to be the assumption that the bytecode file could contain
     // multiple bytecodes, hence the [0]; that is no longer the case and this should be refactored! #FIXME
     return this.mod.fetchInMemoryExport();
@@ -272,9 +272,9 @@ class File extends BaseModel {
    * serialization issues or which have the effect of adding too much metadata to the object. For example, the
    * reified bytecode by itself probably has a template that contains .layout properties, etc.
    */
-  getReifiedDecycledBytecode (cleanManaOptions = {}) {
+  getReifiedDecycledBytecode(cleanManaOptions = {}) {
     const reified = this.getReifiedBytecode();
-    return Bytecode.decycle(reified, {cleanManaOptions, doCleanMana: true});
+    return Bytecode.decycle(reified, { cleanManaOptions, doCleanMana: true });
   }
 
   /**
@@ -285,7 +285,7 @@ class File extends BaseModel {
    * Note that this returns a new object; it doesn't serialize the bytecode in place. I.e., you can't
    * mutate the returned object and expect that to affect the live in-memory bytecode, nor the file system.
    */
-  getSerializedBytecode () {
+  getSerializedBytecode() {
     return this.cache.fetch('getSerializedBytecode', () => {
       const reified = this.getReifiedDecycledBytecode();
       Bytecode.cleanBytecode(reified);
@@ -372,7 +372,7 @@ File.readMana = (folder, relpath, cb) => {
         return done(null, manaFull);
       };
 
-      return getSvgOptimizer().optimize(xml, {path: path.join(folder, relpath)}).then((contents) => {
+      return getSvgOptimizer().optimize(xml, { path: path.join(folder, relpath) }).then((contents) => {
         const manaOptimized = xmlToMana(contents.data);
 
         if (!manaOptimized) {

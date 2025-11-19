@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {SimpleSelect} from 'react-selectize';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { SimpleSelect } from 'react-selectize';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const STYLES = {
   selectWrapper: {
@@ -19,10 +19,10 @@ class EventSelector extends React.Component {
   };
 
   createFromSearch = (options, search) => {
-    return {label: search, value: search, groupId: 'Custom Events'};
+    return { label: search, value: search, groupId: 'Custom Events' };
   };
 
-  optionToLabel (option) {
+  optionToLabel(option) {
     let label = option.label;
 
     if (option.newOption) {
@@ -50,14 +50,14 @@ class EventSelector extends React.Component {
     );
   };
 
-  render () {
+  render() {
     const groups = [];
     const select = [];
 
-    this.props.options.forEach(({label, options}) => {
-      groups.push({groupId: label, title: label});
+    this.props.options.forEach(({ label, options }) => {
+      groups.push({ groupId: label, title: label });
       options.forEach((option) => {
-        select.push({groupId: label, ...option});
+        select.push({ groupId: label, ...option });
       });
     });
 

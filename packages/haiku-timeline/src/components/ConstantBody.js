@@ -1,21 +1,21 @@
 import * as React from 'react';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
-import Globals from 'haiku-ui-common/lib/Globals';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import Palette from 'haiku-ui-common/src/Palette';
+import Globals from 'haiku-ui-common/src/Globals';
+import PopoverMenu from 'haiku-ui-common/src/electron/PopoverMenu';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 
 export default class ConstantBody extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleProps(props);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.handleProps(nextProps);
   }
 
-  handleProps ({keyframe}) {
+  handleProps({ keyframe }) {
     if (
       keyframe !== this.props.keyframe ||
       !this.teardownKeyframeUpdateReceiver
@@ -29,16 +29,16 @@ export default class ConstantBody extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.teardownKeyframeUpdateReceiver();
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -57,11 +57,11 @@ export default class ConstantBody extends React.Component {
     }
   }
 
-  get domRef () {
+  get domRef() {
     return this[this.props.keyframe.getUniqueKey()];
   }
 
-  set domRef (domRef) {
+  set domRef(domRef) {
     this[this.props.keyframe.getUniqueKey()] = domRef;
   }
 
@@ -69,7 +69,7 @@ export default class ConstantBody extends React.Component {
     this.domRef = domElement;
   };
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
 
     const uniqueKey = this.props.keyframe.getUniqueKey();
@@ -83,7 +83,7 @@ export default class ConstantBody extends React.Component {
         className="constant-body js-avoid-marquee-init"
         onContextMenu={(ctxMenuEvent) => {
           ctxMenuEvent.stopPropagation();
-          this.props.keyframe.handleContextMenu({...Globals}, {isViaConstantBodyView: true});
+          this.props.keyframe.handleContextMenu({ ...Globals }, { isViaConstantBodyView: true });
           PopoverMenu.emit('show', {
             type: 'keyframe-segment',
             event: ctxMenuEvent.nativeEvent,
@@ -93,11 +93,11 @@ export default class ConstantBody extends React.Component {
         }}
         onMouseDown={(mouseEvent) => {
           mouseEvent.stopPropagation();
-          this.props.keyframe.handleMouseDown(mouseEvent, {...Globals}, {isViaConstantBodyView: true});
+          this.props.keyframe.handleMouseDown(mouseEvent, { ...Globals }, { isViaConstantBodyView: true });
         }}
         onMouseUp={(mouseEvent) => {
           mouseEvent.stopPropagation();
-          this.props.keyframe.handleMouseUp(mouseEvent, {...Globals}, {isViaConstantBodyView: true});
+          this.props.keyframe.handleMouseUp(mouseEvent, { ...Globals }, { isViaConstantBodyView: true });
         }}
         style={experimentIsEnabled(Experiment.TimelineMarqueeSelection) ? {
           position: 'absolute',
@@ -120,8 +120,8 @@ export default class ConstantBody extends React.Component {
             zIndex: 2,
             width: '100%',
             backgroundColor: (this.props.keyframe.isSelectedBody())
-                ? Color(Palette.LIGHTEST_PINK).fade(0.5)
-                : Palette.DARKER_GRAY,
+              ? Color(Palette.LIGHTEST_PINK).fade(0.5)
+              : Palette.DARKER_GRAY,
           } : {
             height: 3,
             top: 12,
@@ -129,8 +129,8 @@ export default class ConstantBody extends React.Component {
             zIndex: 2,
             width: '100%',
             backgroundColor: (this.props.keyframe.isSelectedBody())
-                ? Color(Palette.LIGHTEST_PINK).fade(0.5)
-                : Palette.DARKER_GRAY,
+              ? Color(Palette.LIGHTEST_PINK).fade(0.5)
+              : Palette.DARKER_GRAY,
           }} />
         }
       </span>

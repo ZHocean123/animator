@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal';
-import {BTN_STYLES} from '../../styles/btnShared';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { ModalFooter, ModalHeader, ModalWrapper } from 'haiku-ui-common/src/react/Modal';
+import { BTN_STYLES } from '../../styles/btnShared';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const STYLES = {
   wrapper: {
@@ -30,7 +30,7 @@ const STYLES = {
 };
 
 class BytecodeErrorPopup extends React.Component {
-  renderError () {
+  renderError() {
     const error = this.props.currentBytecodeError;
     if (!error) {
       return;
@@ -62,7 +62,7 @@ class BytecodeErrorPopup extends React.Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -76,7 +76,7 @@ class BytecodeErrorPopup extends React.Component {
           <br />
           <br />
           <ModalFooter>
-            <div style={[{display: 'inline-block'}]} >
+            <div style={[{ display: 'inline-block' }]} >
               <button
                 key="discard-code"
                 id="discard-code"

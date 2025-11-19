@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {ModalWrapper, ModalFooter, ModalHeader} from 'haiku-ui-common/lib/react/Modal';
-import {BTN_STYLES} from '../../styles/btnShared';
-import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';
+import { ModalWrapper, ModalFooter, ModalHeader } from 'haiku-ui-common/src/react/Modal';
+import { BTN_STYLES } from '../../styles/btnShared';
+import { UserSettings } from 'haiku-sdk-creator/src/bll/User';
 
 const STYLES = {
   modalWrapper: {
@@ -50,7 +50,7 @@ const STYLES = {
 };
 
 class ConfirmGroupUngroup extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.cancelGroup = this.cancelGroup.bind(this);
     this.confirmGroup = this.confirmGroup.bind(this);
@@ -67,28 +67,28 @@ class ConfirmGroupUngroup extends React.Component {
       if (doNotDisplayConfirmGroupPopoup) {
         this.confirmGroup();
       } else {
-        this.setState({showPopup: true});
+        this.setState({ showPopup: true });
       }
     });
   }
 
-  saveDoNotShowSetting () {
+  saveDoNotShowSetting() {
     if (this.checkInput && this.checkInput.checked) {
       this.props.user.setConfig(UserSettings.DoNotDisplayConfirmGroupPopoup, true);
     }
   }
 
-  cancelGroup () {
+  cancelGroup() {
     this.saveDoNotShowSetting();
     this.props.setGroupUngroupAnswerAndClose(false, this.props.groupOrUngroup);
   }
 
-  confirmGroup () {
+  confirmGroup() {
     this.saveDoNotShowSetting();
     this.props.setGroupUngroupAnswerAndClose(true, this.props.groupOrUngroup);
   }
 
-  render () {
+  render() {
     return this.state.showPopup && (
       <ModalWrapper style={STYLES.modalWrapper}>
         <ModalHeader>
@@ -98,35 +98,34 @@ class ConfirmGroupUngroup extends React.Component {
           Transitions or expressions may be lost when you {this.props.groupOrUngroup} these elements. Proceed anyway?
         </div>
         <ModalFooter style={STYLES.modalFooter} >
-          <div style={{display: 'inline-block', width: '100%'}} >
-            <input style={{marginTop: 5}}
+          <div style={{ display: 'inline-block', width: '100%' }} >
+            <input style={{ marginTop: 5, ...STYLES.checkInput }}
               type="checkbox"
               name="not-show-again"
               id="not-show-again"
-              style={STYLES.checkInput}
               ref={(input) => {
                 this.checkInput = input;
               }} />
-            <label style={{marginTop: 5}} htmlFor="not-show-again">Don't show this again.</label>
+            <label style={{ marginTop: 5 }} htmlFor="not-show-again">Don't show this again.</label>
 
-            <div style={{float: 'right'}}>
-            <button
-              key="group-no"
-              id="group-no"
-              onClick={this.cancelGroup}
-              style={STYLES.no}
-            >
-              <span>No</span>
-            </button>
+            <div style={{ float: 'right' }}>
+              <button
+                key="group-no"
+                id="group-no"
+                onClick={this.cancelGroup}
+                style={STYLES.no}
+              >
+                <span>No</span>
+              </button>
 
-            <button
-              key="group-yes"
-              id="group-yes"
-              onClick={this.confirmGroup}
-              style={STYLES.yes}
-            >
-              <span>Yes</span>
-            </button>
+              <button
+                key="group-yes"
+                id="group-yes"
+                onClick={this.confirmGroup}
+                style={STYLES.yes}
+              >
+                <span>Yes</span>
+              </button>
             </div>
           </div>
         </ModalFooter>

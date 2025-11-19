@@ -4,22 +4,22 @@ const pretty = require('pretty');
 const async = require('async');
 const jss = require('json-stable-stringify');
 const pascalcase = require('pascalcase');
-const {PlaybackFlag} = require('@haiku/core/lib/HaikuTimeline');
-const {HAIKU_ID_ATTRIBUTE, HAIKU_LOCKED_ATTRIBUTE, HAIKU_TITLE_ATTRIBUTE, HAIKU_VAR_ATTRIBUTE} = require('@haiku/core/lib/HaikuElement');
-const {default: HaikuComponent, clone} = require('@haiku/core/lib/HaikuComponent');
-const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
+const { PlaybackFlag } = require('@haiku/core/lib/HaikuTimeline');
+const { HAIKU_ID_ATTRIBUTE, HAIKU_LOCKED_ATTRIBUTE, HAIKU_TITLE_ATTRIBUTE, HAIKU_VAR_ATTRIBUTE } = require('@haiku/core/lib/HaikuElement');
+const { default: HaikuComponent, clone } = require('@haiku/core/lib/HaikuComponent');
+const { LAYOUT_3D_SCHEMA } = require('@haiku/core/lib/HaikuComponent');
 const HaikuDOMAdapter = require('@haiku/core/lib/adapters/dom').default;
-const {getSortedKeyframes} = require('@haiku/core/lib/helpers/KeyframeUtils');
-const {InteractionMode, isPreviewMode} = require('@haiku/core/lib/helpers/interactionModes');
+const { getSortedKeyframes } = require('@haiku/core/lib/helpers/KeyframeUtils');
+const { InteractionMode, isPreviewMode } = require('@haiku/core/lib/helpers/interactionModes');
 const Layout3D = require('@haiku/core/lib/Layout3D');
 const BaseModel = require('./BaseModel');
 const logger = require('./../utils/LoggerInstance');
 const CryptoUtils = require('./../utils/CryptoUtils');
 const ensureTrailingSlash = require('../utils/ensureTrailingSlash');
 const toTitleCase = require('./helpers/toTitleCase');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
 const Lock = require('./Lock');
-const SustainedWarningChecker = require('haiku-common/lib/sustained-checker/SustainedWarningChecker').default;
+const SustainedWarningChecker = require('haiku-common/src/sustained-checker/SustainedWarningChecker').default;
 
 const KEYFRAME_MOVE_DEBOUNCE_TIME = 100;
 const CHECK_SUSTAINED_WARNINGS_DEBOUNCE_TIME = 1000;
@@ -83,7 +83,7 @@ const keyframeUpdatesToHotComponentDescriptors = (keyframeUpdates) => {
  *  For now, the logic of who is/isn't active is managed by Project.
  */
 class ActiveComponent extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     if (!this.scenename) {
@@ -153,7 +153,7 @@ class ActiveComponent extends BaseModel {
             clearCacheOptions: {
               doClearEntityCaches: true,
             },
-          }, {}, () => {});
+          }, {}, () => { });
         }
         this.emit('update', what, element, metadata);
       }
@@ -180,7 +180,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  findElementRoot () {
+  findElementRoot() {
     for (const element of Element.findRoots()) {
       if (element.component.uid === this.uid) {
         return element;
@@ -189,7 +189,7 @@ class ActiveComponent extends BaseModel {
     return null;
   }
 
-  queryElements (criteria) {
+  queryElements(criteria) {
     if (!criteria) {
       criteria = {};
     }
@@ -197,23 +197,23 @@ class ActiveComponent extends BaseModel {
     return Element.where(criteria);
   }
 
-  findRowByComponentId (haikuId) {
+  findRowByComponentId(haikuId) {
     return Row.findByComponentAndHaikuId(this, haikuId);
   }
 
-  findPropertyRowsByParentComponentId (parentHaikuId) {
+  findPropertyRowsByParentComponentId(parentHaikuId) {
     return Row.findPropertyRowsByComponentAndParentHaikuId(this, parentHaikuId);
   }
 
-  findElementByComponentId (haikuId) {
+  findElementByComponentId(haikuId) {
     return Element.findByComponentAndHaikuId(this, haikuId);
   }
 
-  locateTemplateNodeByComponentId (componentId) {
+  locateTemplateNodeByComponentId(componentId) {
     return this.getTemplateNodesByComponentId()[componentId];
   }
 
-  getTemplateNodesByComponentId () {
+  getTemplateNodesByComponentId() {
     return this.cache.fetch('getTemplateNodesByComponentId', () => {
       const nodes = {};
       const mana = this.getReifiedBytecode().template;
@@ -226,7 +226,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  findTemplateNodeByComponentId (mana, componentId) {
+  findTemplateNodeByComponentId(mana, componentId) {
     if (!mana) {
       return;
     }
@@ -245,16 +245,16 @@ class ActiveComponent extends BaseModel {
     }
   }
 
-  findElementByUid (uid) {
+  findElementByUid(uid) {
     return Element.findById(uid);
   }
 
-  getCurrentTimelineName () {
+  getCurrentTimelineName() {
     // TODO: Support many. When the timeline changes, clear Timeline (bll collection) caches.
     return Timeline.DEFAULT_NAME;
   }
 
-  getCurrentTimelineTime () {
+  getCurrentTimelineTime() {
     // Although we own multiple instances, assume that they are operating in lockstep during
     // editing; we just need to grab a single 'canonical' one for reference
     const canonicalCoreInstance = this.$instance;
@@ -277,46 +277,46 @@ class ActiveComponent extends BaseModel {
     return controlledTime || 0;
   }
 
-  getCurrentMspf () {
+  getCurrentMspf() {
     return 16.666;
   }
 
-  getRelpath () {
+  getRelpath() {
     return path.join('code', this.getSceneName(), 'code.js');
   }
 
-  getLocalizedRelpath () {
+  getLocalizedRelpath() {
     return Template.normalizePath(`./${this.getRelpath()}`);
   }
 
-  getSceneCodeFolder () {
+  getSceneCodeFolder() {
     return path.join(this.project.getFolder(), 'code', this.getSceneName());
   }
 
-  getSceneDomModulePath () {
+  getSceneDomModulePath() {
     return path.join('code', this.getSceneName(), 'dom.js');
   }
 
-  getRelpathWithRespectToProjectFromPathRelativeToUs (relpathRelativeToUs) {
+  getRelpathWithRespectToProjectFromPathRelativeToUs(relpathRelativeToUs) {
     const abspathToGivenPath = path.normalize(path.join(this.getSceneCodeFolder(), relpathRelativeToUs));
     const relpathWithRespectToProject = abspathToGivenPath.replace(this.project.getFolder(), '').slice(1); // Remove leftover slash
     return relpathWithRespectToProject;
   }
 
-  setSceneName (scenename) {
+  setSceneName(scenename) {
     this.scenename = scenename;
     return this;
   }
 
-  setAsCurrentActiveComponent (metadata, cb) {
+  setAsCurrentActiveComponent(metadata, cb) {
     this.project.setCurrentActiveComponent(this.getSceneName(), metadata, cb);
   }
 
-  getSceneName () {
+  getSceneName() {
     return this.scenename;
   }
 
-  getFriendlySceneName (maybeProjectName) {
+  getFriendlySceneName(maybeProjectName) {
     const snakename = this.getSceneName();
     if (snakename === DEFAULT_SCENE_NAME) {
       return `${this.project.getFriendlyName(maybeProjectName)} (Main)`;
@@ -324,31 +324,31 @@ class ActiveComponent extends BaseModel {
     return `${toTitleCase(snakename)}`;
   }
 
-  getAbsoluteLottieFilePath () {
+  getAbsoluteLottieFilePath() {
     return path.join(this.getSceneCodeFolder(), 'lottie.json');
   }
 
-  getAbsoluteHaikuStaticFilePath () {
+  getAbsoluteHaikuStaticFilePath() {
     return path.join(this.getSceneCodeFolder(), 'static.json');
   }
 
-  fetchActiveBytecodeFile () {
+  fetchActiveBytecodeFile() {
     return this.file;
   }
 
-  tick () {
+  tick() {
     // This guard is to allow headless mode, e.g. in Haiku's timeline application
     if (this.$instance.context && this.$instance.context.tick) {
       this.$instance.context.tick();
     }
   }
 
-  forceFlush () {
+  forceFlush() {
     this.$instance.markForFullFlush(true);
     this.tick();
   }
 
-  addHotComponents (hotComponents) {
+  addHotComponents(hotComponents) {
     hotComponents.forEach((hotComponent) => {
       // hotComponent may be null if the timeline time was not 0
       if (hotComponent) {
@@ -357,7 +357,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  clearCaches (options = {}) {
+  clearCaches(options = {}) {
     this.$instance.clearCaches(options);
     this.fetchRootElement().cache.clear();
     if (options.doClearEntityCaches) {
@@ -365,7 +365,7 @@ class ActiveComponent extends BaseModel {
     }
   }
 
-  getPropertyGroupValueFromPropertyKeys (componentId, timelineName, timelineTime, propertyKeys) {
+  getPropertyGroupValueFromPropertyKeys(componentId, timelineName, timelineTime, propertyKeys) {
     const groupValue = {};
     const bytecode = this.getReifiedBytecode();
 
@@ -397,11 +397,11 @@ class ActiveComponent extends BaseModel {
     return groupValue;
   }
 
-  getMountHTML () {
+  getMountHTML() {
     return this.getMount().getInnerHTML();
   }
 
-  htmlSnapshot (cb) {
+  htmlSnapshot(cb) {
     const html = this.getMountHTML();
     return cb(
       null,
@@ -413,11 +413,11 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  setCurrentTimelineFrameValue (frame) {
+  setCurrentTimelineFrameValue(frame) {
     this.getCurrentTimeline().seek(frame, true);
   }
 
-  setTimelineTimeValue (timelineTime, forceSeek = false) {
+  setTimelineTimeValue(timelineTime, forceSeek = false) {
     timelineTime = Math.round(timelineTime);
     // When doing a hard reload (in which we load a fresh component instance from disk)
     // that component will be completely fresh and not yet in 'controlled time' mode, which
@@ -425,7 +425,7 @@ class ActiveComponent extends BaseModel {
     // force set a time value to get it into 'controlled time' mode, hence the `forceSeek` flag.
     if (forceSeek || timelineTime !== this.getCurrentTimelineTime()) {
       // Note that this call reaches in and updates our instance's timeline objects
-      Timeline.where({component: this}).forEach((timeline) => {
+      Timeline.where({ component: this }).forEach((timeline) => {
         timeline.seekToTime(timelineTime, true, forceSeek);
       });
 
@@ -443,7 +443,7 @@ class ActiveComponent extends BaseModel {
     }
   }
 
-  setTitleForComponent (componentId, newTitle, metadata, cb) {
+  setTitleForComponent(componentId, newTitle, metadata, cb) {
     this.project.updateHook('setTitleForComponent', this.getRelpath(), componentId, newTitle, metadata, (fire) => {
       return this.performComponentWork((bytecode, mana, done) => {
         const templateNode = this.locateTemplateNodeByComponentId(componentId);
@@ -476,7 +476,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  setLockedStatusForComponent (componentId, locked, metadata, cb) {
+  setLockedStatusForComponent(componentId, locked, metadata, cb) {
     this.project.updateHook('setLockedStatusForComponent', this.getRelpath(), componentId, locked, metadata, (fire) => {
       return this.performComponentWork((bytecode, mana, done) => {
         const templateNode = this.locateTemplateNodeByComponentId(componentId);
@@ -508,7 +508,7 @@ class ActiveComponent extends BaseModel {
    * The metadata arg is important because it has info about who originated the message, allowing us to avoid infinite loop.
    * Note: This gets called automatically by element.select()
    */
-  handleElementSelected (componentId, metadata) {
+  handleElementSelected(componentId, metadata) {
     metadata.integrity = false;
     this.project.updateHook('selectElement', this.getRelpath(), componentId, metadata, (fire) => fire());
   }
@@ -520,22 +520,22 @@ class ActiveComponent extends BaseModel {
    * The metadata arg is important because it has info about who originated the message, allowing us to avoid infinite loop.
    * Note: This gets called automatically by element.unselect()
    */
-  handleElementUnselected (componentId, metadata) {
+  handleElementUnselected(componentId, metadata) {
     metadata.integrity = false;
     this.project.updateHook('unselectElement', this.getRelpath(), componentId, metadata, (fire) => fire());
   }
 
-  handleElementHovered (componentId, metadata) {
+  handleElementHovered(componentId, metadata) {
     metadata.integrity = false;
     this.project.updateHook('hoverElement', this.getRelpath(), componentId, metadata, (fire) => fire());
   }
 
-  handleElementUnhovered (componentId, metadata) {
+  handleElementUnhovered(componentId, metadata) {
     metadata.integrity = false;
     this.project.updateHook('unhoverElement', this.getRelpath(), componentId, metadata, (fire) => fire());
   }
 
-  getTopLevelElementHaikuIds () {
+  getTopLevelElementHaikuIds() {
     const template = this.getReifiedBytecode().template;
     const children = (template && template.children) || [];
     return children.map((child) => {
@@ -545,7 +545,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  selectElementWithinTime (waitTime, componentId, metadata, cb) {
+  selectElementWithinTime(waitTime, componentId, metadata, cb) {
     const element = Element.findByComponentAndHaikuId(this, componentId);
 
     // If we don't initially find the element, wait up to `waitTime` to see if it appears
@@ -566,7 +566,7 @@ class ActiveComponent extends BaseModel {
     cb();
   }
 
-  selectAll (options, metadata, cb) {
+  selectAll(options, metadata, cb) {
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       this.getArtboard().getElement().children.forEach((element) => {
         if (element.isLocked()) {
@@ -581,13 +581,13 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  selectElement (componentId, metadata, cb) {
+  selectElement(componentId, metadata, cb) {
     return this.selectElementWithinTime(SELECTION_WAIT_TIME, componentId, metadata, () => {
       return cb(); // Must return or the plumbing action circuit never completes
     });
   }
 
-  unselectElementWithinTime (waitTime, componentId, metadata, cb) {
+  unselectElementWithinTime(waitTime, componentId, metadata, cb) {
     const element = Element.findByComponentAndHaikuId(this, componentId);
 
     if (!element) {
@@ -606,13 +606,13 @@ class ActiveComponent extends BaseModel {
     return cb();
   }
 
-  unselectElement (componentId, metadata, cb) {
+  unselectElement(componentId, metadata, cb) {
     return this.unselectElementWithinTime(SELECTION_WAIT_TIME, componentId, metadata, () => {
       return cb(); // Must return or the plumbing action circuit never completes
     });
   }
 
-  hoverElement (componentId, metadata, cb) {
+  hoverElement(componentId, metadata, cb) {
     const element = Element.findByComponentAndHaikuId(this, componentId);
     if (element) {
       element.hoverOn(metadata);
@@ -620,7 +620,7 @@ class ActiveComponent extends BaseModel {
     return cb();
   }
 
-  unhoverElement (componentId, metadata, cb) {
+  unhoverElement(componentId, metadata, cb) {
     const element = Element.findByComponentAndHaikuId(this, componentId);
     if (element) {
       element.hoverOff(metadata);
@@ -628,7 +628,7 @@ class ActiveComponent extends BaseModel {
     return cb();
   }
 
-  isPreviewModeActive () {
+  isPreviewModeActive() {
     return isPreviewMode(this.interactionMode);
   }
 
@@ -636,7 +636,7 @@ class ActiveComponent extends BaseModel {
    * @method setInteractionMode
    * @description Changes the current interaction mode and flushes all cachés
    */
-  setInteractionMode (interactionMode, cb) {
+  setInteractionMode(interactionMode, cb) {
     this.interactionMode = interactionMode;
 
     return this.reload({
@@ -652,11 +652,11 @@ class ActiveComponent extends BaseModel {
    * @description Changes the current hot-editing mode setting.
    * Used by Glass when playing the component using the "play" button.
    */
-  setHotEditingMode (hotEditingMode) {
-    this.$instance.assignConfig({hotEditingMode});
+  setHotEditingMode(hotEditingMode) {
+    this.$instance.assignConfig({ hotEditingMode });
   }
 
-  getInsertionPointInfo (nonce = 0) {
+  getInsertionPointInfo(nonce = 0) {
     const bytecode = this.getReifiedBytecode();
 
     const mana = bytecode && bytecode.template;
@@ -676,7 +676,7 @@ class ActiveComponent extends BaseModel {
     };
   }
 
-  getInsertionPointHash () {
+  getInsertionPointHash() {
     return this.getInsertionPointInfo().hash;
   }
 
@@ -685,7 +685,7 @@ class ActiveComponent extends BaseModel {
    * @description Detect whether we contain other in our tree or in the subtrees of
    * any components that we host, or whether we are a match for other.
    */
-  doesMatchOrHostComponent (other, cb) {
+  doesMatchOrHostComponent(other, cb) {
     if (other === this) {
       return cb(null, true);
     }
@@ -718,7 +718,7 @@ class ActiveComponent extends BaseModel {
    * @param metadata {Object} Signal metadata
    * @param cb {Function}
    */
-  instantiateReference (subcomponent, identifier, modpath, coords, overrides, metadata, cb) {
+  instantiateReference(subcomponent, identifier, modpath, coords, overrides, metadata, cb) {
     return subcomponent.doesMatchOrHostComponent(this, (err, answer) => {
       if (err) {
         return cb(err);
@@ -739,7 +739,7 @@ class ActiveComponent extends BaseModel {
       }
 
       const file = (isExternalModule)
-        ? PseudoFile.upsert({relpath: modpath})
+        ? PseudoFile.upsert({ relpath: modpath })
         : this.project.upsertFile({
           relpath: modpath,
           folder: this.project.getFolder(),
@@ -782,15 +782,15 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  getTitle () {
+  getTitle() {
     return pascalcase(this.getSceneName());
   }
 
-  getAbspath () {
+  getAbspath() {
     return path.join(this.project.getFolder(), this.getRelpath());
   }
 
-  fetchTimelinePropertyFromComponentElement (mana, propertyName) {
+  fetchTimelinePropertyFromComponentElement(mana, propertyName) {
     if (!mana.elementName) {
       return;
     }
@@ -817,7 +817,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  instantiateManaInBytecode (mana, bytecode, overrides, coords) {
+  instantiateManaInBytecode(mana, bytecode, overrides, coords) {
     const {
       hash,
     } = this.getInsertionPointInfo(0);
@@ -830,7 +830,7 @@ class ActiveComponent extends BaseModel {
       hash,
       timelineName,
       timelineTime,
-      {doHashWork: true},
+      { doHashWork: true },
     );
 
     // Has to happen after the above stanza in case an id was generated
@@ -877,7 +877,7 @@ class ActiveComponent extends BaseModel {
    * @param metadata {Object} Signal metadata
    * @param cb {Function}
    */
-  instantiateMana (mana, bytecode, coords, metadata, cb) {
+  instantiateMana(mana, bytecode, coords, metadata, cb) {
     this.instantiateManaInBytecode(
       mana,
       bytecode,
@@ -887,23 +887,23 @@ class ActiveComponent extends BaseModel {
     return cb(null, mana);
   }
 
-  getInstantiationTimelineName () {
+  getInstantiationTimelineName() {
     return Timeline.DEFAULT_NAME;
   }
 
-  getInstantiationTimelineTime () {
+  getInstantiationTimelineTime() {
     return 0;
   }
 
-  getMergeDesignTimelineName () {
+  getMergeDesignTimelineName() {
     return Timeline.DEFAULT_NAME;
   }
 
-  getMergeDesignTimelineTime () {
+  getMergeDesignTimelineTime() {
     return 0;
   }
 
-  createInTransitionInTimelineObject (timelineObj, propertyName, fromTime, fromValue, toTime, toValue, curveName) {
+  createInTransitionInTimelineObject(timelineObj, propertyName, fromTime, fromValue, toTime, toValue, curveName) {
     if (!timelineObj[propertyName]) {
       timelineObj[propertyName] = {};
     }
@@ -925,7 +925,7 @@ class ActiveComponent extends BaseModel {
     timelineObj[propertyName][toTime].value = toValue;
   }
 
-  mutateInstantiateeDisplaySettings (
+  mutateInstantiateeDisplaySettings(
     componentId,
     timelinesObject,
     timelineName,
@@ -998,7 +998,7 @@ class ActiveComponent extends BaseModel {
     if (maybeCoords !== undefined && maybeCoords !== null) {
       const propertyGroup = {};
 
-      const {width, height} = this.getContextSizeActual(timelineName, timelineTime);
+      const { width, height } = this.getContextSizeActual(timelineName, timelineTime);
 
       if (maybeCoords && typeof maybeCoords.x === 'number') {
         propertyGroup['translation.x'] = maybeCoords.x;
@@ -1025,7 +1025,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method unconglomerateComponent
    */
-  unconglomerateComponent (
+  unconglomerateComponent(
     componentIds,
     name,
     size,
@@ -1071,7 +1071,7 @@ class ActiveComponent extends BaseModel {
    * @description Given a list of existing component ids on stage, create a component
    * from them and place the result on the stage
    */
-  conglomerateComponent (
+  conglomerateComponent(
     componentIds,
     name,
     size,
@@ -1134,7 +1134,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  conglomerateComponentActual (
+  conglomerateComponentActual(
     ids,
     name,
     size,
@@ -1280,7 +1280,7 @@ class ActiveComponent extends BaseModel {
                 insertion.attributes[HAIKU_ID_ATTRIBUTE],
                 this.getInstantiationTimelineName(),
                 0,
-                {playback: PlaybackFlag.LOOP},
+                { playback: PlaybackFlag.LOOP },
                 'merge',
               );
 
@@ -1298,7 +1298,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  instantiateBytecode (
+  instantiateBytecode(
     incomingBytecode,
   ) {
     const timelineName = this.getInstantiationTimelineName();
@@ -1343,7 +1343,7 @@ class ActiveComponent extends BaseModel {
    * @param metadata {Object} Signal metadata
    * @param cb {Function}
    */
-  instantiateComponent (relpath, coords, metadata, cb) {
+  instantiateComponent(relpath, coords, metadata, cb) {
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       return this.project.updateHook(
         'instantiateComponent',
@@ -1372,7 +1372,7 @@ class ActiveComponent extends BaseModel {
               cb(null, manaForWrapperElement);
 
               // Immediately select the element after it is placed on stage
-              return this.selectElement(manaForWrapperElement.attributes[HAIKU_ID_ATTRIBUTE], metadata, () => {});
+              return this.selectElement(manaForWrapperElement.attributes[HAIKU_ID_ATTRIBUTE], metadata, () => { });
             });
           };
 
@@ -1388,7 +1388,7 @@ class ActiveComponent extends BaseModel {
                 installedComponent.getIdentifier(),
                 relpath,
                 coords,
-                {'origin.x': 0.5, 'origin.y': 0.5},
+                { 'origin.x': 0.5, 'origin.y': 0.5 },
                 metadata,
                 done,
               );
@@ -1408,7 +1408,7 @@ class ActiveComponent extends BaseModel {
                       localComponentIdentifier,
                       relpath,
                       coords,
-                      {'origin.x': 0.5, 'origin.y': 0.5},
+                      { 'origin.x': 0.5, 'origin.y': 0.5 },
                       metadata,
                       done,
                     );
@@ -1442,7 +1442,7 @@ class ActiveComponent extends BaseModel {
                   return done(err);
                 }
 
-                const {width, height} = size;
+                const { width, height } = size;
 
                 return this.instantiateReference(
                   imageComponent, // subcomponent
@@ -1469,7 +1469,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  deleteComponents (componentIds, metadata, cb) {
+  deleteComponents(componentIds, metadata, cb) {
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       this.project.updateHook(
         'deleteComponents',
@@ -1509,7 +1509,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  deleteElementImpl (
+  deleteElementImpl(
     mana,
     componentId,
   ) {
@@ -1539,7 +1539,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  mergePrimitiveWithOverrides (primitive, overrides, cb) {
+  mergePrimitiveWithOverrides(primitive, overrides, cb) {
     return this.performComponentWork((bytecode, template, done) => {
       Template.visit((template), (node) => {
         // Only merge into nodes that match our haiku-source design path
@@ -1584,7 +1584,7 @@ class ActiveComponent extends BaseModel {
     }, cb);
   }
 
-  removeChildContentFromBytecode (bytecode, mana) {
+  removeChildContentFromBytecode(bytecode, mana) {
     // Return the data that we removed in case we want to retain anything when designs merge
     const removedOutputs = {};
 
@@ -1601,7 +1601,7 @@ class ActiveComponent extends BaseModel {
       }
 
       removedOutputs[haikuId] = {
-        treeInfo: {index, depth, address},
+        treeInfo: { index, depth, address },
         templateNode: node,
         eventHandlers: {},
         timelines: {},
@@ -1632,7 +1632,7 @@ class ActiveComponent extends BaseModel {
     return removedOutputs;
   }
 
-  findEquivalentNode (node, {index, depth, address}, template) {
+  findEquivalentNode(node, { index, depth, address }, template) {
     let foundNode;
 
     const ourDomId = node.attributes && node.attributes.id;
@@ -1658,7 +1658,7 @@ class ActiveComponent extends BaseModel {
     return foundNode;
   }
 
-  mergeRemovedOutputs (bytecode, subtemplate, removals) {
+  mergeRemovedOutputs(bytecode, subtemplate, removals) {
     // Nothing to do if there aren't any timelines to merge into
     if (!bytecode.timelines) {
       return;
@@ -1734,7 +1734,7 @@ class ActiveComponent extends BaseModel {
     }
   }
 
-  mergeMana (existingBytecode, manaIncoming, index, {mergeRemovedOutputs = true}) {
+  mergeMana(existingBytecode, manaIncoming, index, { mergeRemovedOutputs = true }) {
     let numMatchingNodes = 0;
 
     const timelineName = this.getMergeDesignTimelineName();
@@ -1791,13 +1791,13 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  mergeDesignFiles (designs, cb) {
+  mergeDesignFiles(designs, cb) {
     return this.performComponentWork((bytecode, template, done) => {
       return this.mergeDesignFilesImpl(designs, bytecode, {}, done);
     }, cb);
   }
 
-  mergeDesignFilesImpl (designs, bytecode, {mergeRemovedOutputs = true}, cb) {
+  mergeDesignFilesImpl(designs, bytecode, { mergeRemovedOutputs = true }, cb) {
     // Ensure order is the same across processes otherwise we'll end up with different insertion point hashes
     const designsAsArray = Object.keys(designs).sort((a, b) => {
       if (a < b) {
@@ -1835,7 +1835,7 @@ class ActiveComponent extends BaseModel {
 
           Template.fixManaSourceAttribute(mana, relpath); // Adds haiku-source="relpath_to_file_from_project_root"
 
-          this.mergeMana(bytecode, mana, index, {mergeRemovedOutputs});
+          this.mergeMana(bytecode, mana, index, { mergeRemovedOutputs });
           return next();
         });
       }
@@ -1880,7 +1880,7 @@ class ActiveComponent extends BaseModel {
    * @param metadata {Object}
    * @param cb {Function}
    */
-  pasteThings (pasteablesSerial, options, metadata, cb) {
+  pasteThings(pasteablesSerial, options, metadata, cb) {
     const pasteables = pasteablesSerial.map((pasteableSerial) => Bytecode.unserializeValue(pasteableSerial, (ref) => {
       return this.evaluateReference(ref);
     }));
@@ -1942,9 +1942,9 @@ class ActiveComponent extends BaseModel {
             logger.warn(`[active component (${this.project.getAlias()})] cannot paste ${pasteable.kind}`);
             return next();
           }, (err) => {
-            return done(err, {haikuIds});
+            return done(err, { haikuIds });
           });
-        }, (err, {haikuIds}) => {
+        }, (err, { haikuIds }) => {
           if (err) {
             release();
             logger.error(`[active component (${this.project.getAlias()})]`, err);
@@ -1958,15 +1958,15 @@ class ActiveComponent extends BaseModel {
             },
           }, null, () => {
             release();
-            fire(null, {haikuIds});
-            return cb(null, {haikuIds});
+            fire(null, { haikuIds });
+            return cb(null, { haikuIds });
           });
         });
       });
     });
   }
 
-  pasteBytecodeImpl (ourBytecode, theirBytecode, {skipHashPadding = false}) {
+  pasteBytecodeImpl(ourBytecode, theirBytecode, { skipHashPadding = false }) {
     theirBytecode = Bytecode.clone(theirBytecode);
 
     if (!skipHashPadding) {
@@ -2001,7 +2001,7 @@ class ActiveComponent extends BaseModel {
     return haikuId;
   }
 
-  evaluateReference (__reference) {
+  evaluateReference(__reference) {
     const modref = ModuleWrapper.parseReference(__reference);
 
     if (modref && modref.type && modref.type === ModuleWrapper.REF_TYPES.COMPONENT) {
@@ -2009,19 +2009,19 @@ class ActiveComponent extends BaseModel {
 
       if (ac) {
         const bytecode = ac.getReifiedBytecode();
-        return lodash.assign({__reference}, bytecode);
+        return lodash.assign({ __reference }, bytecode);
       }
     }
 
     return __reference;
   }
 
-  splitSelectedKeyframes (metadata) {
+  splitSelectedKeyframes(metadata) {
     const keyframes = this.getSelectedKeyframes();
     keyframes.forEach((keyframe) => keyframe.removeCurve(metadata));
   }
 
-  deleteSelectedKeyframes (metadata) {
+  deleteSelectedKeyframes(metadata) {
     const keyframes = this.getSelectedKeyframes();
 
     if (Keyframe.groupIsSingleTween(keyframes)) {
@@ -2041,7 +2041,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  joinSelectedKeyframes (curveName, metadata) {
+  joinSelectedKeyframes(curveName, metadata) {
     const keyframes = this.getSelectedKeyframes();
     keyframes.forEach((keyframe) => {
       // Only keyframes that have a next keyframe should get the curve assigned,
@@ -2053,7 +2053,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  changeCurveOnSelectedKeyframes (curveName, metadata) {
+  changeCurveOnSelectedKeyframes(curveName, metadata) {
     const keyframes = this.getSelectedKeyframes();
     keyframes.forEach((keyframe) => {
       // Only keyframes that have a next keyframe should get the curve assigned,
@@ -2065,13 +2065,13 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  getFirstSelectedCurve () {
+  getFirstSelectedCurve() {
     const keyframes = this.getSelectedKeyframes();
     const selectedKeyframeWithCurve = keyframes.find((keyframe) => keyframe.isSelectedBody());
     return selectedKeyframeWithCurve ? selectedKeyframeWithCurve.getCurve() : null;
   }
 
-  dragStartSelectedKeyframes (dragData, referenceKeyframe) {
+  dragStartSelectedKeyframes(dragData, referenceKeyframe) {
     const keyframes = this.getSelectedKeyframes();
 
     if (referenceKeyframe && Keyframe.groupIsSingleTween(keyframes)) {
@@ -2081,7 +2081,7 @@ class ActiveComponent extends BaseModel {
     }
   }
 
-  dragStopSelectedKeyframes () {
+  dragStopSelectedKeyframes() {
     const keyframes = this.getSelectedKeyframes();
     keyframes.forEach((keyframe) => keyframe.dragStop());
 
@@ -2091,7 +2091,7 @@ class ActiveComponent extends BaseModel {
     this.commitAccumulatedKeyframeMovesDebounced();
   }
 
-  dragSelectedKeyframes (pxpf, mspf, dragData, metadata, referenceKeyframe) {
+  dragSelectedKeyframes(pxpf, mspf, dragData, metadata, referenceKeyframe) {
     const keyframes = this.getSelectedKeyframes();
 
     if (referenceKeyframe && Keyframe.groupIsSingleTween(keyframes)) {
@@ -2102,7 +2102,7 @@ class ActiveComponent extends BaseModel {
   }
 
   // Returns true iff the element has any transitions or expressions.
-  elementHasTransitionOrExpression (elementId) {
+  elementHasTransitionOrExpression(elementId) {
     const bytecode = this.getReifiedBytecode();
     const timelineName = this.getCurrentTimelineName();
     const componentId = `haiku:${elementId}`;
@@ -2141,7 +2141,7 @@ class ActiveComponent extends BaseModel {
     return false;
   }
 
-  snapshotKeyframeUpdates (keyframeUpdates) {
+  snapshotKeyframeUpdates(keyframeUpdates) {
     const bytecode = this.getReifiedBytecode();
 
     const updates = {};
@@ -2195,8 +2195,8 @@ class ActiveComponent extends BaseModel {
     return updates;
   }
 
-  gatherZIndexKeyframeMoves (timelineName) {
-    const keyframeMovesDescriptor = {[timelineName]: {}};
+  gatherZIndexKeyframeMoves(timelineName) {
+    const keyframeMovesDescriptor = { [timelineName]: {} };
     this.getReifiedTemplate().children.forEach((child) => {
       keyframeMovesDescriptor[timelineName][child.attributes[HAIKU_ID_ATTRIBUTE]] = {
         'style.zIndex': {},
@@ -2205,7 +2205,7 @@ class ActiveComponent extends BaseModel {
     return this.snapshotKeyframeMoves(keyframeMovesDescriptor);
   }
 
-  gatherKeyframeMoves (componentId, timelineName, propertyNames) {
+  gatherKeyframeMoves(componentId, timelineName, propertyNames) {
     const keyframeMovesDescriptor = {};
     keyframeMovesDescriptor[timelineName] = {};
     keyframeMovesDescriptor[timelineName][componentId] = {};
@@ -2215,7 +2215,7 @@ class ActiveComponent extends BaseModel {
     return this.snapshotKeyframeMoves(keyframeMovesDescriptor);
   }
 
-  snapshotKeyframeMoves (keyframeMovesDescriptor) {
+  snapshotKeyframeMoves(keyframeMovesDescriptor) {
     const moves = {};
 
     for (const timelineName in keyframeMovesDescriptor) {
@@ -2263,23 +2263,23 @@ class ActiveComponent extends BaseModel {
     return moves;
   }
 
-  commitAccumulatedKeyframeMoves () {
+  commitAccumulatedKeyframeMoves() {
     this.moveKeyframes(
-      Keyframe.buildKeyframeMoves({component: this}, true),
+      Keyframe.buildKeyframeMoves({ component: this }, true),
       this.project.getMetadata(),
-      () => {},
+      () => { },
     );
   }
 
-  getMount () {
+  getMount() {
     return this.mount;
   }
 
-  getArtboard () {
+  getArtboard() {
     return this.artboard;
   }
 
-  getSelectionMarquee () {
+  getSelectionMarquee() {
     return this.marquee;
   }
 
@@ -2287,7 +2287,7 @@ class ActiveComponent extends BaseModel {
   /** ------------ */
   /** ------------ */
 
-  reload (reloadOptions, instanceConfig, cb) {
+  reload(reloadOptions, instanceConfig, cb) {
     const runReload = (done) => {
       if (reloadOptions.hardReload) {
         return this.hardReload(reloadOptions, instanceConfig, done);
@@ -2320,7 +2320,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  softReload (reloadOptions, instanceConfig, cb) {
+  softReload(reloadOptions, instanceConfig, cb) {
     // Some methods, like setInteractionMode, don't actually require a cache clear
     if (!reloadOptions.superficial) {
       this.clearCaches(reloadOptions.clearCacheOptions);
@@ -2346,7 +2346,7 @@ class ActiveComponent extends BaseModel {
     return cb();
   }
 
-  hardReload (reloadOptions, instanceConfig, finish) {
+  hardReload(reloadOptions, instanceConfig, finish) {
     const timelineTimeBeforeReload = this.getCurrentTimelineTime() || 0;
 
     return async.series([
@@ -2420,7 +2420,7 @@ class ActiveComponent extends BaseModel {
     ], finish);
   }
 
-  destroy (cleanup = false) {
+  destroy(cleanup = false) {
     // If an instance has been created, knock it out.
     if (this.$instance) {
       this.$instance.context.contextUnmount();
@@ -2432,17 +2432,17 @@ class ActiveComponent extends BaseModel {
 
     // Clean out any remaining model instances.
     for (const klass of [MountElement, Artboard, SelectionMarquee, Timeline, Keyframe, Row, Element, ElementSelectionProxy]) {
-      klass.where({component: this}).forEach((instance) => instance.destroy());
+      klass.where({ component: this }).forEach((instance) => instance.destroy());
     }
 
     super.destroy();
   }
 
-  moduleReload (moduleReloadMethod = 'basicReload', cb) {
+  moduleReload(moduleReloadMethod = 'basicReload', cb) {
     return this.fetchActiveBytecodeFile().mod[moduleReloadMethod](cb);
   }
 
-  doesManageCoreInstance (instance) {
+  doesManageCoreInstance(instance) {
     // In case an installed or builtin component doesn't declare its relpath
     if (!instance.getBytecodeRelpath()) {
       return false;
@@ -2454,7 +2454,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  moduleCreate (moduleReloadMethod, instanceConfig = {}, cb) {
+  moduleCreate(moduleReloadMethod, instanceConfig = {}, cb) {
     return this.moduleReload(moduleReloadMethod, (err) => {
       if (err) {
         return cb(err);
@@ -2505,7 +2505,7 @@ class ActiveComponent extends BaseModel {
       // Use debounce to emit event to trigger sustained warnings check on haiku-creator
       this.emitDebouncedCheckSustainedWarning = lodash.debounce(() => {
         this.emit('sustained-check:start');
-      }, CHECK_SUSTAINED_WARNINGS_DEBOUNCE_TIME, {leading: false, trailing: true});
+      }, CHECK_SUSTAINED_WARNINGS_DEBOUNCE_TIME, { leading: false, trailing: true });
 
       this.setTimelineTimeValue(timelineTime, true);
 
@@ -2513,7 +2513,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  moduleFindOrCreate (moduleReloadMethod, instanceConfig, cb) {
+  moduleFindOrCreate(moduleReloadMethod, instanceConfig, cb) {
     if (this.$instance) {
       return cb();
     }
@@ -2521,11 +2521,11 @@ class ActiveComponent extends BaseModel {
     return this.moduleCreate(moduleReloadMethod, instanceConfig, cb);
   }
 
-  isProjectActiveComponent () {
+  isProjectActiveComponent() {
     return this.project.getCurrentActiveComponent() === this;
   }
 
-  createInstance (bytecode, config) {
+  createInstance(bytecode, config) {
     const factory = HaikuDOMAdapter(bytecode, null, null);
 
     const createdHaikuCoreComponent = factory(this.getMount().$el(), lodash.merge({}, {
@@ -2557,7 +2557,7 @@ class ActiveComponent extends BaseModel {
    * the data for the component instead of actually displaying it. This is used by the Timeline but also nominally
    * by the Glass.
    */
-  mountApplication ($el, instanceConfig, cb) {
+  mountApplication($el, instanceConfig, cb) {
     this.getMount().remountInto($el);
 
     this.codeReloadingOn();
@@ -2590,29 +2590,29 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  sleepComponentsOn () {
+  sleepComponentsOn() {
     HaikuComponent.all().forEach((instance) => {
       instance.sleepOn();
     });
   }
 
-  sleepComponentsOff () {
+  sleepComponentsOff() {
     HaikuComponent.all().forEach((instance) => {
       instance.sleepOff();
     });
   }
 
-  isCodeReloading () {
+  isCodeReloading() {
     return this._isReloadingCode;
   }
 
-  codeReloadingOn () {
+  codeReloadingOn() {
     this._isReloadingCode = true;
     this.sleepComponentsOn();
     this.getMount().setOpacity(0.2);
   }
 
-  codeReloadingOff () {
+  codeReloadingOff() {
     this.getMount().setOpacity(1.0);
     this.sleepComponentsOff();
     this._isReloadingCode = false;
@@ -2624,7 +2624,7 @@ class ActiveComponent extends BaseModel {
    * indicating that reloading is occurring. This is really only used in the Glass, where code reload
    * events can interfere with what the user is doing and a UI lock of some kind is required.
    */
-  moduleReplace (cb) {
+  moduleReplace(cb) {
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       this.codeReloadingOn();
 
@@ -2653,7 +2653,7 @@ class ActiveComponent extends BaseModel {
    * @method moduleSync
    * @description Basically identical to `moduleReplace`, but without reloading from disk.
    */
-  moduleSync (cb) {
+  moduleSync(cb) {
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       this.codeReloadingOn();
 
@@ -2679,7 +2679,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  fetchRootElement () {
+  fetchRootElement() {
     const staticTemplateNode = this.getReifiedBytecode().template;
 
     const uid = Element.makeUid(
@@ -2704,16 +2704,16 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  pushBytecodeSnapshot (done) {
+  pushBytecodeSnapshot(done) {
     // Push our reified decycled bytecode into our local snapshots with no prejudice.
     // TODO: does this leak too much memory?
     this.snapshots.push(
-      Bytecode.snapshot(this.fetchActiveBytecodeFile().getReifiedDecycledBytecode({suppressSubcomponents: false})),
+      Bytecode.snapshot(this.fetchActiveBytecodeFile().getReifiedDecycledBytecode({ suppressSubcomponents: false })),
     );
     done();
   }
 
-  popBytecodeSnapshot (metadata, cb) {
+  popBytecodeSnapshot(metadata, cb) {
     return this.project.updateHook('popBytecodeSnapshot', this.getRelpath(), metadata, (fire) => {
       this.fetchActiveBytecodeFile().updateInMemoryHotModule(
         // We are our own inversion, so the action stack will have pushed a snapshot onto the snapshot stack before we
@@ -2730,7 +2730,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  rehydrate (options = {}) {
+  rehydrate(options = {}) {
     // Don't allow any incoming syncs while we're in the midst of this
     BaseModel.__sync = false;
 
@@ -2747,10 +2747,10 @@ class ActiveComponent extends BaseModel {
 
     const root = this.fetchRootElement();
 
-    Keyframe.where({component: this}).forEach((keyframe) => keyframe.mark());
-    Row.where({component: this}).forEach((row) => row.mark());
+    Keyframe.where({ component: this }).forEach((keyframe) => keyframe.mark());
+    Row.where({ component: this }).forEach((row) => row.mark());
 
-    Element.where({component: this}).forEach((element) => {
+    Element.where({ component: this }).forEach((element) => {
       if (element !== root) {
         element.mark();
       }
@@ -2768,14 +2768,14 @@ class ActiveComponent extends BaseModel {
       element.rehydrateRows(options);
     });
 
-    Element.where({component: this}).forEach((element) => {
+    Element.where({ component: this }).forEach((element) => {
       if (element !== root) {
         element.sweep();
       }
     });
 
-    Row.where({component: this}).forEach((row) => row.sweep());
-    Keyframe.where({component: this}).forEach((keyframe) => keyframe.sweep());
+    Row.where({ component: this }).forEach((row) => row.sweep());
+    Keyframe.where({ component: this }).forEach((keyframe) => keyframe.sweep());
 
     const row = root.getAllRows()[0];
     if (row) {
@@ -2790,24 +2790,24 @@ class ActiveComponent extends BaseModel {
     BaseModel.__sync = true;
   }
 
-  getReifiedBytecode () {
+  getReifiedBytecode() {
     return this.fetchActiveBytecodeFile().getReifiedBytecode();
   }
 
-  getSerializedBytecode () {
+  getSerializedBytecode() {
     return this.fetchActiveBytecodeFile().getSerializedBytecode();
   }
 
-  getBytecodeJSON (replacer, spacing) {
+  getBytecodeJSON(replacer, spacing) {
     return jss(this.getSerializedBytecode(), replacer, spacing);
   }
 
-  getReifiedTemplate () {
+  getReifiedTemplate() {
     const reifiedBytecode = this.getReifiedBytecode();
     return reifiedBytecode && reifiedBytecode.template;
   }
 
-  upsertProperties (
+  upsertProperties(
     bytecode,
     componentId,
     timelineName,
@@ -2825,11 +2825,11 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  getComponentId () {
+  getComponentId() {
     return this.getArtboard().getElementHaikuId();
   }
 
-  isAutoSizeX () {
+  isAutoSizeX() {
     return this.getDeclaredPropertyValue(
       this.getComponentId(),
       this.getCurrentTimelineName(),
@@ -2838,7 +2838,7 @@ class ActiveComponent extends BaseModel {
     ) === 'auto';
   }
 
-  isAutoSizeY () {
+  isAutoSizeY() {
     return this.getDeclaredPropertyValue(
       this.getComponentId(),
       this.getCurrentTimelineName(),
@@ -2847,7 +2847,7 @@ class ActiveComponent extends BaseModel {
     ) === 'auto';
   }
 
-  getDeclaredPropertyValue (componentId, timelineName, timelineTime, propertyName) {
+  getDeclaredPropertyValue(componentId, timelineName, timelineTime, propertyName) {
     const bytecode = this.getReifiedBytecode();
 
     let propertyValue = Template.getPropertyValue(
@@ -2875,7 +2875,7 @@ class ActiveComponent extends BaseModel {
     return propertyValue;
   }
 
-  getDeclaredPropertyValues (componentId, timelineName, timelineTime, propertyNames) {
+  getDeclaredPropertyValues(componentId, timelineName, timelineTime, propertyNames) {
     const out = {};
 
     propertyNames.forEach((propertyName) => {
@@ -2890,12 +2890,12 @@ class ActiveComponent extends BaseModel {
     return out;
   }
 
-  getStateDescriptor (stateName) {
+  getStateDescriptor(stateName) {
     const states = this.getReifiedBytecode().states;
     return states && states[stateName];
   }
 
-  getComputedPropertyValue (template, componentId, timelineName, timelineTime, propertyName, fallbackValue) {
+  getComputedPropertyValue(template, componentId, timelineName, timelineTime, propertyName, fallbackValue) {
     const bytecode = this.getReifiedBytecode();
     const elementsById = Template.getAllElementsByHaikuId(template);
     const element = elementsById[componentId];
@@ -2904,12 +2904,12 @@ class ActiveComponent extends BaseModel {
     return TimelineProperty.getComputedValue(componentId, Element.safeElementName(element), propertyName, timelineName || DEFAULT_TIMELINE_NAME, timelineTime || DEFAULT_TIMELINE_TIME, fallbackValue, bytecode, host, states);
   }
 
-  getContextSize () {
+  getContextSize() {
     return this.getContextSizeActual(this.getCurrentTimelineName(), this.getCurrentTimelineTime());
   }
 
-  getContextSizeActual (timelineName, timelineTime) {
-    const defaults = {width: 1, height: 1}; // In case of race where collateral isn't ready yet
+  getContextSizeActual(timelineName, timelineTime) {
+    const defaults = { width: 1, height: 1 }; // In case of race where collateral isn't ready yet
 
     const bytecode = this.getReifiedBytecode();
 
@@ -2984,27 +2984,27 @@ class ActiveComponent extends BaseModel {
     };
   }
 
-  buildCurrentTimelineUid () {
+  buildCurrentTimelineUid() {
     return this.getPrimaryKey() + '::' + this.getCurrentTimelineName();
   }
 
-  getCurrentTimeline () {
+  getCurrentTimeline() {
     return Timeline.findById(this.buildCurrentTimelineUid());
   }
 
-  getRows () {
-    return Row.where({component: this});
+  getRows() {
+    return Row.where({ component: this });
   }
 
-  getKeyframes () {
-    return Keyframe.where({component: this});
+  getKeyframes() {
+    return Keyframe.where({ component: this });
   }
 
-  getElements () {
-    return Element.where({component: this});
+  getElements() {
+    return Element.where({ component: this });
   }
 
-  getLastTemplateNode () {
+  getLastTemplateNode() {
     const bytecode = this.getReifiedBytecode();
     return (
       bytecode &&
@@ -3014,7 +3014,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  getFirstTemplateNode () {
+  getFirstTemplateNode() {
     const bytecode = this.getReifiedBytecode();
     return (
       bytecode &&
@@ -3024,29 +3024,29 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  getLastTemplateNodeHaikuId () {
+  getLastTemplateNodeHaikuId() {
     const node = this.getLastTemplateNode();
     return node && node.attributes && node.attributes[HAIKU_ID_ATTRIBUTE];
   }
 
-  getFirstTemplateNodeHaikuId () {
+  getFirstTemplateNodeHaikuId() {
     const node = this.getFirstTemplateNode();
     return node && node.attributes && node.attributes[HAIKU_ID_ATTRIBUTE];
   }
 
-  focusSelectNext (navDir, doFocus, metadata) {
-    return Row.focusSelectNext({component: this}, navDir, doFocus, metadata);
+  focusSelectNext(navDir, doFocus, metadata) {
+    return Row.focusSelectNext({ component: this }, navDir, doFocus, metadata);
   }
 
-  getSelectedRows () {
-    return Row.where({component: this, _isSelected: true});
+  getSelectedRows() {
+    return Row.where({ component: this, _isSelected: true });
   }
 
-  getSelectedElements () {
-    return Element.where({component: this, _isSelected: true});
+  getSelectedElements() {
+    return Element.where({ component: this, _isSelected: true });
   }
 
-  getCurrentRows (criteria) {
+  getCurrentRows(criteria) {
     if (!criteria) {
       criteria = {};
     }
@@ -3054,7 +3054,7 @@ class ActiveComponent extends BaseModel {
     return Row.where(criteria);
   }
 
-  getDisplayableRowsGroupedByElementInZOrder () {
+  getDisplayableRowsGroupedByElementInZOrder() {
     const stack = this.getRawStackingInfo(
       this.getInstantiationTimelineName(),
       this.getInstantiationTimelineTime(), // Assume z-dragging only at 0
@@ -3071,7 +3071,7 @@ class ActiveComponent extends BaseModel {
         rows,
       },
     ].concat(
-      stack.reduce((acc, {haikuId}) => {
+      stack.reduce((acc, { haikuId }) => {
         const child = this.findElementByComponentId(haikuId);
         // Race condition when undoing multi-delete
         if (child) {
@@ -3108,8 +3108,8 @@ class ActiveComponent extends BaseModel {
     return groups;
   }
 
-  getSelectedKeyframes () {
-    return Keyframe.where({component: this, _selected: true});
+  getSelectedKeyframes() {
+    return Keyframe.where({ component: this, _selected: true });
   }
 
   /**
@@ -3118,7 +3118,7 @@ class ActiveComponent extends BaseModel {
    *
    * @returns Boolean
    */
-  checkIfSelectedKeyframesAreMovableToZero () {
+  checkIfSelectedKeyframesAreMovableToZero() {
     const selectedKeyframes = this.getSelectedKeyframes();
     const notMovable = selectedKeyframes.findIndex(
       (keyframe) => !(keyframe.prev() && keyframe.prev().origMs === 0),
@@ -3126,7 +3126,7 @@ class ActiveComponent extends BaseModel {
     return notMovable === -1;
   }
 
-  getCurrentKeyframes (criteria) {
+  getCurrentKeyframes(criteria) {
     if (!criteria) {
       criteria = {};
     }
@@ -3134,15 +3134,15 @@ class ActiveComponent extends BaseModel {
     return Keyframe.where(criteria);
   }
 
-  getFocusedRow () {
-    return Row.getFocusedRow({component: this}); // Only one instance per component
+  getFocusedRow() {
+    return Row.getFocusedRow({ component: this }); // Only one instance per component
   }
 
-  getSelectedRow () {
-    return Row.getSelectedRow({component: this}); // Only one instance per component
+  getSelectedRow() {
+    return Row.getSelectedRow({ component: this }); // Only one instance per component
   }
 
-  performComponentWork (worker, cb) {
+  performComponentWork(worker, cb) {
     // Playback during an update creates difficult-to-debug conditions
     this.sleepComponentsOn();
 
@@ -3169,7 +3169,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  handleUpdatedBytecode (bytecode) {
+  handleUpdatedBytecode(bytecode) {
     Bytecode.cleanBytecode(bytecode);
     Template.cleanTemplate(bytecode.template);
     const file = this.fetchActiveBytecodeFile();
@@ -3178,7 +3178,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  performComponentTimelinesWork (worker, finish) {
+  performComponentTimelinesWork(worker, finish) {
     return this.performComponentWork((bytecode, mana, done) => {
       if (!bytecode) {
         return done(new Error('Missing bytecode'));
@@ -3190,7 +3190,7 @@ class ActiveComponent extends BaseModel {
     }, finish);
   }
 
-  getKeyframeValue (componentId, timelineName, timelineTime, propertyName) {
+  getKeyframeValue(componentId, timelineName, timelineTime, propertyName) {
     const bytecode = this.getReifiedBytecode();
     const selector = `haiku:${componentId}`;
     return (
@@ -3204,7 +3204,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  getKeyframeCurve (componentId, timelineName, timelineTime, propertyName) {
+  getKeyframeCurve(componentId, timelineName, timelineTime, propertyName) {
     const bytecode = this.getReifiedBytecode();
     const selector = `haiku:${componentId}`;
     return (
@@ -3218,22 +3218,22 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  getElementNameOfComponentId (componentId) {
+  getElementNameOfComponentId(componentId) {
     const element = this.findTemplateNodeByComponentId(this.getReifiedBytecode().template, componentId);
     return element && element.elementName;
   }
 
-  getSafeElementNameOfComponentId (componentId) {
+  getSafeElementNameOfComponentId(componentId) {
     const element = this.findTemplateNodeByComponentId(this.getReifiedBytecode().template, componentId);
     return element && Element.safeElementName(element);
   }
 
-  getTimelineDescriptor (timelineName) {
+  getTimelineDescriptor(timelineName) {
     const bytecode = this.getReifiedBytecode();
     return bytecode && bytecode.timelines && bytecode.timelines[timelineName];
   }
 
-  getRawStackingInfo (timelineName, timelineTime) {
+  getRawStackingInfo(timelineName, timelineTime) {
     const bytecode = this.getReifiedBytecode();
     return Template.getStackingInfo(
       bytecode,
@@ -3243,10 +3243,10 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  setZIndicesForStackingInfo (bytecode, timelineName, timelineTime, stackingInfo) {
+  setZIndicesForStackingInfo(bytecode, timelineName, timelineTime, stackingInfo) {
     // If we received items out of order, fix their z-indexes.
     stackingInfo
-      .forEach(({haikuId}, arrayIndex) => {
+      .forEach(({ haikuId }, arrayIndex) => {
         this.upsertProperties(
           bytecode,
           haikuId,
@@ -3260,10 +3260,10 @@ class ActiveComponent extends BaseModel {
       });
   }
 
-  grabStackObjectFromStackingInfo (stackingInfo, componentId) {
+  grabStackObjectFromStackingInfo(stackingInfo, componentId) {
     for (let index = stackingInfo.length - 1; index >= 0; index--) {
       if (stackingInfo[index].haikuId === componentId) {
-        return {ourStackObject: stackingInfo.splice(index, 1)[0], index};
+        return { ourStackObject: stackingInfo.splice(index, 1)[0], index };
       }
     }
   }
@@ -3271,12 +3271,12 @@ class ActiveComponent extends BaseModel {
   /**
    * @method writeMetadata
    */
-  writeMetadata (bytecodeMetadata, metadata, cb) {
+  writeMetadata(bytecodeMetadata, metadata, cb) {
     return this.project.updateHook('writeMetadata', this.getRelpath(), bytecodeMetadata, metadata, (fire) => {
       return this.performComponentWork((bytecode, mana, done) => {
         Bytecode.writeMetadata(
           bytecode,
-          lodash.assign({}, bytecodeMetadata, {title: this.getTitle()}),
+          lodash.assign({}, bytecodeMetadata, { title: this.getTitle() }),
         );
         done();
       }, () => {
@@ -3289,18 +3289,18 @@ class ActiveComponent extends BaseModel {
   /**
    * @method readMetadata
    */
-  readMetadata (cb) {
+  readMetadata(cb) {
     return cb(null, this.getReifiedBytecode().metadata || {});
   }
 
   /**
    * @method readAllEventHandlers
    */
-  readAllEventHandlers (metadata, cb) {
+  readAllEventHandlers(metadata, cb) {
     return this.readAllEventHandlersActual(cb);
   }
 
-  readAllEventHandlersActual (cb) {
+  readAllEventHandlersActual(cb) {
     const bytecode = this.getSerializedBytecode();
     return cb(null, Bytecode.readAllEventHandlers(bytecode));
   }
@@ -3308,11 +3308,11 @@ class ActiveComponent extends BaseModel {
   /**
    * @method readAllStateValues
    */
-  readAllStateValues (metadata, cb) {
+  readAllStateValues(metadata, cb) {
     return this.readAllStateValuesActual(cb);
   }
 
-  readAllStateValuesActual (cb) {
+  readAllStateValuesActual(cb) {
     const bytecode = this.getSerializedBytecode();
     return cb(null, Bytecode.readAllStateValues(bytecode));
   }
@@ -3320,7 +3320,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method batchUpsertEventHandlers
    */
-  batchUpsertEventHandlers (selectorName, eventsSerial, metadata, cb) {
+  batchUpsertEventHandlers(selectorName, eventsSerial, metadata, cb) {
     const events = Bytecode.unserializeValue(eventsSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3339,14 +3339,14 @@ class ActiveComponent extends BaseModel {
           },
         }, null, () => {
           fire();
-          this.project.broadcastPayload({name: 'event-handlers-updated'});
+          this.project.broadcastPayload({ name: 'event-handlers-updated' });
           return cb();
         });
       });
     });
   }
 
-  batchUpsertEventHandlersActual (selectorName, serializedEvents, cb) {
+  batchUpsertEventHandlersActual(selectorName, serializedEvents, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.batchUpsertEventHandlers(bytecode, selectorName, serializedEvents);
       done();
@@ -3356,7 +3356,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method changeKeyframeValue
    */
-  changeKeyframeValue (componentId, timelineName, propertyName, keyframeMs, newValueSerial, metadata, cb) {
+  changeKeyframeValue(componentId, timelineName, propertyName, keyframeMs, newValueSerial, metadata, cb) {
     const newValue = Bytecode.unserializeValue(newValueSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3382,7 +3382,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  changeKeyframeValueActual (componentId, timelineName, propertyName, keyframeMs, newValue, metadata, cb) {
+  changeKeyframeValueActual(componentId, timelineName, propertyName, keyframeMs, newValue, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.changeKeyframeValue(bytecode, componentId, timelineName, propertyName, keyframeMs, newValue);
       done();
@@ -3392,7 +3392,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method changeSegmentCurve
    */
-  changeSegmentCurve (componentId, timelineName, propertyName, keyframeMs, newCurveSerial, metadata, cb) {
+  changeSegmentCurve(componentId, timelineName, propertyName, keyframeMs, newCurveSerial, metadata, cb) {
     const newCurve = Bytecode.unserializeValue(newCurveSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3418,7 +3418,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  changeSegmentCurveActual (componentId, timelineName, propertyName, keyframeMs, newCurve, metadata, cb) {
+  changeSegmentCurveActual(componentId, timelineName, propertyName, keyframeMs, newCurve, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.changeSegmentCurve(bytecode, componentId, timelineName, propertyName, keyframeMs, newCurve);
       done();
@@ -3428,7 +3428,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method joinKeyframes
    */
-  joinKeyframes (componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurveSerial, metadata, cb) {
+  joinKeyframes(componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurveSerial, metadata, cb) {
     const newCurve = Bytecode.unserializeValue(newCurveSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3470,7 +3470,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  joinKeyframesActual (componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurve, metadata, cb) {
+  joinKeyframesActual(componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurve, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.joinKeyframes(bytecode, componentId, timelineName, elementName, propertyName, keyframeMsLeft, keyframeMsRight, newCurve);
       done();
@@ -3480,7 +3480,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method splitSegment
    */
-  splitSegment (componentId, timelineName, elementName, propertyName, keyframeMs, metadata, cb) {
+  splitSegment(componentId, timelineName, elementName, propertyName, keyframeMs, metadata, cb) {
     return this.project.updateHook('splitSegment', this.getRelpath(), componentId, timelineName, elementName, propertyName, keyframeMs, metadata, (fire) => {
       return this.splitSegmentActual(componentId, timelineName, elementName, propertyName, keyframeMs, metadata, (err) => {
         if (err) {
@@ -3518,14 +3518,14 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  splitSegmentActual (componentId, timelineName, elementName, propertyName, keyframeMs, metadata, cb) {
+  splitSegmentActual(componentId, timelineName, elementName, propertyName, keyframeMs, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.splitSegment(bytecode, componentId, timelineName, elementName, propertyName, keyframeMs);
       done();
     }, cb);
   }
 
-  getKeyframesObjectForPropertyNames (timelineName, componentId, propertyNames) {
+  getKeyframesObjectForPropertyNames(timelineName, componentId, propertyNames) {
     const bytecode = this.getReifiedBytecode() || {};
     const timeline = bytecode.timelines[timelineName] || {};
     const properties = timeline[`haiku:${componentId}`] || {};
@@ -3536,7 +3536,7 @@ class ActiveComponent extends BaseModel {
     return keyframes;
   }
 
-  ensureZerothKeyframe (
+  ensureZerothKeyframe(
     bytecode,
     timelineName,
     componentId,
@@ -3594,7 +3594,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method moveKeyframes
    */
-  moveKeyframes (keyframeMovesSerial, metadata, cb) {
+  moveKeyframes(keyframeMovesSerial, metadata, cb) {
     if (Object.keys(keyframeMovesSerial).length < 1) {
       return cb();
     }
@@ -3652,7 +3652,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  moveKeyframesActual (keyframeMoves, metadata, cb) {
+  moveKeyframesActual(keyframeMoves, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.moveKeyframes(bytecode, keyframeMoves);
 
@@ -3680,7 +3680,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method updateKeyframes
    */
-  updateKeyframes (keyframeUpdatesSerial, options, metadata, cb) {
+  updateKeyframes(keyframeUpdatesSerial, options, metadata, cb) {
     const keyframeUpdates = Bytecode.unserializeValue(keyframeUpdatesSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3703,7 +3703,7 @@ class ActiveComponent extends BaseModel {
         }
       }
 
-      return this.updateKeyframesActual(keyframeUpdates, {unlockedDesigns}, metadata, (err) => {
+      return this.updateKeyframesActual(keyframeUpdates, { unlockedDesigns }, metadata, (err) => {
         if (err) {
           logger.error(`[active component (${this.project.getAlias()})]`, err);
           return cb(err);
@@ -3732,7 +3732,7 @@ class ActiveComponent extends BaseModel {
                 // Not all views necessarily have the same collection of elements
                 if (element) {
                   element.rehydrateRows();
-                  Row.where({component: this, element}).forEach((row) => {
+                  Row.where({ component: this, element }).forEach((row) => {
                     if (experimentIsEnabled(Experiment.ExpandTimelinePropertiesFromStageChanges)) {
                       if (row.property && keyframeUpdates[timelineName][componentId][row.property.name]) {
                         row.expand(metadata);
@@ -3746,7 +3746,7 @@ class ActiveComponent extends BaseModel {
             if (options.setElementLockStatus) {
               for (const elID in options.setElementLockStatus) {
                 const element = this.findElementByComponentId(elID);
-                Row.where({component: this, element}).forEach((row) => {
+                Row.where({ component: this, element }).forEach((row) => {
                   row.rehydrate();
                 });
               }
@@ -3763,7 +3763,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  updateKeyframesActual (keyframeUpdates, {unlockedDesigns}, metadata, cb) {
+  updateKeyframesActual(keyframeUpdates, { unlockedDesigns }, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       for (const timelineName in keyframeUpdates) {
         if (!bytecode.timelines[timelineName]) {
@@ -3824,11 +3824,11 @@ class ActiveComponent extends BaseModel {
       // Clear timeline caches; the max frame might have changed.
       Timeline.clearCaches();
 
-      this.mergeDesignFilesImpl(unlockedDesigns, bytecode, {mergeRemovedOutputs: false}, done);
+      this.mergeDesignFilesImpl(unlockedDesigns, bytecode, { mergeRemovedOutputs: false }, done);
     }, cb);
   }
 
-  updateTypesActual (typeUpdates, metadata, cb) {
+  updateTypesActual(typeUpdates, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       for (const id in typeUpdates) {
         const node = this.locateTemplateNodeByComponentId(id);
@@ -3839,7 +3839,7 @@ class ActiveComponent extends BaseModel {
     }, cb);
   }
 
-  updateKeyframesAndTypes (keyframeUpdatesSerial, typeUpdates, options, metadata, cb) {
+  updateKeyframesAndTypes(keyframeUpdatesSerial, typeUpdates, options, metadata, cb) {
     const keyframeUpdates = Bytecode.unserializeValue(keyframeUpdatesSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -3862,7 +3862,7 @@ class ActiveComponent extends BaseModel {
         }
       }
 
-      return this.updateKeyframesActual(keyframeUpdates, {unlockedDesigns}, metadata, (err) => {
+      return this.updateKeyframesActual(keyframeUpdates, { unlockedDesigns }, metadata, (err) => {
         if (err) {
           logger.error(`[active component (${this.project.getAlias()})]`, err);
           return cb(err);
@@ -3919,7 +3919,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method createKeyframe
    */
-  createKeyframe (
+  createKeyframe(
     componentId,
     timelineName,
     elementName,
@@ -4016,7 +4016,7 @@ class ActiveComponent extends BaseModel {
     );
   }
 
-  createKeyframeActual (componentId, timelineName, elementName, propertyName, keyframeStartMs, keyframeValue, keyframeCurve, keyframeEndMs, keyframeEndValue, metadata, cb) {
+  createKeyframeActual(componentId, timelineName, elementName, propertyName, keyframeStartMs, keyframeValue, keyframeCurve, keyframeEndMs, keyframeEndValue, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       const host = this.$instance;
       const states = (host && host.getStates()) || {};
@@ -4063,7 +4063,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method deleteKeyframe
    */
-  deleteKeyframe (componentId, timelineName, propertyName, keyframeMs, metadata, cb) {
+  deleteKeyframe(componentId, timelineName, propertyName, keyframeMs, metadata, cb) {
     return this.project.updateHook('deleteKeyframe', this.getRelpath(), componentId, timelineName, propertyName, keyframeMs, metadata, (fire) => {
       return this.deleteKeyframeActual(componentId, timelineName, propertyName, keyframeMs, metadata, (err) => {
         if (err) {
@@ -4105,7 +4105,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  deleteKeyframeActual (componentId, timelineName, propertyName, keyframeMs, metadata, cb) {
+  deleteKeyframeActual(componentId, timelineName, propertyName, keyframeMs, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.deleteKeyframe(bytecode, componentId, timelineName, propertyName, keyframeMs);
 
@@ -4121,7 +4121,7 @@ class ActiveComponent extends BaseModel {
     }, cb);
   }
 
-  get nextSuggestedGroupName () {
+  get nextSuggestedGroupName() {
     const reservations = [];
     this.getElements().forEach((element) => {
       const title = element.getTitle();
@@ -4142,7 +4142,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method groupElements
    */
-  groupElements (componentIds, groupMana, coords, metadata, cb) {
+  groupElements(componentIds, groupMana, coords, metadata, cb) {
     return this.project.updateHook('groupElements', this.getRelpath(), componentIds, groupMana, coords, metadata, (fire) => {
       return this.groupElementsActual(componentIds, groupMana, coords, metadata, (err, groupComponentId) => {
         if (err) {
@@ -4164,7 +4164,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  groupElementsActual (componentIds, groupManaIn, coords, metadata, cb) {
+  groupElementsActual(componentIds, groupManaIn, coords, metadata, cb) {
     // Make a copy so that we don't have to decycle.
     const groupMana = lodash.cloneDeep(groupManaIn);
     const originalTimeline = this.getTimelineDescriptor(this.getCurrentTimelineName());
@@ -4238,7 +4238,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method ungroupElements
    */
-  ungroupElements (componentId, nodes, metadata, cb) {
+  ungroupElements(componentId, nodes, metadata, cb) {
     return this.project.updateHook('ungroupElements', this.getRelpath(), componentId, nodes, metadata, (fire) => {
       const clonedNodes = lodash.cloneDeep(nodes);
       return this.ungroupElementsActual(componentId, clonedNodes, metadata, (err, ungroupedComponentIds) => {
@@ -4260,7 +4260,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  ungroupElementsActual (componentId, nodes, metadata, cb) {
+  ungroupElementsActual(componentId, nodes, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       // `nodes` is an array of clean mana we can instantiate as-is.
       const updatedComponentIds = nodes.map((node) => {
@@ -4301,7 +4301,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method upsertStateValue
    */
-  upsertStateValue (stateName, stateDescriptorSerial, metadata, cb) {
+  upsertStateValue(stateName, stateDescriptorSerial, metadata, cb) {
     const stateDescriptor = Bytecode.unserializeValue(stateDescriptorSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -4330,7 +4330,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  upsertStateValueActual (stateName, stateDescriptor, metadata, cb) {
+  upsertStateValueActual(stateName, stateDescriptor, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.upsertStateValue(bytecode, stateName, stateDescriptor);
       done();
@@ -4340,7 +4340,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method deleteStateValue
    */
-  deleteStateValue (stateName, metadata, cb) {
+  deleteStateValue(stateName, metadata, cb) {
     return this.project.updateHook('deleteStateValue', this.getRelpath(), stateName, metadata, (fire) => {
       return this.deleteStateValueActual(stateName, metadata, (err) => {
         if (err) {
@@ -4363,7 +4363,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  deleteStateValueActual (stateName, metadata, cb) {
+  deleteStateValueActual(stateName, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.deleteStateValue(bytecode, stateName);
       done();
@@ -4380,7 +4380,7 @@ class ActiveComponent extends BaseModel {
    * @param {object} metadata
    * @param {function} cb
    */
-  zShiftIndices (
+  zShiftIndices(
     componentId,
     timelineName,
     timelineTime,
@@ -4409,7 +4409,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  zShiftIndicesImpl (bytecode, componentId, timelineName, timelineTime, newIndex) {
+  zShiftIndicesImpl(bytecode, componentId, timelineName, timelineTime, newIndex) {
     const stackingInfo = Template.getStackingInfo(bytecode, bytecode.template, timelineName, timelineTime);
 
     this.grabStackObjectFromStackingInfo(stackingInfo, componentId);
@@ -4424,7 +4424,7 @@ class ActiveComponent extends BaseModel {
     return stackingInfo;
   }
 
-  zShiftIndicesActual (componentId, timelineName, timelineTime, newIndex, metadata, cb) {
+  zShiftIndicesActual(componentId, timelineName, timelineTime, newIndex, metadata, cb) {
     let stackingInfo;
     return this.performComponentTimelinesWork((bytecode, mana, timelines, done) => {
       stackingInfo = this.zShiftIndicesImpl(bytecode, componentId, timelineName, timelineTime, newIndex);
@@ -4437,7 +4437,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method zMoveToFront
    */
-  zMoveToFront (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveToFront(componentId, timelineName, timelineTime, metadata, cb) {
     return this.project.updateHook('zMoveToFront', this.getRelpath(), componentId, timelineName, timelineTime, metadata, (fire) => {
       return this.zMoveToFrontActual(componentId, timelineName, timelineTime, metadata, (err, stackingInfo) => {
         if (err) {
@@ -4459,7 +4459,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  zMoveToFrontImpl (bytecode, componentId, timelineName, timelineTime) {
+  zMoveToFrontImpl(bytecode, componentId, timelineName, timelineTime) {
     const stackingInfo = Template.getStackingInfo(bytecode, bytecode.template, timelineName, timelineTime);
     this.grabStackObjectFromStackingInfo(stackingInfo, componentId);
     stackingInfo.push({
@@ -4470,7 +4470,7 @@ class ActiveComponent extends BaseModel {
     return stackingInfo;
   }
 
-  zMoveToFrontActual (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveToFrontActual(componentId, timelineName, timelineTime, metadata, cb) {
     let stackingInfo;
     return this.performComponentTimelinesWork((bytecode, mana, timelines, done) => {
       stackingInfo = this.zMoveToFrontImpl(bytecode, componentId, timelineName, timelineTime);
@@ -4483,7 +4483,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method zMoveForward
    */
-  zMoveForward (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveForward(componentId, timelineName, timelineTime, metadata, cb) {
     return this.project.updateHook('zMoveForward', this.getRelpath(), componentId, timelineName, timelineTime, metadata, (fire) => {
       return this.zMoveForwardActual(componentId, timelineName, timelineTime, metadata, (err, stackingInfo) => {
         if (err) {
@@ -4505,7 +4505,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  zMoveForwardActual (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveForwardActual(componentId, timelineName, timelineTime, metadata, cb) {
     let stackingInfo;
     return this.performComponentTimelinesWork((bytecode, mana, timelines, done) => {
       stackingInfo = Template.getStackingInfo(bytecode, mana, timelineName, timelineTime);
@@ -4528,7 +4528,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method zMoveBackward
    */
-  zMoveBackward (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveBackward(componentId, timelineName, timelineTime, metadata, cb) {
     return this.project.updateHook('zMoveBackward', this.getRelpath(), componentId, timelineName, timelineTime, metadata, (fire) => {
       return this.zMoveBackwardActual(componentId, timelineName, timelineTime, metadata, (err, stackingInfo) => {
         if (err) {
@@ -4550,7 +4550,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  zMoveBackwardActual (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveBackwardActual(componentId, timelineName, timelineTime, metadata, cb) {
     let stackingInfo;
     return this.performComponentTimelinesWork((bytecode, mana, timelines, done) => {
       stackingInfo = Template.getStackingInfo(bytecode, mana, timelineName, timelineTime);
@@ -4573,7 +4573,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method zMoveToBack
    */
-  zMoveToBack (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveToBack(componentId, timelineName, timelineTime, metadata, cb) {
     return this.project.updateHook('zMoveToBack', this.getRelpath(), componentId, timelineName, timelineTime, metadata, (fire) => {
       return this.zMoveToBackActual(componentId, timelineName, timelineTime, metadata, (err, stackingInfo) => {
         if (err) {
@@ -4595,7 +4595,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  zMoveToBackActual (componentId, timelineName, timelineTime, metadata, cb) {
+  zMoveToBackActual(componentId, timelineName, timelineTime, metadata, cb) {
     let stackingInfo;
     return this.performComponentTimelinesWork((bytecode, mana, timelines, done) => {
       stackingInfo = Template.getStackingInfo(bytecode, mana, timelineName, timelineTime);
@@ -4614,7 +4614,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method createTimeline
    */
-  createTimeline (timelineName, timelineDescriptorSerial, metadata, cb) {
+  createTimeline(timelineName, timelineDescriptorSerial, metadata, cb) {
     const timelineDescriptor = Bytecode.unserializeValue(timelineDescriptorSerial, (ref) => {
       return this.evaluateReference(ref);
     });
@@ -4639,7 +4639,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  createTimelineActual (timelineName, timelineDescriptor, metadata, cb) {
+  createTimelineActual(timelineName, timelineDescriptor, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.createTimeline(bytecode, timelineName, timelineDescriptor);
       done();
@@ -4649,7 +4649,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method renameTimeline
    */
-  renameTimeline (timelineNameOld, timelineNameNew, metadata, cb) {
+  renameTimeline(timelineNameOld, timelineNameNew, metadata, cb) {
     return this.project.updateHook('renameTimeline', this.getRelpath(), timelineNameOld, timelineNameNew, metadata, (fire) => {
       return this.renameTimelineActual(timelineNameOld, timelineNameNew, metadata, (err) => {
         if (err) {
@@ -4670,7 +4670,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  renameTimelineActual (timelineNameOld, timelineNameNew, metadata, cb) {
+  renameTimelineActual(timelineNameOld, timelineNameNew, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.renameTimeline(bytecode, timelineNameOld, timelineNameNew);
       done();
@@ -4680,7 +4680,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method deleteTimeline
    */
-  deleteTimeline (timelineName, metadata, cb) {
+  deleteTimeline(timelineName, metadata, cb) {
     return this.project.updateHook('deleteTimeline', this.getRelpath(), timelineName, metadata, (fire) => {
       return this.deleteTimelineActual(timelineName, metadata, (err) => {
         if (err) {
@@ -4701,7 +4701,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  deleteTimelineActual (timelineName, metadata, cb) {
+  deleteTimelineActual(timelineName, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.deleteTimeline(bytecode, timelineName);
       done();
@@ -4711,7 +4711,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method duplicateTimeline
    */
-  duplicateTimeline (timelineName, metadata, cb) {
+  duplicateTimeline(timelineName, metadata, cb) {
     return this.project.updateHook('duplicateTimeline', this.getRelpath(), timelineName, metadata, (fire) => {
       return this.duplicateTimelineActual(timelineName, metadata, (err) => {
         if (err) {
@@ -4732,7 +4732,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  duplicateTimelineActual (timelineName, metadata, cb) {
+  duplicateTimelineActual(timelineName, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.duplicateTimeline(bytecode, timelineName);
       done();
@@ -4742,7 +4742,7 @@ class ActiveComponent extends BaseModel {
   /**
    * @method changePlaybackSpeed
    */
-  changePlaybackSpeed (framesPerSecond, metadata, cb) {
+  changePlaybackSpeed(framesPerSecond, metadata, cb) {
     return this.project.updateHook('changePlaybackSpeed', this.getRelpath(), framesPerSecond, metadata, (fire) => {
       return this.changePlaybackSpeedActual(framesPerSecond, metadata, (err) => {
         if (err) {
@@ -4763,7 +4763,7 @@ class ActiveComponent extends BaseModel {
     });
   }
 
-  changePlaybackSpeedActual (framesPerSecond, metadata, cb) {
+  changePlaybackSpeedActual(framesPerSecond, metadata, cb) {
     return this.performComponentWork((bytecode, mana, done) => {
       Bytecode.changePlaybackSpeed(bytecode, framesPerSecond);
       done();
@@ -4774,15 +4774,15 @@ class ActiveComponent extends BaseModel {
    * @method getNormalizedBytecodeSHA
    * @description Return a SHA256 for the current in-mem bytecode.
    */
-  getNormalizedBytecodeSHA () {
+  getNormalizedBytecodeSHA() {
     return CryptoUtils.sha256(this.getNormalizedBytecodeJSON());
   }
 
-  getNormalizedBytecode () {
+  getNormalizedBytecode() {
     return AST.normalizeBytecode(this.getReifiedBytecode());
   }
 
-  getNormalizedBytecodeJSON () {
+  getNormalizedBytecodeJSON() {
     return jss(this.getNormalizedBytecode());
   }
 
@@ -4790,18 +4790,18 @@ class ActiveComponent extends BaseModel {
    * @method dump
    * @description Use this to log a concise shorthand of this entity.
    */
-  dump () {
+  dump() {
     const relpath = this.getRelpath();
     const aid = this.getArtboard().getElementHaikuId();
     return `${relpath}(${this.getMount().getRenderId()})@${aid}/${this.interactionMode}`;
   }
 
   // Check sustained warnings (eg identifier not found on expression)
-  checkSustainedWarnings () {
+  checkSustainedWarnings() {
     this.sustainedWarningsChecker.checkAndGetAllSustainedWarnings();
   }
 
-  syncCode (currentEditorContents, metadata, cb) {
+  syncCode(currentEditorContents, metadata, cb) {
     const absPath = this.fetchActiveBytecodeFile().getAbspath();
 
     return Lock.request(Lock.LOCKS.FileReadWrite(absPath), false, (release) => {

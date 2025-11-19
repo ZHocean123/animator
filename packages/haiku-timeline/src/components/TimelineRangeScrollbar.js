@@ -1,15 +1,15 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
-import {DraggableCore} from 'react-draggable';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import { DraggableCore } from 'react-draggable';
+import Palette from 'haiku-ui-common/src/Palette';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 import TimelineRangeScrollbarPlayheadIndicator from './TimelineRangeScrollbarPlayheadIndicator';
 
 const THROTTLE_TIME = 17; // ms
 const KNOB_DIAMETER = 10;
 
 export default class TimelineRangeScrollbar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this._isFromMe = false;
@@ -28,17 +28,17 @@ export default class TimelineRangeScrollbar extends React.Component {
     this.onDragRight = lodash.throttle(this.onDragRight.bind(this), THROTTLE_TIME);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -46,7 +46,7 @@ export default class TimelineRangeScrollbar extends React.Component {
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -64,16 +64,16 @@ export default class TimelineRangeScrollbar extends React.Component {
     }
   }
 
-  onStartDragContainer (dragEvent, dragData) {
+  onStartDragContainer(dragEvent, dragData) {
     this.props.disableTimelinePointerEvents();
   }
 
-  onStopDragContainer (dragEvent, dragData) {
+  onStopDragContainer(dragEvent, dragData) {
     this.props.enableTimelinePointerEvents();
   }
 
-  onDragContainer (dragEvent, dragData) {
-    const {timeline} = this.props;
+  onDragContainer(dragEvent, dragData) {
+    const { timeline } = this.props;
     // Don't drag on the body if we're already dragging on the ends
     if (!this.isDraggingRight && !this.isDraggingLeft) {
       // The extra offset makes timeline.getScrollLeft to add extra frames at the end of the timeline
@@ -83,41 +83,41 @@ export default class TimelineRangeScrollbar extends React.Component {
     }
   }
 
-  onStartDragLeft (dragEvent, dragData) {
+  onStartDragLeft(dragEvent, dragData) {
     this.isDraggingLeft = true;
     this.frameInfoOnDragStart = this.frameInfo;
   }
 
-  onStopDragLeft (dragEvent, dragData) {
+  onStopDragLeft(dragEvent, dragData) {
     this.isDraggingLeft = false;
     this.frameInfoOnDragStart = null;
   }
 
-  onDragLeft (dragEvent, dragData) {
+  onDragLeft(dragEvent, dragData) {
     if (this.isDraggingLeft) {
       const left = this.props.timeline.mapXCoordToFrame(dragEvent.clientX);
       this.props.timeline.zoomByLeftAndRightEndpoints(left, this.frameInfoOnDragStart.friB, true);
     }
   }
 
-  onStartDragRight (dragEvent, dragData) {
+  onStartDragRight(dragEvent, dragData) {
     this.isDraggingRight = true;
     this.frameInfoOnDragStart = this.frameInfo;
   }
 
-  onStopDragRight (dragEvent, dragData) {
+  onStopDragRight(dragEvent, dragData) {
     this.isDraggingRight = false;
     this.frameInfoOnDragStart = null;
   }
 
-  onDragRight (dragEvent, dragData) {
+  onDragRight(dragEvent, dragData) {
     if (this.isDraggingRight) {
       const right = this.props.timeline.mapXCoordToFrame(dragEvent.clientX);
       this.props.timeline.zoomByLeftAndRightEndpoints(this.frameInfoOnDragStart.friA, right, true);
     }
   }
 
-  render () {
+  render() {
     const timeline = this.props.timeline;
     this.frameInfo = timeline.getFrameInfo();
     let leftPosition;

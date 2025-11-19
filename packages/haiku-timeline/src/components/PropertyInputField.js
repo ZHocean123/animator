@@ -1,29 +1,29 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const CELL_WIDTH = 82;
 
 export default class PropertyInputField extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.row.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.row.on('update', this.handleUpdate);
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -40,24 +40,24 @@ export default class PropertyInputField extends React.Component {
     }
   }
 
-  handleClick (clickEvent) {
-    this.props.row.blurOthers({from: 'timeline'}); // Otherwise previously blurred remains open
-    this.props.row.select({from: 'timeline'});
+  handleClick(clickEvent) {
+    this.props.row.blurOthers({ from: 'timeline' }); // Otherwise previously blurred remains open
+    this.props.row.select({ from: 'timeline' });
     clickEvent.stopPropagation();
   }
 
-  handleDoubleClick (clickEvent) {
+  handleDoubleClick(clickEvent) {
     clickEvent.stopPropagation();
-    this.props.row.blurOthers({from: 'timeline'}); // Otherwise previously blurred remains open
+    this.props.row.blurOthers({ from: 'timeline' }); // Otherwise previously blurred remains open
     if (this.props.disabled) {
       return;
     }
 
-    this.props.row.focus({from: 'timeline'});
-    this.props.row.select({from: 'timeline'});
+    this.props.row.focus({ from: 'timeline' });
+    this.props.row.select({ from: 'timeline' });
   }
 
-  render () {
+  render() {
     const propertyId = this.props.row.getInputPropertyId();
     return (
       <div
@@ -101,7 +101,7 @@ export default class PropertyInputField extends React.Component {
           <PropertyInputFieldValueDisplay
             timeline={this.props.timeline}
             row={this.props.row}
-            />
+          />
         </div>
       </div>
     );
@@ -109,25 +109,25 @@ export default class PropertyInputField extends React.Component {
 }
 
 class PropertyInputFieldValueDisplay extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.valueDescriptor = props.row.getPropertyValueDescriptor();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.throttledForceUpdate.cancel();
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -141,17 +141,17 @@ class PropertyInputFieldValueDisplay extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
-      <span style={{whiteSpace: 'nowrap'}}>
+      <span style={{ whiteSpace: 'nowrap' }}>
         {remapPrettyValue(this.valueDescriptor.prettyValue)}{' '}
-        <span style={{opacity: 0.5}}>{this.valueDescriptor.valueUnit}</span>
+        <span style={{ opacity: 0.5 }}>{this.valueDescriptor.valueUnit}</span>
       </span>
     );
   }
 }
 
-function safeText (textOrObj) {
+function safeText(textOrObj) {
   if (typeof textOrObj === 'string') {
     return textOrObj;
   }
@@ -163,7 +163,7 @@ function safeText (textOrObj) {
   }
 }
 
-function remapPrettyValue (prettyValue) {
+function remapPrettyValue(prettyValue) {
   if (prettyValue && prettyValue.render === 'react') {
     return <span style={prettyValue.style}>{safeText(prettyValue.text)}</span>;
   }

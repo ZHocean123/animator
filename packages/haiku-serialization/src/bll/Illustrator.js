@@ -1,15 +1,15 @@
-const {execSync} = require('child_process');
+const { execSync } = require('child_process');
 const fse = require('haiku-fs-extra');
-const {isMac, isWindows} = require('haiku-common/lib/environments/os');
+const { isMac, isWindows } = require('haiku-common/src/environments/os');
 const logger = require('../utils/LoggerInstance');
-const {stringifyPath} = require('../utils/fileManipulation');
+const { stringifyPath } = require('../utils/fileManipulation');
 const os = require('os');
 const uuid = require('uuid');
 const path = require('path');
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/;
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/;
-let cachedWindowsInstallPath =  null;
+let cachedWindowsInstallPath = null;
 
 /**
  * This template script runs inside Illustrator and perform the export of the
@@ -60,7 +60,7 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static isIllustratorFile (abspath) {
+  static isIllustratorFile(abspath) {
     return abspath.match(IS_ILLUSTRATOR_FILE_RE);
   }
 
@@ -70,7 +70,7 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static isIllustratorFolder (abspath) {
+  static isIllustratorFolder(abspath) {
     return !!abspath && abspath.match(IS_ILLUSTRATOR_FOLDER_RE);
   }
 
@@ -79,7 +79,7 @@ class Illustrator {
    * @param {string} abspath
    * @returns {Boolean}
    */
-  static importSVG ({abspath, tryToOpenFile}) {
+  static importSVG({ abspath, tryToOpenFile }) {
     if (!Illustrator.isIllustratorFile(abspath)) {
       return false;
     }
@@ -120,7 +120,7 @@ class Illustrator {
     return true;
   }
 
-  static openIllustratorFile (file) {
+  static openIllustratorFile(file) {
     if (isMac()) {
       return `open -g -b com.adobe.Illustrator ${file}`;
     }
@@ -130,7 +130,7 @@ class Illustrator {
     }
   }
 
-  static getWindowsIllustratorPath () {
+  static getWindowsIllustratorPath() {
     if (cachedWindowsInstallPath) {
       return cachedWindowsInstallPath;
     }
@@ -140,7 +140,7 @@ class Illustrator {
     try {
       const installedApplications =
         execSync('reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s')
-        .toString();
+          .toString();
 
       illustratorPath = installedApplications
         .split('\n')

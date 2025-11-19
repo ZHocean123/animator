@@ -4,6 +4,7 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
+    "skipLibCheck": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,

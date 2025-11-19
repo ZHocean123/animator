@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ChevronLeftIconSVG, ChevronRightIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
+import { ChevronLeftIconSVG, ChevronRightIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
 
 const popoverWidth = 210;
 const popoverHeight = '200px';
@@ -170,7 +170,7 @@ const STYLES = {
 };
 
 class EventsPopover extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       onPageTwo: false,
@@ -185,34 +185,34 @@ class EventsPopover extends React.Component {
     this.selectTimeline = this.selectTimeline.bind(this);
   }
 
-  goToPageOne () {
-    this.setState({onPageTwo: false});
-    this.setState({onPageThree: false});
-    this.setState({prevPage: null});
+  goToPageOne() {
+    this.setState({ onPageTwo: false });
+    this.setState({ onPageThree: false });
+    this.setState({ prevPage: null });
   }
 
-  goToPageTwo () {
-    this.setState({onPageTwo: true});
-    this.setState({onPageThree: false});
+  goToPageTwo() {
+    this.setState({ onPageTwo: true });
+    this.setState({ onPageThree: false });
   }
 
-  goToPageThree (prevPage, chosenEvent) {
-    this.setState({onPageThree: true});
-    this.setState({prevPage});
-    this.setState({selectedEvent: chosenEvent});
+  goToPageThree(prevPage, chosenEvent) {
+    this.setState({ onPageThree: true });
+    this.setState({ prevPage });
+    this.setState({ selectedEvent: chosenEvent });
   }
 
-  goPrevPage () {
+  goPrevPage() {
     this.state.prevPage === 'Two'
       ? this.goToPageTwo()
       : this.goToPageOne();
   }
 
-  selectTimeline () {
+  selectTimeline() {
     // TODO
   }
 
-  renderConnections () {
+  renderConnections() {
     return (
       <div>
         {this.props.connections.map((connection) => {
@@ -222,7 +222,7 @@ class EventsPopover extends React.Component {
               style={STYLES.row}
               onClick={() => this.goToPageThree('One', connection[0])}>
               {connection[0]} <span style={STYLES.mutedText}>plays</span> {connection[1]}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              <span style={{ position: 'absolute', right: '4px', top: 0 }}>
                 <button
                   key={`v-${connection}`}
                   style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
@@ -237,7 +237,7 @@ class EventsPopover extends React.Component {
     );
   }
 
-  renderAvailEvents () {
+  renderAvailEvents() {
     return (
       <div>
         {this.props.availEvents.map((theEvent) => {
@@ -247,7 +247,7 @@ class EventsPopover extends React.Component {
               style={STYLES.row}
               onClick={() => this.goToPageThree('Two', theEvent)}>
               {theEvent}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              <span style={{ position: 'absolute', right: '4px', top: 0 }}>
                 <button
                   key={`v-${theEvent}`}
                   style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
@@ -262,7 +262,7 @@ class EventsPopover extends React.Component {
     );
   }
 
-  renderAvailTimelines () {
+  renderAvailTimelines() {
     const connections = this.props.connections;
     let match;
     let active;
@@ -293,7 +293,7 @@ class EventsPopover extends React.Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container}>
         <div style={STYLES.pagesWrapper}>

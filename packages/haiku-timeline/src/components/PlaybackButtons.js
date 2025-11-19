@@ -1,12 +1,12 @@
 import * as React from 'react';
 import * as Radium from 'radium';
 import * as lodash from 'lodash';
-import Palette from 'haiku-ui-common/lib/Palette';
-import SkipBackIconSVG from 'haiku-ui-common/lib/react/icons/SkipBackIconSVG';
-import SkipForwardIconSVG from 'haiku-ui-common/lib/react/icons/SkipForwardIconSVG';
-import PlayIconSVG from 'haiku-ui-common/lib/react/icons/PlayIconSVG';
-import PauseIconSVG from 'haiku-ui-common/lib/react/icons/PauseIconSVG';
-import RepeatIconSVG from 'haiku-ui-common/lib/react/icons/RepeatIconSVG';
+import Palette from 'haiku-ui-common/src/Palette';
+import SkipBackIconSVG from 'haiku-ui-common/src/react/icons/SkipBackIconSVG';
+import SkipForwardIconSVG from 'haiku-ui-common/src/react/icons/SkipForwardIconSVG';
+import PlayIconSVG from 'haiku-ui-common/src/react/icons/PlayIconSVG';
+import PauseIconSVG from 'haiku-ui-common/src/react/icons/PauseIconSVG';
+import RepeatIconSVG from 'haiku-ui-common/src/react/icons/RepeatIconSVG';
 
 const STYLES = {
   btn: {
@@ -35,23 +35,23 @@ const STYLES = {
 };
 
 class PlaybackButtons extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64 * 2);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -59,7 +59,7 @@ class PlaybackButtons extends React.Component {
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -68,7 +68,7 @@ class PlaybackButtons extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
     const lastFrame = frameInfo.maxf;
     const currentFrame = this.props.timeline.getCurrentFrame();
@@ -102,7 +102,7 @@ class PlaybackButtons extends React.Component {
           ]}
         >
           {(isPlaying) ? (
-            <span style={{marginLeft: 2}}>
+            <span style={{ marginLeft: 2 }}>
               <PauseIconSVG />
             </span>
           ) : (
@@ -122,7 +122,7 @@ class PlaybackButtons extends React.Component {
         <button
           key="repeat"
           title="Repeat timeline during playback"
-          style={[STYLES.btn, STYLES.btnRepeat, !isRepeat && {opacity: 0.5}]}
+          style={[STYLES.btn, STYLES.btnRepeat, !isRepeat && { opacity: 0.5 }]}
           onClick={toggleRepeat}
         >
           <RepeatIconSVG

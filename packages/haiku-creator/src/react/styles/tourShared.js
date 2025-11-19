@@ -1,6 +1,6 @@
-import Palette from 'haiku-ui-common/lib/Palette';
-import {BTN_STYLES} from './btnShared.js';
-import {DASH_STYLES} from './dashShared.js';
+import Palette from 'haiku-ui-common/src/Palette';
+import { BTN_STYLES } from './btnShared.js';
+import { DASH_STYLES } from './dashShared.js';
 
 export const TOUR_STYLES = {
   heading: {

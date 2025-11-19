@@ -1,25 +1,25 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
-import StatesSVG from 'haiku-ui-common/lib/react/icons/StatesSVG';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import Palette from 'haiku-ui-common/src/Palette';
+import StatesSVG from 'haiku-ui-common/src/react/icons/StatesSVG';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 
 export default class PropertyRowHeading extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.row.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.row.on('update', this.handleUpdate);
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -31,7 +31,7 @@ export default class PropertyRowHeading extends React.Component {
     }
   }
 
-  renderIcon () {
+  renderIcon() {
     if (this.props.row.isState()) {
       return (
         <span
@@ -49,7 +49,7 @@ export default class PropertyRowHeading extends React.Component {
     return '';
   }
 
-  render () {
+  render() {
     let fontSize = 10;
     let marginTop = 0;
     if (this.props.humanName.length > 8) {
@@ -68,11 +68,11 @@ export default class PropertyRowHeading extends React.Component {
           lineHeight: 1,
           right: 0,
           color: (this.props.row.isHovered())
-          ? Palette.SUNSTONE
-          : Palette.ROCK,
+            ? Palette.SUNSTONE
+            : Palette.ROCK,
           transform: this.props.humanName === 'background color'
-          ? 'translateY(-2px)'
-          : 'translateY(3px)',
+            ? 'translateY(-2px)'
+            : 'translateY(3px)',
         }}>
         {this.renderIcon()}
         <span

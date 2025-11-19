@@ -2,18 +2,18 @@ import * as React from 'react';
 import * as qs from 'qs';
 import * as assign from 'lodash.assign';
 import * as path from 'path';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import Palette from 'haiku-ui-common/src/Palette';
+import { TOUR_CHANNEL } from 'haiku-sdk-creator/src/tour';
 
 export default class Timeline extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.webview = null;
-    this.state = {finishedInjecting: false};
+    this.state = { finishedInjecting: false };
     this.onRequestWebviewCoordinates = this.onRequestWebviewCoordinates.bind(this);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.injectWebview();
 
     const tourChannel = this.props.envoyClient.get(TOUR_CHANNEL);
@@ -26,20 +26,20 @@ export default class Timeline extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.tourChannel) {
       this.tourChannel.off('tour:requestWebviewCoordinates', this.onRequestWebviewCoordinates);
     }
   }
 
-  onRequestWebviewCoordinates () {
-    const {top, left} = this.webview.getBoundingClientRect();
+  onRequestWebviewCoordinates() {
+    const { top, left } = this.webview.getBoundingClientRect();
     if (this.tourChannel) {
-      this.tourChannel.receiveWebviewCoordinates('timeline', {top, left});
+      this.tourChannel.receiveWebviewCoordinates('timeline', { top, left });
     }
   }
 
-  injectWebview () {
+  injectWebview() {
     this.webview = document.createElement('webview');
 
     const query = qs.stringify(assign({}, this.props.haiku, {
@@ -69,7 +69,7 @@ export default class Timeline extends React.Component {
         case 0:
           if (event.message.slice(0, 8) === '[notice]') {
             const message = event.message.replace('[notice]', '').trim();
-            this.props.createNotice({type: 'info', title: 'Notice', message});
+            this.props.createNotice({ type: 'info', title: 'Notice', message });
           }
           break;
 
@@ -94,13 +94,13 @@ export default class Timeline extends React.Component {
     });
 
     setTimeout(() => {
-      this.setState({finishedInjecting: true});
+      this.setState({ finishedInjecting: true });
     }, 7000);
 
     this.mount.appendChild(this.webview);
   }
 
-  render () {
+  render() {
     return (
       <div
         id="timeline-mount"
@@ -109,18 +109,18 @@ export default class Timeline extends React.Component {
         ref={(element) => {
           this.mount = element;
         }}
-        style={{overflow: 'auto', width: '100%', height: '100%', backgroundColor: Palette.GRAY}}>
+        style={{ overflow: 'auto', width: '100%', height: '100%', backgroundColor: Palette.GRAY }}>
         {!this.state.finishedInjecting &&
-        <div style={{
-          position: 'absolute',
-          left: 160,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-        </div>
-          }
+          <div style={{
+            position: 'absolute',
+            left: 160,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+          </div>
+        }
       </div>
     );
   }

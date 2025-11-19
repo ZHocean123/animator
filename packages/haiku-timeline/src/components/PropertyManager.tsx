@@ -1,5 +1,5 @@
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import Palette from 'haiku-ui-common/lib/Palette';
+import PopoverMenu from 'haiku-ui-common/src/electron/PopoverMenu';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as React from 'react';
 import zIndex from './styles/zIndex';
 

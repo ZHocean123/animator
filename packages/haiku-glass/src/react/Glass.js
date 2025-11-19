@@ -12,14 +12,14 @@ import * as Template from 'haiku-serialization/src/bll/Template';
 import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
 import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
-import {isCoordInsideBoxPoints} from 'haiku-serialization/src/bll/MathUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { isCoordInsideBoxPoints } from 'haiku-serialization/src/bll/MathUtils';
+import Palette from 'haiku-ui-common/src/Palette';
 import Preview from './Preview';
 import CreateComponentModal from './modals/CreateComponentModal';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import PopoverMenu from 'haiku-ui-common/src/electron/PopoverMenu';
+import { ComponentIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 import originMana from '../overlays/originMana';
 import controlPointMana from '../overlays/controlPointMana';
 import boxMana from '../overlays/boxMana';
@@ -28,9 +28,9 @@ import defsMana from '../overlays/defsMana';
 import rotationCursorMana from '../overlays/rotationCursorMana';
 import scaleCursorMana from '../overlays/scaleCursorMana';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import { isMac, isWindows } from 'haiku-common/src/environments/os';
 import directSelectionMana from '../overlays/directSelectionMana';
-import {calculateValue} from '@haiku/core/lib/Transitions';
+import { calculateValue } from '@haiku/core/lib/Transitions';
 import {
   DEFAULT_LINE_SELECTION_THRESHOLD,
   isPointInsidePrimitive,
@@ -38,18 +38,18 @@ import {
   transform2DPoint,
   closestNormalPointOnLineSegment,
   buildPathLUT,
-} from 'haiku-common/lib/math/geometryUtils';
+} from 'haiku-common/src/math/geometryUtils';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
-import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
-import Globals from 'haiku-ui-common/lib/Globals';
+import { splitSegmentInSVGPoints, distance } from '@haiku/core/lib/helpers/PathUtils';
+import Globals from 'haiku-ui-common/src/Globals';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {clipboard, shell, remote, ipcRenderer} from 'electron';
+import { clipboard, shell, remote, ipcRenderer } from 'electron';
 
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
-import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
+import { HOMEDIR_PATH } from 'haiku-serialization/src/utils/HaikuHomeDir';
+import EnvoyClient from 'haiku-sdk-creator/src/envoy/EnvoyClient';
+import { ERROR_CHANNEL } from 'haiku-sdk-creator/src/bll/Error';
 
 // #FIXME: Why is this the responsibility of Glass???
 fse.mkdirpSync(HOMEDIR_PATH);
@@ -111,7 +111,7 @@ const writeHtmlSnapshot = (html, react) => {
 
 // The class is exported also _without_ the radium wrapper to allow jsdom testing
 export class Glass extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     EmitterManager.extend(this);
@@ -186,14 +186,14 @@ export class Glass extends React.Component {
     this.drawLoop = this.drawLoop.bind(this);
     this.draw = this.draw.bind(this);
 
-    this.handleGroupDebounced = lodash.debounce(() => this.handleGroup(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleUngroupDebounced = lodash.debounce(() => this.handleUngroup(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleCutDebounced = lodash.debounce(() => this.handleCut(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleCopyDebounced = lodash.debounce(() => this.handleCopy(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handlePasteDebounced = lodash.debounce(() => this.handlePaste(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleSelectAllDebounced = lodash.debounce(() => this.handleSelectAll(), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleUndoDebounced = lodash.debounce((payload) => this.handleUndo(payload), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleRedoDebounced = lodash.debounce((payload) => this.handleRedo(payload), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
+    this.handleGroupDebounced = lodash.debounce(() => this.handleGroup(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleUngroupDebounced = lodash.debounce(() => this.handleUngroup(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleCutDebounced = lodash.debounce(() => this.handleCut(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleCopyDebounced = lodash.debounce(() => this.handleCopy(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handlePasteDebounced = lodash.debounce(() => this.handlePaste(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleSelectAllDebounced = lodash.debounce(() => this.handleSelectAll(), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleUndoDebounced = lodash.debounce((payload) => this.handleUndo(payload), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleRedoDebounced = lodash.debounce((payload) => this.handleRedo(payload), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
 
     if (process.env.NODE_ENV !== 'production') {
       // For debugging
@@ -232,7 +232,7 @@ export class Glass extends React.Component {
     };
   }
 
-  isTextInputFocused () {
+  isTextInputFocused() {
     const tagName = (
       document.activeElement &&
       document.activeElement.tagName &&
@@ -247,11 +247,11 @@ export class Glass extends React.Component {
     );
   }
 
-  isTextSelected () {
+  isTextSelected() {
     return window.getSelection().type === 'Range';
   }
 
-  awaitRef (name, cb) {
+  awaitRef(name, cb) {
     if (this.refs[name]) {
       return cb(this.refs[name]);
     }
@@ -260,11 +260,11 @@ export class Glass extends React.Component {
     }, 100);
   }
 
-  getActiveComponent () {
+  getActiveComponent() {
     return this.project && this.project.getCurrentActiveComponent();
   }
 
-  handleProjectReady (project) {
+  handleProjectReady(project) {
     this.project = project;
 
     this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'envoy:timelineClientReady', (timelineChannel) => {
@@ -324,14 +324,14 @@ export class Glass extends React.Component {
           // Unselect element after locking it
           const lockedElement = this.getActiveComponent().findElementByComponentId(args[1]);
           if (args[2] && lockedElement && lockedElement._isSelected) {
-            lockedElement.unselectSoftly({from: 'glass'});
+            lockedElement.unselectSoftly({ from: 'glass' });
           }
           break;
       }
     });
 
     this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'change-authoritative-frame', (frame) => {
-      this.handleTimelineDidSeek({frame});
+      this.handleTimelineDidSeek({ frame });
     });
 
     // When all views send this, we know it's ok to initialize the 'main' component
@@ -343,15 +343,15 @@ export class Glass extends React.Component {
     // When developing Glass in standalone, this env var directs it to automatically
     // set the current active component, which is normally initiated by Creator
     if (process.env.AUTOSTART) {
-      this.project.setCurrentActiveComponent(process.env.AUTOSTART, {from: 'glass'}, () => {});
+      this.project.setCurrentActiveComponent(process.env.AUTOSTART, { from: 'glass' }, () => { });
     }
   }
 
-  updateMenu () {
+  updateMenu() {
     ipcRenderer.send('topmenu:update', this.project.describeTopMenu());
   }
 
-  handleActiveComponentReady () {
+  handleActiveComponentReady() {
     // Reset direct selection before mounting new component
     Element.directlySelected = null;
 
@@ -359,7 +359,7 @@ export class Glass extends React.Component {
     this.updateMenu();
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     this.awaitRef('mount', (ref) => {
       this.getActiveComponent().mountApplication(ref, {
         freeze: true,
@@ -370,7 +370,7 @@ export class Glass extends React.Component {
     });
   }
 
-  handleHaikuComponentMounted () {
+  handleHaikuComponentMounted() {
     this.project.broadcastPayload({
       name: 'project-state-change',
       what: 'component:mounted',
@@ -378,7 +378,7 @@ export class Glass extends React.Component {
     });
   }
 
-  handleInteractionModeChange () {
+  handleInteractionModeChange() {
     if (this.isPreviewMode()) {
       this._playing = false;
     }
@@ -386,7 +386,7 @@ export class Glass extends React.Component {
     this.forceUpdate();
   }
 
-  handleRequestElementCoordinates ({selector, webview}) {
+  handleRequestElementCoordinates({ selector, webview }) {
     requestElementCoordinates({
       currentWebview: 'glass',
       requestedWebview: webview,
@@ -399,7 +399,7 @@ export class Glass extends React.Component {
     });
   }
 
-  handleTimelineDidPlay () {
+  handleTimelineDidPlay() {
     const ac = this.getActiveComponent();
     if (ac) {
       ac.setHotEditingMode(false);
@@ -408,7 +408,7 @@ export class Glass extends React.Component {
     this._stopwatch = Date.now();
   }
 
-  handleTimelineDidPause (frameData) {
+  handleTimelineDidPause(frameData) {
     if (!this._playing) {
       // If we have already been paused by a higher level event (e.g. toggling preview mode), do nothing.
       return;
@@ -424,7 +424,7 @@ export class Glass extends React.Component {
     this._stopwatch = Date.now();
   }
 
-  handleTimelineDidSeek (frameData) {
+  handleTimelineDidSeek(frameData) {
     this._lastAuthoritativeFrame = frameData.frame;
     this._stopwatch = Date.now();
   }
@@ -440,7 +440,7 @@ export class Glass extends React.Component {
    * the _lastAuthoritativeFrame value is updated otherwise your setting will get
    * overridden by this loop.
    */
-  handleFrameChange () {
+  handleFrameChange() {
     let seekMs = 0;
 
     // this._stopwatch is null unless we've received an action from the timeline.
@@ -464,13 +464,13 @@ export class Glass extends React.Component {
     }
   }
 
-  draw () {
+  draw() {
     if (this.refs.overlay) {
       this.drawOverlays();
     }
   }
 
-  drawLoop () {
+  drawLoop() {
     if (this.getActiveComponent()) {
       // We handle a frame change here since authoritative frame updates
       // are received async and we need to update according to the delta
@@ -480,11 +480,11 @@ export class Glass extends React.Component {
     window.requestAnimationFrame(this.drawLoop.bind(this));
   }
 
-  handleSnapsUpdated (newSnaps) {
-    this.setState({snapLines: newSnaps});
+  handleSnapsUpdated(newSnaps) {
+    this.setState({ snapLines: newSnaps });
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (!this.props.envoy.mock) {
       this.envoyClient = new EnvoyClient({
         token: this.props.envoy.token,
@@ -533,7 +533,7 @@ export class Glass extends React.Component {
       (event) => {
         this.project.linkExternalAssetOnDrop(event, (error) => {
           if (error) {
-            this.setState({error});
+            this.setState({ error });
           }
           this.forceUpdate();
         });
@@ -600,7 +600,7 @@ export class Glass extends React.Component {
           break;
 
         case 'global-menu:set-active-component':
-          this.project.setCurrentActiveComponent(message.data, {from: 'glass'}, () => {});
+          this.project.setCurrentActiveComponent(message.data, { from: 'glass' }, () => { });
           break;
 
         case 'global-menu:group':
@@ -644,7 +644,7 @@ export class Glass extends React.Component {
         case 'global-menu:preview':
           // This hook is only used for internal development
           if (this.project) {
-            this.project.toggleInteractionMode({from: 'glass'}, () => {
+            this.project.toggleInteractionMode({ from: 'glass' }, () => {
               this.handleInteractionModeChange();
             });
           }
@@ -684,19 +684,19 @@ export class Glass extends React.Component {
           return;
 
         case 'event-handlers-editor-open':
-          this.setState({isEventHandlerEditorOpen: true});
+          this.setState({ isEventHandlerEditorOpen: true });
           break;
 
         case 'event-handlers-editor-closed':
-          this.setState({isEventHandlerEditorOpen: false});
+          this.setState({ isEventHandlerEditorOpen: false });
           break;
 
         case 'confirm-group-ungroup-popup-open':
-          this.setState({isConfirmGroupUngroupPopupOpen: true});
+          this.setState({ isConfirmGroupUngroupPopupOpen: true });
           break;
 
         case 'confirm-group-ungroup-popup-closed':
-          this.setState({isConfirmGroupUngroupPopupOpen: false});
+          this.setState({ isConfirmGroupUngroupPopupOpen: false });
           if (message.confirmed) {
             if (message.groupOrUngroup === 'group') {
               this.executeGroup();
@@ -710,14 +710,14 @@ export class Glass extends React.Component {
           const component = this.getActiveComponent();
 
           if (component) {
-            Element.where({component, _isSelected: true}).forEach((element) => {
-              element.unselectSoftly({from: 'glass'});
+            Element.where({ component, _isSelected: true }).forEach((element) => {
+              element.unselectSoftly({ from: 'glass' });
             });
 
             component.instantiateComponent(
               message.relpath,
               message.coords || {},
-              {from: 'glass'},
+              { from: 'glass' },
               (err, mana) => {
                 if (err) {
                   if (err.code === 'ENOENT') {
@@ -824,17 +824,17 @@ export class Glass extends React.Component {
     }, false);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.removeEmitterListeners();
     this.tourClient.off('tour:requestElementCoordinates', this.handleRequestElementCoordinates);
     this.project.getEnvoyClient().closeConnection();
   }
 
-  modColor (i) {
+  modColor(i) {
     return ((i || 0) / 2) % 360;
   }
 
-  renderSnapLines (overlays) {
+  renderSnapLines(overlays) {
     this._renderCount = this._renderCount || 0;
     if (
       !this.state.isMouseDown ||
@@ -881,7 +881,7 @@ export class Glass extends React.Component {
     this._renderCount++;
 
 
-overlays.push({
+    overlays.push({
       elementName: 'g',
       attributes: {
         style: {
@@ -891,11 +891,11 @@ overlays.push({
       },
       children,
     });
-    
+
   }
 
 
-  interpolateAttributesAtKeyframes (el, attributes) {
+  interpolateAttributesAtKeyframes(el, attributes) {
     const curKeys = {};
     const uniqueMs = {};
     for (const i in attributes) {
@@ -923,13 +923,13 @@ overlays.push({
     return uniqueInterpolatedKeys;
   }
 
-  handleUndo (payload) {
+  handleUndo(payload) {
     if (this.project) {
       mixpanel.haikuTrack('creator:glass:undo');
       const directlySelectedComponentId = Element.directlySelected && Element.directlySelected.componentId;
       const component = this.getActiveComponent();
-      Element.unselectAllElements({component}, {from: 'glass'});
-      this.project.undo({}, {from: 'glass'}, () => {
+      Element.unselectAllElements({ component }, { from: 'glass' });
+      this.project.undo({}, { from: 'glass' }, () => {
         // Important: purge the element selection proxy so that our box points can be reestablished.
         ElementSelectionProxy.purge();
 
@@ -945,13 +945,13 @@ overlays.push({
     }
   }
 
-  handleRedo (payload) {
+  handleRedo(payload) {
     if (this.project) {
       mixpanel.haikuTrack('creator:glass:redo');
       const directlySelectedComponentId = Element.directlySelected && Element.directlySelected.componentId;
       const component = this.getActiveComponent();
-      Element.unselectAllElements({component}, {from: 'glass'});
-      this.project.redo({}, {from: 'glass'}, () => {
+      Element.unselectAllElements({ component }, { from: 'glass' });
+      this.project.redo({}, { from: 'glass' }, () => {
         // Important: purge the element selection proxy so that our box points can be reestablished.
         ElementSelectionProxy.purge();
 
@@ -967,30 +967,30 @@ overlays.push({
     }
   }
 
-  handleCut () {
+  handleCut() {
     mixpanel.haikuTrack('creator:glass:cut');
-    this.fetchProxyElementForSelection().cut({from: 'glass'});
+    this.fetchProxyElementForSelection().cut({ from: 'glass' });
   }
 
-  handleCopy () {
+  handleCopy() {
     mixpanel.haikuTrack('creator:glass:copy');
-    this.fetchProxyElementForSelection().copy({from: 'glass'});
+    this.fetchProxyElementForSelection().copy({ from: 'glass' });
   }
 
-  handlePaste () {
+  handlePaste() {
     mixpanel.haikuTrack('creator:glass:paste');
     const proxy = this.fetchProxyElementForSelection();
     if (proxy) {
       const pasteables = ElementSelectionProxy.getPasteables();
       return proxy.pasteClipsAndSelect(
         pasteables,
-        {from: 'glass'},
-        () => {},
+        { from: 'glass' },
+        () => { },
       );
     }
   }
 
-  handleDelete () {
+  handleDelete() {
     if (this.isPreviewMode()) {
       return;
     }
@@ -1007,29 +1007,29 @@ overlays.push({
     }
   }
 
-  handleSelectAll () {
+  handleSelectAll() {
     if (this.getActiveComponent()) {
       mixpanel.haikuTrack('creator:glass:select-all');
-      this.getActiveComponent().selectAll({}, {from: 'glass'}, () => {});
+      this.getActiveComponent().selectAll({}, { from: 'glass' }, () => { });
     }
   }
 
-  executeGroup () {
+  executeGroup() {
     const proxy = this.fetchProxyElementForSelection();
     // Make sure we can group (i.e. between opening popup and executing, bytecode could be edit by an external tool)
     if (proxy && proxy.canGroup()) {
       // We need to unselect the group members otherwise dragging the group
       // will also drag the inner elements, resulting in undesired offsets
       proxy.selection.forEach((element) => {
-        element.unselectSoftly({from: 'glass'});
+        element.unselectSoftly({ from: 'glass' });
       });
 
-      proxy.group({from: 'glass'});
+      proxy.group({ from: 'glass' });
       mixpanel.haikuTrack('creator:glass:grouped');
     }
   }
 
-  handleGroup () {
+  handleGroup() {
     const proxy = this.fetchProxyElementForSelection();
     if (proxy && proxy.canGroup()) {
       mixpanel.haikuTrack('creator:glass:group');
@@ -1051,15 +1051,15 @@ overlays.push({
     }
   }
 
-  executeUngroup () {
+  executeUngroup() {
     const proxy = this.fetchProxyElementForSelection();
     if (proxy && proxy.canUngroup()) {
-      proxy.ungroup({from: 'glass'});
+      proxy.ungroup({ from: 'glass' });
       mixpanel.haikuTrack('creator:glass:ungrouped');
     }
   }
 
-  handleUngroup () {
+  handleUngroup() {
     const proxy = this.fetchProxyElementForSelection();
     if (proxy && proxy.canUngroup()) {
       mixpanel.haikuTrack('creator:glass:ungroup');
@@ -1087,11 +1087,11 @@ overlays.push({
     }
   };
 
-  launchComponentNameModal () {
+  launchComponentNameModal() {
     if (this.state.conglomerateComponentOptions.isBlankComponent) {
       Element.unselectAllElements({
         component: this.getActiveComponent(),
-      }, {from: 'glass'});
+      }, { from: 'glass' });
     }
 
     this.setState({
@@ -1099,7 +1099,7 @@ overlays.push({
     });
   }
 
-  conglomerateComponentFromSelectedElementsWithTitle (title, options = {}) {
+  conglomerateComponentFromSelectedElementsWithTitle(title, options = {}) {
     const proxy = this.fetchProxyElementForSelection();
 
     proxy.clearAllRelatedCaches();
@@ -1108,7 +1108,7 @@ overlays.push({
     // the elements that are currently on stage (including our current selection)
     Element.unselectAllElements({
       component: this.getActiveComponent(),
-    }, {from: 'glass'});
+    }, { from: 'glass' });
 
     mixpanel.haikuTrack('creator:glass:create-component', {
       title,
@@ -1118,7 +1118,7 @@ overlays.push({
     if (proxy.hasAnythingInSelectionButNotArtboard()) {
       translation = proxy.getConglomerateTranslation();
     } else {
-      translation = {x: 0, y: 0};
+      translation = { x: 0, y: 0 };
     }
 
     let size;
@@ -1155,7 +1155,7 @@ overlays.push({
         'origin.y': 0.5,
       },
       options,
-      {from: 'glass'},
+      { from: 'glass' },
       (err, nc) => {
         if (err) {
           logger.error(err);
@@ -1167,9 +1167,9 @@ overlays.push({
     );
   }
 
-  editComponent (relpath) {
+  editComponent(relpath) {
     // Stop preview mode if it happens to be active when we switch contexts
-    this.project.setInteractionMode(0, {from: 'glass'}, (err) => {
+    this.project.setInteractionMode(0, { from: 'glass' }, (err) => {
       if (err) {
         logger.error(err);
       }
@@ -1180,7 +1180,7 @@ overlays.push({
             title: ac.getTitle(),
           });
 
-          ac.setAsCurrentActiveComponent({from: 'glass'}, (setCurrentAcError) => {
+          ac.setAsCurrentActiveComponent({ from: 'glass' }, (setCurrentAcError) => {
             if (setCurrentAcError) {
               logger.error(setCurrentAcError);
             }
@@ -1190,7 +1190,7 @@ overlays.push({
     });
   }
 
-  handleWindowResize () {
+  handleWindowResize() {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -1199,11 +1199,11 @@ overlays.push({
     this.forceUpdate();
   }
 
-  resetContainerDimensions () {
+  resetContainerDimensions() {
     this.getActiveComponent().getArtboard().resetContainerDimensions(this.refs.container);
   }
 
-  performPan (dx, dy) {
+  performPan(dx, dy) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -1211,7 +1211,7 @@ overlays.push({
     this.getActiveComponent().getArtboard().performPan(dx, dy);
   }
 
-  findElementAssociatedToMouseEvent (mouseEvent) {
+  findElementAssociatedToMouseEvent(mouseEvent) {
     let target = this.findNearestDomSelectionTarget(mouseEvent.target);
 
     // True if the action was performed on the transform control for a selected element
@@ -1240,7 +1240,7 @@ overlays.push({
     }
   }
 
-  windowMouseOverHandler (mouseoverEvent) {
+  windowMouseOverHandler(mouseoverEvent) {
     if (
       this.state.isMouseDown ||
       this.isPreviewMode()
@@ -1254,9 +1254,9 @@ overlays.push({
       return;
     }
 
-    Element.hoverOffAllElements({component: this.getActiveComponent(), _isHovered: true}, {from: 'glass'});
+    Element.hoverOffAllElements({ component: this.getActiveComponent(), _isHovered: true }, { from: 'glass' });
 
-    element.hoverOn({from: 'glass'});
+    element.hoverOn({ from: 'glass' });
     const boxPoints = element.getBoxPointsTransformed();
 
     const mousemoveHandler = (mousemoveEvent) => {
@@ -1272,7 +1272,7 @@ overlays.push({
         return;
       }
 
-      element.hoverOff({from: 'glass'});
+      element.hoverOff({ from: 'glass' });
       window.removeEventListener('mousemove', mousemoveHandler);
     };
 
@@ -1285,76 +1285,76 @@ overlays.push({
     window.addEventListener('mousemove', mousemoveHandler);
   }
 
-  get areAnyModalsOpen () {
+  get areAnyModalsOpen() {
     return this.state.isEventHandlerEditorOpen || this.state.isCreateComponentModalOpen || this.state.isConfirmGroupUngroupPopupOpen;
   }
 
-  get shouldNotHandldKeyboardEvents () {
+  get shouldNotHandldKeyboardEvents() {
     return this.isPreviewMode() || this.areAnyModalsOpen;
   }
 
-  windowMouseMoveHandler (nativeEvent) {
+  windowMouseMoveHandler(nativeEvent) {
     if (this.areAnyModalsOpen) {
       return;
     }
 
     nativeEvent.preventDefault();
-    this.handleMouseMove({nativeEvent});
+    this.handleMouseMove({ nativeEvent });
   }
 
-  windowMouseUpHandler (nativeEvent) {
+  windowMouseUpHandler(nativeEvent) {
     if (this.areAnyModalsOpen) {
       return;
     }
 
     nativeEvent.preventDefault();
-    this.handleMouseUp({nativeEvent});
+    this.handleMouseUp({ nativeEvent });
   }
 
-  windowMouseDownHandler (nativeEvent) {
+  windowMouseDownHandler(nativeEvent) {
     if (this.areAnyModalsOpen) {
       return;
     }
 
     nativeEvent.preventDefault();
-    this.handleMouseDown({nativeEvent});
+    this.handleMouseDown({ nativeEvent });
   }
 
-  windowClickHandler (nativeEvent) {
+  windowClickHandler(nativeEvent) {
     if (this.shouldNotHandldKeyboardEvents) {
       return;
     }
 
     nativeEvent.preventDefault();
-    this.handleClick({nativeEvent});
+    this.handleClick({ nativeEvent });
   }
 
-  windowDblClickHandler (nativeEvent) {
+  windowDblClickHandler(nativeEvent) {
     if (this.shouldNotHandldKeyboardEvents) {
       return;
     }
 
     nativeEvent.preventDefault();
-    this.handleDoubleClick({nativeEvent});
+    this.handleDoubleClick({ nativeEvent });
   }
 
-  windowKeyDownHandler (nativeEvent) {
+  windowKeyDownHandler(nativeEvent) {
     if (this.shouldNotHandldKeyboardEvents) {
       return;
     }
 
-    this.handleKeyDown({nativeEvent});
+    this.handleKeyDown({ nativeEvent });
   }
 
-  windowKeyUpHandler (nativeEvent) {
+  windowKeyUpHandler(nativeEvent) {
     if (this.shouldNotHandldKeyboardEvents) {
       return;
     }
 
-    this.handleKeyUp({nativeEvent});
+    this.handleKeyUp({ nativeEvent });
   }
 
-  handleMouseDown (mousedownEvent) {
+  handleMouseDown(mousedownEvent) {
     this.didDragSinceLastMouseDown = false;
 
     // Only count left clicks
@@ -1390,7 +1390,7 @@ overlays.push({
             break;
           }
           const points = SVGPoints.pathToPoints(Element.directlySelected.attributes.d);
-         // If the control handles share the same coordinates, then it's already a corner. Otherwise, it's a curve.
+          // If the control handles share the same coordinates, then it's already a corner. Otherwise, it's a curve.
           const convertToCorner = (
             (dataIndex === 0 && points[dataIndex + 1] && points[dataIndex + 1].curve &&
               (points[dataIndex + 1].curve.x1 !== points[dataIndex].x || points[dataIndex + 1].curve.y1 !== points[dataIndex].y)
@@ -1403,7 +1403,7 @@ overlays.push({
           if (convertToCorner) {
             if (dataIndex > 0 && points[dataIndex] && points[dataIndex - 1]) {
               if (!points[dataIndex].curve) {
-                points[dataIndex].curve = {type: 'cubic', x1: points[dataIndex - 1].x, y1: points[dataIndex - 1].y};
+                points[dataIndex].curve = { type: 'cubic', x1: points[dataIndex - 1].x, y1: points[dataIndex - 1].y };
               }
               points[dataIndex].curve.x2 = points[dataIndex].x;
               points[dataIndex].curve.y2 = points[dataIndex].y;
@@ -1411,7 +1411,7 @@ overlays.push({
 
             if (dataIndex < points.length - 1 && points[dataIndex] && points[dataIndex + 1]) {
               if (!points[dataIndex + 1].curve) {
-                points[dataIndex + 1].curve = {type: 'cubic', x2: points[dataIndex + 1].x, y2: points[dataIndex + 1].y};
+                points[dataIndex + 1].curve = { type: 'cubic', x2: points[dataIndex + 1].x, y2: points[dataIndex + 1].y };
               }
               points[dataIndex + 1].curve.x1 = points[dataIndex].x;
               points[dataIndex + 1].curve.y1 = points[dataIndex].y;
@@ -1419,7 +1419,7 @@ overlays.push({
           } else {
             if (dataIndex > 0 && points[dataIndex] && points[dataIndex - 1]) {
               if (!points[dataIndex].curve) {
-                points[dataIndex].curve = {type: 'cubic', x1: points[dataIndex - 1].x, y1: points[dataIndex - 1].y};
+                points[dataIndex].curve = { type: 'cubic', x1: points[dataIndex - 1].x, y1: points[dataIndex - 1].y };
               }
               points[dataIndex].curve.x2 = points[dataIndex].x - 20;
               points[dataIndex].curve.y2 = points[dataIndex].y;
@@ -1427,7 +1427,7 @@ overlays.push({
 
             if (dataIndex < points.length - 1 && points[dataIndex] && points[dataIndex + 1]) {
               if (!points[dataIndex + 1].curve) {
-                points[dataIndex + 1].curve = {type: 'cubic', x2: points[dataIndex + 1].x, y2: points[dataIndex + 1].y};
+                points[dataIndex + 1].curve = { type: 'cubic', x2: points[dataIndex + 1].x, y2: points[dataIndex + 1].y };
               }
               points[dataIndex + 1].curve.x1 = points[dataIndex].x + 20;
               points[dataIndex + 1].curve.y1 = points[dataIndex].y;
@@ -1447,7 +1447,7 @@ overlays.push({
             setElementLockStatus: {
               [Element.directlySelected.rootSVG.attributes[HAIKU_ID_ATTRIBUTE]]: true,
             },
-          }, {from: 'glass'}, () => {});
+          }, { from: 'glass' }, () => { });
         }
 
         // Add to the selection
@@ -1502,7 +1502,7 @@ overlays.push({
         break;
       }
       case 'origin':
-        this.originActivation({event: mousedownEvent.nativeEvent});
+        this.originActivation({ event: mousedownEvent.nativeEvent });
         break;
       default:
         // We are panning now, so don't un/select anything
@@ -1538,7 +1538,7 @@ overlays.push({
 
             // Unselect all the elements unless the user is doing a meta-operation, as indicated by these keys
             if (!Globals.isShiftKeyDown && !Globals.isSpecialKeyDown() && !Globals.isAltKeyDown) {
-              Element.unselectAllElements({component: this.getActiveComponent()}, {from: 'glass'});
+              Element.unselectAllElements({ component: this.getActiveComponent() }, { from: 'glass' });
             }
             if (!Globals.isSpecialKeyDown() && !Globals.isAltKeyDown) {
               if (this.getActiveComponent()) {
@@ -1567,7 +1567,7 @@ overlays.push({
           const elementTargeted = this.getActiveComponent().findElementByComponentId(haikuId);
 
           if (elementTargeted.isRootElement()) { // The artboard can only be selected alone
-            Element.unselectAllElements({component: this.getActiveComponent()}, {from: 'glass'});
+            Element.unselectAllElements({ component: this.getActiveComponent() }, { from: 'glass' });
             this.ensureElementIsSelected(elementTargeted, finish);
           } else if (Globals.isControlKeyDown) {
             this.deselectAllOtherElementsIfTargetNotAmongThem(elementTargeted, () => {
@@ -1581,7 +1581,7 @@ overlays.push({
                 return;
               }
 
-              this.setState({directSelectionAnchorActivation: null});
+              this.setState({ directSelectionAnchorActivation: null });
 
               const mouseDownTimeDiff = this.state.lastMouseDownTime ? Date.now() - this.state.lastMouseDownTime : null;
               const isDoubleClick = mouseDownTimeDiff ? mouseDownTimeDiff <= DOUBLE_CLICK_THRESHOLD_MS : false;
@@ -1691,19 +1691,21 @@ overlays.push({
                     const elSize = Element.directlySelected.size;
 
                     const newKeys = this.interpolateAttributesAtKeyframes(originalEl, ['x', 'y', 'rx', 'ry']);
-                    const pathKeys = {d: {}, x: {}, y: {}, rx: {}, ry: {}};
+                    const pathKeys = { d: {}, x: {}, y: {}, rx: {}, ry: {} };
 
                     for (const ms in newKeys.x) {
-                      pathKeys.d[ms] = {value: SVGPoints.pointsToPath(SVGPoints.rectToPoints(
-                        Number(newKeys.x[ms]),
-                        Number(newKeys.y[ms]),
-                        elSize.x,
-                        elSize.y,
-                        Number((newKeys.rx && newKeys.rx[ms]) || 0),
-                        Number((newKeys.ry && newKeys.ry[ms]) || 0),
-                      ))},
+                      pathKeys.d[ms] = {
+                        value: SVGPoints.pointsToPath(SVGPoints.rectToPoints(
+                          Number(newKeys.x[ms]),
+                          Number(newKeys.y[ms]),
+                          elSize.x,
+                          elSize.y,
+                          Number((newKeys.rx && newKeys.rx[ms]) || 0),
+                          Number((newKeys.ry && newKeys.ry[ms]) || 0),
+                        ))
+                      },
 
-                      pathKeys.x[ms] = null;
+                        pathKeys.x[ms] = null;
                       pathKeys.y[ms] = null;
                       pathKeys.rx[ms] = null;
                       pathKeys.ry[ms] = null;
@@ -1716,15 +1718,15 @@ overlays.push({
                     },
                       {
                         [Element.directlySelected.attributes['haiku-id']]: 'path',
-                      }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                      }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
 
                     break;
                   }
                   case 'circle': {
                     const newKeys = this.interpolateAttributesAtKeyframes(originalEl, ['r', 'cx', 'cy']);
-                    const pathKeys = {d: {}, r: {}, cx: {}, cy: {}};
+                    const pathKeys = { d: {}, r: {}, cx: {}, cy: {} };
                     for (const ms in newKeys.r) {
-                      pathKeys.d[ms] = {value: SVGPoints.pointsToPath(SVGPoints.circleToPoints(Number(newKeys.cx[ms]), Number(newKeys.cy[ms]), Number(newKeys.r[ms])))};
+                      pathKeys.d[ms] = { value: SVGPoints.pointsToPath(SVGPoints.circleToPoints(Number(newKeys.cx[ms]), Number(newKeys.cy[ms]), Number(newKeys.r[ms]))) };
                       pathKeys.r[ms] = null;
                       pathKeys.cx[ms] = null;
                       pathKeys.cy[ms] = null;
@@ -1736,15 +1738,15 @@ overlays.push({
                     },
                       {
                         [Element.directlySelected.attributes['haiku-id']]: 'path',
-                      }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                      }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
 
                     break;
                   }
                   case 'ellipse': {
                     const newKeys = this.interpolateAttributesAtKeyframes(originalEl, ['rx', 'ry', 'cx', 'cy']);
-                    const pathKeys = {d: {}, rx: {}, ry: {}, cx: {}, cy: {}};
+                    const pathKeys = { d: {}, rx: {}, ry: {}, cx: {}, cy: {} };
                     for (const ms in newKeys.rx) {
-                      pathKeys.d[ms] = {value: SVGPoints.pointsToPath(SVGPoints.ellipseToPoints(Number(newKeys.cx[ms]), Number(newKeys.cy[ms]), Number(newKeys.rx[ms]), Number(newKeys.ry[ms])))};
+                      pathKeys.d[ms] = { value: SVGPoints.pointsToPath(SVGPoints.ellipseToPoints(Number(newKeys.cx[ms]), Number(newKeys.cy[ms]), Number(newKeys.rx[ms]), Number(newKeys.ry[ms]))) };
                       pathKeys.rx[ms] = null;
                       pathKeys.ry[ms] = null;
                       pathKeys.cx[ms] = null;
@@ -1758,14 +1760,14 @@ overlays.push({
                     },
                       {
                         [Element.directlySelected.attributes['haiku-id']]: 'path',
-                      }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                      }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
                     break;
                   }
                   case 'line': {
                     const newKeys = this.interpolateAttributesAtKeyframes(originalEl, ['x1', 'y1', 'x2', 'y2']);
-                    const pathKeys = {d: {}, x1: {}, y1: {}, x2: {}, y2: {}};
+                    const pathKeys = { d: {}, x1: {}, y1: {}, x2: {}, y2: {} };
                     for (const ms in newKeys.x1) {
-                      pathKeys.d[ms] = {value: SVGPoints.pointsToPath(SVGPoints.lineToPoints(Number(newKeys.x1[ms]), Number(newKeys.y1[ms]), Number(newKeys.x2[ms]), Number(newKeys.y2[ms])))};
+                      pathKeys.d[ms] = { value: SVGPoints.pointsToPath(SVGPoints.lineToPoints(Number(newKeys.x1[ms]), Number(newKeys.y1[ms]), Number(newKeys.x2[ms]), Number(newKeys.y2[ms]))) };
                       pathKeys.x1[ms] = null;
                       pathKeys.y1[ms] = null;
                       pathKeys.x2[ms] = null;
@@ -1778,13 +1780,13 @@ overlays.push({
                     },
                       {
                         [Element.directlySelected.attributes['haiku-id']]: 'path',
-                      }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                      }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
                     break;
                   }
                   case 'polygon':
                   case 'polyline': {
                     const normalPoints = [];
-                    const originalPoints = SVGPoints.polyPointsStringToPoints(Element.directlySelected.attributes.points).map((pt) => ({x: pt[0], y: pt[1]}));
+                    const originalPoints = SVGPoints.polyPointsStringToPoints(Element.directlySelected.attributes.points).map((pt) => ({ x: pt[0], y: pt[1] }));
 
                     // Insert an extra point at the end for a polygon because it's a closed shape
                     if (Element.directlySelected.type === 'polygon') {
@@ -1837,7 +1839,7 @@ overlays.push({
                           },
                         },
                       },
-                    }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                    }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
                     break;
                   }
                   case 'path': {
@@ -1882,7 +1884,7 @@ overlays.push({
                             },
                           },
                         },
-                      }, keyframeOptions, {from: 'glass'}, updateNewOriginalClickStateFunc);
+                      }, keyframeOptions, { from: 'glass' }, updateNewOriginalClickStateFunc);
                     } else {
                       // #FIXME: this should never happen.
                       logger.warn('[glass] unable to split points');
@@ -1921,7 +1923,7 @@ overlays.push({
     this.state.lastMouseDownTime = Date.now();
   }
 
-  validTargetOrNull (target) {
+  validTargetOrNull(target) {
     // If not even a node, we have no valid target
     if (
       !target ||
@@ -1967,44 +1969,44 @@ overlays.push({
     return target;
   }
 
-  targetIsMount (target) {
+  targetIsMount(target) {
     return (
       target === this.refs.mount ||
       target === this.getActiveComponent().getMount().$el()
     );
   }
 
-  deselectAllOtherElementsIfTargetNotAmongThem (target, cb) {
-    const selecteds = Element.where({component: this.getActiveComponent(), _isSelected: true});
+  deselectAllOtherElementsIfTargetNotAmongThem(target, cb) {
+    const selecteds = Element.where({ component: this.getActiveComponent(), _isSelected: true });
     const isAmongSelection = selecteds.indexOf(target) !== -1;
     if (!isAmongSelection) {
       selecteds.forEach((element) => {
         if (element !== target) {
-          element.unselectSoftly({from: 'glass'});
+          element.unselectSoftly({ from: 'glass' });
         }
       });
     }
     return cb();
   }
 
-  deselectAllOtherElements (target, cb) {
-    const selecteds = Element.where({component: this.getActiveComponent(), _isSelected: true});
+  deselectAllOtherElements(target, cb) {
+    const selecteds = Element.where({ component: this.getActiveComponent(), _isSelected: true });
     selecteds.forEach((element) => {
       if (element !== target) {
-        element.unselectSoftly({from: 'glass'});
+        element.unselectSoftly({ from: 'glass' });
       }
     });
     return cb();
   }
 
-  ensureElementIsSelected (target, cb) {
-    target.selectSoftly({from: 'glass'});
+  ensureElementIsSelected(target, cb) {
+    target.selectSoftly({ from: 'glass' });
     return cb();
   }
 
-  duplicateSelectedElementsThenSelectDuplicates (cb) {
+  duplicateSelectedElementsThenSelectDuplicates(cb) {
     const proxy = this.fetchProxyElementForSelection();
-    proxy.duplicateAllAndSelectDuplicates({from: 'glass'}, (err) => {
+    proxy.duplicateAllAndSelectDuplicates({ from: 'glass' }, (err) => {
       if (err) {
         return cb(err);
       }
@@ -2012,17 +2014,17 @@ overlays.push({
     });
   }
 
-  toggleMultiElementSelection (target, cb) {
+  toggleMultiElementSelection(target, cb) {
     if (target.isSelected() && this.fetchProxyElementForSelection().hasMultipleInSelection()) {
-      target.unselectSoftly({from: 'glass'});
+      target.unselectSoftly({ from: 'glass' });
     } else {
-      target.selectSoftly({from: 'glass'});
+      target.selectSoftly({ from: 'glass' });
     }
     return cb();
   }
 
-  toggleSelectionStateWithRespectToBox (box) {
-    const elements = Element.where({component: this.getActiveComponent()})
+  toggleSelectionStateWithRespectToBox(box) {
+    const elements = Element.where({ component: this.getActiveComponent() })
       .filter((element) => !element.isRootElement());
 
     // Note: We don't allow the artboard to be selected as part of multi-selection
@@ -2031,15 +2033,15 @@ overlays.push({
       if (element.getDepthAmongElements() < 2) {
         const overlaps = element.doesOverlapWithBox(box);
         if (overlaps) {
-          element.selectSoftly({from: 'glass'});
+          element.selectSoftly({ from: 'glass' });
         } else {
-          element.unselectSoftly({from: 'glass'});
+          element.unselectSoftly({ from: 'glass' });
         }
       }
     });
   }
 
-  isDomNodeChildOfComponentWrapperDomNode (target) {
+  isDomNodeChildOfComponentWrapperDomNode(target) {
     // If the user selected one of the children of a component that has been instantiated on stage
     // we need to actually select the parent (wrapper) element since that's what our component manages
     if (
@@ -2052,7 +2054,7 @@ overlays.push({
     return false;
   }
 
-  findNearestDomSelectionTarget (target) {
+  findNearestDomSelectionTarget(target) {
     // Don't perform element selection if the user clicked one of the transform controls
     if (
       typeof target.className === 'string' &&
@@ -2086,7 +2088,7 @@ overlays.push({
     return target;
   }
 
-  handleMouseUp (mouseupEvent) {
+  handleMouseUp(mouseupEvent) {
     if (this.state.isEventHandlerEditorOpen) {
       return;
     }
@@ -2113,7 +2115,7 @@ overlays.push({
     this.fetchProxyElementForSelection().initializeRotationSnap();
   }
 
-  handleClick (clickEvent) {
+  handleClick(clickEvent) {
     if (this.isPreviewMode()) {
       return;
     }
@@ -2125,7 +2127,7 @@ overlays.push({
     this.storeAndReturnMousePosition(clickEvent);
   }
 
-  handleDoubleClick (doubleClickEvent) {
+  handleDoubleClick(doubleClickEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2156,25 +2158,25 @@ overlays.push({
     }
   }
 
-  handleDragStart (cb) {
+  handleDragStart(cb) {
     this.state.isMouseDragging = true;
-    this.setState({isMouseDragging: true}, cb);
+    this.setState({ isMouseDragging: true }, cb);
   }
 
-  handleDragStop (cb) {
+  handleDragStop(cb) {
     this.state.isMouseDragging = false;
-    this.setState({isMouseDragging: false}, cb);
+    this.setState({ isMouseDragging: false }, cb);
   }
 
-  handleKeyEscape () {
+  handleKeyEscape() {
     if (!this.getActiveComponent()) {
       return;
     }
 
-    Element.unselectAllElements({component: this.getActiveComponent()}, {from: 'glass'});
+    Element.unselectAllElements({ component: this.getActiveComponent() }, { from: 'glass' });
   }
 
-  handleKeyLeftArrow (keyEvent) {
+  handleKeyLeftArrow(keyEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2185,7 +2187,7 @@ overlays.push({
     }
   }
 
-  handleKeyUpArrow (keyEvent) {
+  handleKeyUpArrow(keyEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2196,7 +2198,7 @@ overlays.push({
     }
   }
 
-  handleKeyRightArrow (keyEvent) {
+  handleKeyRightArrow(keyEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2207,7 +2209,7 @@ overlays.push({
     }
   }
 
-  handleKeyDownArrow (keyEvent) {
+  handleKeyDownArrow(keyEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2218,7 +2220,7 @@ overlays.push({
     }
   }
 
-  handleKeyDown (keyEvent) {
+  handleKeyDown(keyEvent) {
     if (this.state.isEventHandlerEditorOpen) {
       return;
     }
@@ -2276,21 +2278,21 @@ overlays.push({
     }
   }
 
-  handleAlignRequest (xEdge, yEdge, toStage) {
+  handleAlignRequest(xEdge, yEdge, toStage) {
     const proxy = this.fetchProxyElementForSelection();
     proxy.align(xEdge, yEdge, toStage);
   }
 
-  handleDistributeRequest (xEdge, yEdge, toStage) {
+  handleDistributeRequest(xEdge, yEdge, toStage) {
     const proxy = this.fetchProxyElementForSelection();
     proxy.distribute(xEdge, yEdge, toStage);
   }
 
-  handleKeyCommand (isDown) {
-    this.setState({isCommandKeyDown: isDown});
+  handleKeyCommand(isDown) {
+    this.setState({ isCommandKeyDown: isDown });
   }
 
-  handleKeyUp (keyEvent) {
+  handleKeyUp(keyEvent) {
     if (this.state.isEventHandlerEditorOpen) {
       return;
     }
@@ -2305,36 +2307,36 @@ overlays.push({
     }
   }
 
-  handleKeyEnter () {
+  handleKeyEnter() {
     // noop for now
   }
 
-  handleClickStageName () {
+  handleClickStageName() {
     if (!this.getActiveComponent()) {
       return;
     }
 
     // Multi-select is not allowed when selecting the stage name
-    this.setState({snapLines: []});
-    Element.unselectAllElements({component: this.getActiveComponent()}, {from: 'glass'});
-    const artboard = Element.findRoots({component: this.getActiveComponent()})[0];
-    artboard.select({from: 'glass'});
+    this.setState({ snapLines: [] });
+    Element.unselectAllElements({ component: this.getActiveComponent() }, { from: 'glass' });
+    const artboard = Element.findRoots({ component: this.getActiveComponent() })[0];
+    artboard.select({ from: 'glass' });
   }
 
-  handleMouseOverStageName () {
+  handleMouseOverStageName() {
     // Don't highlight the stage name/artboard boundary if the selection marquee is active
     if (this.isMarqueeActive()) {
       return;
     }
 
-    this.setState({isStageNameHovering: true});
+    this.setState({ isStageNameHovering: true });
   }
 
-  handleMouseOutStageName () {
-    this.setState({isStageNameHovering: false});
+  handleMouseOutStageName() {
+    this.setState({ isStageNameHovering: false });
   }
 
-  handleMouseMove (mousemoveEvent) {
+  handleMouseMove(mousemoveEvent) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2344,8 +2346,8 @@ overlays.push({
     }
 
     const zoom = this.getActiveComponent().getArtboard().getZoom() || 1;
-    const pan = this.getActiveComponent().getArtboard().getPan() || {x: 0, y: 0};
-    const viewportTransform = {zoom, pan};
+    const pan = this.getActiveComponent().getArtboard().getPan() || { x: 0, y: 0 };
+    const viewportTransform = { zoom, pan };
 
     const lastMouseDownPosition = this.state.lastMouseDownPosition;
     const mousePositionCurrent = this.storeAndReturnMousePosition(mousemoveEvent);
@@ -2417,18 +2419,18 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
                       r: {
                         [this.getActiveComponent().getCurrentTimelineTime()]: {
-                          value: distance(transformedCurrent, {x: Number(Element.directlySelected.attributes.cx), y: Number(Element.directlySelected.attributes.cy)}),
+                          value: distance(transformedCurrent, { x: Number(Element.directlySelected.attributes.cx), y: Number(Element.directlySelected.attributes.cy) }),
                         },
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
               case 'ellipse': {
@@ -2447,7 +2449,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2458,7 +2460,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
               case 'rect': {
@@ -2504,7 +2506,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2530,7 +2532,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
               case 'polyline':
@@ -2544,7 +2546,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2555,7 +2557,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
 
@@ -2563,23 +2565,23 @@ overlays.push({
                 const attrUpdate = {};
                 const curTime = this.getActiveComponent().getCurrentTimelineTime();
                 if (indices.includes(0)) {
-                  attrUpdate.x1 = {[curTime]: {value: Number(this.selectedOriginalClickState.attributes.x1) + transformedTotalDelta.x}};
-                  attrUpdate.y1 = {[curTime]: {value: Number(this.selectedOriginalClickState.attributes.y1) + transformedTotalDelta.y}};
+                  attrUpdate.x1 = { [curTime]: { value: Number(this.selectedOriginalClickState.attributes.x1) + transformedTotalDelta.x } };
+                  attrUpdate.y1 = { [curTime]: { value: Number(this.selectedOriginalClickState.attributes.y1) + transformedTotalDelta.y } };
                 }
                 if (indices.includes(1)) {
-                  attrUpdate.x2 = {[curTime]: {value: Number(this.selectedOriginalClickState.attributes.x2) + transformedTotalDelta.x}};
-                  attrUpdate.y2 = {[curTime]: {value: Number(this.selectedOriginalClickState.attributes.y2) + transformedTotalDelta.y}};
+                  attrUpdate.x2 = { [curTime]: { value: Number(this.selectedOriginalClickState.attributes.x2) + transformedTotalDelta.x } };
+                  attrUpdate.y2 = { [curTime]: { value: Number(this.selectedOriginalClickState.attributes.y2) + transformedTotalDelta.y } };
                 }
                 this.getActiveComponent().updateKeyframes({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: attrUpdate,
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
 
@@ -2661,7 +2663,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2672,7 +2674,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
             }
@@ -2685,7 +2687,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2701,7 +2703,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
               case 'rect': {
@@ -2709,7 +2711,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2725,7 +2727,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
               case 'polyline':
@@ -2739,7 +2741,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2750,7 +2752,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
 
@@ -2759,7 +2761,7 @@ overlays.push({
                   [this.getActiveComponent().getCurrentTimelineName()]: {
                     [rootSvgElement.componentId]: {
                       'style.overflow': {
-                        0: {value: 'visible'},
+                        0: { value: 'visible' },
                       },
                     },
                     [Element.directlySelected.attributes['haiku-id']]: {
@@ -2785,7 +2787,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
 
@@ -2810,7 +2812,7 @@ overlays.push({
                 this.getActiveComponent().updateKeyframes({
                   [rootSvgElement.componentId]: {
                     'style.overflow': {
-                      0: {value: 'visible'},
+                      0: { value: 'visible' },
                     },
                   },
                   [this.getActiveComponent().getCurrentTimelineName()]: {
@@ -2822,7 +2824,7 @@ overlays.push({
                       },
                     },
                   },
-                }, keyframeOptions, {from: 'glass'}, () => {});
+                }, keyframeOptions, { from: 'glass' }, () => { });
                 break;
               }
             }
@@ -2855,14 +2857,14 @@ overlays.push({
     return mousePositionCurrent;
   }
 
-  originActivation ({event}) {
+  originActivation({ event }) {
     // TODO: support more modes (and make them discoverable).
     this.setState({
       isOriginPanning: Globals.isSpecialKeyDown(),
     });
   }
 
-  controlActivation (activationInfo) {
+  controlActivation(activationInfo) {
     this.setState({
       isAnythingRotating: Globals.isSpecialKeyDown(),
       isAnythingScaling: !Globals.isSpecialKeyDown(),
@@ -2882,13 +2884,13 @@ overlays.push({
     this.fetchProxyElementForSelection().pushCachedTransform('CONTROL_ACTIVATION');
   }
 
-  directSelectionAnchorActivation (activationInfo) {
+  directSelectionAnchorActivation(activationInfo) {
     this.setState({
       directSelectionAnchorActivation: activationInfo,
     });
   }
 
-  storeAndReturnMousePosition (mouseEvent, additionalPositionTrackingState) {
+  storeAndReturnMousePosition(mouseEvent, additionalPositionTrackingState) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2913,7 +2915,7 @@ overlays.push({
     return this.state.mousePositionCurrent;
   }
 
-  drawOverlays () {
+  drawOverlays() {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -2953,7 +2955,7 @@ overlays.push({
 
     const container = {
       layout: {
-        computed: {x: 1, y: 1},
+        computed: { x: 1, y: 1 },
       },
     };
 
@@ -3003,7 +3005,7 @@ overlays.push({
   // and flushes updates to them on each frame. So what _this method_ does is just build those objects and then
   // these get passed into a Haiku Core render method (see above). LONG STORY SHORT: This creates a flat list of
   // nodes that get rendered to the DOM by the Haiku Core.
-  buildDrawnOverlays () {
+  buildDrawnOverlays() {
     const overlays = [];
 
     // Don't show any overlays if we're in preview (aka 'live') interactionMode
@@ -3047,14 +3049,14 @@ overlays.push({
     return overlays;
   }
 
-  fetchProxyElementForSelection () {
+  fetchProxyElementForSelection() {
     const component = this.getActiveComponent();
     if (component) {
-      return ElementSelectionProxy.fromSelection(Element.where({component, _isSelected: true}), component);
+      return ElementSelectionProxy.fromSelection(Element.where({ component, _isSelected: true }), component);
     }
   }
 
-  renderDirectSelection (element, selectedAnchorIndices, overlays) {
+  renderDirectSelection(element, selectedAnchorIndices, overlays) {
     const original = element;
     if (element.type === 'use') {
       // tslint:disable-next-line:no-parameter-reassignment
@@ -3093,11 +3095,11 @@ overlays.push({
         ));
         break;
       default:
-        // ...noop.
+      // ...noop.
     }
   }
 
-  renderSelectionMarquee (overlays) {
+  renderSelectionMarquee(overlays) {
     if (this.getActiveComponent()) {
       const marquee = this.getActiveComponent().getSelectionMarquee();
 
@@ -3138,7 +3140,7 @@ overlays.push({
     }
   }
 
-  openContextMenu (event) {
+  openContextMenu(event) {
     if (this.isPreviewMode()) {
       return;
     }
@@ -3152,7 +3154,7 @@ overlays.push({
     });
   }
 
-  pointHasNaN (point) {
+  pointHasNaN(point) {
     return (
       Number.isNaN(point.x) ||
       Number.isNaN(point.y) ||
@@ -3160,7 +3162,7 @@ overlays.push({
     );
   }
 
-  renderTransformBoxOverlay (proxy, overlays, isRotationModeOn) {
+  renderTransformBoxOverlay(proxy, overlays, isRotationModeOn) {
     if (!this.getActiveComponent()) {
       return;
     }
@@ -3254,26 +3256,26 @@ overlays.push({
     }
   }
 
-  getCSSTransform (zoom, pan) {
+  getCSSTransform(zoom, pan) {
     return 'matrix3d(' +
       [zoom.x, 0, 0, 0,
         0, zoom.y, 0, 0,
         0, 0, 1, 0,
-        pan.x / zoom.x, pan.y / zoom.x, 0, 1].join(',') + ')';
+      pan.x / zoom.x, pan.y / zoom.x, 0, 1].join(',') + ')';
   }
 
-  isPreviewMode () {
+  isPreviewMode() {
     if (!this.getActiveComponent()) {
       return false;
     }
     return this.getActiveComponent().isPreviewModeActive();
   }
 
-  isMarqueeActive () {
+  isMarqueeActive() {
     return this.getActiveComponent() && this.getActiveComponent().getSelectionMarquee().isActive();
   }
 
-  getCursorCssRule () {
+  getCursorCssRule() {
     if (this.isPreviewMode()) {
       return 'default';
     }
@@ -3283,7 +3285,7 @@ overlays.push({
     return (this.state.stageMouseDown) ? '-webkit-grabbing' : 'default';
   }
 
-  renderHotComponentMount (mount) {
+  renderHotComponentMount(mount) {
     const opacity = this.isPreviewMode() ? 0 : (this.state.isEventHandlerEditorOpen ? 0.5 : 1.0);
     return (
       <div
@@ -3304,30 +3306,30 @@ overlays.push({
     );
   }
 
-  getContainerHeight () {
+  getContainerHeight() {
     if (!this.getActiveComponent()) {
       return 1;
     }
     return this.getActiveComponent().getArtboard().getContainerHeight();
   }
 
-  getArtboardRenderInfo () {
+  getArtboardRenderInfo() {
     if (!this.getActiveComponent()) {
       // Pretty hack to put this here, but we have to render _something_ or else the
       // Glass won't initialize properly due to the way it is currently set up.
       // TODO: Make glass more accepting of situations where there is no component
       return {
-        pan: {x: 0, y: 0},
-        zoom: {x: 1, y: 1},
-        container: {x: 1, y: 1, w: 1, h: 1},
-        mount: {x: 1, y: 1, w: 1, h: 1},
+        pan: { x: 0, y: 0 },
+        zoom: { x: 1, y: 1 },
+        container: { x: 1, y: 1, w: 1, h: 1 },
+        mount: { x: 1, y: 1, w: 1, h: 1 },
       };
     }
 
     return this.getActiveComponent().getArtboard().getArtboardRenderInfo();
   }
 
-  getDirectlySelectedElementModel () {
+  getDirectlySelectedElementModel() {
     if (!Element.directlySelected) {
       return;
     }
@@ -3337,7 +3339,7 @@ overlays.push({
     );
   }
 
-  getContextMenuItems () {
+  getContextMenuItems() {
     const items = [];
 
     const proxy = this.fetchProxyElementForSelection();
@@ -3369,7 +3371,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Edit Element Actions',
@@ -3393,7 +3395,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: isWindows() ? 'Show in File Explorer' : 'Show in Finder',
@@ -3434,7 +3436,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Cut',
@@ -3460,7 +3462,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Group',
@@ -3479,7 +3481,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Delete',
@@ -3489,7 +3491,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Forward',
@@ -3527,7 +3529,7 @@ overlays.push({
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Copy SVG',
@@ -3555,7 +3557,7 @@ overlays.push({
     });
 
     if (process.env.NODE_ENV !== 'production') {
-      items.push({type: 'separator'});
+      items.push({ type: 'separator' });
 
       items.push({
         label: 'Inspect Element',
@@ -3579,7 +3581,7 @@ overlays.push({
     return items;
   }
 
-  render () {
+  render() {
     const {
       pan,
       zoom,
@@ -3602,15 +3604,15 @@ overlays.push({
           const targetId = mouseDown.nativeEvent.target && mouseDown.nativeEvent.target.id;
 
           if (
-              targetId === 'stage-root' ||
-              targetId === 'full-background' ||
-              targetId === 'haiku-glass-stage-container' ||
-              targetId === 'haiku-glass-stage-background-live' ||
-              targetId === 'haiku-glass-stage-background-preview' ||
-              targetId === 'haiku-glass-stage-background-preview-border'
-            ) {
+            targetId === 'stage-root' ||
+            targetId === 'full-background' ||
+            targetId === 'haiku-glass-stage-container' ||
+            targetId === 'haiku-glass-stage-background-live' ||
+            targetId === 'haiku-glass-stage-background-preview' ||
+            targetId === 'haiku-glass-stage-background-preview-border'
+          ) {
             // If unselecting anything except an actual element, assume we want to deselect all
-            Element.unselectAllElements({component: this.getActiveComponent()}, {from: 'glass'});
+            Element.unselectAllElements({ component: this.getActiveComponent() }, { from: 'glass' });
           }
 
           if (this.getActiveComponent() && !this.isPreviewMode()) {
@@ -3628,10 +3630,10 @@ overlays.push({
           this.openContextMenu(event);
         }}
         onMouseUp={() => {
-          this.setState({stageMouseDown: null});
+          this.setState({ stageMouseDown: null });
         }}
         onMouseLeave={() => {
-          this.setState({stageMouseDown: null});
+          this.setState({ stageMouseDown: null });
         }}>
 
         {(!this.isPreviewMode())
@@ -3647,7 +3649,7 @@ overlays.push({
               fontSize: 14,
             }}>
             {Math.round(zoom.x / 1 * 100)}%
-            </div>
+          </div>
           : ''}
 
         {!this.isPreviewMode() && this.state.isCreateComponentModalOpen &&
@@ -3743,8 +3745,8 @@ overlays.push({
                 }}>
                 {`${this.props.userconfig.project || '[n/a]'} (`}
               </span>
-              <span style={{position: 'relative', top: 3, marginLeft: 2, marginRight: 2}}>
-                <ComponentIconSVG/>
+              <span style={{ position: 'relative', top: 3, marginLeft: 2, marginRight: 2 }}>
+                <ComponentIconSVG />
               </span>
               <span
                 id="component-name"
@@ -3840,7 +3842,7 @@ overlays.push({
                   opacity: this.state.isStageNameHovering && !this.state.isStageSelected ? 1 : 0,
                   overflow: 'visible',
                 }}
-                />
+              />
             </svg>
             : ''}
 
@@ -3903,7 +3905,7 @@ overlays.push({
   }
 }
 
-function belongsToMenuIcon (target) {
+function belongsToMenuIcon(target) {
   if (!target || !target.getAttribute) {
     return false;
   }

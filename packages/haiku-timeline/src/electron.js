@@ -1,9 +1,9 @@
 import * as path from 'path';
 
 import * as qs from 'qs';
-import {app, BrowserWindow, ipcMain} from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 
-import TopMenu from 'haiku-common/lib/electron/TopMenu';
+import TopMenu from 'haiku-common/src/electron/TopMenu';
 
 /**
  * This file is bypassed when loaded in the full app.
@@ -21,7 +21,7 @@ const params = {
 };
 
 if (process.env.MOCK_ENVOY) {
-  params.envoy = {mock: true};
+  params.envoy = { mock: true };
 }
 
 const query = qs.stringify(params);
@@ -34,7 +34,7 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-function createWindow () {
+function createWindow() {
   mainWindow = new BrowserWindow({
     webPreferences: {
       webSecurity: false,
@@ -54,7 +54,7 @@ function createWindow () {
 
   const topmenu = new TopMenu({
     send: (name, data) => {
-      mainWindow.webContents.send('relay', {name, data, from: 'electron'});
+      mainWindow.webContents.send('relay', { name, data, from: 'electron' });
     },
   });
 
@@ -63,7 +63,7 @@ function createWindow () {
     isSaving: false,
     isProjectOpen: true,
     subComponents: [],
-    undoState: {canUndo: false, canRedo: false},
+    undoState: { canUndo: false, canRedo: false },
   });
 
   ipcMain.on('topmenu:update', (ipcEvent, nextTopmenuOptions) => {

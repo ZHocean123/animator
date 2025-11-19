@@ -1,4 +1,4 @@
-import {TourUtils} from 'haiku-common/lib/types/enums';
+import {TourUtils} from 'haiku-common/src/types/enums';
 // @ts-ignore
 import {createTourFile, didTakeTour} from 'haiku-serialization/src/utils/HaikuHomeDir';
 import {ClientBoundingRect, Tour, TourState} from '.';

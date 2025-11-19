@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as Color from 'color';
 
 export const BTN_STYLES = {
@@ -57,7 +57,7 @@ export const BTN_STYLES = {
     float: 'left',
   },
   centerBtns: {
-    float: 'center',
+    float: 'none',
   },
   rightBtns: {
     float: 'right',
@@ -106,4 +106,4 @@ export const BTN_STYLES = {
     padding: '10px 15px',
     fontSize: 16,
   },
-};
+} satisfies { [key: string]: React.CSSProperties };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Draggable from 'react-draggable';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {TOUR_STYLES} from '../../styles/tourShared';
+import Palette from 'haiku-ui-common/src/Palette';
+import { TOUR_STYLES } from '../../styles/tourShared';
 import Spotlight from './Spotlight';
 
 const STYLES = {
@@ -83,7 +83,7 @@ const TOOLTIP_SIZES = {
   default: 505,
 };
 
-function Tooltip (props) {
+function Tooltip(props) {
   const {
     coordinates,
     offset,
@@ -99,7 +99,7 @@ function Tooltip (props) {
     showPreviousButton,
     modalOffset,
   } = props;
-  let {top, left} = coordinates;
+  let { top, left } = coordinates;
   const positionStyles = STYLES[display.toUpperCase()] || {};
   const spotlightExtraStyles = {};
   let renderSpotlight = true;
@@ -109,7 +109,7 @@ function Tooltip (props) {
     left = coordinates.left;
 
     if (left - 350 <= 10) {
-      return Tooltip({...props, display: 'top'});
+      return Tooltip({ ...props, display: 'top' });
     }
   }
 
@@ -128,7 +128,7 @@ function Tooltip (props) {
     left = left + coordinates.width / 2;
 
     if (top - 350 <= 10) {
-      return Tooltip({...props, display: 'bottom'});
+      return Tooltip({ ...props, display: 'bottom' });
     }
   }
 
@@ -168,7 +168,7 @@ function Tooltip (props) {
       {renderSpotlight && (
         <Spotlight
           offset={positionStyles.spotlight}
-          position={{top, left}}
+          position={{ top, left }}
           containerStyles={STYLES.container}
           holeStyles={spotlightExtraStyles}
           display={display}
@@ -211,15 +211,15 @@ function Tooltip (props) {
                 <button
                   style={TOUR_STYLES.btnSecondary}
                   onClick={() => finish(true, true)}
-                  >
+                >
                   {stepData.current < stepData.total && (
-                      'Finish'
-                    )}
+                    'Finish'
+                  )}
                 </button>
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {showPreviousButton && (
                     <button
-                      style={{...TOUR_STYLES.btnSecondary, marginRight: 10}}
+                      style={{ ...TOUR_STYLES.btnSecondary, marginRight: 10 }}
                       onClick={() => prev(true, true)}
                     >
                       Back
@@ -227,10 +227,10 @@ function Tooltip (props) {
                   )}
 
                   {stepData.current < stepData.total && (
-                  <button style={TOUR_STYLES.btn} onClick={() => next()}>
-                        Next
-                      </button>
-                    )}
+                    <button style={TOUR_STYLES.btn} onClick={() => next()}>
+                      Next
+                    </button>
+                  )}
 
                   {stepData.current === stepData.total && (
                     <button

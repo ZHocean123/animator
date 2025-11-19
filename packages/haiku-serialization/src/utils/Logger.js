@@ -2,8 +2,8 @@ const path = require('path');
 const winston = require('winston');
 const jsonStringify = require('fast-safe-stringify');
 const EventEmitter = require('events');
-const {isProduction} = require('haiku-common/lib/environments');
-const {isWindows} = require('haiku-common/lib/environments/os');
+const { isProduction } = require('haiku-common/src/environments');
+const { isWindows } = require('haiku-common/src/environments/os');
 
 require('colors'); // TODO: use non-string-extending module
 
@@ -48,7 +48,7 @@ const DEFAULTS = {
 };
 
 class Logger extends EventEmitter {
-  constructor (folder, relpath, options = {}) {
+  constructor(folder, relpath, options = {}) {
     super(options);
 
     const config = Object.assign({}, DEFAULTS, options);
@@ -93,97 +93,97 @@ class Logger extends EventEmitter {
     this.view = '?';
   }
 
-  raw (jsonMessage) {
+  raw(jsonMessage) {
     this.logger.log(jsonMessage);
   }
 
-  info (...args) {
-    this.logger.info(args, {view: this.view});
+  info(...args) {
+    this.logger.info(args, { view: this.view });
   }
 
-  traceInfo (tag, message, attachedObject) {
-    this.logger.info(message, {view: this.view, tag, attachedObject});
+  traceInfo(tag, message, attachedObject) {
+    this.logger.info(message, { view: this.view, tag, attachedObject });
   }
 
-  debug (...args) {
-    this.logger.debug(args, {view: this.view});
+  debug(...args) {
+    this.logger.debug(args, { view: this.view });
   }
 
-  warn (...args) {
-    this.logger.warn(args, {view: this.view});
+  warn(...args) {
+    this.logger.warn(args, { view: this.view });
   }
 
-  error (...args) {
-    this.logger.error(args, {view: this.view});
+  error(...args) {
+    this.logger.error(args, { view: this.view });
   }
 
   /**
    * Methods not supported by winston fall back to console
    */
 
-  assert (...args) {
+  assert(...args) {
     console.assert(...args);
   }
 
-  count (...args) {
+  count(...args) {
     console.count(...args);
   }
 
-  countReset (...args) {
+  countReset(...args) {
     console.countReset(...args);
   }
 
-  dir (...args) {
+  dir(...args) {
     console.dir(...args);
   }
 
-  dirxml (...args) {
+  dirxml(...args) {
     console.dirxml(...args);
   }
 
-  exception (...args) {
+  exception(...args) {
     console.exception(...args);
   }
 
-  group (...args) {
+  group(...args) {
     console.group(...args);
   }
 
-  groupCollapsed (...args) {
+  groupCollapsed(...args) {
     console.groupCollapsed(...args);
   }
 
-  groupEnd (...args) {
+  groupEnd(...args) {
     console.groupEnd(...args);
   }
 
-  profileEnd (...args) {
+  profileEnd(...args) {
     console.profileEnd(...args);
   }
 
-  select (...args) {
+  select(...args) {
     console.select(...args);
   }
 
-  table (...args) {
+  table(...args) {
     console.table(...args);
   }
 
-  time (...args) {
-    this.logger.profile(args, {view: this.view});
+  time(...args) {
+    this.logger.profile(args, { view: this.view });
   }
 
-  timeLog (...args) {
+  timeLog(...args) {
     console.timeLog(...args);
   }
 
-  timeEnd (...args) {
-    this.logger.profile(args, {view: this.view});
+  timeEnd(...args) {
+    this.logger.profile(args, { view: this.view });
   }
 
-  trace (...args) {
+  trace(...args) {
     console.trace(...args);
   }
 }
 
-module.exports = {Logger, formatJsonLogToString};
+module.exports = { Logger, formatJsonLogToString };

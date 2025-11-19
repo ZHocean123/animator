@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as Module from 'module';
 import * as React from 'react';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
-import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
-import {TourUtils} from 'haiku-common/lib/types/enums';
+import { InteractionMode } from 'haiku-ui-common/src/interactionModes';
+import { TourUtils } from 'haiku-common/src/types/enums';
 
 /**
  * This is the _original_ way we loaded component modules from a filename.
@@ -40,14 +40,14 @@ const renderMissingLocalProjectMessage = () => {
 };
 
 class ProjectPreview extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.bytecode = null;
     this.mount = null;
     this.component = null;
   }
 
-  componentWillMount () {
+  componentWillMount() {
     try {
       // TODO: Try to get the bytecode from CDN or eager clone if not yet available.
       this.bytecode = requireModuleFromFilename(this.props.bytecodePath);
@@ -59,14 +59,14 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.stopComponentClock(); // Avoid wasted CPU rendering for unseen DOM nodes
     if (this.component) {
       this.component.context.destroy();
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.bytecode && this.mount) {
       try {
         this.mountHaikuComponent();
@@ -77,7 +77,7 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  playAllTimelines () {
+  playAllTimelines() {
     if (this.component) {
       this.component.visitGuestHierarchy((component) => {
         Object.values(component.getTimelines()).forEach((timeline) => {
@@ -88,7 +88,7 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  pauseAllTimelines () {
+  pauseAllTimelines() {
     if (this.component) {
       this.component.visitGuestHierarchy((component) => {
         Object.values(component.getTimelines()).forEach((timeline) => {
@@ -102,7 +102,7 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (!this.component || this.props.playing === nextProps.playing) {
       return;
     }
@@ -114,11 +114,11 @@ class ProjectPreview extends React.Component {
     }
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return true;
   }
 
-  stopComponentClock () {
+  stopComponentClock() {
     if (!this.component) {
       return;
     }
@@ -126,7 +126,7 @@ class ProjectPreview extends React.Component {
     this.component.getClock().stop();
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     const factory = HaikuDOMAdapter(this.bytecode);
 
     this.stopComponentClock(); // Shuts down previous one prevent wasted CPU
@@ -152,7 +152,7 @@ class ProjectPreview extends React.Component {
     this.pauseAllTimelines();
   }
 
-  render () {
+  render() {
     if (!this.bytecode) {
       return (
         <div
@@ -169,11 +169,11 @@ class ProjectPreview extends React.Component {
 
     return (
       <div
-        style={{width: '100%', height: '100%', margin: '0 auto'}}
+        style={{ width: '100%', height: '100%', margin: '0 auto' }}
         ref={(mount) => {
           this.mount = mount;
         }}
-     />
+      />
     );
   }
 }

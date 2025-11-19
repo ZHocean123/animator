@@ -1,4 +1,4 @@
-import {remote, ipcRenderer} from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
@@ -10,8 +10,8 @@ import * as Keyframe from 'haiku-serialization/src/bll/Keyframe';
 import * as Property from 'haiku-serialization/src/bll/Property';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
 import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
-import Palette from 'haiku-ui-common/lib/Palette';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
+import Palette from 'haiku-ui-common/src/Palette';
+import PopoverMenu from 'haiku-ui-common/src/electron/PopoverMenu';
 import BezierPopup from './BezierPopup';
 import ControlsArea from './ControlsArea';
 import ComponentRows from './ComponentRows';
@@ -19,27 +19,27 @@ import ExpressionInput from './ExpressionInput';
 import ScrubberInterior from './ScrubberInterior';
 import SimplifiedFrameGrid from './SimplifiedFrameGrid';
 import FrameActionsGrid from './FrameActionsGrid';
-import {TrackedExporterRequests} from './TrackedExporterRequests';
+import { TrackedExporterRequests } from './TrackedExporterRequests';
 import Gauge from './Gauge';
 import GaugeTimeReadout from './GaugeTimeReadout';
 import TimelineRangeScrollbar from './TimelineRangeScrollbar';
 import ScrollView from './ScrollView';
 import Marquee from './Marquee';
 import PropertiesPanelResizer from './PropertiesPanelResizer';
-import {InteractionMode, isPreviewMode} from 'haiku-ui-common/lib/interactionModes';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
-import {USER_CHANNEL, UserSettings} from 'haiku-sdk-creator/lib/bll/User';
-import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
+import { InteractionMode, isPreviewMode } from 'haiku-ui-common/src/interactionModes';
+import EnvoyClient from 'haiku-sdk-creator/src/envoy/EnvoyClient';
+import { ERROR_CHANNEL } from 'haiku-sdk-creator/src/bll/Error';
+import { USER_CHANNEL, UserSettings } from 'haiku-sdk-creator/src/bll/User';
+import { EXPORTER_CHANNEL } from 'haiku-sdk-creator/src/exporter';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 import zIndex from './styles/zIndex';
-import Globals from 'haiku-ui-common/lib/Globals';
+import Globals from 'haiku-ui-common/src/Globals';
 
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = 'timeline';
 
-const {webFrame} = require('electron');
+const { webFrame } = require('electron');
 if (webFrame) {
   if (webFrame.setZoomLevelLimits) {
     webFrame.setZoomLevelLimits(1, 1);
@@ -73,7 +73,7 @@ const TIMELINE_OFFSET_PADDING = 7; // px
 const MARQUEE_THRESHOLD = 15; // px
 
 class Timeline extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     EmitterManager.extend(this);
@@ -113,8 +113,8 @@ class Timeline extends React.Component {
     this.copySelectedCurve = this.copySelectedCurve.bind(this);
     this.pasteSelectedCurve = this.pasteSelectedCurve.bind(this);
 
-    this.handleUndoDebounced = lodash.debounce(this.handleUndo.bind(this), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
-    this.handleRedoDebounced = lodash.debounce(this.handleRedo.bind(this), MENU_ACTION_DEBOUNCE_TIME, {leading: true, trailing: false});
+    this.handleUndoDebounced = lodash.debounce(this.handleUndo.bind(this), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
+    this.handleRedoDebounced = lodash.debounce(this.handleRedo.bind(this), MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false });
     this.handleZoomThrottled = lodash.throttle(this.handleZoom.bind(this), THROTTLE_TIME);
 
     if (process.env.NODE_ENV !== 'production') {
@@ -124,7 +124,7 @@ class Timeline extends React.Component {
     }
   }
 
-  isTextInputFocused () {
+  isTextInputFocused() {
     const tagName = (
       document.activeElement &&
       document.activeElement.tagName &&
@@ -139,7 +139,7 @@ class Timeline extends React.Component {
     );
   }
 
-  isTextSelected () {
+  isTextSelected() {
     return window.getSelection().type === 'Range';
   }
 
@@ -147,7 +147,7 @@ class Timeline extends React.Component {
    * lifecycle/events
    * --------- */
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
 
     // Clean up subscriptions to prevent memory leaks and react warnings
@@ -165,7 +165,7 @@ class Timeline extends React.Component {
     return keyframeViewEl ? keyframeViewEl.firstChild.getBoundingClientRect() : null;
   };
 
-  instantiateMarquee () {
+  instantiateMarquee() {
     if (experimentIsEnabled(Experiment.TimelineMarqueeSelection)) {
       const area = document.querySelector('#property-rows');
       if (!area) {
@@ -216,7 +216,7 @@ class Timeline extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
 
     if (!this.props.envoy.mock) {
@@ -257,7 +257,7 @@ class Timeline extends React.Component {
       // If an expression input is focused when we leave this webview, close it
       if (this.getActiveComponent()) {
         this.getActiveComponent().getRows().forEach((row) => {
-          row.blur({from: 'timeline'});
+          row.blur({ from: 'timeline' });
         });
       }
     });
@@ -272,7 +272,7 @@ class Timeline extends React.Component {
       window,
       'drop',
       (event) => {
-        this.project.linkExternalAssetOnDrop(event, () => {});
+        this.project.linkExternalAssetOnDrop(event, () => { });
       },
       false,
     );
@@ -282,7 +282,7 @@ class Timeline extends React.Component {
     return this.project && this.project.getCurrentActiveComponent();
   };
 
-  awaitRef (name, cb) {
+  awaitRef(name, cb) {
     if (this.refs[name]) {
       return cb(this.refs[name]);
     }
@@ -291,7 +291,7 @@ class Timeline extends React.Component {
     }, 100);
   }
 
-  handleProjectReady (project) {
+  handleProjectReady(project) {
     this.project = project;
 
     this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'envoy:tourClientReady', (tourClient) => {
@@ -360,7 +360,7 @@ class Timeline extends React.Component {
       logger.info('relay received', message.name, 'from', message.from);
 
       // The next relay destination in the sequence is always glass
-      const relayable = lodash.assign(message, {view: 'glass'});
+      const relayable = lodash.assign(message, { view: 'glass' });
 
       switch (message.name) {
         case 'global-menu:open-dev-tools':
@@ -374,7 +374,7 @@ class Timeline extends React.Component {
           break;
 
         case 'global-menu:set-active-component':
-          this.project.setCurrentActiveComponent(message.data, {from: 'timeline'}, () => {});
+          this.project.setCurrentActiveComponent(message.data, { from: 'timeline' }, () => { });
           break;
 
         case 'global-menu:zoom-in':
@@ -467,7 +467,7 @@ class Timeline extends React.Component {
 
         case 'component:reload':
           if (this.getActiveComponent()) {
-            this.getActiveComponent().moduleReplace(() => {});
+            this.getActiveComponent().moduleReplace(() => { });
           }
           break;
 
@@ -547,15 +547,15 @@ class Timeline extends React.Component {
     // When developing Timeline in standalone, this env var directs it to automatically
     // set the current active component, which is normally initiated by Creator
     if (process.env.AUTOSTART) {
-      this.project.setCurrentActiveComponent(process.env.AUTOSTART, {from: 'timeline'}, () => {});
+      this.project.setCurrentActiveComponent(process.env.AUTOSTART, { from: 'timeline' }, () => { });
     }
   }
 
-  updateMenu () {
+  updateMenu() {
     ipcRenderer.send('topmenu:update', this.project.describeTopMenu());
   }
 
-  handleActiveComponentReady () {
+  handleActiveComponentReady() {
     const timeline = this.getActiveComponent().getCurrentTimeline();
     this.mountHaikuComponent();
 
@@ -583,14 +583,14 @@ class Timeline extends React.Component {
     });
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     // The Timeline UI doesn't display the component, so we don't bother giving it a ref
     this.getActiveComponent().mountApplication(null, {
       freeze: true, // No display means no need for overflow settings, etc
     });
   }
 
-  handleInteractionModeChange (interactionMode) {
+  handleInteractionModeChange(interactionMode) {
     const ac = this.getActiveComponent();
     if (ac) {
       const timeline = this.getActiveComponent().getCurrentTimeline();
@@ -598,11 +598,11 @@ class Timeline extends React.Component {
         timeline.pause();
       }
 
-      this.setState({isPreviewModeActive: isPreviewMode(interactionMode)});
+      this.setState({ isPreviewModeActive: isPreviewMode(interactionMode) });
     }
   }
 
-  scrollToRow  = lodash.throttle((row) => {
+  scrollToRow = lodash.throttle((row) => {
     const rowElement = document.getElementById(`component-heading-row-${row.element.getComponentId()}-${row.getAddress()}`);
     const selectedElements = this.getActiveComponent().getSelectedElements();
 
@@ -615,7 +615,7 @@ class Timeline extends React.Component {
     }
   }, 200);
 
-  canHaveKeyframes (type, model) {
+  canHaveKeyframes(type, model) {
     if (type === 'cluster-row' && model.children && model.children.length > 0) {
       return Property.canHaveKeyframes(model.children[0].property.name, model.element);
     }
@@ -631,7 +631,7 @@ class Timeline extends React.Component {
     return true;
   }
 
-  getPopoverMenuItems ({event, type, model, offset, curve}) {
+  getPopoverMenuItems({ event, type, model, offset, curve }) {
     const items = [];
 
     const selectedKeyframes = this.getActiveComponent().getSelectedKeyframes();
@@ -658,21 +658,21 @@ class Timeline extends React.Component {
         const frameInfo = timeline.getFrameInfo();
         const ms = Math.round(timeline.getHoveredFrame() * frameInfo.mspf);
         Keyframe.deselectAndDeactivateAllKeyframes();
-        model.createKeyframe(undefined, ms, {from: 'timeline'});
+        model.createKeyframe(undefined, ms, { from: 'timeline' });
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: (numSelectedKeyframes < 2) ? 'Delete Keyframe' : 'Delete Keyframes',
       enabled: type === 'keyframe',
       onClick: () => {
-        this.getActiveComponent().deleteSelectedKeyframes({from: 'timeline'});
+        this.getActiveComponent().deleteSelectedKeyframes({ from: 'timeline' });
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: 'Move to Frame 0',
@@ -685,13 +685,13 @@ class Timeline extends React.Component {
       },
     });
 
-    items.push({type: 'separator'});
+    items.push({ type: 'separator' });
 
     items.push({
       label: isSingular ? 'Make Tween' : 'Make Tweens',
       enabled: isTweenableTransitionSegment,
       submenu: isTweenableTransitionSegment && this.curvesMenu(curve, (_, curveName) => {
-        this.getActiveComponent().joinSelectedKeyframes(curveName, {from: 'timeline'});
+        this.getActiveComponent().joinSelectedKeyframes(curveName, { from: 'timeline' });
       }),
     });
 
@@ -699,7 +699,7 @@ class Timeline extends React.Component {
       label: isSingular ? 'Change Tween' : 'Change Tweens',
       enabled: type === 'keyframe-transition',
       submenu: (type === 'keyframe-transition') && this.curvesMenu(curve, (_, curveName) => {
-        this.getActiveComponent().changeCurveOnSelectedKeyframes(curveName, {from: 'timeline'});
+        this.getActiveComponent().changeCurveOnSelectedKeyframes(curveName, { from: 'timeline' });
       }),
     });
 
@@ -709,7 +709,7 @@ class Timeline extends React.Component {
         type === 'keyframe-transition' &&
         Keyframe.groupHasBezierEditableCurves(selectedKeyframes),
       onClick: () => {
-        this.showBezierEditor({x: event.clientX, y: event.clientY}, selectedKeyframes);
+        this.showBezierEditor({ x: event.clientX, y: event.clientY }, selectedKeyframes);
       },
     });
 
@@ -717,7 +717,7 @@ class Timeline extends React.Component {
       label: isSingular ? 'Remove Tween' : 'Remove Tweens',
       enabled: type === 'keyframe-transition',
       onClick: (_) => {
-        this.getActiveComponent().splitSelectedKeyframes({from: 'timeline'});
+        this.getActiveComponent().splitSelectedKeyframes({ from: 'timeline' });
       },
     });
 
@@ -727,7 +727,7 @@ class Timeline extends React.Component {
   /**
    * @param {ExporterRequest} request
    */
-  handleExportProgress (exporterRequest) {
+  handleExportProgress(exporterRequest) {
     const trackedExporterRequests = [...this.state.trackedExporterRequests];
     const activeRequestIndex = trackedExporterRequests.findIndex(
       (trackedExporterRequest) => trackedExporterRequest.filename === exporterRequest.filename,
@@ -742,10 +742,10 @@ class Timeline extends React.Component {
     } else if (exporterRequest.progress !== 0) {
       trackedExporterRequests.unshift(exporterRequest);
     }
-    this.setState({trackedExporterRequests});
+    this.setState({ trackedExporterRequests });
   }
 
-  trackExportProgress () {
+  trackExportProgress() {
     this.project.getEnvoyClient().get(EXPORTER_CHANNEL).then((exporterChannel) => {
       exporterChannel.on(`${EXPORTER_CHANNEL}:progress`, (request) => {
         if (request.outlet === 'timeline') {
@@ -755,7 +755,7 @@ class Timeline extends React.Component {
     });
   }
 
-  loadUserSettings () {
+  loadUserSettings() {
     if (!this.project.getEnvoyClient().isInMockMode()) {
       this.project.getEnvoyClient().get(USER_CHANNEL).then(
         (user) => {
@@ -775,7 +775,7 @@ class Timeline extends React.Component {
           );
           user.getUser().then(
             (userDetails) => {
-              this.setState({userDetails});
+              this.setState({ userDetails });
             },
           );
         },
@@ -783,7 +783,7 @@ class Timeline extends React.Component {
     }
   }
 
-  curvesMenu (maybeCurve, cb) {
+  curvesMenu(maybeCurve, cb) {
     const items = [];
 
     items.push({
@@ -815,7 +815,7 @@ class Timeline extends React.Component {
     return items;
   }
 
-  curveTypeMenu (baseCurve, maybeCurve, cb) {
+  curveTypeMenu(baseCurve, maybeCurve, cb) {
     const items = [];
 
     items.push({
@@ -901,13 +901,13 @@ class Timeline extends React.Component {
     return items;
   }
 
-  handleZoom (wheelEvent) {
+  handleZoom(wheelEvent) {
     const maxZoom = 80;
     const delta = Math.abs(wheelEvent.deltaY) > maxZoom ? Math.sign(wheelEvent.deltaY) * maxZoom : wheelEvent.deltaY;
     this.getActiveComponent().getCurrentTimeline().zoomBy(delta * 0.01);
   }
 
-  handleScroll (scrollEvent) {
+  handleScroll(scrollEvent) {
     if (scrollEvent.deltaY >= 1 || scrollEvent.deltaY <= -1) {
       // Don't horizontally scroll if we are vertically scrolling
       return void (0);
@@ -927,7 +927,7 @@ class Timeline extends React.Component {
     this.getActiveComponent().getCurrentTimeline().setScrollLeftFromScrollbar(this.container.scrollLeft);
   };
 
-  handleRequestElementCoordinates ({selector, webview}) {
+  handleRequestElementCoordinates({ selector, webview }) {
     requestElementCoordinates({
       currentWebview: 'timeline',
       requestedWebview: webview,
@@ -940,7 +940,7 @@ class Timeline extends React.Component {
     });
   }
 
-  handleKeyDown (nativeEvent) {
+  handleKeyDown(nativeEvent) {
     // Give the currently active expression input a chance to capture this event and short circuit us if so
     const willExprInputHandle = this.refs.expressionInput.willHandleExternalKeydownEvent(nativeEvent);
 
@@ -987,16 +987,16 @@ class Timeline extends React.Component {
       // delete
       // case 46: //delete
       // case 8: //delete
-      case 16: this.updateKeyboardState({isShiftKeyDown: true}); break;
-      case 17: this.updateKeyboardState({isControlKeyDown: true}); break;
-      case 18: this.updateKeyboardState({isAltKeyDown: true}); break;
-      case 224: this.updateKeyboardState({isCommandKeyDown: true}); break;
-      case 91: this.updateKeyboardState({isCommandKeyDown: true}); break;
-      case 93: this.updateKeyboardState({isCommandKeyDown: true}); break;
+      case 16: this.updateKeyboardState({ isShiftKeyDown: true }); break;
+      case 17: this.updateKeyboardState({ isControlKeyDown: true }); break;
+      case 18: this.updateKeyboardState({ isAltKeyDown: true }); break;
+      case 224: this.updateKeyboardState({ isCommandKeyDown: true }); break;
+      case 91: this.updateKeyboardState({ isCommandKeyDown: true }); break;
+      case 93: this.updateKeyboardState({ isCommandKeyDown: true }); break;
     }
   }
 
-  handleKeyUp (nativeEvent) {
+  handleKeyUp(nativeEvent) {
     switch (nativeEvent.which) {
       // case 27: //escape
       // case 32: //space
@@ -1005,34 +1005,34 @@ class Timeline extends React.Component {
       // case 38: // up
       // case 40: // down
       // case 13: //enter
-      case 46: this.getActiveComponent().deleteSelectedKeyframes({from: 'timeline'}); break; // Only if there are any
-      case 8: this.getActiveComponent().deleteSelectedKeyframes({from: 'timeline'}); break; // Only if there are any
-      case 16: this.updateKeyboardState({isShiftKeyDown: false}); break;
-      case 17: this.updateKeyboardState({isControlKeyDown: false}); break;
-      case 18: this.updateKeyboardState({isAltKeyDown: false}); break;
-      case 224: this.updateKeyboardState({isCommandKeyDown: false}); break;
-      case 91: this.updateKeyboardState({isCommandKeyDown: false}); break;
-      case 93: this.updateKeyboardState({isCommandKeyDown: false}); break;
+      case 46: this.getActiveComponent().deleteSelectedKeyframes({ from: 'timeline' }); break; // Only if there are any
+      case 8: this.getActiveComponent().deleteSelectedKeyframes({ from: 'timeline' }); break; // Only if there are any
+      case 16: this.updateKeyboardState({ isShiftKeyDown: false }); break;
+      case 17: this.updateKeyboardState({ isControlKeyDown: false }); break;
+      case 18: this.updateKeyboardState({ isAltKeyDown: false }); break;
+      case 224: this.updateKeyboardState({ isCommandKeyDown: false }); break;
+      case 91: this.updateKeyboardState({ isCommandKeyDown: false }); break;
+      case 93: this.updateKeyboardState({ isCommandKeyDown: false }); break;
     }
   }
 
-  updateKeyboardState (updates) {
+  updateKeyboardState(updates) {
     for (const key in updates) {
       this[key] = updates[key];
     }
   }
 
-  handleUndo () {
+  handleUndo() {
     if (this.project) {
-      Keyframe.deselectAndDeactivateAllKeyframes({component: this.getActiveComponent()});
-      this.project.undo({}, {from: 'timeline'}, () => {});
+      Keyframe.deselectAndDeactivateAllKeyframes({ component: this.getActiveComponent() });
+      this.project.undo({}, { from: 'timeline' }, () => { });
     }
   }
 
-  handleRedo () {
+  handleRedo() {
     if (this.project) {
-      Keyframe.deselectAndDeactivateAllKeyframes({component: this.getActiveComponent()});
-      this.project.redo({}, {from: 'timeline'}, () => {});
+      Keyframe.deselectAndDeactivateAllKeyframes({ component: this.getActiveComponent() });
+      this.project.redo({}, { from: 'timeline' }, () => { });
     }
   }
 
@@ -1055,34 +1055,34 @@ class Timeline extends React.Component {
     }
   };
 
-  copySelectedCurve () {
+  copySelectedCurve() {
     this.props.mixpanel.haikuTrack('creator:timeline:copy-curve');
     this._lastCopiedCurve = this.getActiveComponent().getFirstSelectedCurve();
   }
 
-  pasteSelectedCurve () {
+  pasteSelectedCurve() {
     if (this._lastCopiedCurve) {
       this.props.mixpanel.haikuTrack('creator:timeline:paste-curve');
       this.getActiveComponent().changeCurveOnSelectedKeyframes(
         this._lastCopiedCurve,
-        {from: 'timeline'},
+        { from: 'timeline' },
       );
     }
   }
 
-  playbackSkipBack () {
+  playbackSkipBack() {
     this.getActiveComponent().getCurrentTimeline().playbackSkipBack();
   }
 
-  playbackSkipForward () {
+  playbackSkipForward() {
     this.getActiveComponent().getCurrentTimeline().playbackSkipForward();
   }
 
-  togglePlayback () {
+  togglePlayback() {
     this.getActiveComponent().getCurrentTimeline().togglePlayback();
   }
 
-  renderTimelinePlaybackControls () {
+  renderTimelinePlaybackControls() {
     return (
       <div
         style={{
@@ -1096,16 +1096,16 @@ class Timeline extends React.Component {
           selectedTimelineName={this.getActiveComponent().getCurrentTimeline().getName()}
           playbackSpeed={this.state.playerPlaybackSpeed}
           changeTimelineName={(oldTimelineName, newTimelineName) => {
-            this.getActiveComponent().renameTimeline(oldTimelineName, newTimelineName, {from: 'timeline'}, () => {});
+            this.getActiveComponent().renameTimeline(oldTimelineName, newTimelineName, { from: 'timeline' }, () => { });
           }}
           createTimeline={(timelineName) => {
-            this.getActiveComponent().createTimeline(timelineName, {}, {from: 'timeline'}, () => {});
+            this.getActiveComponent().createTimeline(timelineName, {}, { from: 'timeline' }, () => { });
           }}
           duplicateTimeline={(timelineName) => {
-            this.getActiveComponent().duplicateTimeline(timelineName, {from: 'timeline'}, () => {});
+            this.getActiveComponent().duplicateTimeline(timelineName, { from: 'timeline' }, () => { });
           }}
           deleteTimeline={(timelineName) => {
-            this.getActiveComponent().deleteTimeline(timelineName, {from: 'timeline'}, () => {});
+            this.getActiveComponent().deleteTimeline(timelineName, { from: 'timeline' }, () => { });
           }}
           selectTimeline={(currentTimelineName) => {
             // Not yet implemented
@@ -1121,12 +1121,12 @@ class Timeline extends React.Component {
           }}
           changePlaybackSpeed={(inputEvent) => {
             const playerPlaybackSpeed = Number(inputEvent.target.value || 1);
-            this.setState({playerPlaybackSpeed});
+            this.setState({ playerPlaybackSpeed });
           }}
           toggleRepeat={() => {
             const timeline = this.getActiveComponent().getCurrentTimeline();
             timeline.toggleRepeat();
-            this.setState({isRepeat: timeline.getRepeat()});
+            this.setState({ isRepeat: timeline.getRepeat() });
           }}
           isRepeat={this.state.isRepeat}
         />
@@ -1147,11 +1147,11 @@ class Timeline extends React.Component {
     );
   }
 
-  getCurrentTimelineTime (frameInfo) {
+  getCurrentTimelineTime(frameInfo) {
     return Math.round(this.getActiveComponent().getCurrentTimeline().getCurrentFrame() * frameInfo.mspf);
   }
 
-  showFrameActionsEditor (frame) {
+  showFrameActionsEditor(frame) {
     const elementPrimaryKey = this.getActiveComponent().findElementRoot().getPrimaryKey();
     this.showEventHandlersEditor(
       elementPrimaryKey,
@@ -1170,79 +1170,79 @@ class Timeline extends React.Component {
     });
   };
 
-  renderTopControls () {
+  renderTopControls() {
     const timeline = this.getActiveComponent().getCurrentTimeline();
 
     return [
       (
-          <div
-            key="gauge-timekeeping-wrapper"
-            className="gauge-timekeeping-wrapper"
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              height: 35,
-              width: timeline.getPropertiesPixelWidth(),
-              backgroundColor: Palette.COAL,
-              borderBottom: `1px solid ${Palette.FATHER_COAL}`,
-              zIndex: zIndex.timekeepingWrapper.base,
-              fontSize: 10,
-            }}
-          >
-            <GaugeTimeReadout saveTimeDisplayModeSetting={this.saveTimeDisplayModeSetting} timeline={timeline} />
-          </div>
-        ),
+        <div
+          key="gauge-timekeeping-wrapper"
+          className="gauge-timekeeping-wrapper"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            height: 35,
+            width: timeline.getPropertiesPixelWidth(),
+            backgroundColor: Palette.COAL,
+            borderBottom: `1px solid ${Palette.FATHER_COAL}`,
+            zIndex: zIndex.timekeepingWrapper.base,
+            fontSize: 10,
+          }}
+        >
+          <GaugeTimeReadout saveTimeDisplayModeSetting={this.saveTimeDisplayModeSetting} timeline={timeline} />
+        </div>
+      ),
       (
-          <SimplifiedFrameGrid
-            key="frame-grid"
-            propertiesPixelWidth={timeline.getPropertiesPixelWidth()}
+        <SimplifiedFrameGrid
+          key="frame-grid"
+          propertiesPixelWidth={timeline.getPropertiesPixelWidth()}
+          timeline={timeline}
+          timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
+        />
+      ),
+      (
+        <FrameActionsGrid
+          key="frame-actions-grid"
+          timeline={timeline}
+          onShowFrameActionsEditor={this.showFrameActionsEditor}
+          timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
+        />
+      ),
+      (
+        <Gauge
+          key="gauge"
+          timeline={timeline}
+          onMouseDown={this.onGaugeMouseDown}
+          timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
+        />
+      ),
+      (
+        <ScrubberInterior
+          key="scrubber"
+          timeline={timeline}
+          onMouseDown={this.onGaugeMouseDown}
+          timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
+        />
+      ),
+      (
+        this.state.showBezierEditor ? (
+          <BezierPopup
+            key="bezier-poopup"
+            keyframes={this.state.currentEditingBezier}
+            onHide={this.hideBezierEditor}
             timeline={timeline}
-            timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
+            activeComponent={this.getActiveComponent()}
+            x={this.state.bezierEditorCoords.x}
+            y={this.state.bezierEditorCoords.y}
           />
-        ),
-      (
-          <FrameActionsGrid
-            key="frame-actions-grid"
-            timeline={timeline}
-            onShowFrameActionsEditor={this.showFrameActionsEditor}
-            timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
-          />
-        ),
-      (
-          <Gauge
-            key="gauge"
-            timeline={timeline}
-            onMouseDown={this.onGaugeMouseDown}
-            timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
-          />
-        ),
-      (
-          <ScrubberInterior
-            key="scrubber"
-            timeline={timeline}
-            onMouseDown={this.onGaugeMouseDown}
-            timelineOffsetPadding={TIMELINE_OFFSET_PADDING}
-          />
-        ),
-      (
-          this.state.showBezierEditor ? (
-            <BezierPopup
-              key="bezier-poopup"
-              keyframes={this.state.currentEditingBezier}
-              onHide={this.hideBezierEditor}
-              timeline={timeline}
-              activeComponent={this.getActiveComponent()}
-              x={this.state.bezierEditorCoords.x}
-              y={this.state.bezierEditorCoords.y}
-            />
-          ) : null
-        ),
+        ) : null
+      ),
     ];
   }
 
   hideBezierEditor = () => {
-    this.setState({showBezierEditor: false});
+    this.setState({ showBezierEditor: false });
   };
 
   showBezierEditor = (bezierEditorCoords, currentEditingBezier) => {
@@ -1253,7 +1253,7 @@ class Timeline extends React.Component {
     });
   };
 
-  onGaugeMouseDown (event) {
+  onGaugeMouseDown(event) {
     event.persist();
 
     this._doHandleMouseMovesInGauge = true;
@@ -1264,7 +1264,7 @@ class Timeline extends React.Component {
   onCommitValue = (committedValue, row, ms) => {
     logger.info('commit at', ms, 'on', row.dump());
     this.props.mixpanel.haikuTrack('creator:timeline:create-keyframe');
-    row.createKeyframe(committedValue, ms, {from: 'timeline'});
+    row.createKeyframe(committedValue, ms, { from: 'timeline' });
   };
 
   attachContainerElement = (container) => {
@@ -1272,7 +1272,7 @@ class Timeline extends React.Component {
     this.addEmitterListener(this.container, 'scroll', this.handleHorizontalScroll);
   };
 
-  mouseMoveListener (evt) {
+  mouseMoveListener(evt) {
     if (!this._doHandleMouseMovesInGauge) {
       return;
     }
@@ -1294,23 +1294,23 @@ class Timeline extends React.Component {
     this.getActiveComponent().getCurrentTimeline().seek(frameX);
   }
 
-  mouseUpListener () {
+  mouseUpListener() {
     this.resetGaugeAndPointerStates();
   }
 
-  resetGaugeAndPointerStates () {
+  resetGaugeAndPointerStates() {
     this._doHandleMouseMovesInGauge = false;
     this.enableTimelinePointerEvents();
   }
 
-  disableTimelinePointerEvents () {
+  disableTimelinePointerEvents() {
     if (this.refs.scrollview) {
       this.refs.scrollview.style.pointerEvents = 'none';
       this.refs.scrollview.style.WebkitUserSelect = 'none';
     }
   }
 
-  enableTimelinePointerEvents () {
+  enableTimelinePointerEvents() {
     if (this.refs.scrollview) {
       this.refs.scrollview.style.pointerEvents = 'auto';
       this.refs.scrollview.style.WebkitUserSelect = 'auto';
@@ -1319,8 +1319,8 @@ class Timeline extends React.Component {
 
   setGlassInteractionToEditMode = () => {
     if (this.state.isPreviewModeActive) {
-      this.project.setInteractionMode(InteractionMode.GLASS_EDIT, {from: 'timeline'}, () => {
-        this.setState({isPreviewModeActive: false});
+      this.project.setInteractionMode(InteractionMode.GLASS_EDIT, { from: 'timeline' }, () => {
+        this.setState({ isPreviewModeActive: false });
       });
     }
   };
@@ -1329,7 +1329,7 @@ class Timeline extends React.Component {
     this.isEditingRowTitle = status;
   };
 
-  renderBottomControls () {
+  renderBottomControls() {
     return (
       <div
         className="no-select"
@@ -1356,7 +1356,7 @@ class Timeline extends React.Component {
     );
   }
 
-  moveGaugeOnDoubleClick (dblClickEvent) {
+  moveGaugeOnDoubleClick(dblClickEvent) {
     this._doHandleMouseMovesInGauge = true;
     this.mouseMoveListener(dblClickEvent);
     this._doHandleMouseMovesInGauge = false;
@@ -1382,29 +1382,29 @@ class Timeline extends React.Component {
   onTimelineClick = () => {
     if (!this.refs.expressionInput.doesClickOriginatedFromMouseDown()) {
       this.getActiveComponent().getRows().forEach((row) => {
-        row.blur({from: 'timeline'});
-        row.deselect({from: 'timeline'}, true);
+        row.blur({ from: 'timeline' });
+        row.deselect({ from: 'timeline' }, true);
       });
     }
 
     this.refs.expressionInput.cleanMouseDownTracker();
   };
 
-  render () {
+  render() {
     if (!this.getActiveComponent() || !this.getActiveComponent().getCurrentTimeline()) {
       return (
         <div
-        id="timeline"
-        className="no-select"
-        style={{
-          position: 'absolute',
-          backgroundColor: Palette.GRAY,
-          color: Palette.ROCK,
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '100%',
-        }} />
+          id="timeline"
+          className="no-select"
+          style={{
+            position: 'absolute',
+            backgroundColor: Palette.GRAY,
+            color: Palette.ROCK,
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: '100%',
+          }} />
       );
     }
 
@@ -1424,7 +1424,7 @@ class Timeline extends React.Component {
           color: Palette.ROCK,
           top: 0,
           left: 0,
-          height:'calc(100% - 30px)',
+          height: 'calc(100% - 30px)',
           width: '100%',
           overflow: 'auto',
         }}>
@@ -1479,11 +1479,11 @@ class Timeline extends React.Component {
           onFocusRequested={() => {
             const selected = activeComponent.getSelectedRows()[0];
             if (selected.isProperty()) {
-              selected.focus({from: 'timeline'});
+              selected.focus({ from: 'timeline' });
             }
           }}
           onNavigateRequested={(navDir, doFocus) => {
-            activeComponent.focusSelectNext(navDir, doFocus, {from: 'timeline'});
+            activeComponent.focusSelectNext(navDir, doFocus, { from: 'timeline' });
           }} />
       </div>
     );

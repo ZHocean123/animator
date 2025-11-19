@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Radium from 'radium';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import ComponentTab from './ComponentTab';
 
 const STYLES = {
@@ -39,21 +39,21 @@ const STYLES = {
 };
 
 class ComponentMenu extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {};
   }
 
-  getAllTabs () {
+  getAllTabs() {
     return this.props.projectModel.getMultiComponentTabs();
   }
 
-  getMainComponentTab () {
+  getMainComponentTab() {
     const tabs = this.getAllTabs();
     return tabs.filter((tab) => tab.scenename === 'main')[0];
   }
 
-  getOtherComponentTabs () {
+  getOtherComponentTabs() {
     const tabs = this.getAllTabs();
     return tabs.filter((tab) => tab.scenename !== 'main');
   }
@@ -65,12 +65,12 @@ class ComponentMenu extends React.Component {
     });
   };
 
-  render () {
+  render() {
     return (
       <div
         id="component-menu"
         className="no-select"
-        style={[STYLES.container, !this.props.showGlass && {backgroundColor: Palette.GRAY}]}>
+        style={[STYLES.container, !this.props.showGlass && { backgroundColor: Palette.GRAY }]}>
         <ComponentTab
           forceActive={this.getAllTabs().length === 1}
           projectModel={this.props.projectModel}

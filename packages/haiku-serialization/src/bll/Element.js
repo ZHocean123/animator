@@ -1,10 +1,10 @@
 const lodash = require('lodash');
 const HaikuElement = require('@haiku/core/lib/HaikuElement').default;
 const Layout3D = require('@haiku/core/lib/Layout3D').default;
-const {cssQueryTree} = require('@haiku/core/lib/HaikuNode');
-const {default: composedTransformsToTimelineProperties} = require('haiku-common/lib/layout/composedTransformsToTimelineProperties');
+const { cssQueryTree } = require('@haiku/core/lib/HaikuNode');
+const { default: composedTransformsToTimelineProperties } = require('haiku-common/src/layout/composedTransformsToTimelineProperties');
 const functionToRFO = require('@haiku/core/lib/reflection/functionToRFO').default;
-const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
+const { LAYOUT_3D_SCHEMA } = require('@haiku/core/lib/HaikuComponent');
 const KnownDOMEvents = require('@haiku/core/lib/renderers/dom/Events').default;
 const titlecase = require('titlecase');
 const decamelize = require('decamelize');
@@ -13,7 +13,7 @@ const polygonOverlap = require('polygon-overlap');
 const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
 const TransformCache = require('./TransformCache');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't
@@ -51,13 +51,13 @@ const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const SYNC_LOCKED_ID_SUFFIX = '#lock';
 const TIMELINE_EVENT_PREFIX = 'timeline:';
 
-const EMPTY_ELEMENT = {elementName: 'div', attributes: {}, children: []};
+const EMPTY_ELEMENT = { elementName: 'div', attributes: {}, children: [] };
 
-function isNumeric (n) {
+function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function getAncestry (ancestors, elementInstance) {
+function getAncestry(ancestors, elementInstance) {
   ancestors.unshift(elementInstance);
   if (elementInstance.parent) {
     getAncestry(ancestors, elementInstance.parent);
@@ -78,7 +78,7 @@ const cleanHaikuId = (str) => titlecase(decamelize((str + '').trim()).replace(/[
  *    - Managing addressable properties for the element in component's context.
  */
 class Element extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     this._isHovered = false;
@@ -89,7 +89,7 @@ class Element extends BaseModel {
     this.transformCache = new TransformCache(this);
   }
 
-  $el () {
+  $el() {
     const staticTemplateNode = this.getStaticTemplateNode();
     if (typeof staticTemplateNode === 'string') {
       return null;
@@ -98,14 +98,14 @@ class Element extends BaseModel {
     return Element.findDomNode(haikuId, this.component.getMount().$el());
   }
 
-  afterInitialize () {
+  afterInitialize() {
     // Make sure we add to the appropriate collections to avoid unexpected state issues
     if (!this._visibleProperties) {
       this._visibleProperties = {};
     }
   }
 
-  oneListener ($el, uid, type, fn) {
+  oneListener($el, uid, type, fn) {
     if (!Element.cache.eventListeners[uid]) {
       Element.cache.eventListeners[uid] = {};
     }
@@ -118,7 +118,7 @@ class Element extends BaseModel {
     return fn;
   }
 
-  hoverOn (metadata, softly = false) {
+  hoverOn(metadata, softly = false) {
     if (!this._isHovered) {
       this.cache.clear();
       this._isHovered = true;
@@ -130,11 +130,11 @@ class Element extends BaseModel {
     return this;
   }
 
-  hoverOnSoftly (metadata) {
+  hoverOnSoftly(metadata) {
     return this.hoverOn(metadata, true);
   }
 
-  hoverOff (metadata, softly = false) {
+  hoverOff(metadata, softly = false) {
     if (this._isHovered) {
       this.cache.clear();
       this._isHovered = false;
@@ -145,19 +145,19 @@ class Element extends BaseModel {
     }
   }
 
-  hoverOffSoftly (metadata) {
+  hoverOffSoftly(metadata) {
     return this.hoverOff(metadata, true);
   }
 
-  isHovered () {
+  isHovered() {
     return this._isHovered;
   }
 
-  isShimElement () {
+  isShimElement() {
     return this.parent && this.parent.getSource() === '<group>';
   }
 
-  select (metadata, softly = false) {
+  select(metadata, softly = false) {
     if (this.isLocked()) {
       return;
     }
@@ -184,11 +184,11 @@ class Element extends BaseModel {
    * @description Like select, but emit a different event and don't select the row.
    * Mainly used for multi-selection in glass-only context.
    */
-  selectSoftly (metadata) {
+  selectSoftly(metadata) {
     return this.select(metadata, true);
   }
 
-  unselect (metadata, softly = false) {
+  unselect(metadata, softly = false) {
     if (this._isSelected) {
       this._isSelected = false;
 
@@ -214,15 +214,15 @@ class Element extends BaseModel {
    * @description Like unselect, but emit a different event and don't select the row.
    * Mainly used for multi-selection in glass-only context.
    */
-  unselectSoftly (metadata) {
+  unselectSoftly(metadata) {
     return this.unselect(metadata, true);
   }
 
-  getHeadingRow () {
+  getHeadingRow() {
     return this._headingRow;
   }
 
-  getPropertyRowByPropertyName (propertyName) {
+  getPropertyRowByPropertyName(propertyName) {
     for (let i = 0; i < this._clusterAndPropertyRows.length; i++) {
       const candidateRow = this._clusterAndPropertyRows[i];
       if (candidateRow.isPropertyOfName(propertyName)) {
@@ -231,15 +231,15 @@ class Element extends BaseModel {
     }
   }
 
-  isSelected () {
+  isSelected() {
     return this._isSelected;
   }
 
-  isLocked () {
+  isLocked() {
     return !!this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE];
   }
 
-  isLockedViaParents () {
+  isLockedViaParents() {
     // tslint:disable-next-line:no-this-assignment
     let p = this;
     while (p) {
@@ -251,52 +251,52 @@ class Element extends BaseModel {
     return false;
   }
 
-  toggleLocked (metadata, cb) {
+  toggleLocked(metadata, cb) {
     this.component.setLockedStatusForComponent(this.getComponentId(), !this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE], metadata, cb);
     this.emit('update', 'element-locked-toggle');
   }
 
-  getStaticTemplateNode () {
+  getStaticTemplateNode() {
     return this.component.locateTemplateNodeByComponentId(this.componentId);
   }
 
-  getCoreHostComponentInstance () {
+  getCoreHostComponentInstance() {
     return this.component.$instance;
   }
 
-  copy () {
+  copy() {
     return this.clip();
   }
 
-  clip () {
+  clip() {
     return this.buildClipboardPayload();
   }
 
-  getVisibleEvents () {
+  getVisibleEvents() {
     return Object.keys(
       this.getReifiedEventHandlers(),
     ).filter((handler) => !this.isTimelineEvent(handler));
   }
 
-  getTimelineEvents () {
+  getTimelineEvents() {
     return Object.keys(
       this.getReifiedEventHandlers(),
     ).filter((handler) => this.isTimelineEvent(handler));
   }
 
-  isTimelineEvent (eventName) {
+  isTimelineEvent(eventName) {
     return eventName.includes(TIMELINE_EVENT_PREFIX);
   }
 
-  hasEventHandlers () {
+  hasEventHandlers() {
     return !lodash.isEmpty(this.getReifiedEventHandlers());
   }
 
-  hasVisibleEventHandlers () {
+  hasVisibleEventHandlers() {
     return !lodash.isEmpty(this.getVisibleEvents());
   }
 
-  getReifiedEventHandlers () {
+  getReifiedEventHandlers() {
     const bytecode = this.component.getReifiedBytecode();
     const selector = 'haiku:' + this.getComponentId();
     if (!bytecode.eventHandlers) {
@@ -305,18 +305,18 @@ class Element extends BaseModel {
     return bytecode.eventHandlers[selector] || {};
   }
 
-  getReifiedEventHandler (eventName) {
+  getReifiedEventHandler(eventName) {
     return this.getReifiedEventHandlers()[eventName];
   }
 
-  getEventHandlerSaveStatus (eventName) {
+  getEventHandlerSaveStatus(eventName) {
     if (!this._eventHandlerSaves) {
       this._eventHandlerSaves = {};
     }
     return this._eventHandlerSaves[eventName];
   }
 
-  setEventHandlerSaveStatus (eventName, statusValue) {
+  setEventHandlerSaveStatus(eventName, statusValue) {
     if (!this._eventHandlerSaves) {
       this._eventHandlerSaves = {};
     }
@@ -325,7 +325,7 @@ class Element extends BaseModel {
     return this;
   }
 
-  getApplicableEventHandlerOptionsList () {
+  getApplicableEventHandlerOptionsList() {
     const options = [];
 
     // Track which ones we've already accounted for in the 'known events' lists so that
@@ -399,7 +399,7 @@ class Element extends BaseModel {
    * information to be able to paste (instantiate with overrides) or delete it if received as
    * part of a pasteThing command.
    */
-  buildClipboardPayload () {
+  buildClipboardPayload() {
     const originalNode = this.getStaticTemplateNode();
 
     // These are cloned because we may mutate their references in place when we paste
@@ -434,7 +434,7 @@ class Element extends BaseModel {
     };
   }
 
-  getQualifiedBytecode () {
+  getQualifiedBytecode() {
     // Grab the 'host' bytecode and pull any control structures applied to us from it
     // These are cloned because we may mutate their references in place if we instantiate it
     const bytecode = Bytecode.clone(this.component.getReifiedBytecode());
@@ -455,7 +455,7 @@ class Element extends BaseModel {
     };
   }
 
-  isSyncLocked () {
+  isSyncLocked() {
     const node = this.getStaticTemplateNode();
     if (node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
       return node.attributes[HAIKU_SOURCE_ATTRIBUTE].endsWith(SYNC_LOCKED_ID_SUFFIX);
@@ -463,7 +463,7 @@ class Element extends BaseModel {
     return false;
   }
 
-  getStackingInfo () {
+  getStackingInfo() {
     if (!this.parent) {
       return;
     }
@@ -479,25 +479,25 @@ class Element extends BaseModel {
     );
   }
 
-  isAtFront () {
+  isAtFront() {
     const stackingInfo = this.getStackingInfo();
     if (!stackingInfo) {
       return true;
     } // Can happen with artboard
-    const myIndex = lodash.findIndex(stackingInfo, {haikuId: this.getComponentId()});
+    const myIndex = lodash.findIndex(stackingInfo, { haikuId: this.getComponentId() });
     return myIndex === stackingInfo.length - 1;
   }
 
-  isAtBack () {
+  isAtBack() {
     const stackingInfo = this.getStackingInfo();
     if (!stackingInfo) {
       return true;
     } // Can happen with artboard
-    const myIndex = lodash.findIndex(stackingInfo, {haikuId: this.getComponentId()});
+    const myIndex = lodash.findIndex(stackingInfo, { haikuId: this.getComponentId() });
     return myIndex === 0;
   }
 
-  sendToBack () {
+  sendToBack() {
     this.component.zMoveToBack(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
         return void (0);
@@ -506,7 +506,7 @@ class Element extends BaseModel {
     this.emit('update', 'element-send-to-back');
   }
 
-  bringToFront () {
+  bringToFront() {
     this.component.zMoveToFront(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
         return void (0);
@@ -515,7 +515,7 @@ class Element extends BaseModel {
     this.emit('update', 'element-bring-to-front');
   }
 
-  bringForward () {
+  bringForward() {
     this.component.zMoveForward(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
         return void (0);
@@ -524,7 +524,7 @@ class Element extends BaseModel {
     this.emit('update', 'element-bring-forward');
   }
 
-  sendBackward () {
+  sendBackward() {
     this.component.zMoveBackward(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
         return void (0);
@@ -538,7 +538,7 @@ class Element extends BaseModel {
   // stage.
   // since this is dependent on artboard + window dimensions,
   // this needs to be passed in from the artboard.
-  getBoundingClientRect (marginX, marginY) {
+  getBoundingClientRect(marginX, marginY) {
     const points = this.getBoxPointsTransformed();
 
     // account for stage margin to provide a screen-space bbox
@@ -554,7 +554,7 @@ class Element extends BaseModel {
         const pointOutput = Matrix.vec2.create();
         Matrix.vec2.set(pointInput, points[i].x, points[i].y);
         Matrix.vec2.transformMat2d(pointOutput, pointInput, mat);
-        points[i] = {x: pointOutput[0], y: pointOutput[1]};
+        points[i] = { x: pointOutput[0], y: pointOutput[1] };
       }
     }
 
@@ -575,24 +575,24 @@ class Element extends BaseModel {
     };
   }
 
-  isAutoSizeX () {
+  isAutoSizeX() {
     const layout = this.getLayoutSpec();
     return typeof layout.sizeAbsolute.x !== 'number';
   }
 
-  isAutoSizeY () {
+  isAutoSizeY() {
     const layout = this.getLayoutSpec();
     return typeof layout.sizeAbsolute.y !== 'number';
   }
 
-  getComputedSize () {
+  getComputedSize() {
     if (this.isTextNode()) {
       return this.parent.getComputedSize();
     }
     return this.getHaikuElement().size;
   }
 
-  getComputedLayout () {
+  getComputedLayout() {
     const targetNode = this.getLiveRenderedNode() || {}; // Fallback in case of render race
     const parentNode = (this.parent && this.parent.getLiveRenderedNode()) || {}; // Fallback in case of render race
 
@@ -628,7 +628,7 @@ class Element extends BaseModel {
     );
   }
 
-  getLayoutSpec () {
+  getLayoutSpec() {
     const bytecode = this.component.getReifiedBytecode();
     const hostInstance = this.component.$instance;
 
@@ -729,25 +729,25 @@ class Element extends BaseModel {
     };
   }
 
-  getBoundingBoxPoints () {
+  getBoundingBoxPoints() {
     const layout = this.getComputedLayout();
     const w = layout.size.x;
     const h = layout.size.y;
     return [
-      {x: 0, y: 0, z: 0}, {x: w / 2, y: 0, z: 0}, {x: w, y: 0, z: 0},
-      {x: 0, y: h / 2, z: 0}, {x: w / 2, y: h / 2, z: 0}, {x: w, y: h / 2, z: 0},
-      {x: 0, y: h, z: 0}, {x: w / 2, y: h, z: 0}, {x: w, y: h, z: 0},
+      { x: 0, y: 0, z: 0 }, { x: w / 2, y: 0, z: 0 }, { x: w, y: 0, z: 0 },
+      { x: 0, y: h / 2, z: 0 }, { x: w / 2, y: h / 2, z: 0 }, { x: w, y: h / 2, z: 0 },
+      { x: 0, y: h, z: 0 }, { x: w / 2, y: h, z: 0 }, { x: w, y: h, z: 0 },
     ];
   }
 
-  getBoxPointsTransformed () {
+  getBoxPointsTransformed() {
     return HaikuElement.transformPointsInPlace(
       this.getBoundingBoxPoints(),
       this.getOriginOffsetComposedMatrix(),
     );
   }
 
-  getOriginNotTransformed () {
+  getOriginNotTransformed() {
     return this.cache.fetch('getOriginNotTransformed', () => {
       const layout = this.getComputedLayout();
       return {
@@ -758,7 +758,7 @@ class Element extends BaseModel {
     });
   }
 
-  getOriginTransformed () {
+  getOriginTransformed() {
     return this.cache.fetch('getOriginTransformed', () => {
       return HaikuElement.transformPointInPlace(
         this.getOriginNotTransformed(),
@@ -767,7 +767,7 @@ class Element extends BaseModel {
     });
   }
 
-  getOriginOffsetComposedMatrix () {
+  getOriginOffsetComposedMatrix() {
     return this.cache.fetch('getOriginOffsetComposedMatrix', () => {
       return Layout3D.multiplyArrayOfMatrices(this.getComputedLayoutAncestry().reverse().map(
         (layout) => layout.matrix,
@@ -775,19 +775,19 @@ class Element extends BaseModel {
     });
   }
 
-  getAncestry () {
+  getAncestry() {
     const ancestors = []; // We'll build a list with the original ancestor first and our node last
     getAncestry(ancestors, this);
     return ancestors;
   }
 
-  getComputedLayoutAncestry () {
+  getComputedLayoutAncestry() {
     return this.getAncestry().map((ancestor) => {
       return ancestor.getComputedLayout();
     });
   }
 
-  getPropertyKeyframesObject (propertyName) {
+  getPropertyKeyframesObject(propertyName) {
     const bytecode = this.component.getReifiedBytecode();
     return TimelineProperty.getPropertySegmentsBase(
       bytecode.timelines,
@@ -797,7 +797,7 @@ class Element extends BaseModel {
     );
   }
 
-  computePropertyValue (propertyName, fallbackValue) {
+  computePropertyValue(propertyName, fallbackValue) {
     const bytecode = this.component.getReifiedBytecode();
     const host = this.component.$instance;
     const states = (host && host.getStates()) || {};
@@ -819,7 +819,7 @@ class Element extends BaseModel {
     return computed;
   }
 
-  computePropertyGroupValueFromGroupDelta (propertyGroupDelta) {
+  computePropertyGroupValueFromGroupDelta(propertyGroupDelta) {
     const propertyGroupValue = {};
 
     for (const propertyName in propertyGroupDelta) {
@@ -840,7 +840,7 @@ class Element extends BaseModel {
     return propertyGroupValue;
   }
 
-  remove () {
+  remove() {
     this.destroy();
 
     const row = this.getHeadingRow();
@@ -851,24 +851,24 @@ class Element extends BaseModel {
     this.emit('update', 'element-removed');
   }
 
-  isRepeater () {
+  isRepeater() {
     const rkfs = this.getRepeaterKeyframes();
     return !!(rkfs && Object.keys(rkfs).length > 0);
   }
 
-  getRepeaterKeyframes () {
+  getRepeaterKeyframes() {
     return this.getPropertyKeyframesObject('controlFlow.repeat');
   }
 
-  isTextNode () {
+  isTextNode() {
     return typeof this.getStaticTemplateNode() === 'string';
   }
 
-  isComponent () {
+  isComponent() {
     return !!this.getHostedComponentBytecode();
   }
 
-  isNonRenderedComponent () {
+  isNonRenderedComponent() {
     const bytecode = this.getHostedComponentBytecode();
     if (!bytecode) { // Not even a component
       return false;
@@ -879,14 +879,14 @@ class Element extends BaseModel {
     return !!bytecode.metadata.nonrendered;
   }
 
-  isExternalComponent () {
+  isExternalComponent() {
     if (!this.isComponent()) {
       return false;
     }
     return !this.isLocalComponent();
   }
 
-  isLocalComponent () {
+  isLocalComponent() {
     if (!this.isComponent()) {
       return false;
     }
@@ -895,12 +895,12 @@ class Element extends BaseModel {
     return sourceAttr && sourceAttr[0] === '.';
   }
 
-  getSource () {
+  getSource() {
     const node = this.getStaticTemplateNode();
     return node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE];
   }
 
-  getHostedComponentBytecode () {
+  getHostedComponentBytecode() {
     if (this.isTextNode()) {
       return null;
     }
@@ -918,18 +918,18 @@ class Element extends BaseModel {
     return elementName;
   }
 
-  getTitle () {
+  getTitle() {
     if (this.isTextNode()) {
       return '<text>';
     } // HACK, but not sure what else to do
     return this.getStaticTemplateNode().attributes[HAIKU_TITLE_ATTRIBUTE] || `<${this.getNameString()}>`;
   }
 
-  setTitle (newTitle, metadata, cb) {
+  setTitle(newTitle, metadata, cb) {
     this.component.setTitleForComponent(this.getComponentId(), newTitle, metadata, cb);
   }
 
-  getNameString () {
+  getNameString() {
     if (this.isTextNode()) {
       return '<text>';
     } // HACK, but not sure what else to do
@@ -943,7 +943,7 @@ class Element extends BaseModel {
     return 'div';
   }
 
-  getSafeDomFriendlyName () {
+  getSafeDomFriendlyName() {
     // If this element is component, then start by populating standard DOM properties
     const elementName = (this.isComponent())
       ? 'div'
@@ -952,29 +952,29 @@ class Element extends BaseModel {
     return elementName;
   }
 
-  getComponentId () {
+  getComponentId() {
     return this.componentId;
   }
 
-  getGraphAddress () {
+  getGraphAddress() {
     return this.address;
   }
 
-  updateTargetingRows (updateEventName) {
+  updateTargetingRows(updateEventName) {
     this.getAllRows().forEach((row) => {
       row.emit('update', updateEventName);
     });
   }
 
-  getAllRows () {
-    return Row.where({component: this.component, element: this});
+  getAllRows() {
+    return Row.where({ component: this.component, element: this });
   }
 
-  get isVisuallySelectable () {
+  get isVisuallySelectable() {
     return this.parent && this.parent.isRootElement();
   }
 
-  get topmostHeadingRow () {
+  get topmostHeadingRow() {
     const headingRow = this.getHeadingRow();
 
     if (!this.parent) {
@@ -997,7 +997,7 @@ class Element extends BaseModel {
     return this.parent.topmostHeadingRow;
   }
 
-  shouldBeDisplayed () {
+  shouldBeDisplayed() {
     return (
       !this.isTextNode() &&
       !this.isShimElement() &&
@@ -1005,7 +1005,7 @@ class Element extends BaseModel {
     );
   }
 
-  getHostedPropertyRows (doRecurse = false) {
+  getHostedPropertyRows(doRecurse = false) {
     const rows = [];
 
     const headingRow = this.getHeadingRow();
@@ -1048,7 +1048,7 @@ class Element extends BaseModel {
     return rows;
   }
 
-  clearEntityCaches () {
+  clearEntityCaches() {
     if (this.children) {
       this.children.forEach((element) => {
         element.cache.clear();
@@ -1062,7 +1062,7 @@ class Element extends BaseModel {
     });
   }
 
-  getFirstNotShimParent (current = this) {
+  getFirstNotShimParent(current = this) {
     if (!current.parent || !current.parent.isShimElement()) {
       return current.parent;
     }
@@ -1070,7 +1070,7 @@ class Element extends BaseModel {
     return current.getFirstNotShimParent(current.parent);
   }
 
-  rehydrateRows (options = {}) {
+  rehydrateRows(options = {}) {
     if (
       options.superficial ||
       process.env.HAIKU_SUBPROCESS !== 'timeline'
@@ -1181,19 +1181,19 @@ class Element extends BaseModel {
     existingRows.forEach((row) => row.sweep());
   }
 
-  visitAll (iteratee) {
+  visitAll(iteratee) {
     Element.visitAll(this, iteratee);
   }
 
-  visitDescendants (iteratee) {
+  visitDescendants(iteratee) {
     Element.visitDescendants(this, iteratee);
   }
 
-  getAllChildren () {
+  getAllChildren() {
     return this.children || [];
   }
 
-  rehydrateChildren ({maxRehydrationDepth}) {
+  rehydrateChildren({ maxRehydrationDepth }) {
     const node = this.getStaticTemplateNode();
 
     if (typeof node.elementName === 'object') {
@@ -1229,12 +1229,12 @@ class Element extends BaseModel {
           delete child.__replacee;
         }
 
-        element.rehydrate({maxRehydrationDepth});
+        element.rehydrate({ maxRehydrationDepth });
       }
     }
   }
 
-  rehydrate ({maxRehydrationDepth}) {
+  rehydrate({ maxRehydrationDepth }) {
     if (
       this.getDepthAmongElements() <= maxRehydrationDepth ||
       (
@@ -1242,7 +1242,7 @@ class Element extends BaseModel {
         this.hasInternalPropertiesDefinedCached()
       )
     ) {
-      this.rehydrateChildren({maxRehydrationDepth});
+      this.rehydrateChildren({ maxRehydrationDepth });
     }
   }
 
@@ -1251,7 +1251,7 @@ class Element extends BaseModel {
    * that have any keyframes defined, without relying on the presence of hydrated
    * models for any of those elements (it uses the raw template).
    */
-  hasInternalPropertiesDefined () {
+  hasInternalPropertiesDefined() {
     const selectors = {};
 
     const node = this.getStaticTemplateNode();
@@ -1300,13 +1300,13 @@ class Element extends BaseModel {
     return false;
   }
 
-  hasInternalPropertiesDefinedCached () {
+  hasInternalPropertiesDefinedCached() {
     return this.cache.fetch('hasInternalPropertiesDefinedCached', () => {
       return this.hasInternalPropertiesDefined();
     });
   }
 
-  getDepthAmongElements () {
+  getDepthAmongElements() {
     let depth = 0;
     let parent = this.parent;
     while (parent) {
@@ -1316,7 +1316,7 @@ class Element extends BaseModel {
     return depth;
   }
 
-  getBuiltinAddressables () {
+  getBuiltinAddressables() {
     const builtinAddressables = {};
 
     // This assigns so-called 'cluster' properties if any are deemed such
@@ -1325,7 +1325,7 @@ class Element extends BaseModel {
     return builtinAddressables;
   }
 
-  getComponentAddressables () {
+  getComponentAddressables() {
     const componentAddressables = {};
 
     // If this is a component, then add any of our componentAddressables states as builtinAddressables
@@ -1350,7 +1350,7 @@ class Element extends BaseModel {
     return componentAddressables;
   }
 
-  getCompleteAddressableProperties () {
+  getCompleteAddressableProperties() {
     const builtinAddressables = this.getBuiltinAddressables();
 
     const componentAddressables = this.getComponentAddressables();
@@ -1379,7 +1379,7 @@ class Element extends BaseModel {
   //     ]
   //   }
   // ]
-  getJITPropertyOptions () {
+  getJITPropertyOptions() {
     if (this.isNonRenderedComponent()) {
       return [];
     }
@@ -1483,7 +1483,7 @@ class Element extends BaseModel {
     return list;
   }
 
-  grabNextUsefulMenuInsert (child) {
+  grabNextUsefulMenuInsert(child) {
     if (child.isTextNode()) {
       return null;
     }
@@ -1505,7 +1505,7 @@ class Element extends BaseModel {
     };
   }
 
-  eachAddressableProperty (iteratee) {
+  eachAddressableProperty(iteratee) {
     const addressableProperties = this.getDisplayedAddressableProperties();
 
     for (const propertyName in addressableProperties) {
@@ -1518,7 +1518,7 @@ class Element extends BaseModel {
     }
   }
 
-  groupedOptionsObjectToList (grouped) {
+  groupedOptionsObjectToList(grouped) {
     const options = Object.values(grouped).sort((a, b) => {
       const ap = a.prefix.toLowerCase();
       const bp = b.prefix.toLowerCase();
@@ -1537,17 +1537,17 @@ class Element extends BaseModel {
     return options;
   }
 
-  getFriendlyLabel () {
+  getFriendlyLabel() {
     const node = this.getStaticTemplateNode();
     return Element.getFriendlyLabel(node);
   }
 
-  getJITPropertyOptionsAsMenuItems () {
+  getJITPropertyOptionsAsMenuItems() {
     const options = this.getJITPropertyOptions();
     return this.optionsToItems(options);
   }
 
-  optionsToItems (options) {
+  optionsToItems(options) {
     return options.map((option) => {
       const item = {
         label: option.label,
@@ -1568,15 +1568,15 @@ class Element extends BaseModel {
     });
   }
 
-  getExcludedAddressableProperties () {
+  getExcludedAddressableProperties() {
     return this.getCollatedAddressableProperties().excluded;
   }
 
-  getDisplayedAddressableProperties () {
+  getDisplayedAddressableProperties() {
     return this.getCollatedAddressableProperties().filtered;
   }
 
-  getExplicitlyVisibleAddressableProperties () {
+  getExplicitlyVisibleAddressableProperties() {
     const complete = this.getCompleteAddressableProperties();
     const filtered = {};
     for (const propertyName in complete) {
@@ -1587,7 +1587,7 @@ class Element extends BaseModel {
     return filtered;
   }
 
-  getCollatedAddressableProperties () {
+  getCollatedAddressableProperties() {
     const complete = this.getCompleteAddressableProperties();
 
     // The ones to display in the timeline
@@ -1618,7 +1618,7 @@ class Element extends BaseModel {
     };
   }
 
-  showAddressableProperty (propertyName) {
+  showAddressableProperty(propertyName) {
     this._visibleProperties[propertyName] = true;
 
     this.rehydrateRows();
@@ -1634,21 +1634,21 @@ class Element extends BaseModel {
     this.emit('update', 'jit-property-added');
   }
 
-  hideAddressableProperty (propertyName) {
+  hideAddressableProperty(propertyName) {
     this._visibleProperties[propertyName] = false;
     this.emit('update', 'jit-property-removed');
   }
 
-  isRootElement () {
+  isRootElement() {
     return !this.parent;
   }
 
-  getBoxPolygonPointsTransformed () {
+  getBoxPolygonPointsTransformed() {
     const points = this.getBoxPointsTransformed();
     return Element.pointsToPolygonPoints(points);
   }
 
-  doesOverlapWithBox (box) {
+  doesOverlapWithBox(box) {
     const theirPoints = Element.boxToCornersAsPolygonPoints(box);
     const ourPoints = this.getBoxPolygonPointsTransformed();
     return polygonOverlap(theirPoints, ourPoints);
@@ -1660,7 +1660,7 @@ class Element extends BaseModel {
    * race conditions abound
    */
 
-  getLiveRenderedNode () {
+  getLiveRenderedNode() {
     // We query our "host" instance to get our wrapper node that it "hosts"
     // Note the difference from the target instance
     const instance = this.getCoreHostComponentInstance();
@@ -1668,11 +1668,11 @@ class Element extends BaseModel {
     return instance ? instance.findElementsByHaikuId(this.getComponentId())[0] : null;
   }
 
-  getHaikuElement () {
+  getHaikuElement() {
     return HaikuElement.findOrCreateByNode(this.getLiveRenderedNode());
   }
 
-  getParentSvgElement () {
+  getParentSvgElement() {
     // tslint:disable-next-line:no-this-assignment
     let currElem = this;
     while (currElem) {
@@ -1684,7 +1684,7 @@ class Element extends BaseModel {
     return null;
   }
 
-  getUngroupables () {
+  getUngroupables() {
     const haikuElement = this.getHaikuElement();
     switch (haikuElement.tagName) {
       case 'svg':
@@ -1705,11 +1705,11 @@ class Element extends BaseModel {
     }
   }
 
-  doesContainUngroupableContent () {
+  doesContainUngroupableContent() {
     return this.getUngroupables().length > 1;
   }
 
-  ungroup (metadata, cb = () => {}) {
+  ungroup(metadata, cb = () => { }) {
     const nodes = [];
     this.ungroupWrapper(nodes);
     switch (this.getStaticTemplateNode().elementName) {
@@ -1731,7 +1731,7 @@ class Element extends BaseModel {
     );
   }
 
-  ungroupWrapper (nodes) {
+  ungroupWrapper(nodes) {
     const haikuElement = this.getHaikuElement();
     const baseStyles = haikuElement.attributes.style;
     if (!baseStyles) {
@@ -1757,7 +1757,7 @@ class Element extends BaseModel {
       width: haikuElement.layout.size.x,
       height: haikuElement.layout.size.y,
       [HAIKU_SOURCE_ATTRIBUTE]: haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE],
-    }, {style});
+    }, { style });
 
     const layoutMatrix = this.getOriginOffsetComposedMatrix();
     const originX = haikuElement.layout.size.x / 2;
@@ -1777,10 +1777,10 @@ class Element extends BaseModel {
           stroke: 'none',
         },
       }],
-    }, {resetIds: true}));
+    }, { resetIds: true }));
   }
 
-  ungroupDiv (nodes) {
+  ungroupDiv(nodes) {
     this.getUngroupables().forEach((haikuElement) => {
       const layoutMatrix = Layout3D.multiplyArrayOfMatrices(
         // Under unknown conditions, some elements lack a layout.matrix,
@@ -1811,7 +1811,7 @@ class Element extends BaseModel {
 
       // Ensure SVGs have overflow: visible.
       if (haikuElement.tagName === 'svg') {
-        attributes.style = {overflow: 'visible'};
+        attributes.style = { overflow: 'visible' };
         // (1 of 3) opacity is "special". Make sure it is preserved.
         if (haikuElement.layout.opacity !== 1) {
           attributes.opacity = haikuElement.layout.opacity;
@@ -1830,7 +1830,7 @@ class Element extends BaseModel {
     });
   }
 
-  ungroupSvg (nodes) {
+  ungroupSvg(nodes) {
     const defs = [];
     const extraNodes = [];
     const svgElement = this.getHaikuElement();
@@ -1839,7 +1839,7 @@ class Element extends BaseModel {
     // First isolate defs 'n' friends.
     svgElement.visit((descendantHaikuElement) => {
       if (descendantHaikuElement.tagName === 'style' && descendantHaikuElement.memory && descendantHaikuElement.memory.children) {
-        const styleNode = Template.cleanMana(lodash.cloneDeep(descendantHaikuElement.node), {resetIds: true});
+        const styleNode = Template.cleanMana(lodash.cloneDeep(descendantHaikuElement.node), { resetIds: true });
         styleNode.children = [descendantHaikuElement.memory.children[0]];
         extraNodes.push(styleNode);
       } else if (
@@ -1967,7 +1967,7 @@ class Element extends BaseModel {
             },
           )],
         }],
-      }, {resetIds: true});
+      }, { resetIds: true });
 
       if (defs.length > 0) {
         node.children.unshift(
@@ -1979,7 +1979,7 @@ class Element extends BaseModel {
             },
             // Note: by resetting IDs here, we willfully destroy any animations that are inside defs. Since this is an atypical
             // construct which can only be achieved by editing bytecode directly today, it's "acceptable".
-            {resetIds: true},
+            { resetIds: true },
           ),
         );
       }
@@ -1989,16 +1989,16 @@ class Element extends BaseModel {
     });
   }
 
-  getAttribute (key) {
+  getAttribute(key) {
     const node = this.getLiveRenderedNode();
     return node && node.attributes && node.attributes[key];
   }
 
-  toXMLString () {
+  toXMLString() {
     return Template.manaToHtml('', this.getLiveRenderedNode() || EMPTY_ELEMENT);
   }
 
-  toJSONString () {
+  toJSONString() {
     return Template.manaToJson(this.getLiveRenderedNode() || EMPTY_ELEMENT, null, 2);
   }
 
@@ -2006,7 +2006,7 @@ class Element extends BaseModel {
    * @method dump
    * @description When debugging, use this to log a concise shorthand of this entity.
    */
-  dump () {
+  dump() {
     let str = `${this.getNameString()}:${this.getTitle()}:${this.getComponentId()}`;
     if (this.isHovered()) {
       str += ' {h}';
@@ -2037,16 +2037,16 @@ Element.cache = {
 };
 
 Element.HIGHER_ORDER_EVENTS = [
-  {label: 'Hover', value: 'hover'},
-  {label: 'Unhover', value: 'unhover'},
+  { label: 'Hover', value: 'hover' },
+  { label: 'Unhover', value: 'unhover' },
 ];
 
 Element.COMPONENT_EVENTS = [
-  {label: 'Will Mount', value: 'component:will-mount'},
-  {label: 'Did Mount', value: 'component:did-mount'},
-  {label: 'Will Unmount', value: 'component:will-unmount'},
-  {label: 'Did Initialize', value: 'component:did-initialize'},
-  {label: 'Frame', value: 'frame'},
+  { label: 'Will Mount', value: 'component:will-mount' },
+  { label: 'Did Mount', value: 'component:did-mount' },
+  { label: 'Will Unmount', value: 'component:will-unmount' },
+  { label: 'Did Initialize', value: 'component:did-initialize' },
+  { label: 'Frame', value: 'frame' },
 ];
 
 Element.nodeIsGrouper = (node) => {
@@ -2066,14 +2066,14 @@ Element.hoverOffAllElements = (criteria, metadata) => {
   Element.where(criteria).forEach((element) => element.hoverOff(metadata));
 };
 
-Element.clearCaches = function clearCaches () {
+Element.clearCaches = function clearCaches() {
   Element.cache = {
     domNodes: {},
     eventListeners: {},
   };
 };
 
-Element.findDomNode = function findDomNode (haikuId, element) {
+Element.findDomNode = function findDomNode(haikuId, element) {
   // Allow headless, e.g. in tests
   if (!element) {
     return null;
@@ -2129,7 +2129,7 @@ Element.getRotationIn360 = (radians) => {
   return rotationDegrees;
 };
 
-Element.boxToCornersAsPolygonPoints = ({x, y, width, height}) => {
+Element.boxToCornersAsPolygonPoints = ({ x, y, width, height }) => {
   return [
     [x, y], [x + width, y],
     [x + width, y + height], [x, y + height],
@@ -2178,7 +2178,7 @@ Element.findByComponentAndHaikuId = (component, haikuId) => {
 };
 
 Element.findHoveredElement = (component) => {
-  return Element.where({component, _isHovered: true})[0];
+  return Element.where({ component, _isHovered: true })[0];
 };
 
 Element.makeUid = (component, parent, index, staticTemplateNode) => {
@@ -2311,7 +2311,7 @@ Element.safeElementName = (mana) => {
 };
 
 Element.deselectAllOtherElements = (criteria, target, metadata) => {
-  Element.where(Object.assign({_isSelected: true}, criteria)).forEach((element) => {
+  Element.where(Object.assign({ _isSelected: true }, criteria)).forEach((element) => {
     if (element.getComponentId() !== target.getComponentId()) {
       element.unselect(metadata, true);
     }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ChevronLeftMenuIconSVG, StateInspectorIconSVG, LibraryIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import {BTN_STYLES} from '../styles/btnShared';
+import Palette from 'haiku-ui-common/src/Palette';
+import { ChevronLeftMenuIconSVG, StateInspectorIconSVG, LibraryIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
+import { BTN_STYLES } from '../styles/btnShared';
 
 const STYLES = {
   container: {
@@ -80,45 +80,45 @@ const STYLES = {
 };
 
 class SideBar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isFullscreen: null,
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.windowResizeHandler = () => {
       // note: using 'resize' because 'fullscreenchange' doesn't seem to work in Electron
       const isFullscreen = !window.screenTop && !window.screenY;
-      this.setState({isFullscreen});
+      this.setState({ isFullscreen });
     };
     window.addEventListener('resize', this.windowResizeHandler);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.windowResizeHandler);
   }
 
-  render () {
+  render() {
     // The State Inspector UI only makes sense in the context of a component,
     // hence the conditional presence-check before rendering it
     const activeComponent = this.props.projectModel && this.props.projectModel.getCurrentActiveComponent();
-    const {trialDaysRemaining} = this.props;
+    const { trialDaysRemaining } = this.props;
 
     return (
       <div style={STYLES.container} className="layout-box" id="sidebar">
-        <div style={[STYLES.bar, {paddingLeft: this.state.isFullscreen ? 9 : 74}]} className="frame">
+        <div style={[STYLES.bar, { paddingLeft: this.state.isFullscreen ? 9 : 74 }]} className="frame">
           {trialDaysRemaining > 0 &&
             <div
-              style={[STYLES.proBadge, this.state.isFullscreen && {left: 34}]}
+              style={[STYLES.proBadge, this.state.isFullscreen && { left: 34 }]}
               aria-label={trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''} in your free trial`}
               data-tooltip={true}
               data-tooltip-bottom={true}>
               {trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''}`}
             </div>
           }
-          
+
         </div>
         <div style={STYLES.nav}>
           <div style={[
@@ -131,7 +131,7 @@ class SideBar extends React.Component {
             <LibraryIconSVG color={Palette.ROCK} />
           </div>
           {(activeComponent)
-            ? <div id="state-inspector" key="state_inspector" aria-label="Show State Inspector panel"  data-tooltip={true} data-tooltip-right={true}
+            ? <div id="state-inspector" key="state_inspector" aria-label="Show State Inspector panel" data-tooltip={true} data-tooltip-right={true}
               style={[STYLES.btnNav, this.props.activeNav === 'state_inspector' && STYLES.activeBtnNav]}
               onClick={() => this.props.switchActiveNav('state_inspector')}>
               <StateInspectorIconSVG color={Palette.ROCK} />

@@ -2,12 +2,12 @@
 import {Figma} from 'haiku-serialization/src/bll/Figma';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as React from 'react';
 import {BTN_STYLES} from '../../../styles/btnShared';
 import {DASH_STYLES} from '../../../styles/dashShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES: {[key: string]: React.CSSProperties} = {
   form: {
     position: 'absolute',
     background: Palette.COAL,

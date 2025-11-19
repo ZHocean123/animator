@@ -2,23 +2,23 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as Radium from 'radium';
-import {shell, ipcRenderer} from 'electron';
-import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';
+import { shell, ipcRenderer } from 'electron';
+import { UserSettings } from 'haiku-sdk-creator/src/bll/User';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {isMac} from 'haiku-common/lib/environments/os';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {LoadingTopBar} from 'haiku-ui-common/lib/react/LoadingTopBar';
-import {didAskedForSketch} from 'haiku-serialization/src/utils/HaikuHomeDir';
+import { isMac } from 'haiku-common/src/environments/os';
+import Palette from 'haiku-ui-common/src/Palette';
+import { LoadingTopBar } from 'haiku-ui-common/src/react/LoadingTopBar';
+import { didAskedForSketch } from 'haiku-serialization/src/utils/HaikuHomeDir';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
-import {Figma, MAX_ITEMS_TO_IMPORT} from 'haiku-serialization/src/bll/Figma';
+import { Figma, MAX_ITEMS_TO_IMPORT } from 'haiku-serialization/src/bll/Figma';
 import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils';
 import SketchDownloader from '../SketchDownloader';
 import AssetList from './AssetList';
 import FileImporter from './FileImporter';
 import DesignFileCreator from './DesignFileCreator';
-import {statSync} from 'fs';
-import {basename, extname} from 'path';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
+import { statSync } from 'fs';
+import { basename, extname } from 'path';
+import { ExternalLink } from 'haiku-ui-common/src/react/ExternalLink';
 
 const openWithDefaultProgram = (asset) => {
   shell.openItem(asset.getAbspath());
@@ -76,7 +76,7 @@ const STYLES = {
 };
 
 class Library extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -113,7 +113,7 @@ class Library extends React.Component {
     sketchUtils.checkIfInstalled();
   }
 
-  broadcastListener ({name, assets, data}) {
+  broadcastListener({ name, assets, data }) {
     switch (name) {
       case 'assets-changed':
         const additionalState = {};
@@ -126,13 +126,13 @@ class Library extends React.Component {
     }
   }
 
-  handleAssetsChanged (assetsDictionary, otherStates) {
+  handleAssetsChanged(assetsDictionary, otherStates) {
     const assets = Asset.ingestAssets(this.props.projectModel, assetsDictionary);
-    this.setState({assets, ...otherStates});
+    this.setState({ assets, ...otherStates });
   }
 
-  componentDidMount () {
-    this.setState({isLoading: true});
+  componentDidMount() {
+    this.setState({ isLoading: true });
     this.reloadAssetList();
 
     this.props.websocket.on('broadcast', this.broadcastListener);
@@ -143,23 +143,23 @@ class Library extends React.Component {
 
     this.props.user.getConfig(UserSettings.FigmaToken).then((figmaToken) => {
       figmaToken = process.env.FIGMA_TOKEN || figmaToken;
-      const figma = new Figma({token: figmaToken});
-      this.setState({figma});
+      const figma = new Figma({ token: figmaToken });
+      this.setState({ figma });
     });
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.websocket.removeListener('broadcast', this.broadcastListener);
     ipcRenderer.removeListener('open-url:oauth', this.onAuthCallback);
   }
 
-  figmaAuthCallback ({state, code}) {
+  figmaAuthCallback({ state, code }) {
     if (!this.props.servicesEnvoyClient) {
       return;
     }
 
-    this.props.servicesEnvoyClient.figmaGetAccessToken({state, code, stateCheck: this.state.figmaState})
-      .then(({AccessToken}) => {
+    this.props.servicesEnvoyClient.figmaGetAccessToken({ state, code, stateCheck: this.state.figmaState })
+      .then(({ AccessToken }) => {
         this.props.user.setConfig(UserSettings.FigmaToken, AccessToken);
         this.state.figma.token = AccessToken;
         return this.props.createNotice({
@@ -178,39 +178,39 @@ class Library extends React.Component {
       });
   }
 
-  onAuthCallback (_, path, params) {
+  onAuthCallback(_, path, params) {
     switch (path) {
       case '/figma':
         this.figmaAuthCallback(params);
     }
   }
 
-  askForFigmaAuth () {
-    const {state, url} = Figma.buildAuthenticationLink();
-    this.setState({figmaState: state});
+  askForFigmaAuth() {
+    const { state, url } = Figma.buildAuthenticationLink();
+    this.setState({ figmaState: state });
     mixpanel.haikuTrack('creator:figma:askAuthentication');
     shell.openExternal(url);
   }
 
-  reloadAssetList () {
+  reloadAssetList() {
     return this.props.projectModel.listAssets((error, assets) => {
       if (error) {
-        return this.setState({error});
+        return this.setState({ error });
       }
-      this.handleAssetsChanged(assets, {isLoading: false});
+      this.handleAssetsChanged(assets, { isLoading: false });
     });
   }
 
-  importFigmaAsset (url, warnOnComplexFile = false) {
+  importFigmaAsset(url, warnOnComplexFile = false) {
     if (!this.props.servicesEnvoyClient) {
       return;
     }
 
-    this.setState({isLoading: true, loadingProgress: 80, loadingSpeed: '20s', lockLoadingFromWatchers: true});
+    this.setState({ isLoading: true, loadingProgress: 80, loadingSpeed: '20s', lockLoadingFromWatchers: true });
     const projectFolder = this.props.projectModel.folder;
-    return this.props.servicesEnvoyClient.figmaImportSVG({url, projectFolder}, this.state.figma.token)
+    return this.props.servicesEnvoyClient.figmaImportSVG({ url, projectFolder }, this.state.figma.token)
       .then((numberOfItems) => {
-        this.setState({isLoading: false, loadingProgress: null, loadingSpeed: null, lockLoadingFromWatchers: false});
+        this.setState({ isLoading: false, loadingProgress: null, loadingSpeed: null, lockLoadingFromWatchers: false });
         if (numberOfItems >= MAX_ITEMS_TO_IMPORT && warnOnComplexFile) {
           this.props.createNotice({
             type: 'warning',
@@ -218,7 +218,7 @@ class Library extends React.Component {
             message: (
               <span>
                 This project seems to be a complex project and we imported a limited amount of elements.
-                For more information please check this <ExternalLink style={{textDecoration: 'underline'}} href="https://help.haikuforteams.com/troubleshooting/troubleshooting-figma-imports">article</ExternalLink>.
+                For more information please check this <ExternalLink style={{ textDecoration: 'underline' }} href="https://help.haikuforteams.com/troubleshooting/troubleshooting-figma-imports">article</ExternalLink>.
               </span>
             ),
           });
@@ -227,10 +227,10 @@ class Library extends React.Component {
       })
       .catch((error = {}) => {
         const message = error.err || 'We had a problem connecting with Figma. Please check your internet connection and try again.';
-        const reportData = {url, message};
+        const reportData = { url, message };
 
         mixpanel.haikuTrack('creator:figma:fileImport:fail', reportData);
-        this.setState({isLoading: false, progress: null, speed: null});
+        this.setState({ isLoading: false, progress: null, speed: null });
 
         if (error.status === 403) {
           return this.props.createNotice({
@@ -294,11 +294,11 @@ class Library extends React.Component {
       });
   }
 
-  handleFileLaunch (asset) {
+  handleFileLaunch(asset) {
     openWithDefaultProgram(asset);
   }
 
-  handleSketchLaunch (asset) {
+  handleSketchLaunch(asset) {
     sketchUtils.checkIfInstalled().then((isSketchInstalled) => {
       if (Boolean(isSketchInstalled)) {
         mixpanel.haikuTrack('creator:sketch:open-file');
@@ -306,40 +306,40 @@ class Library extends React.Component {
         // On library Sketch asset double click, ask to download Sketch only if on mac
       } else if (isMac()) {
         mixpanel.haikuTrack('creator:sketch:sketch-not-installed');
-        this.setState({sketchDownloader: {...this.state.sketchDownloader, isVisible: true}});
+        this.setState({ sketchDownloader: { ...this.state.sketchDownloader, isVisible: true } });
       }
     });
   }
 
-  handleIllustratorLaunch (asset) {
+  handleIllustratorLaunch(asset) {
     if (this.isIllustratorInstalled) {
       mixpanel.haikuTrack('creator:illustrator:open-file');
       openWithDefaultProgram(asset);
     } else {
       mixpanel.haikuTrack('creator:illustrator:illustrator-not-installed');
-      this.props.createNotice({type: 'error', title: 'Error', message: 'You need to have Adobe Illustrator installed to open that file.'});
+      this.props.createNotice({ type: 'error', title: 'Error', message: 'You need to have Adobe Illustrator installed to open that file.' });
     }
   }
 
-  handleFigmaLaunch (asset) {
+  handleFigmaLaunch(asset) {
     if (asset.relpath !== 'hacky-figma-file[1]') {
       shell.openExternal(Figma.buildFigmaLinkFromPath(asset.relpath));
     }
   }
 
-  onSketchDialogDismiss (shouldAskForSketch) {
-    this.setState({sketchDownloader: {isVisible: false, shouldAskForSketch}});
+  onSketchDialogDismiss(shouldAskForSketch) {
+    this.setState({ sketchDownloader: { isVisible: false, shouldAskForSketch } });
     sketchUtils.unsetSketchInstalledCache();
   }
 
-  handleComponent (asset) {
+  handleComponent(asset) {
     const scenename = asset.getSceneName();
     if (scenename) {
-      this.props.projectModel.setCurrentActiveComponent(scenename, {from: 'creator'}, () => {});
+      this.props.projectModel.setCurrentActiveComponent(scenename, { from: 'creator' }, () => { });
     }
   }
 
-  onAssetDoubleClick (asset) {
+  onAssetDoubleClick(asset) {
     if (!asset) {
       return;
     }
@@ -370,22 +370,22 @@ class Library extends React.Component {
     }
   }
 
-  handleAssetDeletion (asset) {
-    this.setState({isLoading: true});
+  handleAssetDeletion(asset) {
+    this.setState({ isLoading: true });
 
     return this.props.projectModel.unlinkAsset(
       asset.getRelpath(),
       (error, assets) => {
         if (error) {
-          return this.setState({error, isLoading: false});
+          return this.setState({ error, isLoading: false });
         }
 
-        this.handleAssetsChanged(assets, {isLoading: false});
+        this.handleAssetsChanged(assets, { isLoading: false });
       },
     );
   }
 
-  warnComplexFiles (filePaths) {
+  warnComplexFiles(filePaths) {
     filePaths.forEach((path) => {
       if (statSync(path).size > 30000000) { // 30MB, number found by experimentation
         this.props.createNotice({
@@ -400,19 +400,19 @@ class Library extends React.Component {
 
   handleFileDrop = (filePaths) => {
     this.warnComplexFiles(filePaths);
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     this.props.projectModel.bulkLinkAssets(
       filePaths,
       (error) => {
         if (error) {
-          return this.setState({error, isLoading: false});
+          return this.setState({ error, isLoading: false });
         }
       },
     );
   };
 
-  shouldDisplayAssetList () {
+  shouldDisplayAssetList() {
     const componentshostFolder = this.state.assets.find((asset) => asset.isComponentsHostFolder());
     const designsFolder = this.state.assets.find((asset) => asset.isDesignsHostFolder());
 
@@ -427,7 +427,7 @@ class Library extends React.Component {
     );
   }
 
-  shouldDisplayAssetCreator () {
+  shouldDisplayAssetCreator() {
     const designsFolder = this.state.assets.find((asset) => asset.isDesignsHostFolder());
 
     return (
@@ -437,14 +437,14 @@ class Library extends React.Component {
   }
 
   onAssetCreatorStart = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
   };
 
-  render () {
+  render() {
     return (
       <div
         id="library-wrapper"
-        style={{display: this.props.visible ? 'initial' : 'none'}}>
+        style={{ display: this.props.visible ? 'initial' : 'none' }}>
         <div style={STYLES.loadingWrapper}>
           <LoadingTopBar
             progress={this.state.loadingProgress || 100}
@@ -469,7 +469,7 @@ class Library extends React.Component {
         <div
           id="library-scroll-wrap"
           style={STYLES.scrollwrap}>
-            <div style={STYLES.assetsWrapper}>
+          <div style={STYLES.assetsWrapper}>
             {this.shouldDisplayAssetList() && (
               <AssetList
                 websocket={this.props.websocket}
@@ -487,18 +487,18 @@ class Library extends React.Component {
                 conglomerateComponent={this.props.conglomerateComponent}
               />
             )}
-              {this.shouldDisplayAssetCreator() && (
-                <DesignFileCreator
-                  projectModel={this.props.projectModel}
-                  websocket={this.props.websocket}
-                  figma={this.state.figma}
-                  onAskForFigmaAuth={this.askForFigmaAuth}
-                  onImportFigmaAsset={this.importFigmaAsset}
-                  onRefreshFigmaAsset={this.importFigmaAsset}
-                  onStart={this.onAssetCreatorStart}
-                />
-              )}
-            </div>
+            {this.shouldDisplayAssetCreator() && (
+              <DesignFileCreator
+                projectModel={this.props.projectModel}
+                websocket={this.props.websocket}
+                figma={this.state.figma}
+                onAskForFigmaAuth={this.askForFigmaAuth}
+                onImportFigmaAsset={this.importFigmaAsset}
+                onRefreshFigmaAsset={this.importFigmaAsset}
+                onStart={this.onAssetCreatorStart}
+              />
+            )}
+          </div>
         </div>
         {
           this.state.sketchDownloader.isVisible &&

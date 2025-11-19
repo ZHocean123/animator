@@ -7,8 +7,8 @@ import {
   WHITESPACE_REGEX,
 } from '@haiku/sdk-client/lib/ProjectDefinitions';
 import {inkstone} from '@haiku/sdk-inkstone';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
-import {requestInstance} from '@haiku/sdk-inkstone/lib/transport';
+import {ErrorCode} from '@haiku/sdk-inkstone/src/errors';
+import {requestInstance} from '@haiku/sdk-inkstone/src/transport';
 import {existsSync, move, readFile} from 'fs-extra';
 // @ts-ignore
 import {HOMEDIR_PROJECTS_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';

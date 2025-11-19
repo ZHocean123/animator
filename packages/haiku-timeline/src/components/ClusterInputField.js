@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 export default class ClusterInputField extends React.Component {
-  render () {
+  render() {
     return (
       <div
         className="property-cluster-input-field no-select"
@@ -33,33 +33,33 @@ export default class ClusterInputField extends React.Component {
 }
 
 class ClusterInputFieldValueDisplay extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.complexValueElementsEllipsis = [<span key={0}>{'{…}'}</span>];
     this.clusterValues = props.row.getClusterValues();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.throttledForceUpdate.cancel();
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  areClusterValuesEqual (newValues, originalValues) {
+  areClusterValuesEqual(newValues, originalValues) {
     return (
       newValues.length !== originalValues.length ||
       newValues.every((value, index) => value.computedValue === originalValues[index].computedValue)
     );
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -72,7 +72,7 @@ class ClusterInputFieldValueDisplay extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const clusterName = this.props.row.getClusterNameString();
 
     let valueElements;
@@ -90,14 +90,14 @@ class ClusterInputFieldValueDisplay extends React.Component {
   }
 }
 
-function remapPrettyValue (prettyValue) {
+function remapPrettyValue(prettyValue) {
   if (prettyValue && prettyValue.render === 'react') {
     return <span style={prettyValue.style}>{safeText(prettyValue.text)}</span>;
   }
   return safeText(prettyValue.text);
 }
 
-function safeText (textOrObj) {
+function safeText(textOrObj) {
   if (typeof textOrObj === 'string') {
     return textOrObj;
   }

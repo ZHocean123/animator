@@ -72,8 +72,8 @@ const normalizeRotationsInQuadrants = (out: ComposedTransformSpec, normalizer: L
       return;
     }
 
-    const originalQuadrant = Math.floor(2 * normalizer.rotation[axis] / Math.PI);
-    const quadrantOut = Math.floor(2 * out[rotationProperty] / Math.PI);
+    const originalQuadrant = Math.floor(2 * normalizer.rotation[axis as keyof LayoutSpec['rotation']] / Math.PI);
+    const quadrantOut = Math.floor(2 * out[rotationProperty as keyof ComposedTransformSpec] / Math.PI);
     if (Math.abs(originalQuadrant - quadrantOut) < 3) {
       // We're within a half "tick" of the original normalizer, so there isn't an obvious way to normalize, so let's
       // just accept what we have.
@@ -81,9 +81,9 @@ const normalizeRotationsInQuadrants = (out: ComposedTransformSpec, normalizer: L
     }
 
     // Offset by the necessary rotations to land in a "less unexpected" quadrant…
-    out[rotationProperty] += Math.PI * 2 * Math.round((originalQuadrant - quadrantOut) / 4);
+    out[rotationProperty as keyof ComposedTransformSpec] += Math.PI * 2 * Math.round((originalQuadrant - quadrantOut) / 4);
     // …and round to avoid additional weirdness.
-    out[rotationProperty] = Math.round(out[rotationProperty] * epsilon) / epsilon;
+    out[rotationProperty as keyof ComposedTransformSpec] = Math.round(out[rotationProperty as keyof ComposedTransformSpec] * epsilon) / epsilon;
   });
 };
 

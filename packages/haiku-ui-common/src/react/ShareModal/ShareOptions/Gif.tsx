@@ -1,5 +1,5 @@
 import {existsSync} from 'fs-extra';
-import {HaikuShareUrls} from 'haiku-sdk-creator/lib/bll/Project';
+import {HaikuShareUrls} from 'haiku-sdk-creator/src/bll/Project';
 import {join} from 'path';
 import * as React from 'react';
 import Palette from '../../../Palette';

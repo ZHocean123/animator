@@ -1,27 +1,27 @@
 import * as React from 'react';
-import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds';
-import Palette from 'haiku-ui-common/lib/Palette';
+import formatSeconds from 'haiku-ui-common/src/helpers/formatSeconds';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as Timeline from 'haiku-serialization/src/bll/Timeline';
 import zIndex from './styles/zIndex';
-import {experimentIsEnabled, Experiment} from 'haiku-common/lib/experiments';
+import { experimentIsEnabled, Experiment } from 'haiku-common/src/experiments';
 
 export default class Gauge extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -29,7 +29,7 @@ export default class Gauge extends React.Component {
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return false;
     }
@@ -44,7 +44,7 @@ export default class Gauge extends React.Component {
     }
   }
 
-  render () {
+  render() {
     let out;
 
     if (this.props.timeline.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES) {
@@ -54,7 +54,7 @@ export default class Gauge extends React.Component {
           {this.props.timeline.mapVisibleFrames((frameNumber, pixelOffsetLeft, pixelsPerFrame, frameModulus) => {
             if ((frameNumber % frameModulus) === 0) {
               return (
-                <span key={`frame-${frameNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
+                <span key={`frame-${frameNumber}`} style={{ pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)' }}>
                   <span style={{
                     fontWeight: 'bold',
                     color: (this.props.timeline.getHoveredFrame() === frameNumber)
@@ -76,15 +76,15 @@ export default class Gauge extends React.Component {
           {this.props.timeline.mapVisibleTimes((millisecondsNumber, pixelOffsetLeft, totalMilliseconds) => {
             if (totalMilliseconds <= 1000) {
               return (
-                <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
-                  <span style={{fontWeight: 'bold'}}>{millisecondsNumber}ms</span>
+                <span key={`time-${millisecondsNumber}`} style={{ pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)' }}>
+                  <span style={{ fontWeight: 'bold' }}>{millisecondsNumber}ms</span>
                 </span>
               );
             }
 
             return (
-              <span key={`time-${millisecondsNumber}`} style={{pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)'}}>
-                <span style={{fontWeight: 'bold'}}>{formatSeconds(millisecondsNumber / 1000)}s</span>
+              <span key={`time-${millisecondsNumber}`} style={{ pointerEvents: 'none', display: 'inline-block', position: 'absolute', left: pixelOffsetLeft, transform: 'translateX(-50%)' }}>
+                <span style={{ fontWeight: 'bold' }}>{formatSeconds(millisecondsNumber / 1000)}s</span>
               </span>
             );
           })}
@@ -94,34 +94,34 @@ export default class Gauge extends React.Component {
 
     return (
       <div
-      id="gauge-wrapper"
-      style={{
-        height: 23,
-        backgroundColor: Palette.COAL,
-        position: 'sticky',
-        top: 12,
-        marginLeft: this.props.timeline.getPropertiesPixelWidth() + this.props.timelineOffsetPadding,
-        width: this.props.timeline.calculateFullTimelineWidth(),
-        zIndex: zIndex.gauge.base,
-        fontSize: 10,
-        borderBottom: '1px solid ' + Palette.FATHER_COAL,
-        color: Palette.ROCK_MUTED,
-      }}
-      onMouseDown={this.props.onMouseDown}
-      >
-      <span
+        id="gauge-wrapper"
         style={{
-          display: 'inline-block',
-          width: '15px',
-          position: 'absolute',
-          left: '-8px',
-          height: 'inherit',
-          border: 'inherit',
-          backgroundColor: 'inherit',
+          height: 23,
+          backgroundColor: Palette.COAL,
+          position: 'sticky',
+          top: 12,
+          marginLeft: this.props.timeline.getPropertiesPixelWidth() + this.props.timelineOffsetPadding,
+          width: this.props.timeline.calculateFullTimelineWidth(),
+          zIndex: zIndex.gauge.base,
+          fontSize: 10,
+          borderBottom: '1px solid ' + Palette.FATHER_COAL,
+          color: Palette.ROCK_MUTED,
         }}
-       />
-       {out}
-    </div>
+        onMouseDown={this.props.onMouseDown}
+      >
+        <span
+          style={{
+            display: 'inline-block',
+            width: '15px',
+            position: 'absolute',
+            left: '-8px',
+            height: 'inherit',
+            border: 'inherit',
+            backgroundColor: 'inherit',
+          }}
+        />
+        {out}
+      </div>
     );
   }
 }

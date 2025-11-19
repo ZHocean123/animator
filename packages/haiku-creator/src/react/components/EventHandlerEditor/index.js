@@ -1,18 +1,18 @@
 /* global monaco */
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import ElementTitle from './ElementTitle';
 import Editor from './Editor';
 import EditorActions from './EditorActions';
 import EventSelector from './EventSelector';
 import HandlerManager from './HandlerManager';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric';
+import isNumeric from 'haiku-ui-common/src/helpers/isNumeric';
 import {
   ModalWrapper,
   ModalHeader,
   ModalFooter,
-} from 'haiku-ui-common/lib/react/Modal';
-import {RevealPanel} from 'haiku-ui-common/lib/react/RevealPanel';
+} from 'haiku-ui-common/src/react/Modal';
+import { RevealPanel } from 'haiku-ui-common/src/react/RevealPanel';
 import {
   EDITOR_WIDTH,
   EVALUATOR_STATES,
@@ -68,7 +68,7 @@ const STYLES = {
 };
 
 class EventHandlerEditor extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.handlerManager = null;
@@ -82,7 +82,7 @@ class EventHandlerEditor extends React.PureComponent {
     };
   }
 
-  setupMonaco () {
+  setupMonaco() {
     // Absurdely, monaco doesn't provide an importable module, so we have
     // to do some trickery to load it (see index.html), and sometimes may not
     // be already available, hence this weird logic.
@@ -96,7 +96,7 @@ class EventHandlerEditor extends React.PureComponent {
       base: 'vs-dark',
       inherit: true,
       // `rules` requires colors without the leading '#' ¯\_(ツ)_/¯
-      rules: [{backgroundColor: Palette.SPECIAL_COAL.replace('#', '')}],
+      rules: [{ backgroundColor: Palette.SPECIAL_COAL.replace('#', '') }],
       colors: {
         'editor.foreground': Palette.PALE_GRAY,
         'editor.background': Palette.DARKEST_COAL,
@@ -121,9 +121,9 @@ class EventHandlerEditor extends React.PureComponent {
       allowNonTsExtensions: true,
     });
 
-  // Define our own autocompletion items
+    // Define our own autocompletion items
     this.completionDisposer = monaco.languages.registerCompletionItemProvider('javascript', {
-      provideCompletionItems (model, position) {
+      provideCompletionItems(model, position) {
 
         // Get text from whole line until autocomplete position
         const textUntilPosition = model.getValueInRange(
@@ -162,7 +162,7 @@ class EventHandlerEditor extends React.PureComponent {
           completionItems.push(completionEntryWithInsertText);
         }
 
-        return {suggestions: completionItems};
+        return { suggestions: completionItems };
       },
     });
   }
@@ -176,9 +176,9 @@ class EventHandlerEditor extends React.PureComponent {
    * 1- Triggering a re-render
    * 2- Instantiating a HandlerManager
    */
-  shouldComponentUpdate (
-    {element, visible, options},
-    {editorWithErrors, currentEvent},
+  shouldComponentUpdate(
+    { element, visible, options },
+    { editorWithErrors, currentEvent },
   ) {
     const pkey1 = element && element.getPrimaryKey();
     const pkey2 = this.props.element && this.props.element.getPrimaryKey();
@@ -199,40 +199,40 @@ class EventHandlerEditor extends React.PureComponent {
     return false;
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (isNumeric(nextProps.options.frame)) {
       const event = HandlerManager.frameToEvent(nextProps.options.frame);
-      this.setState({currentEvent: event});
+      this.setState({ currentEvent: event });
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.completionDisposer) {
       this.completionDisposer.dispose();
     }
   }
 
-  canBeClosedExternally () {
+  canBeClosedExternally() {
     return !this.state.currentEvent;
   }
 
-  doPersist () {
+  doPersist() {
     const result = this.handlerManager.serialize();
     this.props.save(this.props.element, result);
   }
 
-  doClose () {
+  doClose() {
     this.hideEditor(() => {
       this.props.close();
     });
   }
 
-  doCloseIgnoringErrors () {
+  doCloseIgnoringErrors() {
     // Hide and close without checking for errors (this.state.editorWithErrors)
-    this.setState({currentEvent: null}, this.props.close);
+    this.setState({ currentEvent: null }, this.props.close);
   }
 
-  doSave () {
+  doSave() {
     if (!this.state.editorWithErrors && this.state.currentEvent) {
       this.handlerManager.replaceEvent(
         this.editor.serialize(),
@@ -242,7 +242,7 @@ class EventHandlerEditor extends React.PureComponent {
     }
   }
 
-  doRemove () {
+  doRemove() {
     const eventToDelete = isNumeric(this.props.options.frame)
       ? HandlerManager.frameToEvent(this.props.options.frame)
       : this.state.currentEvent;
@@ -251,13 +251,13 @@ class EventHandlerEditor extends React.PureComponent {
     this.doPersist();
   }
 
-  showEditor (event) {
-    this.setState({currentEvent: event});
+  showEditor(event) {
+    this.setState({ currentEvent: event });
   }
 
-  hideEditor (callback) {
+  hideEditor(callback) {
     if (!this.state.editorWithErrors) {
-      this.setState({currentEvent: null}, callback);
+      this.setState({ currentEvent: null }, callback);
     }
   }
 
@@ -274,15 +274,15 @@ class EventHandlerEditor extends React.PureComponent {
     }
   };
 
-  onEditorContentChange ({evaluator}) {
+  onEditorContentChange({ evaluator }) {
     this.setState({
       editorWithErrors: evaluator && evaluator.state === EVALUATOR_STATES.ERROR,
     });
   }
 
-  renderEditor () {
+  renderEditor() {
     const event = this.state.currentEvent;
-    const {id, handler} = this.handlerManager.getOrGenerateEventHandler(event);
+    const { id, handler } = this.handlerManager.getOrGenerateEventHandler(event);
 
     return (
       <Editor
@@ -300,19 +300,19 @@ class EventHandlerEditor extends React.PureComponent {
     );
   }
 
-  render () {
+  render() {
     if (!this.handlerManager) {
       return null;
     }
 
-    const visibilityStyles = this.props.visible ? {} : {visibility: 'hidden'};
+    const visibilityStyles = this.props.visible ? {} : { visibility: 'hidden' };
     const applicableEventHandlers = this.handlerManager.getApplicableEventHandlers();
 
     return (
-      <ModalWrapper style={{...visibilityStyles, ...STYLES.container}}
-            onEsc={this.doCloseFromEsc}
-            onCmdEnter={this.doCloseFromEsc}
-            onCmdS={this.doSaveFromCmdS}>
+      <ModalWrapper style={{ ...visibilityStyles, ...STYLES.container }}
+        onEsc={this.doCloseFromEsc}
+        onCmdEnter={this.doCloseFromEsc}
+        onCmdS={this.doSaveFromCmdS}>
         <div
           onMouseDown={(mouseEvent) => {
             // Prevent outer view from closing us
@@ -352,7 +352,7 @@ class EventHandlerEditor extends React.PureComponent {
               <RevealPanel
                 showDetail={!!this.state.currentEvent}
                 leftPanel={
-                  <div style={{paddingTop: '35px'}}>
+                  <div style={{ paddingTop: '35px' }}>
                     <EventSelector
                       options={applicableEventHandlers}
                       disabledOptions={this.handlerManager}
@@ -370,7 +370,7 @@ class EventHandlerEditor extends React.PureComponent {
                     <div style={STYLES.tagWrapper}>
                       {this.handlerManager
                         .userVisibleEvents()
-                        .map(({id, event, handler}) => {
+                        .map(({ id, event, handler }) => {
                           return (
                             <span
                               key={event}

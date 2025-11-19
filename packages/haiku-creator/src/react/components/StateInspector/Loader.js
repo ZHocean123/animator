@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 // TODO: Make into a real loader, and move into ui-common
 
 class Loader extends React.Component {
-  render () {
+  render() {
     return (
       <div
         id="state-inspector-loader"

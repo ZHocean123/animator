@@ -1,28 +1,28 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import Palette from 'haiku-ui-common/src/Palette';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
 import * as lodash from 'lodash';
 
 const KNOB_RADIUS = 5;
 
 export default class TimelineRangeScrollbarPlayheadIndicator extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -31,7 +31,7 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -39,7 +39,7 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
     }
   }
 
-  getPlayheadPc (frameInfo) {
+  getPlayheadPc(frameInfo) {
     if (frameInfo.friMaxVirt < 1) {
       return 0;
     }
@@ -50,7 +50,7 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
     return (frame / frameInfo.friMax) * 100;
   }
 
-  render () {
+  render() {
     const frameInfo = this.props.timeline.getFrameInfo();
 
     return (

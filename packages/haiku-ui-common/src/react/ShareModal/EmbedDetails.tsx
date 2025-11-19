@@ -1,4 +1,4 @@
-import {HaikuShareUrls} from 'haiku-sdk-creator/lib/bll/Project';
+import {HaikuShareUrls} from 'haiku-sdk-creator/src/bll/Project';
 import * as React from 'react';
 import {SHARED_STYLES} from '../../SharedStyles';
 import * as ShareTemplates from './ShareOptions';

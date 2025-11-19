@@ -2,7 +2,7 @@ const numeral = require('numeral');
 const TimelineProperty = require('haiku-serialization/src/bll/TimelineProperty');
 const BaseModel = require('./BaseModel');
 const MathUtils = require('./MathUtils');
-const formatSeconds = require('haiku-ui-common/lib/helpers/formatSeconds').default;
+const formatSeconds = require('haiku-ui-common/src/helpers/formatSeconds').default;
 const logger = require('haiku-serialization/src/utils/LoggerInstance');
 
 const DURATION_DRAG_INCREASE = 20; // Increase by this much per each duration increase
@@ -25,7 +25,7 @@ const MINIMUM_ZOOM_THRESHOLD = 3; // Minimum number of frames to show
  *      parameters related to the current zoom factor, offset, etc.
  */
 class Timeline extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     this._playing = false;
@@ -58,37 +58,37 @@ class Timeline extends BaseModel {
     this.update();
   }
 
-  rehydrate () {
+  rehydrate() {
     this.component.rehydrate();
     return this;
   }
 
-  getName () {
+  getName() {
     return this.name;
   }
 
-  isPlaying () {
+  isPlaying() {
     return this._playing;
   }
 
-  setRepeat (bool) {
+  setRepeat(bool) {
     this._isLooping = bool;
   }
 
-  getRepeat () {
+  getRepeat() {
     return Boolean(this._isLooping);
   }
 
-  getTimeDisplayMode () {
+  getTimeDisplayMode() {
     return this._timeDisplayMode;
   }
 
-  setTimeDisplayMode (newMode) {
+  setTimeDisplayMode(newMode) {
     this._timeDisplayMode = newMode;
     this.emit('update', 'time-display-mode-change');
   }
 
-  toggleTimeDisplayMode () {
+  toggleTimeDisplayMode() {
     if (this.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES) {
       this._timeDisplayMode = Timeline.TIME_DISPLAY_MODE.SECONDS;
     } else {
@@ -98,7 +98,7 @@ class Timeline extends BaseModel {
     this.emit('update', 'time-display-mode-change');
   }
 
-  getDisplayTime () {
+  getDisplayTime() {
     const displayTime = this.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES
       ? ~~this.getCurrentFrame()
       : formatSeconds(this.getCurrentFrame() * 1000 / this.getFPS() / 1000).replace('0.', '.');
@@ -106,17 +106,17 @@ class Timeline extends BaseModel {
     return displayTime;
   }
 
-  toggleRepeat () {
+  toggleRepeat() {
     this.setRepeat(!this.getRepeat());
   }
 
-  setAuthoritativeFrame (authoritativeFrame) {
+  setAuthoritativeFrame(authoritativeFrame) {
     this._lastAuthoritativeFrame = authoritativeFrame;
     this._stopwatch = Date.now();
     this.updateCurrentFrame(authoritativeFrame);
   }
 
-  getExtrapolatedCurrentFrame () {
+  getExtrapolatedCurrentFrame() {
     const lap = Date.now();
     const spanMs = lap - this._stopwatch;
     const spanS = spanMs / 1000;
@@ -125,7 +125,7 @@ class Timeline extends BaseModel {
     return extrapolatedFrame;
   }
 
-  togglePlayback () {
+  togglePlayback() {
     const frameInfo = this.getFrameInfo();
 
     if (this.getCurrentFrame() >= frameInfo.maxf) {
@@ -141,21 +141,21 @@ class Timeline extends BaseModel {
     }
   }
 
-  playbackSkipBack () {
+  playbackSkipBack() {
     const frameInfo = this.getFrameInfo();
     this.seekAndPause(frameInfo.fri0);
     this.updateCurrentFrame(frameInfo.fri0);
     this.tryToLeftAlignTickerInVisibleFrameRange(frameInfo.fri0);
   }
 
-  playbackSkipForward () {
+  playbackSkipForward() {
     const frameInfo = this.getFrameInfo();
     this.seekAndPause(frameInfo.maxf);
     this.updateCurrentFrame(frameInfo.maxf);
     this.tryToLeftAlignTickerInVisibleFrameRange(frameInfo.maxf);
   }
 
-  play () {
+  play() {
     this._playing = true;
     this._stopwatch = Date.now();
     if (!this.component.project.getEnvoyClient().isInMockMode()) {
@@ -169,7 +169,7 @@ class Timeline extends BaseModel {
     }
   }
 
-  pause (skipTransmit = false) {
+  pause(skipTransmit = false) {
     this._playing = false;
     this._lastSeek = null;
     if (!skipTransmit && !this.component.project.getEnvoyClient().isInMockMode()) {
@@ -185,13 +185,13 @@ class Timeline extends BaseModel {
     }
   }
 
-  seekToTime (time, skipTransmit, forceSeek) {
+  seekToTime(time, skipTransmit, forceSeek) {
     const frameInfo = this.getFrameInfo();
     const frame = Math.round(time / frameInfo.mspf);
     return this.seek(frame, skipTransmit, forceSeek);
   }
 
-  seek (newFrame, skipTransmit, forceSeek) {
+  seek(newFrame, skipTransmit, forceSeek) {
     // Don't bother with any part of this update if we're already at this frame
     if (forceSeek || this.getCurrentFrame() !== newFrame) {
       this.setCurrentFrame(newFrame);
@@ -220,7 +220,7 @@ class Timeline extends BaseModel {
     }
   }
 
-  seekAndPause (newFrame) {
+  seekAndPause(newFrame) {
     this.seek(newFrame, true);
     this.pause(true);
     if (!this.component.project.getEnvoyClient().isInMockMode()) {
@@ -239,7 +239,7 @@ class Timeline extends BaseModel {
     }
   }
 
-  update () {
+  update() {
     if (this._playing) {
       const frameInfo = this.getFrameInfo();
 
@@ -272,7 +272,7 @@ class Timeline extends BaseModel {
     }
   }
 
-  getFPS () {
+  getFPS() {
     const instance = this.component.$instance;
     if (!instance) {
       return 60;
@@ -280,48 +280,48 @@ class Timeline extends BaseModel {
     return instance.getClock().getFPS();
   }
 
-  getMaxFrame () {
+  getMaxFrame() {
     return this._maxFrame;
   }
 
-  setMaxFrame (maxFrame) {
+  setMaxFrame(maxFrame) {
     this._maxFrame = maxFrame;
     this.cache.unset('frameInfo');
     this.emit('update', 'timeline-max-frame-changed');
     return this;
   }
 
-  getCurrentFrame () {
+  getCurrentFrame() {
     return this._currentFrame;
   }
 
-  getCurrentTime () {
+  getCurrentTime() {
     const frameInfo = this.getFrameInfo();
     const frame = this.getCurrentFrame();
     return frame * frameInfo.mspf;
   }
 
-  hoverFrame (hoveredFrame) {
+  hoverFrame(hoveredFrame) {
     this._hoveredFrame = hoveredFrame;
     this.emit('update', 'timeline-frame-hovered');
     return this;
   }
 
-  getHoveredFrame () {
+  getHoveredFrame() {
     return this._hoveredFrame;
   }
 
-  getCurrentMs () {
+  getCurrentMs() {
     const frameInfo = this.getFrameInfo();
     return Math.round(this.getCurrentFrame() * frameInfo.mspf);
   }
 
-  setCurrentFrame (currentFrame) {
+  setCurrentFrame(currentFrame) {
     this._currentFrame = currentFrame;
     return this;
   }
 
-  updateCurrentFrame (currentFrame) {
+  updateCurrentFrame(currentFrame) {
     this.setCurrentFrame(currentFrame);
 
     const frameInfo = this.getFrameInfo();
@@ -335,67 +335,67 @@ class Timeline extends BaseModel {
     return this;
   }
 
-  getDurationDragStart () {
+  getDurationDragStart() {
     return this._durationDragStart;
   }
 
-  getDurationTrim () {
+  getDurationTrim() {
     return this._durationTrim;
   }
 
-  setDurationTrim (durationTrim) {
+  setDurationTrim(durationTrim) {
     this._durationTrim = durationTrim;
     this.emit('update', 'timeline-duration-trim');
     return this;
   }
 
-  getTimelinePixelWidth () {
+  getTimelinePixelWidth() {
     return this._timelinePixelWidth;
   }
 
-  setTimelinePixelWidth (pxWidth) {
+  setTimelinePixelWidth(pxWidth) {
     this._timelinePixelWidth = pxWidth;
     this.cache.unset('frameInfo');
     this.emit('update', 'timeline-timeline-pixel-width');
     return this;
   }
 
-  setPropertiesPixelWidth (value) {
+  setPropertiesPixelWidth(value) {
     this._propertiesPixelWidth = value;
     this.cache.unset('frameInfo');
   }
 
-  getPropertiesPixelWidth () {
+  getPropertiesPixelWidth() {
     return this._propertiesPixelWidth;
   }
 
-  getVisibleFrameRangeLength () {
+  getVisibleFrameRangeLength() {
     return this.getRightFrameEndpoint() - this.getLeftFrameEndpoint();
   }
 
-  getVisibleFrameRange () {
+  getVisibleFrameRange() {
     return this._visibleFrameRange;
   }
 
-  getLeftFrameEndpoint () {
+  getLeftFrameEndpoint() {
     return this._visibleFrameRange[0];
   }
 
-  getRightFrameEndpoint () {
+  getRightFrameEndpoint() {
     return this._visibleFrameRange[1];
   }
 
-  getDragIsAdding () {
+  getDragIsAdding() {
     return this._dragIsAdding;
   }
 
-  getSelectedKeyframes () {
+  getSelectedKeyframes() {
     return Keyframe.filter((keyframe) => {
       return keyframe.isSelected();
     });
   }
 
-  hasMultipleSelectedKeyframes () {
+  hasMultipleSelectedKeyframes() {
     const found = this.getSelectedKeyframes();
     return found.length > 1;
   }
@@ -419,7 +419,7 @@ class Timeline extends BaseModel {
    *     |scA
    *          |scB
    */
-  getFrameInfo () {
+  getFrameInfo() {
     return this.cache.fetch('frameInfo', () => {
       const frameInfo = {};
 
@@ -492,7 +492,7 @@ class Timeline extends BaseModel {
     });
   }
 
-  getVisibleFrames () {
+  getVisibleFrames() {
     const visibleFrames = [];
     const frameInfo = this.getFrameInfo();
     const leftFrame = 0;
@@ -515,12 +515,12 @@ class Timeline extends BaseModel {
     return visibleFrames;
   }
 
-  mapVisibleFrames (iteratee) {
+  mapVisibleFrames(iteratee) {
     const mappedOutput = [];
 
     const visibleFrames = this.getVisibleFrames();
 
-    visibleFrames.forEach(({pixelOffsetLeft, leftMostAbsolutePixel, frameModulus, frameNumber, pixelsPerFrame}) => {
+    visibleFrames.forEach(({ pixelOffsetLeft, leftMostAbsolutePixel, frameModulus, frameNumber, pixelsPerFrame }) => {
       const mapOutput = iteratee(frameNumber, pixelOffsetLeft - leftMostAbsolutePixel, pixelsPerFrame, frameModulus);
       if (mapOutput) {
         mappedOutput.push(mapOutput);
@@ -530,7 +530,7 @@ class Timeline extends BaseModel {
     return mappedOutput;
   }
 
-  mapVisibleTimes (iteratee) {
+  mapVisibleTimes(iteratee) {
     const mappedOutput = [];
 
     const frameInfo = this.getFrameInfo();
@@ -570,7 +570,7 @@ class Timeline extends BaseModel {
     return mappedOutput;
   }
 
-  dragDurationModifierPosition (dragX) {
+  dragDurationModifierPosition(dragX) {
     const frameInfo = this.getFrameInfo();
 
     const dragStart = this.getDurationDragStart();
@@ -613,7 +613,7 @@ class Timeline extends BaseModel {
     this.setDurationTrim(frameDelta);
   }
 
-  handleDurationModifierStop () {
+  handleDurationModifierStop() {
     const frameInfo = this.getFrameInfo();
     const currentMax = this.getMaxFrame() ? this.getMaxFrame() : frameInfo.friMax2;
 
@@ -628,11 +628,11 @@ class Timeline extends BaseModel {
     }, DURATION_MOD_TIMEOUT);
   }
 
-  calculateMaxScrollValue () {
+  calculateMaxScrollValue() {
     return this.calculateFullTimelineWidth() - this._timelinePixelWidth;
   }
 
-  handleSettingScroll (scrollValue, eventName) {
+  handleSettingScroll(scrollValue, eventName) {
     if (scrollValue >= 0) {
       const maxScrollValue = this.calculateMaxScrollValue();
       const frameInfo = this.getFrameInfo();
@@ -653,24 +653,24 @@ class Timeline extends BaseModel {
     }
   }
 
-  setScrollLeft (scrollValue) {
+  setScrollLeft(scrollValue) {
     this.handleSettingScroll(scrollValue, 'timeline-scroll');
   }
 
-  setScrollLeftFromScrollbar (scrollValue) {
+  setScrollLeftFromScrollbar(scrollValue) {
     this.handleSettingScroll(scrollValue, 'timeline-scroll-from-scrollbar');
   }
 
-  getScrollLeft () {
+  getScrollLeft() {
     return this._scrollLeft;
   }
 
-  mapXCoordToFrame (coord) {
+  mapXCoordToFrame(coord) {
     const frameInfo = this.getFrameInfo();
     return Math.round((coord / frameInfo.pxpf) * frameInfo.scRatio);
   }
 
-  zoomBy (scale) {
+  zoomBy(scale) {
     const left = this.getLeftFrameEndpoint();
     const right = this.getRightFrameEndpoint();
 
@@ -680,7 +680,7 @@ class Timeline extends BaseModel {
     );
   }
 
-  zoomByLeftAndRightEndpoints (left, right, fromScrollbar = false) {
+  zoomByLeftAndRightEndpoints(left, right, fromScrollbar = false) {
     let leftTotal = left || this.getLeftFrameEndpoint();
     const rightTotal = right || this.getRightFrameEndpoint();
     const difference = rightTotal - leftTotal;
@@ -706,7 +706,7 @@ class Timeline extends BaseModel {
     }
   }
 
-  updateVisibleFrameRangeByDelta (delta) {
+  updateVisibleFrameRangeByDelta(delta) {
     const l = this.getLeftFrameEndpoint() + delta;
     const r = this.getRightFrameEndpoint() + delta;
     if (l >= 0) {
@@ -718,7 +718,7 @@ class Timeline extends BaseModel {
    * @method tryToLeftAlignTickerInVisibleFrameRange
    * @description will left-align the current timeline window (maintaining zoom)
    */
-  tryToLeftAlignTickerInVisibleFrameRange (frame) {
+  tryToLeftAlignTickerInVisibleFrameRange(frame) {
     const frameInfo = this.getFrameInfo();
     const pxOffsetLeft = frame * frameInfo.pxpf;
 
@@ -729,7 +729,7 @@ class Timeline extends BaseModel {
     return this;
   }
 
-  setVisibleFrameRange (l, r, shouldNotifyUpdates = true) {
+  setVisibleFrameRange(l, r, shouldNotifyUpdates = true) {
     this._visibleFrameRange = [l, r];
     if (r > this.getMaxFrame()) {
       this.setMaxFrame(r);
@@ -737,18 +737,18 @@ class Timeline extends BaseModel {
 
     this.cache.unset('frameInfo');
     if (shouldNotifyUpdates) {
-      Keyframe.clearAllViewPositions({component: this.component});
+      Keyframe.clearAllViewPositions({ component: this.component });
       this.emit('update', 'timeline-frame-range');
     }
     return this;
   }
 
-  calculateFullTimelineWidth () {
+  calculateFullTimelineWidth() {
     const frameInfo = this.getFrameInfo();
     return frameInfo.pxMax + 20;
   }
 
-  updateScrubberPositionByDelta (delta) {
+  updateScrubberPositionByDelta(delta) {
     let currentFrame = this.getCurrentFrame() + delta;
     if (currentFrame <= 0) {
       currentFrame = 0;
@@ -756,14 +756,14 @@ class Timeline extends BaseModel {
     this.component.getCurrentTimeline().seek(currentFrame);
   }
 
-  normalizeMs (ms) {
+  normalizeMs(ms) {
     const frameInfo = this.getFrameInfo();
     const nearestFrame = Timeline.millisecondToNearestFrame(ms, frameInfo.mspf);
     const finalMs = Math.round(nearestFrame * frameInfo.mspf);
     return finalMs;
   }
 
-  notifyFrameActionChange () {
+  notifyFrameActionChange() {
     this.emit('update', 'timeline-frame-action');
   }
 }
@@ -777,7 +777,7 @@ Timeline.DEFAULT_OPTIONS = {
 
 BaseModel.extend(Timeline);
 
-Timeline.eachTimelineKeyframeDescriptor = function eachTimelineKeyframeDescriptor (timelines, iteratee) {
+Timeline.eachTimelineKeyframeDescriptor = function eachTimelineKeyframeDescriptor(timelines, iteratee) {
   for (const timelineName in timelines) {
     for (const componentSelector in timelines[timelineName]) {
       for (const propertyName in timelines[timelineName][componentSelector]) {
@@ -845,7 +845,7 @@ Timeline.getMillisecondModulus = (pxpf) => {
   return 5000;
 };
 
-Timeline.millisecondToNearestFrame = function millisecondToNearestFrame (msValue, mspf) {
+Timeline.millisecondToNearestFrame = function millisecondToNearestFrame(msValue, mspf) {
   return Math.round(msValue / mspf);
 };
 
@@ -866,7 +866,7 @@ Timeline.UNIT_MAPPING = {
   stroke: '',
 };
 
-Timeline.inferUnitOfValue = function inferUnitOfValue (propertyName) {
+Timeline.inferUnitOfValue = function inferUnitOfValue(propertyName) {
   const unit = Timeline.UNIT_MAPPING[propertyName];
   if (unit) {
     return unit;
@@ -874,7 +874,7 @@ Timeline.inferUnitOfValue = function inferUnitOfValue (propertyName) {
   return '';
 };
 
-Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor (timelineRow, options) {
+Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor(timelineRow, options) {
   const componentId = timelineRow.element.getComponentId();
 
   const elementName = timelineRow.element.getNameString();
@@ -970,14 +970,14 @@ Timeline.getPropertyValueDescriptor = function getPropertyValueDescriptor (timel
         cleanValue = (cleanValue.slice(0, 6) + '…');
       }
 
-      prettyValue = {text: cleanValue, style: {whiteSpace: 'nowrap'}, render: 'react'};
+      prettyValue = { text: cleanValue, style: { whiteSpace: 'nowrap' }, render: 'react' };
     }
   }
 
   if (prettyValue === undefined) {
     if (assignedValue === undefined && bookendValue !== undefined) {
       if (bookendValue && typeof bookendValue === 'object' && bookendValue.__function) {
-        prettyValue = {text: '⚡', style: {fontSize: '11px'}, render: 'react'};
+        prettyValue = { text: '⚡', style: { fontSize: '11px' }, render: 'react' };
       }
     }
   }

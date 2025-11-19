@@ -1,7 +1,7 @@
 import fsExtra = require('fs-extra');
 import tape = require('tape');
 
-import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
+import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/src/exporter';
 import {getStub, stubProperties} from 'haiku-testing/lib/mock';
 
 import {handleExporterSaveRequest} from '@formats/exporters';

@@ -2,21 +2,21 @@ import * as lodash from 'lodash';
 import * as React from 'react';
 import * as Radium from 'radium';
 import * as Popover from 'react-popover';
-import {ProjectError} from 'haiku-sdk-creator/lib/bll/Project';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { ProjectError } from 'haiku-sdk-creator/src/bll/Project';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import NotificationExplorer from './notifications/NotificationExplorer';
 import ProjectThumbnail from './ProjectThumbnail';
-import {TourUtils} from 'haiku-common/lib/types/enums';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
-import {UserIconSVG, LogOutSVG, PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
-import ExternalLinkSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG';
-import {DASH_STYLES} from '../styles/dashShared';
-import {BTN_STYLES} from '../styles/btnShared';
+import { TourUtils } from 'haiku-common/src/types/enums';
+import { TOUR_CHANNEL } from 'haiku-sdk-creator/src/tour';
+import { UserIconSVG, LogOutSVG, PresentIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
+import AnimatorSVG from 'haiku-ui-common/src/react/icons/AnimatorSVG';
+import ExternalLinkSVG from 'haiku-ui-common/src/react/icons/ExternalLinkIconSVG';
+import { DASH_STYLES } from '../styles/dashShared';
+import { BTN_STYLES } from '../styles/btnShared';
 import LockoutModal from './LockoutModal';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
-import {Paginator} from 'haiku-ui-common/lib/react/Paginator';
+import { ExternalLink } from 'haiku-ui-common/src/react/ExternalLink';
+import { Paginator } from 'haiku-ui-common/src/react/Paginator';
 import * as  NoCon from '@haiku/taylor-nocon/react';  // Actual Ku Credit: Ms Tina!
 
 const STYLES = {
@@ -27,7 +27,7 @@ const STYLES = {
 };
 
 class ProjectBrowser extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
@@ -57,9 +57,9 @@ class ProjectBrowser extends React.Component {
     };
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (!this.props.expiredTrialNonPro && nextProps.expiredTrialNonPro) {
-      this.setState({showLockoutModal: true});
+      this.setState({ showLockoutModal: true });
     }
 
     if (this.props.isOnline ^ nextProps.isOnline) {
@@ -73,11 +73,11 @@ class ProjectBrowser extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadProjects();
 
     if (this.props.expiredTrialNonPro) {
-      this.setState({showLockoutModal: true});
+      this.setState({ showLockoutModal: true });
     }
 
     this.props.envoyClient.get(TOUR_CHANNEL).then((tourChannel) => {
@@ -86,7 +86,7 @@ class ProjectBrowser extends React.Component {
       // FIXME | HACK: since the project browser now supports scrolling, we
       // must ensure the tour project is in viewport when displaying
       // the OpenProject step in the tour.
-      this.tourChannel.on('tour:requestShowStep', ({component}) => {
+      this.tourChannel.on('tour:requestShowStep', ({ component }) => {
         if (component === 'Welcome') {
           this.setState({
             firstDisplayedProject: this.state.projectsList.findIndex((project) => project.projectName === TourUtils.ProjectName),
@@ -98,24 +98,24 @@ class ProjectBrowser extends React.Component {
     window.addEventListener('resize', this.updateDimensionsThrottled);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensionsThrottled);
   }
 
-  openPopover (evt) {
+  openPopover(evt) {
     evt.stopPropagation();
-    this.setState({isPopoverOpen: true});
+    this.setState({ isPopoverOpen: true });
 
     mixpanel.haikuTrack('creator:project-browser:user-menu-opened');
   }
 
-  closePopover () {
-    this.setState({isPopoverOpen: false});
+  closePopover() {
+    this.setState({ isPopoverOpen: false });
 
     mixpanel.haikuTrack('creator:project-browser:user-menu-closed');
   }
 
-  loadProjects (silent = false) {
+  loadProjects(silent = false) {
     return this.props.loadProjects(silent, (error, projectsList) => {
       if (error) {
         switch (error.code) {
@@ -136,21 +136,21 @@ class ProjectBrowser extends React.Component {
             });
             break;
         }
-        this.setState({error, areProjectsLoading: false});
+        this.setState({ error, areProjectsLoading: false });
         return;
       }
-      this.setState({projectsList, areProjectsLoading: false}, this.updateDimensions);
+      this.setState({ projectsList, areProjectsLoading: false }, this.updateDimensions);
       this.props.onProjectsList(projectsList);
     });
   }
 
-  hideDeleteModal () {
+  hideDeleteModal() {
     this.deleteInput.value = '';
     this.closeModals();
-    this.setState({projToDelete: ''});
+    this.setState({ projToDelete: '' });
   }
 
-  handleDeleteInputKeyDown (e) {
+  handleDeleteInputKeyDown(e) {
     if (e.keyCode === 13 && this.state.confirmDeleteMatches) {
       this.performDeleteProject();
       this.hideDeleteModal();
@@ -160,14 +160,14 @@ class ProjectBrowser extends React.Component {
     this.closeModalsOnEscKey(e);
   }
 
-  handleDeleteInputChange (e) {
+  handleDeleteInputChange(e) {
     this.setState({
       recordedDelete: e.target.value,
       confirmDeleteMatches: e.target.value === this.state.projToDelete,
     });
   }
 
-  showDeleteModal (name) {
+  showDeleteModal(name) {
     if (this.deleteInput) {
       this.deleteInput.value = '';
     }
@@ -178,11 +178,11 @@ class ProjectBrowser extends React.Component {
     });
   }
 
-  performDeleteProject () {
+  performDeleteProject() {
     const projectsList = this.state.projectsList;
     const projectToDelete = projectsList.find((project) => project.projectName === this.state.projToDelete);
     projectToDelete.isDeleted = true;
-    this.setState({projectsList, areProjectsLoading: true}, () => {
+    this.setState({ projectsList, areProjectsLoading: true }, () => {
       this.requestDeleteProject(projectToDelete, (deleteError) => {
         if (deleteError) {
           this.props.createNotice({
@@ -194,7 +194,7 @@ class ProjectBrowser extends React.Component {
           });
           // Oops, we actually didn't delete this project. Let's put it back.
           projectToDelete.isDeleted = false;
-          this.setState({projectsList}, () => {
+          this.setState({ projectsList }, () => {
           });
           return;
         }
@@ -214,20 +214,20 @@ class ProjectBrowser extends React.Component {
     });
   }
 
-  requestDeleteProject (projectObject, cb) {
+  requestDeleteProject(projectObject, cb) {
     this.props.envoyProject.deleteProject(projectObject).then(cb).catch(cb);
   }
 
-  showNewProjectModal () {
+  showNewProjectModal() {
     this.props.onShowNewProjectModal();
   }
 
-  doesProjectNameExist (projectName) {
+  doesProjectNameExist(projectName) {
     const equivalentNameMatcher = new RegExp(`^${projectName}$`, 'i');
     return this.state.projectsList.find((project) => equivalentNameMatcher.test(project.projectName)) !== undefined;
   }
 
-  trimAndSuffix (base, suffix) {
+  trimAndSuffix(base, suffix) {
     const remainingChars = 32 - (base.length + suffix.length);
 
     if (remainingChars < 0) {
@@ -238,7 +238,7 @@ class ProjectBrowser extends React.Component {
     return `${base}${suffix}`;
   }
 
-  showDuplicateProjectModal (projectObject) {
+  showDuplicateProjectModal(projectObject) {
     const duplicateNameBase = projectObject.projectName;
     const suffixBase = 'Copy';
     let suffix = suffixBase;
@@ -254,7 +254,7 @@ class ProjectBrowser extends React.Component {
     this.props.onShowNewProjectModal(true, potentialName, projectObject);
   }
 
-  get shouldShowOfflineNotice () {
+  get shouldShowOfflineNotice() {
     return !this.props.isOnline && !this.props.allowOffline;
   }
 
@@ -274,15 +274,15 @@ class ProjectBrowser extends React.Component {
     this.props.explorePro('project-browser-lockoutheading');
   };
 
-  offlineElement () {
+  offlineElement() {
     if (!this.shouldShowOfflineNotice) {
       return null;
     }
 
     return (
       <span style={DASH_STYLES.loadingWrap}>
-        <div style={{width: 560, fontSize: 16, lineHeight: 1.3, textAlign: 'center'}}>
-          <div style={{height: 160}}><NoCon loop={true} sizing="cover" /></div>
+        <div style={{ width: 560, fontSize: 16, lineHeight: 1.3, textAlign: 'center' }}>
+          <div style={{ height: 160 }}><NoCon loop={true} sizing="cover" /></div>
           <div style={DASH_STYLES.notice}>
             <div style={DASH_STYLES.noticeTitle}>Are you connected to the Internet?</div>
             <div>The Animator free trial requires an active intenet connection.</div>
@@ -295,15 +295,15 @@ class ProjectBrowser extends React.Component {
                 DASH_STYLES.btn,
               ]}
               onClick={this.exploreProOffline}>Go Pro
-              <span style={{width:14, height:14, transform: 'translateY(-2px)', marginLeft: 4}}>
-                <ExternalLinkSVG color={Palette.SUNSTONE}/>
+              <span style={{ width: 14, height: 14, transform: 'translateY(-2px)', marginLeft: 4 }}>
+                <ExternalLinkSVG color={Palette.SUNSTONE} />
               </span>
             </div>
           </div>
-          <div style={{marginTop:20}}>
+          <div style={{ marginTop: 20 }}>
             <div>Stuck behind a VPN?</div>
             <div
-              style={{color: Palette.LIGHT_BLUE, cursor: 'pointer'}}
+              style={{ color: Palette.LIGHT_BLUE, cursor: 'pointer' }}
               onClick={this.props.onShowProxySettings}>
               Change your proxy settings
             </div>
@@ -313,7 +313,7 @@ class ProjectBrowser extends React.Component {
     );
   }
 
-  renderNewProjectBoxorama () {
+  renderNewProjectBoxorama() {
     if (this.props.expiredTrialNonPro) {
       return false;
     }
@@ -322,7 +322,7 @@ class ProjectBrowser extends React.Component {
       <div
         style={[
           DASH_STYLES.cardAsButton,
-          this.state.cardHeight && {height: this.state.cardHeight},
+          this.state.cardHeight && { height: this.state.cardHeight },
         ]}
         key="wrap">
         <div
@@ -330,8 +330,8 @@ class ProjectBrowser extends React.Component {
           className="js-utility-project-launcher"
           style={[
             DASH_STYLES.scrimAsButton,
-            {opacity: 1},
-            this.state.cardHeight && {height: this.state.cardHeight - 30},
+            { opacity: 1 },
+            this.state.cardHeight && { height: this.state.cardHeight - 30 },
           ]}
           onClick={() => this.showNewProjectModal()}>
           <span
@@ -365,7 +365,7 @@ class ProjectBrowser extends React.Component {
         cardHeight = 220;
       }
 
-      this.setState({cardHeight});
+      this.setState({ cardHeight });
 
       const perCardHeight = cardHeight + DASH_STYLES.card.marginTop;
       const rows = Math.floor(availableHeight / (perCardHeight));
@@ -375,9 +375,9 @@ class ProjectBrowser extends React.Component {
       if (this.state.numProjectsPerPage === numProjectsPerPage) {
         return;
       }
-      this.setState({numProjectsPerPage, fadeOutProjects:true}, () => {
+      this.setState({ numProjectsPerPage, fadeOutProjects: true }, () => {
         setTimeout(() => {
-          this.setState({fadeOutProjects:false});
+          this.setState({ fadeOutProjects: false });
         }, 125);
       });
     }
@@ -394,30 +394,30 @@ class ProjectBrowser extends React.Component {
     }
 
     // Create fadeout/fadein effect
-    this.setState({fadeOutProjects:true}, () => {
+    this.setState({ fadeOutProjects: true }, () => {
       setTimeout(() => {
-        this.setState({firstDisplayedProject, fadeOutProjects:false});
+        this.setState({ firstDisplayedProject, fadeOutProjects: false });
       }, 125);
     });
   };
 
-  projectsListElement () {
+  projectsListElement() {
     if (this.shouldShowOfflineNotice || this.props.areProjectsLoading) {
       return null;
     }
-    const {showDeleteModal, showNewProjectModal, showChangelogModal, showLockoutModal} = this.state;
+    const { showDeleteModal, showNewProjectModal, showChangelogModal, showLockoutModal } = this.state;
 
     return (
       <div
         style={[
           DASH_STYLES.projectsWrapper,
-          {opacity: this.state.fadeOutProjects ? 0 : 1},
-          (showDeleteModal || showNewProjectModal || showChangelogModal || showLockoutModal) && {filter: 'blur(2px)'},
+          { opacity: this.state.fadeOutProjects ? 0 : 1 },
+          (showDeleteModal || showNewProjectModal || showChangelogModal || showLockoutModal) && { filter: 'blur(2px)' },
         ]}
         onScroll={lodash.throttle(() => {
           this.tourChannel.updateLayout();
         }, 50)}
-        ref={ (projectBrowserOuterDiv) => {
+        ref={(projectBrowserOuterDiv) => {
           if (projectBrowserOuterDiv) {
             this.projectBrowserOuterDiv = projectBrowserOuterDiv;
           }
@@ -427,29 +427,29 @@ class ProjectBrowser extends React.Component {
         {['newprojectbox', ...this.state.projectsList].slice(
           this.state.firstDisplayedProject,
           this.state.firstDisplayedProject + this.state.numProjectsPerPage).map((projectObject) => (
-          // newprojectbox is a placeholder for newProject boxorama
-          projectObject === 'newprojectbox' ? this.renderNewProjectBoxorama() :
-          <ProjectThumbnail
-            key={projectObject.projectName}
-            allowDelete={this.props.isOnline || projectObject.local}
-            allowInteractions={
-              this.props.expiredTrialNonPro ?
-                !(this.state.areProjectsLoading || !projectObject.repositoryUrl || projectObject.isFork) :
-                !this.state.areProjectsLoading
-            }
-            organizationName={this.props.organizationName}
-            projectName={projectObject.projectName}
-            projectExistsLocally={projectObject.projectExistsLocally}
-            projectPath={projectObject.projectPath}
-            projectShareUrl={projectObject.projectShareUrl}
-            isDeleted={projectObject.isDeleted}
-            launchProject={() => this.handleProjectLaunch(projectObject)}
-            showDeleteModal={() => this.showDeleteModal(projectObject.projectName)}
-            showDuplicateProjectModal={() => this.showDuplicateProjectModal(projectObject)}
-            expiredTrialNonPro={this.props.expiredTrialNonPro}
-            cardHeight={this.state.cardHeight}
-          />
-        ))}
+            // newprojectbox is a placeholder for newProject boxorama
+            projectObject === 'newprojectbox' ? this.renderNewProjectBoxorama() :
+              <ProjectThumbnail
+                key={projectObject.projectName}
+                allowDelete={this.props.isOnline || projectObject.local}
+                allowInteractions={
+                  this.props.expiredTrialNonPro ?
+                    !(this.state.areProjectsLoading || !projectObject.repositoryUrl || projectObject.isFork) :
+                    !this.state.areProjectsLoading
+                }
+                organizationName={this.props.organizationName}
+                projectName={projectObject.projectName}
+                projectExistsLocally={projectObject.projectExistsLocally}
+                projectPath={projectObject.projectPath}
+                projectShareUrl={projectObject.projectShareUrl}
+                isDeleted={projectObject.isDeleted}
+                launchProject={() => this.handleProjectLaunch(projectObject)}
+                showDeleteModal={() => this.showDeleteModal(projectObject.projectName)}
+                showDuplicateProjectModal={() => this.showDuplicateProjectModal(projectObject)}
+                expiredTrialNonPro={this.props.expiredTrialNonPro}
+                cardHeight={this.state.cardHeight}
+              />
+          ))}
         {/* the following abomination is needed for the nifty flexbox resizing.
             They are extra invisible spacers for the final row */}
         <div style={[DASH_STYLES.card, DASH_STYLES.dontAtMe]} key="123" />
@@ -462,15 +462,15 @@ class ProjectBrowser extends React.Component {
     );
   }
 
-  handleProjectLaunch (projectObject) {
-    if      (this.tourChannel) {
+  handleProjectLaunch(projectObject) {
+    if (this.tourChannel) {
       this.tourChannel.hide();
     }
 
     this.props.launchProject(projectObject);
   }
 
-  closeModals () {
+  closeModals() {
     this.setState({
       showDeleteModal: false,
       recordedDelete: '',
@@ -478,17 +478,17 @@ class ProjectBrowser extends React.Component {
     });
   }
 
-  closeModalsOnEscKey (e) {
+  closeModalsOnEscKey(e) {
     if (e.keyCode === 27) {
       this.closeModals();
     }
   }
 
-  renderUserMenuItems () {
+  renderUserMenuItems() {
     return (
-      <div style={[DASH_STYLES.popover.container, {width: 158}]} onClick={this.closePopover}>
+      <div style={[DASH_STYLES.popover.container, { width: 158 }]} onClick={this.closePopover}>
         <div style={DASH_STYLES.popover.item}>
-          <span style={[DASH_STYLES.popover.text, DASH_STYLES.upcase, {width: '100%'}]}>
+          <span style={[DASH_STYLES.popover.text, DASH_STYLES.upcase, { width: '100%' }]}>
             Signed In As{' '}
             <span
               style={[
@@ -512,7 +512,7 @@ class ProjectBrowser extends React.Component {
           <ExternalLink
             key="user-profile"
             href={`https://share.haiku.ai/u/${this.props.organizationName}`}>
-            <span style={[DASH_STYLES.popover.icon, {transform: 'translateY(3px)'}]}>
+            <span style={[DASH_STYLES.popover.icon, { transform: 'translateY(3px)' }]}>
               <UserIconSVG />
             </span>
             <span style={[DASH_STYLES.popover.text, DASH_STYLES.upcase]}>Your Profile</span>
@@ -536,14 +536,14 @@ class ProjectBrowser extends React.Component {
               option: 'show-changelog',
             });
           }}>
-          <span style={DASH_STYLES.popover.icon} aria-label="Show changelog"  data-tooltip={true} data-tooltip-bottom={true}>
+          <span style={DASH_STYLES.popover.icon} aria-label="Show changelog" data-tooltip={true} data-tooltip-bottom={true}>
             <PresentIconSVG />
           </span>
           <span style={[DASH_STYLES.popover.text, DASH_STYLES.upcase]}>What's New</span>
         </div>
         <div style={[DASH_STYLES.popover.item, DASH_STYLES.popover.mini, DASH_STYLES.noSelect]}>
           <span style={DASH_STYLES.popover.icon}>
-            <AnimatorSVG style={{transform: 'translateY(2px)'}} />
+            <AnimatorSVG style={{ transform: 'translateY(2px)' }} />
           </span>
           <span style={[DASH_STYLES.popover.text, DASH_STYLES.noSelect]}>{this.props.softwareVersion}</span>
         </div>
@@ -551,18 +551,18 @@ class ProjectBrowser extends React.Component {
     );
   }
 
-  renderLockoutModal () {
+  renderLockoutModal() {
     return (
       <LockoutModal
         explorePro={this.exploreProLockoutModal}
         onClose={() => {
-          this.setState({showLockoutModal: false});
+          this.setState({ showLockoutModal: false });
         }}
       />
     );
   }
 
-  renderDeleteModal () {
+  renderDeleteModal() {
     return (
       <div style={DASH_STYLES.overlay}
         onClick={() => {
@@ -601,7 +601,7 @@ class ProjectBrowser extends React.Component {
               BTN_STYLES.btnPrimary,
               DASH_STYLES.upcase,
               !this.state.confirmDeleteMatches && BTN_STYLES.btnDisabled,
-              {marginRight: 0},
+              { marginRight: 0 },
             ]}
           >
             Delete Project
@@ -617,15 +617,15 @@ class ProjectBrowser extends React.Component {
     );
   }
 
-  render () {
-    const {trialDaysRemaining} = this.props;
+  render() {
+    const { trialDaysRemaining } = this.props;
 
     return (
       <div style={DASH_STYLES.dashWrap}>
         {/* This hack allows the italic and strong variants of the font to be preloaded, avoiding FOUT */}
-        <span style={{visibility: 'hidden', width: 0, height: 0}}>
+        <span style={{ visibility: 'hidden', width: 0, height: 0 }}>
           <span style={DASH_STYLES.projToDelete} />
-          <span style={{fontWeight: 'bold'}} />
+          <span style={{ fontWeight: 'bold' }} />
         </span>
 
         {this.state.showDeleteModal && this.renderDeleteModal()}
@@ -635,14 +635,14 @@ class ProjectBrowser extends React.Component {
         }
 
         <div style={DASH_STYLES.frame} className="frame">
-          { trialDaysRemaining > 0 &&
-            <span style={{marginRight: 8}}>{trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''} in your free trial`}</span>
+          {trialDaysRemaining > 0 &&
+            <span style={{ marginRight: 8 }}>{trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''} in your free trial`}</span>
           }
           <NotificationExplorer
             lastViewedChangelog={this.props.lastViewedChangelog}
             onShowChangelogModal={this.props.onShowChangelogModal} />
 
-          { !this.props.expiredTrialNonPro
+          {!this.props.expiredTrialNonPro
             ? (<button
               id="haiku-button-show-new-project-modal"
               key="new_proj"
@@ -650,7 +650,7 @@ class ProjectBrowser extends React.Component {
               onClick={() => this.showNewProjectModal()}
               style={[BTN_STYLES.btnIcon, BTN_STYLES.btnIconHover]}
             >
-              <span style={{fontSize: 18, marginRight: 2, transform: 'translateY(-1px)'}}>+ </span>
+              <span style={{ fontSize: 18, marginRight: 2, transform: 'translateY(-1px)' }}>+ </span>
               <span>New Project</span>
             </button>)
             : (
@@ -658,7 +658,7 @@ class ProjectBrowser extends React.Component {
                 style={DASH_STYLES.bannerNotice}
                 onClick={this.exploreProTitlebar}>
                 Go Pro
-                  <span style={{width: 11, height: 11, display: 'inline-block', marginLeft: 4, transform: 'translateY(1px)'}}>
+                <span style={{ width: 11, height: 11, display: 'inline-block', marginLeft: 4, transform: 'translateY(1px)' }}>
                   <ExternalLinkSVG color={Palette.LIGHT_BLUE} />
                 </span>
               </span>
@@ -688,7 +688,7 @@ class ProjectBrowser extends React.Component {
           </Popover>
         </div>
         {this.props.expiredTrialNonPro &&
-          (<div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center'}}>
+          (<div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
             <div style={DASH_STYLES.heading}><strong>Your 14 day trial has expired.</strong> Go Pro to continue working on your projects!</div>
             <div>
               <span
@@ -697,7 +697,7 @@ class ProjectBrowser extends React.Component {
                   BTN_STYLES.btnPrimary,
                 ]}
                 onClick={this.exploreProLockoutHeading}>Go Pro
-                  <span style={{width: 14, height: 14, transform: 'translateY(-2px)', marginLeft: 4}}>
+                <span style={{ width: 14, height: 14, transform: 'translateY(-2px)', marginLeft: 4 }}>
                   <ExternalLinkSVG color={Palette.SUNSTONE} />
                 </span>
               </span>

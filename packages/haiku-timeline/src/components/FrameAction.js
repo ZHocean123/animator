@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Bolt from 'haiku-ui-common/src/react/icons/Bolt';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const STYLE = {
   base: {
@@ -38,7 +38,7 @@ const STYLE = {
 const HOVER_INTENT_TIME = 190;
 
 class FrameAction extends React.Component {
-  constructor () {
+  constructor() {
     super();
     this.timeout = null;
     this.state = {
@@ -50,13 +50,13 @@ class FrameAction extends React.Component {
     if (!this.timeout) {
       this.timeout = setTimeout(() => {
         this.timeout = null;
-        this.setState({achievedHover: true});
+        this.setState({ achievedHover: true });
       }, HOVER_INTENT_TIME);
     }
   };
 
   unsetTimeout = () => {
-    this.setState({achievedHover: false});
+    this.setState({ achievedHover: false });
 
     if (this.timeout) {
       clearTimeout(this.timeout);
@@ -64,7 +64,7 @@ class FrameAction extends React.Component {
     }
   };
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.unsetTimeout();
   }
 
@@ -79,7 +79,7 @@ class FrameAction extends React.Component {
     }
   };
 
-  render () {
+  render() {
     if (this.props.hasActions) {
       return (
         <div onMouseDown={this.openFrameActionsEditor} style={STYLE.base}>
@@ -94,7 +94,7 @@ class FrameAction extends React.Component {
         onMouseOver={this.setHover}
         onMouseLeave={this.unsetTimeout}
         onMouseDown={this.openFrameActionsEditorIfAchievedHover}
-        style={{...STYLE.base, ...STYLE.addAction, ...(this.state.achievedHover && STYLE.show)}}>
+        style={{ ...STYLE.base, ...STYLE.addAction, ...(this.state.achievedHover && STYLE.show) }}>
         <div style={STYLE.plus}>
           +
         </div>

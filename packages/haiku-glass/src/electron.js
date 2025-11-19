@@ -1,7 +1,7 @@
 import * as qs from 'qs';
-import {app, BrowserWindow, ipcMain} from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-import TopMenu from 'haiku-common/lib/electron/TopMenu';
+import TopMenu from 'haiku-common/src/electron/TopMenu';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 /**
@@ -18,7 +18,7 @@ const params = {
 };
 
 if (process.env.MOCK_ENVOY) {
-  params.envoy = {mock: true};
+  params.envoy = { mock: true };
 }
 
 logger.info('[glass] launching window with params', params);
@@ -29,8 +29,8 @@ url = `${url}?${query}`;
 
 let mainWindow;
 
-function createWindow () {
-  mainWindow = new BrowserWindow({width: 1200, height: 800});
+function createWindow() {
+  mainWindow = new BrowserWindow({ width: 1200, height: 800 });
   mainWindow.loadURL(url);
 
   if (process.env.DEV === '1' || process.env.DEV === 'glass') {
@@ -43,7 +43,7 @@ function createWindow () {
 
   const topmenu = new TopMenu({
     send: (name, data) => {
-      mainWindow.webContents.send('relay', {name, data, from: 'electron'});
+      mainWindow.webContents.send('relay', { name, data, from: 'electron' });
     },
   });
 
@@ -52,7 +52,7 @@ function createWindow () {
     isSaving: false,
     isProjectOpen: true,
     subComponents: [],
-    undoState: {canUndo: false, canRedo: false},
+    undoState: { canUndo: false, canRedo: false },
   });
 
   ipcMain.on('topmenu:update', (ipcEvent, nextTopmenuOptions) => {

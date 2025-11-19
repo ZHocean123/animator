@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { PresentIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const STYLES = {
   wrapper: {
@@ -21,7 +21,7 @@ const STYLES = {
 };
 
 class NotificationExplorer extends React.PureComponent {
-  constructor () {
+  constructor() {
     super();
 
     this.state = {
@@ -30,18 +30,18 @@ class NotificationExplorer extends React.PureComponent {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({
       hasNotifications: process.env.HAIKU_RELEASE_VERSION !== this.props.lastViewedChangelog,
     });
   }
 
-  showChangelogModal () {
-    this.setState({hasNotifications: false});
+  showChangelogModal() {
+    this.setState({ hasNotifications: false });
     this.props.onShowChangelogModal();
   }
 
-  render () {
+  render() {
     if (!this.state.hasNotifications) {
       return null;
     }

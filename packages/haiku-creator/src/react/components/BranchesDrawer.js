@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {BranchIconSVG, CommentsIconSVG, EditsIconSVG, TeammatesIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
+import { BranchIconSVG, CommentsIconSVG, EditsIconSVG, TeammatesIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
 
 const fauxBranchState = [
   [false, false, true],
@@ -92,14 +92,14 @@ const STYLES = {
 };
 
 class BranchesDrawer extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       branches: [],
     };
   }
 
-  branchesList () {
+  branchesList() {
     const currentBranches = this.state.branches;
     if (!currentBranches || currentBranches.length < 1) {
       return (
@@ -129,11 +129,11 @@ class BranchesDrawer extends React.Component {
     );
   }
 
-  branchesLoaded (branches) {
-    this.setState({branches});
+  branchesLoaded(branches) {
+    this.setState({ branches });
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container} className="layout-box">
         <div style={STYLES.bar} className="frame" />

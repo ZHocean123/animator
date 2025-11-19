@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
+import Bolt from 'haiku-ui-common/src/react/icons/Bolt';
 
 const STYLES = {
   wrapper: {
@@ -11,16 +11,16 @@ const STYLES = {
 };
 
 class EventHandlerTriggerer extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.triggerEventHandlers = this.triggerEventHandlers.bind(this);
   }
 
-  triggerEventHandlers () {
+  triggerEventHandlers() {
     this.props.onEventHandlerTriggered(this.props.element.getPrimaryKey());
   }
 
-  render () {
+  render() {
     return (
       <span onClick={this.triggerEventHandlers} style={STYLES.wrapper}>
         <Bolt color={this.props.boltColor} />

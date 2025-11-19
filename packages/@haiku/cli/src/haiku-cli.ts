@@ -1,6 +1,6 @@
 import {client} from '@haiku/sdk-client';
 import {inkstone} from '@haiku/sdk-inkstone';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
+import {ErrorCode} from '@haiku/sdk-inkstone/src/errors';
 
 import {
   DEFAULT_BRANCH_NAME,

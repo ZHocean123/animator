@@ -1,14 +1,14 @@
 const path = require('path');
 const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
-const {rounded, transformFourVectorByMatrix, basicallyEquals} = require('./MathUtils');
+const { rounded, transformFourVectorByMatrix, basicallyEquals } = require('./MathUtils');
 const TransformCache = require('./TransformCache');
-const {default: Layout3D} = require('@haiku/core/lib/Layout3D');
-const {default: HaikuElement} = require('@haiku/core/lib/HaikuElement');
-const {default: composedTransformsToTimelineProperties} = require('haiku-common/lib/layout/composedTransformsToTimelineProperties');
-const {default: invertMatrix} = require('haiku-vendor-legacy/lib/gl-mat4/invert');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
-const {Figma} = require('./Figma');
+const { default: Layout3D } = require('@haiku/core/lib/Layout3D');
+const { default: HaikuElement } = require('@haiku/core/lib/HaikuElement');
+const { default: composedTransformsToTimelineProperties } = require('haiku-common/src/layout/composedTransformsToTimelineProperties');
+const { default: invertMatrix } = require('haiku-vendor-legacy/lib/gl-mat4/invert');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
+const { Figma } = require('./Figma');
 const Sketch = require('./Sketch');
 const Illustrator = require('./Illustrator');
 const lodash = require('lodash');
@@ -32,7 +32,7 @@ const SNAP_EPSILON = 0.025;
  *   need to be aware of the entire set.
  */
 class ElementSelectionProxy extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     if (!Array.isArray(this.selection)) {
@@ -49,7 +49,7 @@ class ElementSelectionProxy extends BaseModel {
     this.initializeRotationSnap();
   }
 
-  reinitializeLayout () {
+  reinitializeLayout() {
     this._proxyBoxPoints = [];
     this._proxyProperties = {};
 
@@ -95,8 +95,8 @@ class ElementSelectionProxy extends BaseModel {
 
     const xOffset = boxPoints[0].x;
     const yOffset = boxPoints[0].y;
-    boxPoints.forEach(({x, y}) => {
-      this._proxyBoxPoints.push({x: x - xOffset, y: y - yOffset, z: 0});
+    boxPoints.forEach(({ x, y }) => {
+      this._proxyBoxPoints.push({ x: x - xOffset, y: y - yOffset, z: 0 });
     });
 
     const width = Math.abs(boxPoints[0].x - boxPoints[8].x);
@@ -112,55 +112,55 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  initializeRotationSnap () {
+  initializeRotationSnap() {
     this.rotationSnapOffset = null;
     this.rotationSnapStrategy = null;
   }
 
-  hasAnythingInSelection () {
+  hasAnythingInSelection() {
     return this.selection.length > 0;
   }
 
-  hasAnythingInSelectionButNotArtboard () {
+  hasAnythingInSelectionButNotArtboard() {
     return (
       this.hasAnythingInSelection() &&
       !this.doesSelectionContainArtboard()
     );
   }
 
-  hasMultipleInSelection () {
+  hasMultipleInSelection() {
     return this.selection.length > 1;
   }
 
-  hasNothingInSelection () {
+  hasNothingInSelection() {
     return !this.hasAnythingInSelection();
   }
 
-  doesSelectionContainArtboard () {
+  doesSelectionContainArtboard() {
     return !!this.getArtboardElement();
   }
 
-  getArtboardElement () {
+  getArtboardElement() {
     return this.selection.filter((element) => {
       return element.isRootElement();
     })[0];
   }
 
-  doesManageSingleElement () {
+  doesManageSingleElement() {
     return this.selection.length === 1;
   }
 
-  canRotate () {
+  canRotate() {
     return !this.doesSelectionContainArtboard();
   }
 
-  canControlHandles () {
+  canControlHandles() {
     return this.hasAnythingInSelection() && (
       this.doesManageSingleElement() || experimentIsEnabled(Experiment.AdvancedMultiTransform)
     );
   }
 
-  pushCachedTransform (key) {
+  pushCachedTransform(key) {
     this.transformCache.set(key);
     this.selection.forEach((element) => {
       element.transformCache.set(key);
@@ -169,24 +169,24 @@ class ElementSelectionProxy extends BaseModel {
 
   // very similar to pushCachedTransform, but does it for all selected elements,
   // doesn't keep a stack, and only tracks origins rather than full transforms
-  cacheOrigins () {
+  cacheOrigins() {
     this._originCache = this.selection.map((elem) => {
       return elem.getOriginTransformed();
     });
     this._originCache.groupOrigin = this.getOriginTransformed();
   }
 
-  isSingleComponentSelected () {
+  isSingleComponentSelected() {
     return this.selection.length === 1 &&
       this.selection[0] &&
       this.selection[0].isComponent();
   }
 
-  canEditComponentFromSelection () {
+  canEditComponentFromSelection() {
     return this.isSingleComponentSelected() && this.selection[0].isLocalComponent();
   }
 
-  getSourcePath () {
+  getSourcePath() {
     if (!this.selection) {
       return;
     }
@@ -201,14 +201,14 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  isSelectionFinderOpenable () {
+  isSelectionFinderOpenable() {
     const sourcePath = this.getSourcePath();
     if (!sourcePath) {
       return false;
     }
   }
 
-  getAbspath () {
+  getAbspath() {
     const folder = this.component.project.getFolder();
     if (this.isSelectionSketchEditable()) {
       return path.join(folder, this.getSourcePath(), '..', '..');
@@ -222,7 +222,7 @@ class ElementSelectionProxy extends BaseModel {
     return folder;
   }
 
-  isSelectionSketchEditable () {
+  isSelectionSketchEditable() {
     const sourcePath = this.getSourcePath();
     return !!(
       sourcePath &&
@@ -230,7 +230,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  getSketchAssetPath () {
+  getSketchAssetPath() {
     const sourcePath = this.getSourcePath();
     return (
       sourcePath &&
@@ -238,7 +238,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  isSelectionFigmaEditable () {
+  isSelectionFigmaEditable() {
     const sourcePath = this.getSourcePath();
     return !!(
       sourcePath &&
@@ -246,7 +246,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  getFigmaAssetPath () {
+  getFigmaAssetPath() {
     const sourcePath = this.getSourcePath();
     return (
       sourcePath &&
@@ -254,11 +254,11 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  getFigmaAssetLink () {
+  getFigmaAssetLink() {
     return Figma.buildFigmaLinkFromPath(this.getFigmaAssetPath());
   }
 
-  isSelectionIllustratorEditable () {
+  isSelectionIllustratorEditable() {
     const sourcePath = this.getSourcePath();
     return !!(
       sourcePath &&
@@ -266,7 +266,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  getIllustratorAssetPath () {
+  getIllustratorAssetPath() {
     const sourcePath = this.getSourcePath();
     return (
       sourcePath &&
@@ -274,24 +274,24 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  canCut () {
+  canCut() {
     return this.hasAnythingInSelection() && !this.doesSelectionContainArtboard();
   }
 
-  canCopy () {
+  canCopy() {
     return this.hasAnythingInSelection() && !this.doesSelectionContainArtboard();
   }
 
-  canPaste () {
+  canPaste() {
     // TODO: How can we determine whether we have a pasteable ready?
     return this.selection.length < 1;
   }
 
-  canDelete () {
+  canDelete() {
     return this.hasAnythingInSelection() && !this.doesSelectionContainArtboard();
   }
 
-  canBringForward () {
+  canBringForward() {
     return (
       this.doesManageSingleElement() &&
       !this.doesSelectionContainArtboard() &&
@@ -299,11 +299,11 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  bringForward () {
+  bringForward() {
     return this.selection[0].bringForward();
   }
 
-  canSendBackward () {
+  canSendBackward() {
     return (
       this.doesManageSingleElement() &&
       !this.doesSelectionContainArtboard() &&
@@ -311,11 +311,11 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  sendBackward () {
+  sendBackward() {
     return this.selection[0].sendBackward();
   }
 
-  canBringToFront () {
+  canBringToFront() {
     return (
       this.doesManageSingleElement() &&
       !this.doesSelectionContainArtboard() &&
@@ -323,11 +323,11 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  bringToFront () {
+  bringToFront() {
     return this.selection[0].bringToFront();
   }
 
-  canSendToBack () {
+  canSendToBack() {
     return (
       this.doesManageSingleElement() &&
       !this.doesSelectionContainArtboard() &&
@@ -335,18 +335,18 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  sendToBack () {
+  sendToBack() {
     return this.selection[0].sendToBack();
   }
 
-  canGroup () {
+  canGroup() {
     return (
       !this.doesSelectionContainArtboard() &&
       !this.doesManageSingleElement()
     );
   }
 
-  group (metadata) {
+  group(metadata) {
     if (!this.hasAnythingInSelection()) {
       return;
     }
@@ -411,11 +411,11 @@ class ElementSelectionProxy extends BaseModel {
       // during on-stage transformation.
       this.getOriginTransformed(),
       metadata,
-      () => {},
+      () => { },
     );
   }
 
-  canUngroup () {
+  canUngroup() {
     return (
       !this.doesSelectionContainArtboard() &&
       this.doesManageSingleElement() &&
@@ -424,36 +424,36 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  ungroup (metadata) {
+  ungroup(metadata) {
     return this.selection[0].ungroup(metadata);
   }
 
-  canCopySVG () {
+  canCopySVG() {
     return this.doesManageSingleElement();
   }
 
-  copySVG () {
+  copySVG() {
     return this.selection[0].toXMLString();
   }
 
-  canHTMLSnapshot () {
+  canHTMLSnapshot() {
     return true;
   }
 
-  getSingleComponentElement () {
+  getSingleComponentElement() {
     return this.selection[0];
   }
 
-  getSingleComponentElementRelpath () {
+  getSingleComponentElementRelpath() {
     return this.selection[0].getAttribute(HAIKU_SOURCE_ATTRIBUTE);
   }
 
-  getConglomerateTranslation () {
+  getConglomerateTranslation() {
     const points = this.getBoundingBoxPoints();
     return points[0];
   }
 
-  getConglomerateSize () {
+  getConglomerateSize() {
     const points = this.getBoundingBoxPoints();
     return {
       x: points[2].x - points[0].x,
@@ -461,7 +461,7 @@ class ElementSelectionProxy extends BaseModel {
     };
   }
 
-  getBoundingBoxPoints () {
+  getBoundingBoxPoints() {
     return HaikuElement.getBoundingBoxPoints(
       this.selection.map((element) => element.getBoxPointsTransformed()).reduce((accumulator, boxPoints) => {
         accumulator.push(...boxPoints);
@@ -470,7 +470,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  getOriginTransformed () {
+  getOriginTransformed() {
     return this.cache.fetch('getOriginTransformed', () => {
       const layout = this.getComputedLayout();
 
@@ -486,26 +486,26 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   // returns the box points of the base element, without transform applied
-  getBoxPointsCompletelyNotTransformed () {
+  getBoxPointsCompletelyNotTransformed() {
     const layout = this.getComputedLayout();
     const w = layout.size.x;
     const h = layout.size.y;
     return [
-      {x: 0, y: 0, z: 0}, {x: w / 2, y: 0, z: 0}, {x: w, y: 0, z: 0},
-      {x: 0, y: h / 2, z: 0}, {x: w / 2, y: h / 2, z: 0}, {x: w, y: h / 2, z: 0},
-      {x: 0, y: h, z: 0}, {x: w / 2, y: h, z: 0}, {x: w, y: h, z: 0},
+      { x: 0, y: 0, z: 0 }, { x: w / 2, y: 0, z: 0 }, { x: w, y: 0, z: 0 },
+      { x: 0, y: h / 2, z: 0 }, { x: w / 2, y: h / 2, z: 0 }, { x: w, y: h / 2, z: 0 },
+      { x: 0, y: h, z: 0 }, { x: w / 2, y: h, z: 0 }, { x: w, y: h, z: 0 },
     ];
   }
 
-  getLayoutSpec () {
+  getLayoutSpec() {
     // Important: in the case we're we have a single element selected, we ensure correctness of the box placement
     // by applying all the properties affecting layout.
     return {
       shown: true,
       opacity: 1.0,
-      sizeMode: {x: 1, y: 1, z: 1},
-      sizeProportional: {x: 1, y: 1, z: 1},
-      sizeDifferential: {x: 0, y: 0, z: 0},
+      sizeMode: { x: 1, y: 1, z: 1 },
+      sizeProportional: { x: 1, y: 1, z: 1 },
+      sizeDifferential: { x: 0, y: 0, z: 0 },
       offset: {
         x: this.computePropertyValue('offset.x'),
         y: this.computePropertyValue('offset.y'),
@@ -544,7 +544,7 @@ class ElementSelectionProxy extends BaseModel {
     };
   }
 
-  isAutoSizeX () {
+  isAutoSizeX() {
     if (this.hasNothingInSelection() || this.hasMultipleInSelection()) {
       return false;
     }
@@ -561,7 +561,7 @@ class ElementSelectionProxy extends BaseModel {
     return this.selection[0].isAutoSizeX();
   }
 
-  isAutoSizeY () {
+  isAutoSizeY() {
     if (this.hasNothingInSelection() || this.hasMultipleInSelection()) {
       return false;
     }
@@ -578,9 +578,9 @@ class ElementSelectionProxy extends BaseModel {
     return this.selection[0].isAutoSizeY();
   }
 
-  getComputedLayout () {
+  getComputedLayout() {
     return this.cache.fetch('getComputedLayout', () => {
-      const {width, height} = this.component.getContextSize();
+      const { width, height } = this.component.getContextSize();
 
       let bounds = {
         left: null,
@@ -616,14 +616,14 @@ class ElementSelectionProxy extends BaseModel {
     });
   }
 
-  getBoxPointsTransformed () {
+  getBoxPointsTransformed() {
     return this.cache.fetch('getBoxPointsTransformed', () => {
       const points = this._proxyBoxPoints.map((point) => Object.assign({}, point));
       return HaikuElement.transformPointsInPlace(points, this.getComputedLayout().matrix);
     });
   }
 
-  getControlsPosition (basisPointIndex, xOffset, yOffset) {
+  getControlsPosition(basisPointIndex, xOffset, yOffset) {
     return this.cache.fetch('getControlsPosition', () => {
       const layout = this.getComputedLayout();
       const orthonormalBasisMatrix = Layout3D.computeOrthonormalBasisMatrix(layout.rotation, layout.shear);
@@ -643,7 +643,7 @@ class ElementSelectionProxy extends BaseModel {
     });
   }
 
-  getBoundingClientRect () {
+  getBoundingClientRect() {
     const points = this.getBoxPointsTransformed();
 
     // tslint:disable-next-line:one-variable-per-declaration
@@ -678,24 +678,24 @@ class ElementSelectionProxy extends BaseModel {
     };
   }
 
-  getElement () {
+  getElement() {
     return this.selection[0];
   }
 
-  computePropertyValue (key) {
+  computePropertyValue(key) {
     return this._proxyProperties[key];
   }
 
-  applyPropertyValue (key, value) {
+  applyPropertyValue(key, value) {
     this._proxyProperties[key] = value;
     this.clearAllRelatedCaches();
   }
 
-  applyPropertyDelta (key, delta) {
+  applyPropertyDelta(key, delta) {
     this.applyPropertyValue(key, this._proxyProperties[key] + delta);
   }
 
-  reset () {
+  reset() {
     const layout = this.getComputedLayout();
     this.applyPropertyValue('sizeAbsolute.x', Math.abs(layout.size.x * layout.scale.x));
     this.applyPropertyValue('sizeAbsolute.y', Math.abs(layout.size.y * layout.scale.y));
@@ -703,18 +703,18 @@ class ElementSelectionProxy extends BaseModel {
     this.applyPropertyValue('scale.y', 1);
   }
 
-  handleMouseDown (mousePosition) {
+  handleMouseDown(mousePosition) {
     this._shouldCaptureMousePosition = true;
   }
 
-  handleMouseUp (mousePosition) {
+  handleMouseUp(mousePosition) {
     ElementSelectionProxy.snaps = [];
   }
 
   // snapDefinitions are the element-side 'snap points' (lines)
   // snapLines are the stage-side 'snap points' (lines)
   // note that snapLines will generally include snapDefinitions, so there's a filter step at the beginning
-  findSnapsMatchesAndBreakTies (snapDefinitions, snapLines) {
+  findSnapsMatchesAndBreakTies(snapDefinitions, snapLines) {
     const horizWinners = [];
     const vertWinners = [];
     let winningDeltaHoriz;
@@ -774,7 +774,7 @@ class ElementSelectionProxy extends BaseModel {
     return [].concat(horizWinners, vertWinners);
   }
 
-  getBboxValueFromEdgeValue (
+  getBboxValueFromEdgeValue(
     bbox,
     xEdge,
     yEdge,
@@ -814,7 +814,7 @@ class ElementSelectionProxy extends BaseModel {
   // xEdge ∈ {undefined, 0, .5, .1}
   // yEdge ∈ {undefined, 0, .5, .1}
   // toStage ∈ {true, falsy}
-  align (
+  align(
     xEdge,
     yEdge,
     toStage,
@@ -860,7 +860,7 @@ class ElementSelectionProxy extends BaseModel {
   // xEdge ∈ {undefined, 0, .5, .1}
   // yEdge ∈ {undefined, 0, .5, .1}
   // toStage ∈ {true, falsy}
-  distribute (
+  distribute(
     xEdge,
     yEdge,
     toStage,
@@ -941,7 +941,7 @@ class ElementSelectionProxy extends BaseModel {
    * @method drag
    * @description Scale, rotate, or translate the elements in the selection
    */
-  drag (
+  drag(
     dx,
     dy,
     mouseCoordsCurrent,
@@ -1057,8 +1057,8 @@ class ElementSelectionProxy extends BaseModel {
       const snapLines = artboard.getSnapLinesInScreenCoords();
 
       // index corresponds with selected elements' indicies
-        // { x : number
-        //  y : number }
+      // { x : number
+      //  y : number }
       const overrides = [];
 
       const origin = addVectors(this._lastOrigin, totalDragDelta);
@@ -1152,7 +1152,7 @@ class ElementSelectionProxy extends BaseModel {
     return this.move(dx, dy);
   }
 
-  panOrigin (dx, dy) {
+  panOrigin(dx, dy) {
     // Origin panning is a position-preserving operation (in parent coordinates), requiring us to update translation to
     // match. To achieve the desired effect, first we compute the effective (x, y) translation after accounting for
     // z-rotation and scale, so the origin dot "lands" in an expected place while dragging.
@@ -1172,7 +1172,7 @@ class ElementSelectionProxy extends BaseModel {
     const deltaY = (-scaledBasisMatrix[1] * dx + scaledBasisMatrix[0] * dy) / determinant;
     const deltaOriginX = rounded(forceNumeric(deltaX / computedLayout.size.x));
     const deltaOriginY = rounded(forceNumeric(deltaY / computedLayout.size.y));
-    const {matrix: layoutMatrix} = computedLayout;
+    const { matrix: layoutMatrix } = computedLayout;
     const deltaTranslationX = layoutMatrix[0] * deltaX + layoutMatrix[4] * deltaY;
     const deltaTranslationY = layoutMatrix[1] * deltaX + layoutMatrix[5] * deltaY;
 
@@ -1221,7 +1221,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  clearAllRelatedCaches () {
+  clearAllRelatedCaches() {
     if (this.hasAnythingInSelection()) {
       this.cache.clear();
 
@@ -1232,7 +1232,7 @@ class ElementSelectionProxy extends BaseModel {
   }
 
   // overrides allow per-element absolute position overrides, useful for snapping
-  move (dx, dy, overrides) {
+  move(dx, dy, overrides) {
     const propertyGroupDelta = {};
 
     if (dx > 0 || dx < 0) {
@@ -1254,10 +1254,10 @@ class ElementSelectionProxy extends BaseModel {
       const propertyGroup = element.computePropertyGroupValueFromGroupDelta(propertyGroupDelta);
 
       if (overrides && overrides[i] && overrides[i].x !== undefined) {
-        propertyGroup['translation.x'] = {value: overrides[i].x - layoutSpec.offset.x};
+        propertyGroup['translation.x'] = { value: overrides[i].x - layoutSpec.offset.x };
       }
       if (overrides && overrides[i] && overrides[i].y !== undefined) {
-        propertyGroup['translation.y'] = {value: overrides[i].y - layoutSpec.offset.y};
+        propertyGroup['translation.y'] = { value: overrides[i].y - layoutSpec.offset.y };
       }
 
       ElementSelectionProxy.accumulateKeyframeUpdates(
@@ -1273,7 +1273,7 @@ class ElementSelectionProxy extends BaseModel {
       accumulatedUpdates,
       {},
       this.component.project.getMetadata(),
-      () => {}, // no-op
+      () => { }, // no-op
     );
 
     if (overrides && overrides.groupOrigin && overrides.groupOrigin.x !== undefined) {
@@ -1289,7 +1289,7 @@ class ElementSelectionProxy extends BaseModel {
     }
   }
 
-  getActivationPointInRadians (index) {
+  getActivationPointInRadians(index) {
     switch (index) {
       case 5: return Math.PI * 2;
       case 8: return Math.PI / 4;
@@ -1304,7 +1304,7 @@ class ElementSelectionProxy extends BaseModel {
     }
   }
 
-  scale (
+  scale(
     dx,
     dy,
     activationPoint,
@@ -1330,7 +1330,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  translateBoxPointsManual (boxPoints, delta) {
+  translateBoxPointsManual(boxPoints, delta) {
     return boxPoints.map((point) => {
       return {
         x: point.x + delta.x,
@@ -1339,7 +1339,7 @@ class ElementSelectionProxy extends BaseModel {
     });
   }
 
-  scaleElements (mouseCoordsCurrent, mouseCoordsPrevious, activationPoint, globals) {
+  scaleElements(mouseCoordsCurrent, mouseCoordsPrevious, activationPoint, globals) {
     const foundSnaps = [];
 
     const accumulatedUpdates = {};
@@ -1381,18 +1381,26 @@ class ElementSelectionProxy extends BaseModel {
     ElementSelectionProxy.transformPointsByLayoutInPlace(transformedPoints, updatedLayout);
     // find axis-aligned bounding box; add each edge
     const axisAlignedBbox = [
-      {name: 'TOP', value: Math.min.apply(this, transformedPoints.map((p) => {
-        return p.y;
-      }))},
-      {name: 'RIGHT', value: Math.max.apply(this, transformedPoints.map((p) => {
-        return p.x;
-      }))},
-      {name: 'BOTTOM', value: Math.max.apply(this, transformedPoints.map((p) => {
-        return p.y;
-      }))},
-      {name: 'LEFT', value: Math.min.apply(this, transformedPoints.map((p) => {
-        return p.x;
-      }))},
+      {
+        name: 'TOP', value: Math.min.apply(this, transformedPoints.map((p) => {
+          return p.y;
+        }))
+      },
+      {
+        name: 'RIGHT', value: Math.max.apply(this, transformedPoints.map((p) => {
+          return p.x;
+        }))
+      },
+      {
+        name: 'BOTTOM', value: Math.max.apply(this, transformedPoints.map((p) => {
+          return p.y;
+        }))
+      },
+      {
+        name: 'LEFT', value: Math.min.apply(this, transformedPoints.map((p) => {
+          return p.x;
+        }))
+      },
     ];
 
     const transformedTranslatedPoint = transformedPoints[activationPoint.index];
@@ -1592,7 +1600,7 @@ class ElementSelectionProxy extends BaseModel {
         finalMatrix[2] * originX + finalMatrix[6] * originY + finalMatrix[10] * originZ - offsetZ;
 
       const propertyGroupNorm = Object.keys(propertyGroup).reduce((accumulator, property) => {
-        accumulator[property] = {value: propertyGroup[property]};
+        accumulator[property] = { value: propertyGroup[property] };
         return accumulator;
       }, {});
 
@@ -1605,10 +1613,10 @@ class ElementSelectionProxy extends BaseModel {
             addressables.width &&
             addressables.width.typedef === 'number'
           ) {
-            propertyGroupNorm.width = {value: Math.abs(layoutSpec.size.x * scaleX / baseProxyTransform.scale.x)};
+            propertyGroupNorm.width = { value: Math.abs(layoutSpec.size.x * scaleX / baseProxyTransform.scale.x) };
             // Note: here and below, scale.x and scale.y are guaranteed to exist as properties of propertyGroup[Norm]
             // because composedTransformsToTimelineProperties was called with explicit = true.
-            propertyGroupNorm['scale.x'] = {value: Math.sign(propertyGroup['scale.x'] || 1)};
+            propertyGroupNorm['scale.x'] = { value: Math.sign(propertyGroup['scale.x'] || 1) };
             shouldTick = true;
           }
 
@@ -1616,8 +1624,8 @@ class ElementSelectionProxy extends BaseModel {
             addressables.height &&
             addressables.height.typedef === 'number'
           ) {
-            propertyGroupNorm.height = {value: Math.abs(layoutSpec.size.y * scaleY / baseProxyTransform.scale.y)};
-            propertyGroupNorm['scale.y'] = {value: Math.sign(propertyGroup['scale.y'] || 1)};
+            propertyGroupNorm.height = { value: Math.abs(layoutSpec.size.y * scaleY / baseProxyTransform.scale.y) };
+            propertyGroupNorm['scale.y'] = { value: Math.sign(propertyGroup['scale.y'] || 1) };
             shouldTick = true;
           }
         }
@@ -1647,10 +1655,10 @@ class ElementSelectionProxy extends BaseModel {
     ElementSelectionProxy.snaps = foundSnaps;
   }
 
-  scaleArtboard (
+  scaleArtboard(
     mouseCoordsCurrent,
     mouseCoordsPrevious,
-    {zoom},
+    { zoom },
     activationPoint,
   ) {
     const accumulatedUpdates = {};
@@ -1809,7 +1817,7 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  rotate (dx, dy, coordsCurrent, coordsPrevious, activationPoint, globals) {
+  rotate(dx, dy, coordsCurrent, coordsPrevious, activationPoint, globals) {
     const accumulatedUpdates = {};
 
     const fixedPoint = this.getOriginTransformed();
@@ -1828,7 +1836,7 @@ class ElementSelectionProxy extends BaseModel {
     const rotationGroup = Object.assign(
       {
         // Ensure we always get a default out in case rotation is snapping to 0.
-        'rotation.z': {value: 0},
+        'rotation.z': { value: 0 },
       },
       ElementSelectionProxy.computeRotationPropertyGroup(
         this,
@@ -1850,7 +1858,7 @@ class ElementSelectionProxy extends BaseModel {
         Object.assign(
           {
             // Ensure we always get a default out in case rotation is snapping to 0.
-            'rotation.z': {value: 0},
+            'rotation.z': { value: 0 },
           },
           ElementSelectionProxy.computeRotationPropertyGroup(
             element,
@@ -1871,13 +1879,13 @@ class ElementSelectionProxy extends BaseModel {
     );
   }
 
-  pasteClipsAndSelect (clips, metadata, cb) {
+  pasteClipsAndSelect(clips, metadata, cb) {
     logger.info(`[element selection proxy] paste ${this.getComponentIds().join('|')}`);
-    this.component.pasteThings(clips, {}, metadata, (err, {haikuIds}) => {
+    this.component.pasteThings(clips, {}, metadata, (err, { haikuIds }) => {
       if (err) {
         return cb(err);
       }
-      Element.unselectAllElements({component: this.component}, metadata);
+      Element.unselectAllElements({ component: this.component }, metadata);
       haikuIds.map(
         (haikuId) => this.component.findElementByComponentId(haikuId),
       ).forEach((element) => {
@@ -1889,14 +1897,14 @@ class ElementSelectionProxy extends BaseModel {
     });
   }
 
-  duplicateAllAndSelectDuplicates (metadata, cb) {
+  duplicateAllAndSelectDuplicates(metadata, cb) {
     const clips = this.selection.map((element) => {
       return element.clip(metadata);
     });
     return this.pasteClipsAndSelect(clips, metadata, cb);
   }
 
-  cut (metadata) {
+  cut(metadata) {
     logger.info(`[element selection proxy] cut ${this.getComponentIds().join('|')}`);
 
     const pasteables = [];
@@ -1912,7 +1920,7 @@ class ElementSelectionProxy extends BaseModel {
     this.remove(metadata);
   }
 
-  copy (metadata) {
+  copy(metadata) {
     logger.info(`[element selection proxy] copy ${this.getComponentIds().join('|')}`);
 
     const pasteables = [];
@@ -1927,7 +1935,7 @@ class ElementSelectionProxy extends BaseModel {
     ElementSelectionProxy.trackPasteables(pasteables);
   }
 
-  remove (metadata) {
+  remove(metadata) {
     logger.info(`[element selection proxy] remove ${this.getComponentIds().join('|')}`);
 
     const componentIdsToRemove = this.selection.filter(
@@ -1939,11 +1947,11 @@ class ElementSelectionProxy extends BaseModel {
     this.component.deleteComponents(
       componentIdsToRemove,
       metadata,
-      () => {},
+      () => { },
     );
   }
 
-  getComponentIds () {
+  getComponentIds() {
     return this.selection.map((element) => element.getComponentId());
   }
 
@@ -1951,7 +1959,7 @@ class ElementSelectionProxy extends BaseModel {
    * @method dump
    * @description When debugging, use this to log a concise shorthand of this entity.
    */
-  dump () {
+  dump() {
     return this.getPrimaryKey();
   }
 }
@@ -2256,7 +2264,7 @@ ElementSelectionProxy.computeRotationPropertyGroup = (element, rotationZDelta, f
   // prefer to use the layout system for consistent rounding etc.)
   const layout = Layout3D.createLayoutSpec();
   layout.rotation.z = rotationZDelta;
-  const ignoredSize = {x: 0, y: 0, z: 0};
+  const ignoredSize = { x: 0, y: 0, z: 0 };
   const matrix = Layout3D.computeMatrix(layout, ignoredSize);
 
   // Next build the vector from `fixedPoint` to `targetOrigin` and rotate it.
@@ -2282,7 +2290,7 @@ ElementSelectionProxy.computeRotationPropertyGroup = (element, rotationZDelta, f
   // plane, where C is the z-translation of the target origin. This is a natural expectation of multi-rotation.
   return Object.keys(attributes).reduce(
     (accumulator, key) => {
-      accumulator[key] = {value: attributes[key]};
+      accumulator[key] = { value: attributes[key] };
       return accumulator;
     },
     {
@@ -2331,7 +2339,7 @@ ElementSelectionProxy.computeRotationPropertyGroupDelta = (
   const x1 = coordsCurrent.x;
   const y1 = coordsCurrent.y;
 
-  const {x: cx, y: cy} = targetElement.getOriginTransformed();
+  const { x: cx, y: cy } = targetElement.getOriginTransformed();
 
   //       *mouse(x,y)
   //      /|
@@ -2480,8 +2488,8 @@ ElementSelectionProxy.fromSelection = (rawSelection, component) => {
         return accumulator;
       }, []),
     },
-    {component},
-  ));
+      { component },
+    ));
 };
 
 const PASTEABLES = [];

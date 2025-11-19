@@ -1,29 +1,29 @@
 import * as Radium from 'radium';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {ipcRenderer, shell} from 'electron';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
-import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { ipcRenderer, shell } from 'electron';
+import { ErrorCode } from '@haiku/sdk-inkstone/src/errors';
+import { Experiment, experimentIsEnabled } from 'haiku-common/src/experiments';
+import { EXPORTER_CHANNEL } from 'haiku-sdk-creator/src/exporter';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as Color from 'color';
-import {BTN_STYLES} from '../styles/btnShared';
+import { BTN_STYLES } from '../styles/btnShared';
 import Toggle from './Toggle';
-import {PublicPrivateOptInModal} from './PublicPrivateOptInModal';
-import {ShareModal} from 'haiku-ui-common/lib/react/ShareModal';
+import { PublicPrivateOptInModal } from './PublicPrivateOptInModal';
+import { ShareModal } from 'haiku-ui-common/src/react/ShareModal';
 import {
   EyeIconSVG, ComponentIconSVG, ConnectionIconSVG, DangerIconSVG, EventsBoltIcon, PublishSnapshotSVG, WarningIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common/src/react/OtherIcons';
 import * as Element from 'haiku-serialization/src/bll/Element';
 import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {ProjectError} from 'haiku-sdk-creator/lib/bll/Project';
+import { ProjectError } from 'haiku-sdk-creator/src/bll/Project';
 import {
   isPreviewMode,
   isEditMode,
   isCodeEditorMode,
   showGlassOnStage,
-} from 'haiku-ui-common/lib/interactionModes';
+} from 'haiku-ui-common/src/interactionModes';
 import AlignToolBox from './AlignToolBox';
 
 const mixpanel = require('haiku-serialization/src/utils/Mixpanel');
@@ -153,16 +153,16 @@ const STYLES = {
 };
 
 const SNAPSHOT_SAVE_RESOLUTION_STRATEGIES = {
-  normal: {strategy: 'recursive', favor: 'ours'},
-  ours: {strategy: 'ours'},
-  theirs: {strategy: 'theirs'},
+  normal: { strategy: 'recursive', favor: 'ours' },
+  ours: { strategy: 'ours' },
+  theirs: { strategy: 'theirs' },
 };
 
 const MAX_SYNDICATION_CHECKS = 48;
 const SYNDICATION_CHECK_INTERVAL = 2500;
 
 class StageTitleBar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.handleConnectionClick = this.handleConnectionClick.bind(this);
@@ -185,7 +185,7 @@ class StageTitleBar extends React.Component {
       showSharePopover: false,
       showPublicPrivateOptInModal: false,
       privateProjectCount: null,
-      saveProjectContinue: () => {},
+      saveProjectContinue: () => { },
       copied: false,
       linkAddress: 'Fetching Info',
       semverVersion: '0.0.0',
@@ -217,7 +217,7 @@ class StageTitleBar extends React.Component {
     });
   };
 
-  componentDidMount () {
+  componentDidMount() {
     this._isMounted = true;
 
     // It's kind of weird to have this heartbeat logic buried all the way down here inside StateTitleBar;
@@ -269,7 +269,7 @@ class StageTitleBar extends React.Component {
     ipcRenderer.on('global-menu:publish', this.handleGlobalMenuSave);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this._fetchMasterStateInterval);
     ipcRenderer.removeListener('global-menu:publish', this.handleGlobalMenuSave);
@@ -277,7 +277,7 @@ class StageTitleBar extends React.Component {
     this.clearSyndicationChecks();
   }
 
-  handleGlobalMenuSave () {
+  handleGlobalMenuSave() {
     if (!this._isMounted) {
       return;
     }
@@ -285,7 +285,7 @@ class StageTitleBar extends React.Component {
     this.handleSaveSnapshotClick();
   }
 
-  handleShowProjectLocationToast () {
+  handleShowProjectLocationToast() {
     if (!this._isMounted) {
       return;
     }
@@ -314,21 +314,21 @@ class StageTitleBar extends React.Component {
     }, 2500);
   }
 
-  handleConnectionClick () {
+  handleConnectionClick() {
     // TODO
   }
 
-  getProjectSaveOptions () {
+  getProjectSaveOptions() {
     return {
       saveStrategy: SNAPSHOT_SAVE_RESOLUTION_STRATEGIES[this.state.snapshotSaveResolutionStrategyName],
     };
   }
 
-  handleSaveOnRawCodeEditor () {
+  handleSaveOnRawCodeEditor() {
     this.props.saveCodeFromEditorToDisk();
   }
 
-  handleSaveOnGlass () {
+  handleSaveOnGlass() {
     const noticeNotice = this.props.createNotice({
       type: 'info',
       title: 'No need to save!',
@@ -342,7 +342,7 @@ class StageTitleBar extends React.Component {
     }, 2500);
   }
 
-  handleSaveSnapshotClick () {
+  handleSaveSnapshotClick() {
     if (this.state.snapshotSaveError) {
       return void (0);
     }
@@ -358,7 +358,7 @@ class StageTitleBar extends React.Component {
     return this.performProjectSave();
   }
 
-  showGenericPublishError () {
+  showGenericPublishError() {
     this.props.createNotice({
       type: 'danger',
       title: 'Uh oh!',
@@ -366,7 +366,7 @@ class StageTitleBar extends React.Component {
     });
   }
 
-  showSharePopover (cb) {
+  showSharePopover(cb) {
     this.setState(
       {
         showPublicPrivateOptInModal: false,
@@ -380,10 +380,10 @@ class StageTitleBar extends React.Component {
     );
   }
 
-  requestSaveProject (cb) {
+  requestSaveProject(cb) {
     if (this.props.projectModel) {
       // We might come back to this later!
-      this.setState({forceDisablePrivate: false});
+      this.setState({ forceDisablePrivate: false });
       this.props.envoyProject.getProjectsList().then((list) => {
         this.setState({
           privateProjectCount: list.filter((project) => !project.isPublic).length,
@@ -433,14 +433,14 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  clearSyndicationChecks () {
+  clearSyndicationChecks() {
     clearInterval(this._performSyndicationCheckInterval);
   }
 
-  performSyndicationCheck () {
+  performSyndicationCheck() {
     this.syndicationChecks++;
-    this.props.envoyProject.getSnapshotInfo().then(({snapshotSyndicated, shareUrls}) => {
-      const newState = {shareUrls};
+    this.props.envoyProject.getSnapshotInfo().then(({ snapshotSyndicated, shareUrls }) => {
+      const newState = { shareUrls };
       // Avoid races with button display while aborting publish by only setting values that have become true.
       // #FIXME: do we still need this?
       if (snapshotSyndicated) {
@@ -466,7 +466,7 @@ class StageTitleBar extends React.Component {
     });
   }
 
-  performProjectSave () {
+  performProjectSave() {
     mixpanel.haikuTrack('creator:project:saving', {
       username: this.props.username,
       project: this.props.projectName,
@@ -501,7 +501,7 @@ class StageTitleBar extends React.Component {
             }
 
             logger.error(snapshotSaveError);
-            this.setState({isSnapshotSaveInProgress: false, snapshotSaveResolutionStrategyName: 'normal', snapshotSaveError, linkAddress: 'n/a'});
+            this.setState({ isSnapshotSaveInProgress: false, snapshotSaveResolutionStrategyName: 'normal', snapshotSaveError, linkAddress: 'n/a' });
             return;
         }
       }
@@ -534,7 +534,7 @@ class StageTitleBar extends React.Component {
 
           if (this.props.envoyExporter) {
             this.abortSyndicationCheck = () => {
-              this.setState({snapshotSyndicated: undefined});
+              this.setState({ snapshotSyndicated: undefined });
               this.clearSyndicationChecks();
               this.props.envoyExporter.off(`${EXPORTER_CHANNEL}:abort`, this.abortSyndicationCheck);
               this.props.createNotice({
@@ -554,29 +554,29 @@ class StageTitleBar extends React.Component {
         });
       }
 
-      return setTimeout(() => this.setState({snapshotSaveConfirmed: false}), 2000);
+      return setTimeout(() => this.setState({ snapshotSaveConfirmed: false }), 2000);
     });
   }
 
-  renderSnapshotSaveInnerButton () {
+  renderSnapshotSaveInnerButton() {
     if (this.state.snapshotSaveError) {
-      return <div style={{height: 18, marginRight: -5}}><DangerIconSVG fill="transparent" /></div>;
+      return <div style={{ height: 18, marginRight: -5 }}><DangerIconSVG fill="transparent" /></div>;
     }
     return <PublishSnapshotSVG />;
   }
 
-  getActiveComponent () {
+  getActiveComponent() {
     return this.props.projectModel && this.props.projectModel.getCurrentActiveComponent();
   }
 
-  fetchProxyElementForSelection () {
+  fetchProxyElementForSelection() {
     const component = this.getActiveComponent();
     if (component) {
-      return ElementSelectionProxy.fromSelection(Element.where({component, _isSelected: true}), component);
+      return ElementSelectionProxy.fromSelection(Element.where({ component, _isSelected: true }), component);
     }
   }
 
-  getConglomerateComponentButtonColor () {
+  getConglomerateComponentButtonColor() {
     const proxy = this.fetchProxyElementForSelection();
     if (proxy) {
       if (proxy.canEditComponentFromSelection()) {
@@ -585,7 +585,7 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  handleConglomerateComponent () {
+  handleConglomerateComponent() {
     const proxy = this.fetchProxyElementForSelection();
 
     if (proxy.canEditComponentFromSelection()) {
@@ -603,13 +603,13 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  isEventHandlersEditorAvailable () {
+  isEventHandlersEditorAvailable() {
     const proxy = this.fetchProxyElementForSelection();
     // If nothing is selected, assume the user wants to add events to the artboard
     return proxy && (proxy.doesManageSingleElement() || proxy.hasNothingInSelection());
   }
 
-  isAlignPanelAvailable () {
+  isAlignPanelAvailable() {
     // This would show the align panel only when elements are selected:
     // const proxy = this.fetchProxyElementForSelection();
     // return proxy && !proxy.hasNothingInSelection();
@@ -617,7 +617,7 @@ class StageTitleBar extends React.Component {
     return showGlassOnStage(this.props.interactionMode);
   }
 
-  handleShowEventHandlersEditor () {
+  handleShowEventHandlersEditor() {
     if (this.isEventHandlersEditorAvailable()) {
       const element = this.getProxySelectionElement();
 
@@ -629,7 +629,7 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  getProxySelectionElement () {
+  getProxySelectionElement() {
     let element = this.fetchProxyElementForSelection().selection[0];
 
     // Fallback to the artboard element if nothing is currently selected
@@ -640,7 +640,7 @@ class StageTitleBar extends React.Component {
     return element;
   }
 
-  getEventHandlersEditorButtonColor () {
+  getEventHandlersEditorButtonColor() {
     const proxy = this.fetchProxyElementForSelection();
 
     if (proxy) {
@@ -654,7 +654,7 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  get conglomerateComponentButton () {
+  get conglomerateComponentButton() {
     return (
       <button
         key="conglomerate-component-button"
@@ -672,7 +672,7 @@ class StageTitleBar extends React.Component {
     );
   }
 
-  get eventHandlerEditorButton () {
+  get eventHandlerEditorButton() {
     if (this.isEventHandlersEditorAvailable()) {
       return (
         <button
@@ -692,7 +692,7 @@ class StageTitleBar extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const isEditModeActive = isEditMode(this.props.interactionMode);
     const isCodeModeActive = isCodeEditorMode(this.props.interactionMode);
     let btnText = 'PUBLISH';
@@ -733,8 +733,8 @@ class StageTitleBar extends React.Component {
                     backgroundColor: Color(Palette.DARKEST_COAL).darken(.3),
                   },
                 }]}>
-              <span style={{marginLeft: 7}}>DESIGN</span>
-              {isEditModeActive && <span style={{...STYLES.activeIndicator, ...STYLES.activeIndicatorLeft}} />}
+              <span style={{ marginLeft: 7 }}>DESIGN</span>
+              {isEditModeActive && <span style={{ ...STYLES.activeIndicator, ...STYLES.activeIndicatorLeft }} />}
             </button>
 
             <button
@@ -756,12 +756,12 @@ class StageTitleBar extends React.Component {
                     backgroundColor: Color(Palette.DARKEST_COAL).darken(.3),
                   },
                 }]}>
-              <span style={{marginLeft: 7}}>CODE</span>
-              {isCodeModeActive && <span style={{...STYLES.activeIndicator, ...STYLES.activeIndicatorRight}} />}
+              <span style={{ marginLeft: 7 }}>CODE</span>
+              {isCodeModeActive && <span style={{ ...STYLES.activeIndicator, ...STYLES.activeIndicatorRight }} />}
             </button>
           </div>
         }
-        
+
         <button
           key="toggle-preview"
           id="preview"
@@ -771,9 +771,9 @@ class StageTitleBar extends React.Component {
           style={[
             BTN_STYLES.btnIcon,
             BTN_STYLES.rightBtns,
-            {border: '1px solid ' + Palette.COAL, padding: '4px 5px'},
+            { border: '1px solid ' + Palette.COAL, padding: '4px 5px' },
             !this.props.isTimelineReady && STYLES.disabled,
-            isPreviewMode(this.props.interactionMode) && {border: '1px solid ' + Palette.PINK},
+            isPreviewMode(this.props.interactionMode) && { border: '1px solid ' + Palette.PINK },
           ]}
         >
           <EyeIconSVG color={this.getConglomerateComponentButtonColor()} />
@@ -788,7 +788,7 @@ class StageTitleBar extends React.Component {
               });
             }}
             onClose={() => {
-              this.setState({showPublicPrivateOptInModal: false});
+              this.setState({ showPublicPrivateOptInModal: false });
             }}
             onContinue={this.state.saveProjectContinue}
             privateProjectCount={this.state.privateProjectCount}

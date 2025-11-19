@@ -1,15 +1,15 @@
 // @ts-ignore
 import * as HaikuError from '@haiku/tina-haikuerror/react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import {
   ModalHeader,
   ModalWrapper,
-} from 'haiku-ui-common/lib/react/Modal';
+} from 'haiku-ui-common/src/react/Modal';
 import * as React from 'react';
 import {BTN_STYLES} from '../../styles/btnShared';
 import {DASH_STYLES} from '../../styles/dashShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES: {[key: string]: React.CSSProperties} = {
   modalWrapper: {
     zIndex: 9002,
     position: 'absolute',

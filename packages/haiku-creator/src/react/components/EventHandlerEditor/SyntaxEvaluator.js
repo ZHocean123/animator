@@ -1,16 +1,16 @@
 import * as React from 'react';
-import {parse} from '@babel/parser';
-import {EVALUATOR_STATES} from './constants';
-import Palette from 'haiku-ui-common/lib/Palette';
+import { parse } from '@babel/parser';
+import { EVALUATOR_STATES } from './constants';
+import Palette from 'haiku-ui-common/src/Palette';
 
 class SyntaxEvaluator extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.evaluator = this.getDefaultEvaluator();
   }
 
-  getEvalutatorStateColor (state) {
+  getEvalutatorStateColor(state) {
     switch (state) {
       case EVALUATOR_STATES.WARN:
         return Palette.ORANGE;
@@ -21,18 +21,18 @@ class SyntaxEvaluator extends React.PureComponent {
     }
   }
 
-  getDefaultEvaluator () {
+  getDefaultEvaluator() {
     return {
       text: null,
       state: EVALUATOR_STATES.OPEN,
     };
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return nextProps.evaluate !== this.props.evaluate;
   }
 
-  componentWillUpdate ({evaluate}) {
+  componentWillUpdate({ evaluate }) {
     const evaluator = this.getDefaultEvaluator();
 
     try {
@@ -55,7 +55,7 @@ class SyntaxEvaluator extends React.PureComponent {
     this.props.onChange(evaluator);
   }
 
-  render () {
+  render() {
     return (
       <span
         style={{

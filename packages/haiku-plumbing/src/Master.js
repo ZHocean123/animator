@@ -2,9 +2,9 @@
 import * as async from 'async';
 import * as path from 'path';
 import * as os from 'os';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import * as fse from 'haiku-fs-extra';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
+import { ErrorCode } from '@haiku/sdk-inkstone/src/errors';
 import HaikuComponent from '@haiku/core/lib/HaikuComponent';
 import * as walkFiles from 'haiku-serialization/src/utils/walkFiles';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
@@ -12,13 +12,13 @@ import * as File from 'haiku-serialization/src/bll/File';
 import * as Project from 'haiku-serialization/src/bll/Project';
 import * as Sketch from 'haiku-serialization/src/bll/Sketch';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
-import {Figma} from 'haiku-serialization/src/bll/Figma';
+import { Figma } from 'haiku-serialization/src/bll/Figma';
 import * as Illustrator from 'haiku-serialization/src/bll/Illustrator';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as WebSocket from 'ws';
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
 import Watcher from './Watcher';
 import MasterGitProject from './MasterGitProject';
@@ -26,15 +26,15 @@ import MasterModuleProject from './MasterModuleProject';
 import getExporterListener from './envoy/getExporterListener';
 import Raven from './Raven';
 import saveExport from './publish-hooks/saveExport';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
-import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
-import {createCDNBundles} from './project-folder/createCDNBundle';
+import { createProjectFiles } from '@haiku/sdk-client/lib/createProjectFiles';
+import { ExporterFormat, EXPORTER_CHANNEL } from 'haiku-sdk-creator/src/exporter';
+import { createCDNBundles } from './project-folder/createCDNBundle';
 import {
   getHaikuCoreVersion,
   fetchProjectConfigInfo,
 } from './project-folder/ProjectDefinitions';
-import {dumpBase64Images} from './project-folder/AssetUtils';
-import {isMac} from 'haiku-common/lib/environments/os';
+import { dumpBase64Images } from './project-folder/AssetUtils';
+import { isMac } from 'haiku-common/src/environments/os';
 
 if (isMac()) {
   Sketch.findAndUpdateInstallPath();
@@ -108,7 +108,7 @@ const doSkipFile = (relpath) => (
 );
 
 export default class Master extends EventEmitter {
-  constructor (folder, fileOptions = {}, envoyOptions = {}, envoyHandlers) {
+  constructor(folder, fileOptions = {}, envoyOptions = {}, envoyHandlers) {
     super();
 
     EmitterManager.extend(this);
@@ -166,7 +166,7 @@ export default class Master extends EventEmitter {
     this._methodQueueInterval = setInterval(() => {
       if (this._isReadyToReceiveMethods) {
         const methods = this._methodQueue.splice(0);
-        methods.forEach(({message: {method, params}, cb}) => {
+        methods.forEach(({ message: { method, params }, cb }) => {
           this.callMethodWithMessage(method, params, cb);
         });
         clearInterval(this._methodQueueInterval);
@@ -189,30 +189,30 @@ export default class Master extends EventEmitter {
     this._wereAssetsInitiallyLoaded = false;
 
     // We end up oversaturating the sockets unless we debounce this
-    this.debouncedEmitAssetsChanged = debounce(this.emitAssetsChanged.bind(this), 100, {trailing: true});
+    this.debouncedEmitAssetsChanged = debounce(this.emitAssetsChanged.bind(this), 100, { trailing: true });
     this.debouncedEmitDesignNeedsMergeRequest = debounce(
       this.emitDesignNeedsMergeRequest.bind(this),
       500,
-      {trailing: true},
+      { trailing: true },
     );
 
     this.websocket = (global.process.env.NODE_ENV === 'test')
       ? new MockWebsocket()
       : new Websocket(
-      `ws://${process.env.HAIKU_PLUMBING_HOST}:${process.env.HAIKU_PLUMBING_PORT}`,
-      this.folder,
-      'controllee',
-      'master',
-      WebSocket,
-      process.env.HAIKU_WS_SECURITY_TOKEN,
-    );
+        `ws://${process.env.HAIKU_PLUMBING_HOST}:${process.env.HAIKU_PLUMBING_PORT}`,
+        this.folder,
+        'controllee',
+        'master',
+        WebSocket,
+        process.env.HAIKU_WS_SECURITY_TOKEN,
+      );
 
     fetchProjectConfigInfo(this.folder, (_, userconfig) => {
       this.initialUserconfig = userconfig;
     });
   }
 
-  handleBroadcast (message) {
+  handleBroadcast(message) {
     switch (message.name) {
       case 'remote-model:receive-sync':
         BaseModel.receiveSync(message);
@@ -224,17 +224,17 @@ export default class Master extends EventEmitter {
     }
   }
 
-  getActiveComponent () {
+  getActiveComponent() {
     return this.project && this.project.getCurrentActiveComponent();
   }
 
-  watchOff () {
+  watchOff() {
     if (this._watcher) {
       this._watcher.stop();
     }
   }
 
-  halt () {
+  halt() {
     this.active = false;
     this.watchOff();
     this._knownLibraryAssets = {};
@@ -251,7 +251,7 @@ export default class Master extends EventEmitter {
     this.exporterListener = undefined;
   }
 
-  watchOn () {
+  watchOn() {
     this._watcher = new Watcher();
     this._watcher.watch(this.folder);
     this._watcher.on('change', this.handleFileChange.bind(this));
@@ -260,7 +260,7 @@ export default class Master extends EventEmitter {
     this._watcher.on('remove', this.handleFileRemove.bind(this));
   }
 
-  teardown (cb) {
+  teardown(cb) {
     clearInterval(this._methodQueueInterval);
     clearInterval(this._mod._modificationsInterval);
     if (this.project) {
@@ -276,17 +276,17 @@ export default class Master extends EventEmitter {
     return cb();
   }
 
-  logMethodMessage (method, params) {
+  logMethodMessage(method, params) {
     if (!UNLOGGABLE_METHODS[method]) {
       logger.info('[master]', 'calling', method, params);
     }
   }
 
-  recordChange (method, params, metadata) {
-    this.changes.push({method, params, metadata, timestamp: Date.now()});
+  recordChange(method, params, metadata) {
+    this.changes.push({ method, params, metadata, timestamp: Date.now() });
   }
 
-  handleMethodMessage (method, params, cb) {
+  handleMethodMessage(method, params, cb) {
     // We stop using the queue once we're up and running; no point keeping the queue
     if (METHODS_TO_RUN_IMMEDIATELY[method] || this._isReadyToReceiveMethods) {
       return this.callMethodWithMessage(method, params, cb);
@@ -301,7 +301,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  callMethodWithMessage (method, params, cb) {
+  callMethodWithMessage(method, params, cb) {
     if (FORBIDDEN_METHODS[method]) {
       return cb(new Error(`Method ${method} forbidden`));
     }
@@ -325,10 +325,10 @@ export default class Master extends EventEmitter {
       return this[method].apply(this, params.concat(finish));
     }
 
-    return this.project.receiveMethodCall(method, params.concat(metadata), {/* message */}, finish);
+    return this.project.receiveMethodCall(method, params.concat(metadata), {/* message */ }, finish);
   }
 
-  waitForSaveToComplete (cb) {
+  waitForSaveToComplete(cb) {
     if (this._isSaving) {
       return setTimeout(() => {
         return this.waitForSaveToComplete(cb);
@@ -338,12 +338,12 @@ export default class Master extends EventEmitter {
     return cb();
   }
 
-  emitAssetsChanged (assets) {
+  emitAssetsChanged(assets) {
     File.cache.clear();
     return this.emit('assets-changed', this, assets);
   }
 
-  emitDesignNeedsMergeRequest () {
+  emitDesignNeedsMergeRequest() {
     const designs = this._designsPendingMerge;
     if (Object.keys(designs).length > 0) {
       logger.info('[master] merge designs requested');
@@ -351,7 +351,7 @@ export default class Master extends EventEmitter {
         this._designsPendingMerge = {};
         this.project.mergeDesigns(
           designs,
-          {from: 'master'},
+          { from: 'master' },
           () => {
             logger.info(`[master] finished merge designs`);
           },
@@ -360,17 +360,17 @@ export default class Master extends EventEmitter {
     }
   }
 
-  batchDesignMergeRequest (relpath, abspath) {
+  batchDesignMergeRequest(relpath, abspath) {
     this._designsPendingMerge[relpath] = abspath;
     return this;
   }
 
-  emitComponentChange (relpath) {
+  emitComponentChange(relpath) {
     logger.info('[master] component changed', relpath);
     this.debouncedEmitAssetsChanged(this._knownLibraryAssets);
   }
 
-  emitDesignChange (relpath) {
+  emitDesignChange(relpath) {
     const extname = path.extname(relpath);
     const abspath = path.join(this.folder, relpath);
     logger.info('[master] design changed', relpath);
@@ -381,12 +381,12 @@ export default class Master extends EventEmitter {
     }
   }
 
-  buildCommitMessage (relpathIn) {
+  buildCommitMessage(relpathIn) {
     const relpath = path.normalize(relpathIn);
 
     let message = `Changed ${relpath}`;
 
-    const changes = this.changes.splice(0).filter(({method}) => {
+    const changes = this.changes.splice(0).filter(({ method }) => {
       return !!COMMITTABLE_METHODS[method];
     });
 
@@ -399,7 +399,7 @@ export default class Master extends EventEmitter {
     return this.normalizeCommitMessage(message);
   }
 
-  normalizeCommitMessage (message) {
+  normalizeCommitMessage(message) {
     return `${message} (via Haiku ${getHaikuCoreVersion()} ${os.platform()})`;
   }
 
@@ -409,17 +409,17 @@ export default class Master extends EventEmitter {
    * However, we still want to do a Git commit on atomic changes, so this listener
    * subscribes to *all* updates, even updates that have been 'blacklisted'.
    */
-  handleFileChangeBlacklisted (abspath) {
+  handleFileChangeBlacklisted(abspath) {
     const relpath = path.relative(this.folder, abspath);
     if (doSkipFile(relpath)) {
       return;
     }
     return this.waitForSaveToComplete(() => {
-      return this._git.commitFileIfChanged(relpath, this.buildCommitMessage(relpath), () => {});
+      return this._git.commitFileIfChanged(relpath, this.buildCommitMessage(relpath), () => { });
     });
   }
 
-  handleFileChange (abspath) {
+  handleFileChange(abspath) {
     const relpath = path.relative(this.folder, abspath);
     if (doSkipFile(relpath)) {
       return;
@@ -429,10 +429,10 @@ export default class Master extends EventEmitter {
 
     if (Asset.isDesignAsset(abspath)) {
       dumpBase64Images(abspath, relpath, this.folder, this._watcher, true);
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = { relpath, abspath, dtModified: Date.now() };
       this.emitDesignChange(relpath);
     } else if (path.basename(relpath) === 'code.js') { // Local component file
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = { relpath, abspath, dtModified: Date.now() };
       this.emitComponentChange(relpath);
     }
 
@@ -451,7 +451,7 @@ export default class Master extends EventEmitter {
 
         if (Illustrator.isIllustratorFile(abspath)) {
           logger.info('[master] illustrator pipeline running; please wait');
-          Illustrator.importSVG({abspath});
+          Illustrator.importSVG({ abspath });
           logger.info('[master] illustrator import done');
           return;
         }
@@ -467,7 +467,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  handleFileAdd (abspath) {
+  handleFileAdd(abspath) {
     const relpath = path.relative(this.folder, abspath);
     if (doSkipFile(relpath)) {
       return;
@@ -477,10 +477,10 @@ export default class Master extends EventEmitter {
 
     if (Asset.isDesignAsset(abspath)) {
       dumpBase64Images(abspath, relpath, this.folder, this._watcher, true);
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = { relpath, abspath, dtModified: Date.now() };
       this.emitDesignChange(relpath);
     } else if (path.basename(relpath) === 'code.js') { // Local component file
-      this._knownLibraryAssets[relpath] = {relpath, abspath, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = { relpath, abspath, dtModified: Date.now() };
       this.emitComponentChange(relpath);
     }
 
@@ -499,14 +499,14 @@ export default class Master extends EventEmitter {
 
         if (Illustrator.isIllustratorFile(abspath)) {
           logger.info('[master] illustrator pipeline running; please wait');
-          Illustrator.importSVG({abspath, tryToOpenFile: isMac()});
+          Illustrator.importSVG({ abspath, tryToOpenFile: isMac() });
           logger.info('[master] illustrator import done');
         }
       });
     });
   }
 
-  handleFileRemove (abspath) {
+  handleFileRemove(abspath) {
     const relpath = path.relative(this.folder, abspath);
     if (this._knownLibraryAssets[relpath]) {
       delete this._knownLibraryAssets[relpath];
@@ -518,7 +518,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  handleSemverTagChange (tag, cb) {
+  handleSemverTagChange(tag, cb) {
     // Just in case this happens to get called before we initialize
     if (!this.project) {
       return cb(null, tag);
@@ -541,7 +541,7 @@ export default class Master extends EventEmitter {
         }
 
         return ac.writeMetadata(
-          {version: tag},
+          { version: tag },
           this.project.getMetadata(),
           (err) => {
             if (err) {
@@ -560,7 +560,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  masterHeartbeat (cb) {
+  masterHeartbeat(cb) {
     const state = {
       folder: this.folder,
       isReady: this._isReadyToReceiveMethods,
@@ -571,11 +571,11 @@ export default class Master extends EventEmitter {
     return cb(null, state);
   }
 
-  getAssets (cb) {
+  getAssets(cb) {
     return cb(null, this._knownLibraryAssets);
   }
 
-  loadAssets (cb) {
+  loadAssets(cb) {
     return walkFiles(this.folder, (err, entries) => {
       if (err) {
         return cb(err);
@@ -590,16 +590,16 @@ export default class Master extends EventEmitter {
         const parts = relpath.split(path.sep);
         if (DESIGN_EXTNAMES[extname]) {
           dumpBase64Images(entry.path, relpath, this.folder, this._watcher);
-          this._knownLibraryAssets[relpath] = {relpath, abspath: entry.path, dtModified: Date.now()};
+          this._knownLibraryAssets[relpath] = { relpath, abspath: entry.path, dtModified: Date.now() };
         } else if (parts[0] === 'code' && basename === 'code.js') { // Component bytecode file
-          this._knownLibraryAssets[relpath] = {relpath, abspath: entry.path, dtModified: Date.now()};
+          this._knownLibraryAssets[relpath] = { relpath, abspath: entry.path, dtModified: Date.now() };
         }
       });
       return this.getAssets(cb);
     });
   }
 
-  fetchAssets (cb) {
+  fetchAssets(cb) {
     if (this._wereAssetsInitiallyLoaded) {
       return this.getAssets(cb);
     }
@@ -608,7 +608,7 @@ export default class Master extends EventEmitter {
     return this.loadAssets(cb);
   }
 
-  getBaseFolder (abspath) {
+  getBaseFolder(abspath) {
     const extname = path.extname(abspath).toLowerCase();
 
     if (
@@ -624,7 +624,7 @@ export default class Master extends EventEmitter {
     return 'assets';
   }
 
-  linkAsset (abspath, cb) {
+  linkAsset(abspath, cb) {
     const basename = path.basename(abspath);
     const base = this.getBaseFolder(abspath);
     const relpath = path.join(base, basename);
@@ -633,12 +633,12 @@ export default class Master extends EventEmitter {
       if (copyErr) {
         return cb(copyErr);
       }
-      this._knownLibraryAssets[relpath] = {relpath, abspath: destination, dtModified: Date.now()};
+      this._knownLibraryAssets[relpath] = { relpath, abspath: destination, dtModified: Date.now() };
       return cb(null, this._knownLibraryAssets);
     });
   }
 
-  bulkLinkAssets (abspaths, cb) {
+  bulkLinkAssets(abspaths, cb) {
     return async.eachSeries(
       abspaths,
       (path, next) => {
@@ -658,7 +658,7 @@ export default class Master extends EventEmitter {
     );
   }
 
-  unlinkAsset (relpath, cb) {
+  unlinkAsset(relpath, cb) {
     if (!relpath || relpath.length < 2) {
       return cb(new Error('Relative path too short'));
     }
@@ -687,7 +687,7 @@ export default class Master extends EventEmitter {
     );
   }
 
-  readAllStateValues (relpath, cb) {
+  readAllStateValues(relpath, cb) {
     if (!this.project || !relpath) {
       logger.warn(`[master] cannot read states ${!!this.project}/${!!relpath}`);
       return cb(null, {});
@@ -698,10 +698,10 @@ export default class Master extends EventEmitter {
       return cb(null, {});
     }
 
-    return ac.readAllStateValues({/* unused metadata */}, cb);
+    return ac.readAllStateValues({/* unused metadata */ }, cb);
   }
 
-  readAllEventHandlers (relpath, cb) {
+  readAllEventHandlers(relpath, cb) {
     if (!this.project || !relpath) {
       logger.warn(`[master] cannot read actions ${!!this.project}/${!!relpath}`);
       return cb(null, {});
@@ -712,20 +712,20 @@ export default class Master extends EventEmitter {
       return cb(null, {});
     }
 
-    return ac.readAllEventHandlers({/* unused metadata */}, cb);
+    return ac.readAllEventHandlers({/* unused metadata */ }, cb);
   }
 
   /**
    * @method initializeFolder
    */
-  initializeFolder (project, done) {
+  initializeFolder(project, done) {
     // We need to clear off undos in the case that somebody made an fs-based commit between sessions;
     // if we tried to reset to a previous "known" undoable, we'd miss the missing intermediate one.
     // This has to happen in initializeFolder because it's here that we set the 'isBase' undoable.
     this._git.restart(project);
 
     const ravenContext = {
-      user: {email: project.authorName},
+      user: { email: project.authorName },
       extra: {
         projectName: project.projectName,
         projectPath: this.folder,
@@ -760,7 +760,7 @@ export default class Master extends EventEmitter {
   /**
    * @method startProject
    */
-  startProject (done) {
+  startProject(done) {
     const loggingPrefix = (done.restart) ? 'restart project' : 'start project';
 
     logger.info(`[master] ${loggingPrefix}: ${this.folder}`);
@@ -830,7 +830,7 @@ export default class Master extends EventEmitter {
   /**
    * @method saveProject
    */
-  saveProject (project, saveOptions, done) {
+  saveProject(project, saveOptions, done) {
     const finish = (err, out) => {
       this._isSaving = false;
       return done(err, out);
@@ -864,25 +864,25 @@ export default class Master extends EventEmitter {
             this.envoyHandlers.project.setCurrentSha(
               sha,
               /*skipSaveSnapshot=*/true,
-              ).then(() => {
-                this.envoyHandlers.project.getSnapshotInfo().then((info) => {
-                  // If we have info and it indicates publishing entirely succeeded, we can exit early.
-                  if (info.snapshotSyndicated) {
-                    return cb(true, info);
-                  }
+            ).then(() => {
+              this.envoyHandlers.project.getSnapshotInfo().then((info) => {
+                // If we have info and it indicates publishing entirely succeeded, we can exit early.
+                if (info.snapshotSyndicated) {
+                  return cb(true, info);
+                }
 
-                  // Else, we should proceed as if this is the first publish. We might get here if a user tears down
-                  // Master in the middle of publishing, lost connectivity, etc.
-                  cb();
-                }).catch((error) => {
-                  if (error.message === ErrorCode.ErrorOffline) {
-                    return cb(error);
-                  }
+                // Else, we should proceed as if this is the first publish. We might get here if a user tears down
+                // Master in the middle of publishing, lost connectivity, etc.
+                cb();
+              }).catch((error) => {
+                if (error.message === ErrorCode.ErrorOffline) {
+                  return cb(error);
+                }
 
-                  // As long as we're online, no worries—just continue saving as usual.
-                  cb();
-                });
+                // As long as we're online, no worries—just continue saving as usual.
+                cb();
               });
+            });
           });
         });
       },
@@ -939,7 +939,7 @@ export default class Master extends EventEmitter {
                 break;
             }
 
-            return saveExport({format, filename, outlet: 'cdn'}, ac, (err) => {
+            return saveExport({ format, filename, outlet: 'cdn' }, ac, (err) => {
               if (err) {
                 logger.warn(`[master] error during export for ${ac.getSceneName()}: ${err.toString()}`);
               }
@@ -1098,7 +1098,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  handleProjectReady (project) {
+  handleProjectReady(project) {
     this.project = project;
 
     // This safely reinitializes Plumbing websockets and Envoy clients
@@ -1130,7 +1130,7 @@ export default class Master extends EventEmitter {
     });
 
     this.addEmitterListenerIfNotAlreadyRegistered(this.project, 'envoy:timelineClientReady', (timelineChannel) => {
-      timelineChannel.on('didSeek', ({frame}) => {
+      timelineChannel.on('didSeek', ({ frame }) => {
         const ac = this.project.getCurrentActiveComponent();
         if (ac) {
           ac.setCurrentTimelineFrameValue(frame);
@@ -1144,7 +1144,7 @@ export default class Master extends EventEmitter {
     });
   }
 
-  handleActiveComponentReady () {
+  handleActiveComponentReady() {
     if (!this.exporterListener) {
       this.awaitActiveComponent((_, ac) => {
         if (ac.getSceneName() !== 'main') {
@@ -1157,13 +1157,13 @@ export default class Master extends EventEmitter {
     }
   }
 
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     this.getActiveComponent().mountApplication(null, {
       freeze: true,
     });
   }
 
-  awaitActiveComponent (cb) {
+  awaitActiveComponent(cb) {
     const ac = this.getActiveComponent();
     if (!ac) {
       return setTimeout(() => this.awaitActiveComponent(cb), 100);
@@ -1171,7 +1171,7 @@ export default class Master extends EventEmitter {
     return cb(null, ac);
   }
 
-  handleHaikuComponentMounted () {
+  handleHaikuComponentMounted() {
     return this.awaitActiveComponent(() => {
       // Since we aren't running in the DOM cancel the raf to avoid leaked handles
       HaikuComponent.all().forEach((instance) => {
@@ -1261,6 +1261,6 @@ const COMMITTABLE_METHODS = {
   },
 };
 
-const changeToCommitMessage = (relpath, {method, params, metadata, timestamp}) => {
+const changeToCommitMessage = (relpath, { method, params, metadata, timestamp }) => {
   return COMMITTABLE_METHODS[method](relpath, params);
 };

@@ -8,6 +8,7 @@
       "es6",
       "dom"
     ],
+    "skipLibCheck": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,

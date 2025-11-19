@@ -108,7 +108,7 @@ export default (mana: BytecodeNode) => {
     }
 
     // Specifically avoid setting up layout size for SVG elements that can receive width and height as attributes.
-    if (typeof name !== 'string' || !SVG_SIZEABLES[name]) {
+    if (typeof name !== 'string' || !SVG_SIZEABLES[name as keyof typeof SVG_SIZEABLES]) {
       // Convert the width attribute to our layout-friendly size property
       if (attributes.width !== undefined && attributes.width !== null) {
         const widthProp = determineSizingProp(attributes.width);
@@ -198,8 +198,8 @@ export default (mana: BytecodeNode) => {
       const transformAttributes = parseCssTransformString(attributes.transform, 1e6);
 
       for (const transformAttributeName in transformAttributes) {
-        const transformValue = transformAttributes[transformAttributeName];
-        if (!TRANSFORM_COMPONENT_WHITELIST[transformAttributeName]) {
+        const transformValue = transformAttributes[transformAttributeName as keyof typeof transformAttributes];
+        if (!TRANSFORM_COMPONENT_WHITELIST[transformAttributeName as keyof typeof TRANSFORM_COMPONENT_WHITELIST]) {
           console.warn(
             'Skipping transform attribute ' +
               transformAttributeName +

@@ -2,11 +2,11 @@ const path = require('path');
 const find = require('lodash.find');
 const merge = require('lodash.merge');
 const pascalcase = require('pascalcase');
-const {ATTRS_HYPH_TO_CAMEL} = require('@haiku/core/lib/HaikuComponent');
+const { ATTRS_HYPH_TO_CAMEL } = require('@haiku/core/lib/HaikuComponent');
 const SVGPoints = require('@haiku/core/lib/helpers/SVGPoints').default;
-const {default: convertManaLayout} = require('haiku-common/lib/layout/convertManaLayout');
-const {visitManaTree} = require('@haiku/core/lib/HaikuNode');
-const {manaToXml} = require('haiku-common/lib/layout/xmlUtils');
+const { default: convertManaLayout } = require('haiku-common/src/layout/convertManaLayout');
+const { visitManaTree } = require('@haiku/core/lib/HaikuNode');
+const { manaToXml } = require('haiku-common/src/layout/xmlUtils');
 const assign = require('lodash.assign');
 const defaults = require('lodash.defaults');
 const BaseModel = require('./BaseModel');
@@ -54,11 +54,11 @@ const SELECTOR_ATTRIBUTES = {
   type: 'type',
 };
 
-function isSerializedFunction (object) {
+function isSerializedFunction(object) {
   return object && !!object.__function;
 }
 
-function extractReferenceIdFromUrlReference (stringValue) {
+function extractReferenceIdFromUrlReference(stringValue) {
   const matches = REF_MATCHER_RE.exec(stringValue);
   if (matches) {
     return matches[1];
@@ -71,7 +71,7 @@ function extractReferenceIdFromUrlReference (stringValue) {
  * @description
  *  Collection of static class methods for logic related to a component's template ("mana").
  */
-class Template extends BaseModel {}
+class Template extends BaseModel { }
 
 Template.DEFAULT_OPTIONS = {
   required: {},
@@ -84,7 +84,7 @@ Template.prepareManaAndBuildTimelinesObject = (
   hash,
   timelineName,
   timelineTime,
-  {doHashWork, title},
+  { doHashWork, title },
 ) => {
   if (doHashWork) {
     // Each url(#whatever) needs to be unique to avoid styling collisions in the DOM
@@ -95,7 +95,7 @@ Template.prepareManaAndBuildTimelinesObject = (
       // We shouldn't assume that any node has a haiku-source attribute
       path.posix.normalize(mana.attributes[HAIKU_SOURCE_ATTRIBUTE] || ''),
       hash,
-      {title},
+      { title },
     );
   }
 
@@ -272,7 +272,7 @@ Template.manaWithOnlyStandardProps = (mana, doOmitSubcomponentBytecode = true, r
   }
 };
 
-Template.manaTreeToDepthFirstArray = function manaTreeToDepthFirstArray (arr, mana) {
+Template.manaTreeToDepthFirstArray = function manaTreeToDepthFirstArray(arr, mana) {
   if (!mana || typeof mana === 'string') {
     return arr;
   }
@@ -394,7 +394,7 @@ Template.getAllElementsByHaikuId = (mana) => {
   return elements;
 };
 
-Template.fixManaSourceAttribute = function fixManaSourceAttribute (mana, relpath) {
+Template.fixManaSourceAttribute = function fixManaSourceAttribute(mana, relpath) {
   if (!mana.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
     mana.attributes[HAIKU_SOURCE_ATTRIBUTE] = path.posix.normalize(relpath);
   }
@@ -435,7 +435,7 @@ Template.fixTreeIdReferences = (mana, references) => {
  * @param randomizer {String} - Seeded randomization string to use to modify the ids
  * @returns {Object|undefined}
  */
-Template.fixFragmentIdentifierReferenceValue = function fixFragmentIdentifierReferenceValue (key, value, randomizer) {
+Template.fixFragmentIdentifierReferenceValue = function fixFragmentIdentifierReferenceValue(key, value, randomizer) {
   if (typeof value !== 'string') {
     return undefined;
   }
@@ -473,7 +473,7 @@ Template.fixFragmentIdentifierReferenceValue = function fixFragmentIdentifierRef
   return undefined;
 };
 
-Template.fixKeyframeValue = function fixKeyframeValue (elementNode, propertyName, keyframeValue) {
+Template.fixKeyframeValue = function fixKeyframeValue(elementNode, propertyName, keyframeValue) {
   const elementName = elementNode && elementNode.elementName;
   if (elementName === 'path' && propertyName === 'd') {
     return SVGPoints.pathToPoints(keyframeValue);
@@ -485,7 +485,7 @@ Template.fixKeyframeValue = function fixKeyframeValue (elementNode, propertyName
   return keyframeValue;
 };
 
-Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferences (mana, randomizer) {
+Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferences(mana, randomizer) {
   const references = {};
 
   visitManaTree(ROOT_LOCATOR, mana, (elementName, attributes, children, node) => {
@@ -518,7 +518,7 @@ Template.fixFragmentIdentifierReferences = function fixFragmentIdentifierReferen
 // as individual helpers scattered into different modules; consolidating them all here
 // was a first step. TODO: Please refactor!
 
-Template.visitTemplate = function visitTemplate (template, parent, iteratee) {
+Template.visitTemplate = function visitTemplate(template, parent, iteratee) {
   if (template) {
     iteratee(template, parent);
     if (template.children) {
@@ -533,7 +533,7 @@ Template.visitTemplate = function visitTemplate (template, parent, iteratee) {
   }
 };
 
-Template.visitManaTreeSpecial = function visitManaTreeSpecial (address, hash, mana, iteratee) {
+Template.visitManaTreeSpecial = function visitManaTreeSpecial(address, hash, mana, iteratee) {
   address += `:[${hash}]${Element.safeElementName(mana)}(${(mana.attributes && mana.attributes.id) ? '#' + mana.attributes.id : ''})`;
   iteratee(mana, address);
   if (!mana.children || mana.children.length < 1) {
@@ -663,7 +663,7 @@ Template.visitNodes = (node, parent, index, visitor) => {
   }
 };
 
-Template.ensureTopLevelDisplayAttributes = function ensureTopLevelDisplayAttributes (mana) {
+Template.ensureTopLevelDisplayAttributes = function ensureTopLevelDisplayAttributes(mana) {
   merge(mana.attributes, {
     style: {
       position: 'absolute',
@@ -711,7 +711,7 @@ Template.ensureTitleAndUidifyTree = (mana, source, context, hash, options) => {
     if (!title) {
       if (mana.children) {
         // Sketch-sourced trees always have a title matching that artboard/slice's name
-        const el = find(mana.children, {elementName: 'title'});
+        const el = find(mana.children, { elementName: 'title' });
         if (el && el.children && typeof el.children[0] === 'string') {
           title = el.children[0];
         }
@@ -821,7 +821,7 @@ Template.areTemplatesEquivalent = (t1, t2) => {
   return true;
 };
 
-Template.allSourceNodes = function allSourceNodes (rootLocator, mana, iteratee) {
+Template.allSourceNodes = function allSourceNodes(rootLocator, mana, iteratee) {
   visitManaTree(rootLocator, mana, (elementName, attributes, children, node, locator, parent, index) => {
     if (attributes && attributes[HAIKU_SOURCE_ATTRIBUTE]) {
       iteratee(node, attributes[HAIKU_SOURCE_ATTRIBUTE], parent, index);
@@ -954,7 +954,7 @@ Template.manaToJson = (mana, replacer, spacing) => {
   return JSON.stringify(out, replacer || null, spacing || 2);
 };
 
-Template.cleanMana = (mana, {resetIds = false, suppressSubcomponents = true} = {}) => {
+Template.cleanMana = (mana, { resetIds = false, suppressSubcomponents = true } = {}) => {
   const out = {};
   if (!mana) {
     return null;
@@ -974,7 +974,7 @@ Template.cleanMana = (mana, {resetIds = false, suppressSubcomponents = true} = {
       out.elementName = Bytecode.decycle(
         mana.elementName,
         {
-          cleanManaOptions: {resetIds, suppressSubcomponents},
+          cleanManaOptions: { resetIds, suppressSubcomponents },
           doCleanMana: true,
         },
       );
@@ -989,7 +989,7 @@ Template.cleanMana = (mana, {resetIds = false, suppressSubcomponents = true} = {
   }
 
   out.children = mana.children && mana.children.map(
-    (childMana) => Template.cleanMana(childMana, {resetIds, suppressSubcomponents}),
+    (childMana) => Template.cleanMana(childMana, { resetIds, suppressSubcomponents }),
   );
   return out;
 };
@@ -1034,7 +1034,7 @@ Template.getStackingInfo = (
 
       return a.index - b.index;
     })
-    .reduce((accumulator, {zIndex, haikuId}, currentIndex) => {
+    .reduce((accumulator, { zIndex, haikuId }, currentIndex) => {
       if (currentIndex === 0) {
         return [{
           zIndex: Math.max(zIndex || 1, 1),

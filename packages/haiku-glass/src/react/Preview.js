@@ -1,11 +1,11 @@
 import * as React from 'react';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
-import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
+import { InteractionMode } from 'haiku-ui-common/src/interactionModes';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 export default class Preview extends React.Component {
-  mountHaikuComponent () {
+  mountHaikuComponent() {
     // If somehow the previous component still exists, destroy it
     if (this.component) {
       this.component.getClock().stop();
@@ -77,20 +77,20 @@ export default class Preview extends React.Component {
     this.component.render(this.component.config);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.mount) {
       this.mountHaikuComponent();
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.component) {
       this.component.getClock().stop();
       this.component.context.destroy();
     }
   }
 
-  render () {
+  render() {
     return (
       <div
         ref={(mount) => {

@@ -4,7 +4,7 @@ import * as lodash from 'lodash';
 import * as Color from 'color';
 import StateRow from './StateRow';
 import Loader from './Loader';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const NEW_ROW_NAME = `new-row`;
 
@@ -61,7 +61,7 @@ const STYLES = {
 };
 
 class StateInspector extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.upsertStateValue = this.upsertStateValue.bind(this);
     this.deleteStateValue = this.deleteStateValue.bind(this);
@@ -76,7 +76,7 @@ class StateInspector extends React.Component {
     };
   }
 
-  loadStatesDataFromActiveComponent () {
+  loadStatesDataFromActiveComponent() {
     const activeComponent = this.props.projectModel.getCurrentActiveComponent();
 
     if (!activeComponent) {
@@ -110,7 +110,7 @@ class StateInspector extends React.Component {
     );
   }
 
-  getActiveSceneName (props) {
+  getActiveSceneName(props) {
     return (
       props.projectModel &&
       props.projectModel.getCurrentActiveComponent() &&
@@ -118,7 +118,7 @@ class StateInspector extends React.Component {
     );
   }
 
-  onProjectModelUpdate (what, ...args) {
+  onProjectModelUpdate(what, ...args) {
     // We only reload states on a hard reload (eg when a component is loaded from disk)
     // Editing states on state inspector only triggers soft reload
     if (
@@ -129,25 +129,25 @@ class StateInspector extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.projectModel) {
       this.props.projectModel.on('update', this.onProjectModelUpdate);
       this.props.projectModel.on('remote-update', this.onProjectModelUpdate);
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.props.projectModel) {
       this.props.projectModel.removeListener('update', this.onProjectModelUpdate);
       this.props.projectModel.removeListener('remote-update', this.onProjectModelUpdate);
     }
   }
 
-  upsertStateValue (stateName, stateDescriptor, maybeCb) {
+  upsertStateValue(stateName, stateDescriptor, maybeCb) {
     this.props.projectModel.getCurrentActiveComponent().upsertStateValue(
       stateName,
       stateDescriptor,
-      {from: 'creator'},
+      { from: 'creator' },
       (err) => {
         if (err) {
           return this.props.createNotice({
@@ -171,10 +171,10 @@ class StateInspector extends React.Component {
     );
   }
 
-  deleteStateValue (stateName, maybeCb) {
+  deleteStateValue(stateName, maybeCb) {
     return this.props.projectModel.getCurrentActiveComponent().deleteStateValue(
       stateName,
-      {from: 'creator'},
+      { from: 'creator' },
       (err) => {
         if (err) {
           return this.props.createNotice({
@@ -198,19 +198,19 @@ class StateInspector extends React.Component {
     );
   }
 
-  openNewStateForm () {
-    this.setState({editingStateName: NEW_ROW_NAME});
+  openNewStateForm() {
+    this.setState({ editingStateName: NEW_ROW_NAME });
   }
 
-  closeNewStateForm () {
-    this.setState({editingStateName: null});
+  closeNewStateForm() {
+    this.setState({ editingStateName: null });
   }
 
-  getHeadingText () {
+  getHeadingText() {
     return `States (${this.state.sceneName})`;
   }
 
-  shouldDisplayEmptyMessage () {
+  shouldDisplayEmptyMessage() {
     return (
       this.state.statesData &&
       Object.keys(this.state.statesData).length === 0 &&
@@ -218,17 +218,17 @@ class StateInspector extends React.Component {
     );
   }
 
-  requestEditValue (stateName) {
-    this.setState({editingStateName: stateName});
+  requestEditValue(stateName) {
+    this.setState({ editingStateName: stateName });
   }
 
-  requestBlurValue (stateName) {
+  requestBlurValue(stateName) {
     if (stateName === this.state.editingStateName) {
-      this.setState({editingStateName: null});
+      this.setState({ editingStateName: null });
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={{
         ...STYLES.container,
@@ -248,7 +248,7 @@ class StateInspector extends React.Component {
           {this.state.editingStateName === NEW_ROW_NAME &&
             <StateRow
               key={NEW_ROW_NAME}
-              stateDescriptor={{value: ''}}
+              stateDescriptor={{ value: '' }}
               stateName={''}
               isNew={true}
               createNotice={this.props.createNotice}

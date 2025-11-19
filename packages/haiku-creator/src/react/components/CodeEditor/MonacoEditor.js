@@ -2,17 +2,17 @@
  * @file Work based on https://github.com/superRaytin/react-monaco-editor/blob/master/src/editor.js
  */
 
- /* global monaco:true */
+/* global monaco:true */
 
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 // monaco is on global namespace as it uses vscode loader scheme
 // import * as monaco from 'monaco-editor';
 
 class MonacoEditor extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.containerElement = undefined;
     this.currentValue = props.value;
@@ -22,12 +22,12 @@ class MonacoEditor extends React.Component {
     this.state = {};
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.initMonaco();
     window.addEventListener('resize', this.onUpdateDimensions);
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.value !== this.currentValue) {
       // Always refer to the latest value
       this.currentValue = this.props.value;
@@ -52,17 +52,17 @@ class MonacoEditor extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.onUpdateDimensions);
     this.destroyMonaco();
   }
 
-  editorWillMount () {
-    const {editorWillMount} = this.props;
+  editorWillMount() {
+    const { editorWillMount } = this.props;
     editorWillMount(monaco);
   }
 
-  editorDidMount (editor) {
+  editorDidMount(editor) {
     this.props.editorDidMount(editor, monaco);
     editor.onDidChangeModelContent((event) => {
       const value = editor.getValue();
@@ -77,15 +77,15 @@ class MonacoEditor extends React.Component {
     });
   }
 
-  initMonaco () {
+  initMonaco() {
     const value = this.props.value !== null ? this.props.value : this.props.defaultValue;
-    const {language, theme, options} = this.props;
+    const { language, theme, options } = this.props;
 
     monaco.editor.defineTheme('haiku', {
       base: 'vs-dark',
       inherit: true,
       // `rules` requires colors without the leading '#' ¯\_(ツ)_/¯
-      rules: [{backgroundColor: Palette.SPECIAL_COAL.replace('#', '')}],
+      rules: [{ backgroundColor: Palette.SPECIAL_COAL.replace('#', '') }],
       // and apparently only rgba strings don't work here; so these need to be hex and start with a "#"
       colors: {
         'editor.foreground': Palette.PALE_GRAY,
@@ -110,7 +110,7 @@ class MonacoEditor extends React.Component {
         monaco.editor.setTheme(theme);
       }
 
-      this.editor.getModel().updateOptions({tabSize: 2});
+      this.editor.getModel().updateOptions({ tabSize: 2 });
 
       // After initializing monaco editor
       this.editorDidMount(this.editor);
@@ -120,25 +120,25 @@ class MonacoEditor extends React.Component {
   /**
    * Update monaco editor dimensions
    */
-  updateDimensions () {
+  updateDimensions() {
     this.editor.layout();
   }
 
-  destroyMonaco () {
+  destroyMonaco() {
     if (this.editor) {
       this.editor.dispose();
     }
   }
 
-  assignRef (component) {
+  assignRef(component) {
     this.containerElement = component;
   }
 
-  focusCodeEditor () {
+  focusCodeEditor() {
     this.editor.focus();
   }
 
-  render () {
+  render() {
     return <div ref={this.assignRef} style={this.props.style} className="react-monaco-editor-container" />;
   }
 }
@@ -155,7 +155,7 @@ MonacoEditor.propTypes = {
   onChange: React.PropTypes.func,
 };
 
-function noop () {}
+function noop() { }
 
 MonacoEditor.defaultProps = {
   value: null,

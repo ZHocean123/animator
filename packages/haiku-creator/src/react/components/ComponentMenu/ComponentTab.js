@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import toTitleCase from '../../helpers/toTitleCase';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
@@ -50,13 +50,13 @@ const STYLES = {
 };
 
 class ComponentTab extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {};
     this.changeComponent = this.changeComponent.bind(this);
   }
 
-  changeComponent () {
+  changeComponent() {
     // If we're already the active component, do nothing
     if (
       this.props.tab.active ||
@@ -69,7 +69,7 @@ class ComponentTab extends React.Component {
     this.props.tryToChangeCurrentActiveComponent(this.props.tab.scenename);
   }
 
-  render () {
+  render() {
     const activeTabStyle = this.props.showGlass ? STYLES.tab.active : STYLES.tab.activeDark;
 
     return (
@@ -79,20 +79,20 @@ class ComponentTab extends React.Component {
           onClick={this.changeComponent}
           style={[
             STYLES.tab,
-            !this.props.showGlass && {color: Palette.ROCK, ':hover': {color: Palette.SUNSTONE}},
+            !this.props.showGlass && { color: Palette.ROCK, ':hover': { color: Palette.SUNSTONE } },
             (this.props.forceActive || this.props.tab.active) && activeTabStyle,
           ]}>
-          <div style={{display: 'inline-block', width: '100%'}}>
+          <div style={{ display: 'inline-block', width: '100%' }}>
             <span style={STYLES.label} className="no-select">
               {toTitleCase(this.props.tab.scenename)}
             </span>
           </div>
           {(this.props.forceActive || this.props.tab.active) && this.props.nonSavedContentOnCodeEditor &&
-          <div style={{position: 'absolute', display: 'inline-block', width: '30%', height: '12px'}}>
-            <svg height="12" width="12">
-              <circle cx="6" cy="6" r="4" fill="#f24082" />
-            </svg>
-          </div>}
+            <div style={{ position: 'absolute', display: 'inline-block', width: '30%', height: '12px' }}>
+              <svg height="12" width="12">
+                <circle cx="6" cy="6" r="4" fill="#f24082" />
+              </svg>
+            </div>}
         </div>}
       </div>
     );

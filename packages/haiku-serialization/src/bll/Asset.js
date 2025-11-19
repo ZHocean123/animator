@@ -3,11 +3,11 @@ const toTitleCase = require('./helpers/toTitleCase');
 const BaseModel = require('./BaseModel');
 const Sketch = require('./Sketch');
 const Illustrator = require('./Illustrator');
-const {Figma, PHONY_FIGMA_FILE} = require('./Figma');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
-const {isMac, isWindows} = require('haiku-common/lib/environments/os');
+const { Figma, PHONY_FIGMA_FILE } = require('./Figma');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
+const { isMac, isWindows } = require('haiku-common/src/environments/os');
 
-const PAGES_REGEX =  isWindows() ? /\\pages\\/ : /\/pages\//;
+const PAGES_REGEX = isWindows() ? /\\pages\\/ : /\/pages\//;
 const SLICES_REGEX = isWindows() ? /\\slices\\/ : /\/slices\//;
 const ARTBOARDS_REGEX = isWindows() ? /\\artboards\\/ : /\/artboards\//;
 const GROUPS_REGEX = isWindows() ? /\\groups\\/ : /\/groups\//;
@@ -23,15 +23,15 @@ const MAIN_COMPONENT_NAME = 'main';
  *  Includes static methods for common asset-related tasks.
  */
 class Asset extends BaseModel {
-  getAbspath () {
+  getAbspath() {
     return path.join(this.project.getFolder(), this.getRelpath());
   }
 
-  getRelpath () {
+  getRelpath() {
     return this.relpath;
   }
 
-  getSceneName () {
+  getSceneName() {
     if (!this.isComponent()) {
       return;
     }
@@ -40,11 +40,11 @@ class Asset extends BaseModel {
     return parts[1];
   }
 
-  getAssetInfo () {
+  getAssetInfo() {
     const parts = this.relpath.split(path.sep);
     // It's definitely not a generated piece if its length doesn't match the pattern
     if (parts.length !== 4) {
-      return {generator: null, relpath: null};
+      return { generator: null, relpath: null };
     }
 
     // Looking for a path like designs/Foo.sketch.contents/Slices
@@ -60,10 +60,10 @@ class Asset extends BaseModel {
       };
     }
 
-    return {generator: null, relpath: null};
+    return { generator: null, relpath: null };
   }
 
-  isDraggable () {
+  isDraggable() {
     return (
       (this.isComponent() && this.isComponentOtherThanMain()) ||
       this.isVector() ||
@@ -71,43 +71,43 @@ class Asset extends BaseModel {
     );
   }
 
-  isComponent () {
+  isComponent() {
     return this.kind === Asset.KINDS.COMPONENT;
   }
 
-  isVector () {
+  isVector() {
     return this.kind === Asset.KINDS.VECTOR;
   }
 
-  isImage () {
+  isImage() {
     return this.kind === Asset.KINDS.IMAGE;
   }
 
-  isSketchFile () {
+  isSketchFile() {
     return this.kind === Asset.KINDS.SKETCH;
   }
 
-  isFigmaFile () {
+  isFigmaFile() {
     return this.kind === Asset.KINDS.FIGMA;
   }
 
-  isIllustratorFile () {
+  isIllustratorFile() {
     return this.kind === Asset.KINDS.ILLUSTRATOR;
   }
 
-  isRemoteAsset () {
+  isRemoteAsset() {
     return this.proximity === Asset.PROXIMITIES.REMOTE;
   }
 
-  isLocalAsset () {
+  isLocalAsset() {
     return this.proximity === Asset.PROXIMITIES.LOCAL;
   }
 
-  isLocalComponent () {
+  isLocalComponent() {
     return this.isComponent() && this.isLocalAsset();
   }
 
-  getLocalizedRelpath () {
+  getLocalizedRelpath() {
     // In case of builtin/installed components, we don't want to prefix with the dot :/
     // See also Template#normalizePathOfPossiblyExternalModule
     // e.g. @haiku/core/components/controls/HTML
@@ -120,23 +120,23 @@ class Asset extends BaseModel {
     return Template.normalizePath(`./${this.getRelpath()}`);
   }
 
-  isOrphanSvg () {
+  isOrphanSvg() {
     return this.isVector() && this.parent.isDesignsHostFolder();
   }
 
-  isComponentOtherThanMain () {
+  isComponentOtherThanMain() {
     return (this.isComponent() && this.relpath !== 'code/main/code.js');
   }
 
-  isDesignsHostFolder () {
+  isDesignsHostFolder() {
     return this.relpath === 'designs';
   }
 
-  isComponentsHostFolder () {
+  isComponentsHostFolder() {
     return this.relpath === 'code';
   }
 
-  addSketchChild (svgAsset) {
+  addSketchChild(svgAsset) {
     if (svgAsset.isSlice()) {
       this.slicesFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.slicesFolderAsset);
@@ -148,7 +148,7 @@ class Asset extends BaseModel {
     }
   }
 
-  addFigmaChild (svgAsset) {
+  addFigmaChild(svgAsset) {
     if (svgAsset.isSlice()) {
       this.slicesFolderAsset.insertChild(svgAsset);
       this.unshiftFolderAsset(this.slicesFolderAsset);
@@ -161,12 +161,12 @@ class Asset extends BaseModel {
     }
   }
 
-  addIllustratorChild (svgAsset) {
+  addIllustratorChild(svgAsset) {
     this.artboardsFolderAsset.insertChild(svgAsset);
     this.unshiftFolderAsset(this.artboardsFolderAsset);
   }
 
-  addSketchAsset (relpath, dict) {
+  addSketchAsset(relpath, dict) {
     const project = this.project;
     const result = Asset.findById(path.join(project.getFolder(), relpath));
 
@@ -219,7 +219,7 @@ class Asset extends BaseModel {
     return sketchAsset;
   }
 
-  addFigmaAsset (relpath) {
+  addFigmaAsset(relpath) {
     const project = this.project;
 
     const result = Asset.findById(path.join(project.getFolder(), relpath));
@@ -288,7 +288,7 @@ class Asset extends BaseModel {
     return figmaAsset;
   }
 
-  addIllustratorAsset (relpath, dict) {
+  addIllustratorAsset(relpath, dict) {
     const project = this.project;
     const result = Asset.findById(path.join(project.getFolder(), relpath));
 
@@ -328,53 +328,53 @@ class Asset extends BaseModel {
     return illustratorAsset;
   }
 
-  getChildAssets () {
+  getChildAssets() {
     return this.children;
   }
 
-  isPrimaryAsset () {
-    const {primaryAssetPath} = this.project.getNameVariations();
+  isPrimaryAsset() {
+    const { primaryAssetPath } = this.project.getNameVariations();
     return path.normalize(this.relpath) === primaryAssetPath;
   }
 
-  isDefaultIllustratorAssetPath () {
-    const {defaultIllustratorAssetPath} = this.project.getNameVariations();
+  isDefaultIllustratorAssetPath() {
+    const { defaultIllustratorAssetPath } = this.project.getNameVariations();
     return path.normalize(this.relpath) === defaultIllustratorAssetPath;
   }
 
-  isSlice () {
+  isSlice() {
     return !!this.relpath.match(SLICES_REGEX);
   }
 
-  isArtboard () {
+  isArtboard() {
     return !!this.relpath.match(ARTBOARDS_REGEX);
   }
 
-  isGroup () {
+  isGroup() {
     return !!this.relpath.match(GROUPS_REGEX);
   }
 
-  isFrame () {
+  isFrame() {
     return !!this.relpath.match(FRAMES_REGEX);
   }
 
-  isPhony () {
+  isPhony() {
     return this.relpath.includes(PHONY_FIGMA_FILE);
   }
 
-  isPhonyOrOnlyHasPhonyChildrens () {
+  isPhonyOrOnlyHasPhonyChildrens() {
     const children = this.getChildAssets();
     return this.isPhony() || (children.length === 1 && children[0].isPhony());
   }
 
-  unshiftFolderAsset (folderAsset) {
+  unshiftFolderAsset(folderAsset) {
     const foundAmongChildren = this.children.indexOf(folderAsset) !== -1;
     if (folderAsset && !foundAmongChildren) {
       this.children.unshift(folderAsset);
     }
   }
 
-  dump () {
+  dump() {
     let str = `${this.relpath}`;
     this.children.forEach((child) => {
       const sublevel = child.dump();
@@ -482,7 +482,7 @@ Asset.ingestAssets = (project, dict) => {
         dtModified: dict[relpath].dtModified,
       });
 
-      const {generator, generatorRelpath} = svgAsset.getAssetInfo();
+      const { generator, generatorRelpath } = svgAsset.getAssetInfo();
 
       switch (generator) {
         case 'sketch':

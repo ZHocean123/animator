@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as path from 'path';
-import Palette from 'haiku-ui-common/lib/Palette';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
+import Palette from 'haiku-ui-common/src/Palette';
+import AnimatorSVG from 'haiku-ui-common/src/react/icons/AnimatorSVG';
 
 const STYLES = {
   fullScreenCenterWrap: {
@@ -86,17 +86,17 @@ class ProjectLoader extends React.PureComponent {
 
   // persistMount = (element) => this.mount = element;
 
-  render () {
+  render() {
     return (
       <div
         style={STYLES.fullScreenCenterWrap}
         id="js-helper-project-loader"
       >
-        <span style={{zIndex: 1}}>
-          <div style={{width: 150, margin: '0 auto'}}><AnimatorSVG /></div>
+        <span style={{ zIndex: 1 }}>
+          <div style={{ width: 150, margin: '0 auto' }}><AnimatorSVG /></div>
           <div className="load-bar" />
-          <div style={{marginTop: 30, zIndex: 1}}>{this.props.message}</div>
-          <div style={{color: '#FAFCFD', textAlign: 'center', display: 'inline-block', fontSize: '14px', width: '100%', height: 50, position: 'absolute', bottom: 50, left: 0}}>{this.props.softwareVersion}</div>
+          <div style={{ marginTop: 30, zIndex: 1 }}>{this.props.message}</div>
+          <div style={{ color: '#FAFCFD', textAlign: 'center', display: 'inline-block', fontSize: '14px', width: '100%', height: 50, position: 'absolute', bottom: 50, left: 0 }}>{this.props.softwareVersion}</div>
         </span>
       </div>
     );

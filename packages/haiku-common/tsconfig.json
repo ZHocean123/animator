@@ -4,6 +4,7 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
+    "skipLibCheck": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -11,7 +12,6 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ESNext",
     "types": [
       "node"

@@ -1,15 +1,15 @@
-import {shell} from 'electron';
+import { shell } from 'electron';
 import * as path from 'path';
 import * as Radium from 'radium';
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import ProjectPreview from './ProjectPreview';
-import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import {DASH_STYLES} from '../styles/dashShared';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import { StackMenuSVG } from 'haiku-ui-common/src/react/OtherIcons';
+import { DASH_STYLES } from '../styles/dashShared';
+import { isMac, isWindows } from 'haiku-common/src/environments/os';
 
 class ProjectThumbnail extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.bytecodePath = path.join(this.props.projectPath, 'code', 'main', 'code.js');
     this.state = {
@@ -24,7 +24,7 @@ class ProjectThumbnail extends React.Component {
     }
   };
 
-  openBrowserToProjectSharePage () {
+  openBrowserToProjectSharePage() {
     shell.openExternal(this.props.projectShareUrl);
   }
 
@@ -54,23 +54,23 @@ class ProjectThumbnail extends React.Component {
 
   onMouseOver = () => {
     if (this.props.allowInteractions) {
-      this.setState({isHovered: true});
+      this.setState({ isHovered: true });
     }
   };
 
   onMouseLeave = () => {
     if (this.props.allowInteractions) {
-      this.setState({isHovered: false});
+      this.setState({ isHovered: false });
     }
   };
 
-  render () {
+  render() {
     return (
       <div
         style={[DASH_STYLES.card,
-          this.props.isDeleted && DASH_STYLES.deleted,
-          this.props.cardHeight && {height: this.props.cardHeight},
-          !this.props.allowInteractions && DASH_STYLES.deadCard,
+        this.props.isDeleted && DASH_STYLES.deleted,
+        this.props.cardHeight && { height: this.props.cardHeight },
+        !this.props.allowInteractions && DASH_STYLES.deadCard,
         ]}
         id={`js-utility-${this.props.projectName}`}
         key="wrap"
@@ -84,7 +84,7 @@ class ProjectThumbnail extends React.Component {
           key="thumb"
           style={[
             DASH_STYLES.thumb,
-            this.props.cardHeight && {height: this.props.cardHeight - 30},
+            this.props.cardHeight && { height: this.props.cardHeight - 30 },
             this.state.isMenuActive && DASH_STYLES.blurred,
           ]}>
           <ProjectPreview
@@ -99,8 +99,8 @@ class ProjectThumbnail extends React.Component {
           className="js-utility-project-launcher"
           style={[
             DASH_STYLES.scrim,
-            this.props.cardHeight && {height: this.props.cardHeight - 30},
-            (this.state.isMenuActive || this.state.isHovered) && {opacity: 1},
+            this.props.cardHeight && { height: this.props.cardHeight - 30 },
+            (this.state.isMenuActive || this.state.isHovered) && { opacity: 1 },
           ]}
           onClick={this.onClick}
           onMouseOver={this.onMouseOver}
@@ -115,7 +115,7 @@ class ProjectThumbnail extends React.Component {
               !this.state.isHovered && DASH_STYLES.gone2,
             ]}
           >
-          {this.props.expiredTrialNonPro ? 'View Online' : 'Open'}
+            {this.props.expiredTrialNonPro ? 'View Online' : 'Open'}
           </span>
 
           {(!this.props.expiredTrialNonPro) && <span
@@ -164,15 +164,15 @@ class ProjectThumbnail extends React.Component {
           </span>}
         </div>
         <div
-            onClick={this.launchProjectIfAllowed}
-            style={DASH_STYLES.titleStrip}
+          onClick={this.launchProjectIfAllowed}
+          style={DASH_STYLES.titleStrip}
         >
           <span style={DASH_STYLES.title}>
             {this.props.projectName}
           </span>
           {(this.props.allowDelete || this.props.projectExistsLocally) && this.props.allowInteractions && <span
             title="Show project options"
-            style={[DASH_STYLES.titleOptions, {transform: 'translateY(1px)'}]}
+            style={[DASH_STYLES.titleOptions, { transform: 'translateY(1px)' }]}
             onClick={(e) => {
               // Prevent launching project, as parent div has onClick handler
               e.stopPropagation();

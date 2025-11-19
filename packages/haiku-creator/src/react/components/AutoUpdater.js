@@ -1,8 +1,8 @@
 import * as React from 'react';
 import autoUpdate from '../../utils/autoUpdate';
-import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
+import { DOWNLOAD_STYLES as STYLES } from '../styles/downloadShared';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import { isMac, isWindows } from 'haiku-common/src/environments/os';
 
 const statuses = {
   IDLE: 'Idle',
@@ -15,7 +15,7 @@ const statuses = {
 };
 
 class AutoUpdater extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.hide = this.hide.bind(this);
     this.updateProgress = this.updateProgress.bind(this);
@@ -28,7 +28,7 @@ class AutoUpdater extends React.Component {
     };
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (
       process.env.HAIKU_SKIP_AUTOUPDATE !== '1' &&
       this.state.status === statuses.IDLE &&
@@ -40,20 +40,20 @@ class AutoUpdater extends React.Component {
     }
   }
 
-  checkForUpdates () {
-    this.setState({status: statuses.CHECKING});
+  checkForUpdates() {
+    this.setState({ status: statuses.CHECKING });
 
     autoUpdate.checkUpdates()
-      .then(({shouldUpdate, url}) => {
+      .then(({ shouldUpdate, url }) => {
         if (shouldUpdate) {
           this.url = url;
           this.props.skipOptIn
             ? this.update()
-            : this.setState({status: statuses.OPT_IN});
+            : this.setState({ status: statuses.OPT_IN });
         } else {
           this.props.runOnBackground
             ? this.hide()
-            : this.setState({status: statuses.NO_UPDATES});
+            : this.setState({ status: statuses.NO_UPDATES });
         }
       })
       .catch((err) => {
@@ -63,30 +63,30 @@ class AutoUpdater extends React.Component {
       });
   }
 
-  onFail (error) {
+  onFail(error) {
     logger.error(error);
-    this.setState({status: statuses.DOWNLOAD_FAILED});
+    this.setState({ status: statuses.DOWNLOAD_FAILED });
   }
 
-  update () {
-    this.setState({status: statuses.DOWNLOADING});
+  update() {
+    this.setState({ status: statuses.DOWNLOADING });
     autoUpdate.update(this.url, this.updateProgress)
       .then(() => {
-        this.setState({status: statuses.DOWNLOAD_FINISHED, progress: 0});
+        this.setState({ status: statuses.DOWNLOAD_FINISHED, progress: 0 });
       })
       .catch(this.onFail);
   }
 
-  updateProgress (progress) {
-    this.setState({progress});
+  updateProgress(progress) {
+    this.setState({ progress });
   }
 
-  hide () {
-    this.setState({status: statuses.IDLE});
+  hide() {
+    this.setState({ status: statuses.IDLE });
     this.props.onComplete();
   }
 
-  renderOptIn () {
+  renderOptIn() {
     return (
       <div>
         <p>
@@ -103,7 +103,7 @@ class AutoUpdater extends React.Component {
     );
   }
 
-  renderDownloading () {
+  renderDownloading() {
     const progress = this.state.progress.toFixed(1);
 
     return (
@@ -120,7 +120,7 @@ class AutoUpdater extends React.Component {
     );
   }
 
-  renderDownloadFinished () {
+  renderDownloadFinished() {
     return (
       <div>
         Update installed! Loading your Haiku!
@@ -128,11 +128,11 @@ class AutoUpdater extends React.Component {
     );
   }
 
-  renderIdle () {
+  renderIdle() {
     return null;
   }
 
-  renderNoUpdates () {
+  renderNoUpdates() {
     if (this.props.runOnBackground) {
       return null;
     }
@@ -145,17 +145,17 @@ class AutoUpdater extends React.Component {
     );
   }
 
-  renderDownloadFailed () {
+  renderDownloadFailed() {
     return (
       <div>
         <p>There was an error downloading the update, if the problem persists,
-        please contact Haiku support.</p>
+          please contact Haiku support.</p>
         <button style={STYLES.btn} onClick={this.hide}>Ok</button>
       </div>
     );
   }
 
-  renderChecking () {
+  renderChecking() {
     if (this.props.runOnBackground) {
       return null;
     }
@@ -167,7 +167,7 @@ class AutoUpdater extends React.Component {
     );
   }
 
-  render () {
+  render() {
     if (process.env.HAIKU_SKIP_AUTOUPDATE === '1') {
       return null;
     }

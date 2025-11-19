@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import ActiveComponentIndicator from './ActiveComponentIndicator';
 import PlaybackButtons from './PlaybackButtons';
 
@@ -26,7 +26,7 @@ const STYLES = {
 };
 
 export default class ControlsArea extends React.Component {
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <span style={STYLES.leftWrapper}>

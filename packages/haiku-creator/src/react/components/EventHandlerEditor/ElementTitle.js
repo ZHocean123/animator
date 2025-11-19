@@ -1,8 +1,8 @@
 import * as React from 'react';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric';
-import {TrashIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import Palette from 'haiku-ui-common/lib/Palette';
-import truncate from 'haiku-ui-common/lib/helpers/truncate';
+import isNumeric from 'haiku-ui-common/src/helpers/isNumeric';
+import { TrashIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
+import truncate from 'haiku-ui-common/src/helpers/truncate';
 
 const STYLES = {
   wrapper: {
@@ -26,15 +26,15 @@ const STYLES = {
 };
 
 class ElementTitle extends React.PureComponent {
-  get elementTitle () {
+  get elementTitle() {
     return this.props.element ? truncate(this.props.element.getTitle(), 16) : '(unknown)';
   }
 
-  get title () {
+  get title() {
     return isNumeric(this.props.currentFrame) ? `Frame ${this.props.currentFrame}` : this.elementTitle;
   }
 
-  get breadcrumb () {
+  get breadcrumb() {
     if (!isNumeric(this.props.currentFrame) && this.props.currentEvent) {
       return '> ' + this.props.currentEvent;
     }
@@ -42,7 +42,7 @@ class ElementTitle extends React.PureComponent {
     return '';
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <h3 style={STYLES.title}>{`${this.title} Actions ${this.breadcrumb}`}</h3>

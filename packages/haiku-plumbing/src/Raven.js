@@ -1,6 +1,6 @@
 import * as Raven from 'raven';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
-import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
+import { shouldEmitErrors } from 'haiku-common/src/environments';
+import { SentryReporter } from 'haiku-sdk-creator/src/bll/Error';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 global.sentryReporter = new SentryReporter();

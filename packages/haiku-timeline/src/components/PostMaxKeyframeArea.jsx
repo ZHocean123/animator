@@ -1,26 +1,26 @@
 import * as React from 'react';
 import * as Color from 'color';
 import zIndex from './styles/zIndex';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 
 export default class PostMaxKeyframeArea extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.frameInfo = props.timeline.getFrameInfo();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.props.timeline.removeListener('update', this.handleUpdate);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.props.timeline.on('update', this.handleUpdate);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
       this.props.timeline.removeListener('update', this.handleUpdate);
@@ -44,7 +44,7 @@ export default class PostMaxKeyframeArea extends React.Component {
     }
   };
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     // FIXME: when a keyframe is added, it takes some time for the Timeline
     // model to clear the cached value of frameInfo, this hack re-renders
     // the component after 100ms after new props are arrived to compensate that
@@ -55,7 +55,7 @@ export default class PostMaxKeyframeArea extends React.Component {
     }, 100);
   }
 
-  render () {
+  render() {
     return (
       <div style={{
         background: Color(Palette.COAL).fade(0.7),

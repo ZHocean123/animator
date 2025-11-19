@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as Radium from 'radium';
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {SuccessIconSVG, InfoIconSVG, WarningIconSVG, DangerIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
+import { SuccessIconSVG, InfoIconSVG, WarningIconSVG, DangerIconSVG } from 'haiku-ui-common/src/react/OtherIcons';
 
 const STYLES = {
   cap: {
@@ -81,18 +81,18 @@ const STYLES = {
 };
 
 class Toast extends React.Component {
-  constructor () {
+  constructor() {
     super();
 
     this.closeNotice = this.closeNotice.bind(this);
   }
 
-  closeNotice () {
+  closeNotice() {
     this.props.removeNotice(this.props.myKey);
   }
 
-  render () {
-    const {toastType, toastTitle, toastMessage, closeText, lightScheme, toastCount} = this.props;
+  render() {
+    const { toastType, toastTitle, toastMessage, closeText, lightScheme, toastCount } = this.props;
     let icon;
 
     if (toastType === 'info') {
@@ -112,7 +112,7 @@ class Toast extends React.Component {
         <div style={[
           STYLES.cap,
           STYLES[toastType],
-          lightScheme && {backgroundColor: Color(STYLES[toastType].backgroundColor).fade(0.27)},
+          lightScheme && { backgroundColor: Color(STYLES[toastType].backgroundColor).fade(0.27) },
         ]}
           onClick={this.closeNotice}>{icon}
         </div>

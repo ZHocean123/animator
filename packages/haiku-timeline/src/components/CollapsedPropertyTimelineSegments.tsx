@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import * as React from 'react';
 import RowSegments from './RowSegments';
 import zIndex from './styles/zIndex';

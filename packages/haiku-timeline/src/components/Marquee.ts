@@ -1,5 +1,5 @@
 import * as Color from 'color';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import zIndex from './styles/zIndex';
 
 export type MouseCallback = (event?: MouseEvent) => boolean;

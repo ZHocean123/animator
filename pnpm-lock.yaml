@@ -145,10 +145,10 @@ importers:
         version: 4.17.0
       tsc-watch:
         specifier: ^1.0.27
-        version: 1.1.39(typescript@3.9.10)
+        version: 1.1.39(typescript@5.9.3)
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
       uglify-es:
         specifier: ^3.3.2
         version: 3.3.9
@@ -257,13 +257,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/@haiku/core:
     devDependencies:
@@ -359,16 +359,16 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       tslint-no-circular-imports:
         specifier: ^0.5.0
-        version: 0.5.2(tslint@5.20.1(typescript@3.9.10))(typescript@3.9.10)
+        version: 0.5.2(tslint@5.20.1(typescript@5.9.3))(typescript@5.9.3)
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
       webpack:
         specifier: ^4.16.0
         version: 4.47.0(webpack-cli@3.3.12)
@@ -450,13 +450,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/@haiku/sdk-inkstone:
     dependencies:
@@ -502,13 +502,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-admin-cli:
     dependencies:
@@ -608,13 +608,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-common:
     dependencies:
@@ -660,13 +660,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-creator:
     dependencies:
@@ -794,6 +794,9 @@ importers:
       '@types/fs-extra':
         specifier: ^4.0.8
         version: 4.0.15
+      '@types/node':
+        specifier: 10.12.30
+        version: 10.12.30
       '@types/node-fetch':
         specifier: ^2.1.1
         version: 2.6.13
@@ -835,13 +838,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-formats:
     dependencies:
@@ -938,13 +941,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
       walk-sync:
         specifier: ^0.3.2
         version: 0.3.4
@@ -1090,13 +1093,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-plumbing:
     dependencies:
@@ -1262,13 +1265,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-sdk-creator:
     dependencies:
@@ -1332,13 +1335,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-serialization:
     dependencies:
@@ -1531,13 +1534,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-testing:
     dependencies:
@@ -1580,13 +1583,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-timeline:
     dependencies:
@@ -1680,13 +1683,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@3.9.10)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^3.0.3
-        version: 3.9.10
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-ui-common:
     dependencies:
@@ -1798,13 +1801,13 @@ importers:
         version: 3.15.0
       tslint:
         specifier: ^5.11.0
-        version: 5.20.1(typescript@4.9.5)
+        version: 5.20.1(typescript@5.9.3)
       tslint-config-haiku:
         specifier: ^1.0.16
         version: 1.0.21
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/haiku-vendor-legacy: {}
 
@@ -7482,9 +7485,9 @@ packages:
     engines: {node: '>=4.2.0'}
     hasBin: true
 
-  typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   ua-parser-js@0.7.41:
@@ -8096,12 +8099,12 @@ snapshots:
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
 
-  '@fimbul/bifrost@0.21.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)':
+  '@fimbul/bifrost@0.21.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)':
     dependencies:
       '@fimbul/ymir': 0.21.0(tsutils@3.21.0(typescript@3.9.10))(typescript@3.9.10)
       get-caller-file: 2.0.5
       tslib: 1.14.1
-      tslint: 5.20.1(typescript@4.9.5)
+      tslint: 5.20.1(typescript@5.9.3)
       tsutils: 3.21.0(typescript@3.9.10)
       typescript: 3.9.10
 
@@ -14548,14 +14551,14 @@ snapshots:
       source-map-support: 0.5.21
       yn: 2.0.0
 
-  tsc-watch@1.1.39(typescript@3.9.10):
+  tsc-watch@1.1.39(typescript@5.9.3):
     dependencies:
       cross-spawn: 5.1.0
       node-cleanup: 2.1.2
       ps-tree: 1.2.0
       string-argv: 0.1.2
       strip-ansi: 4.0.0
-      typescript: 3.9.10
+      typescript: 5.9.3
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -14568,12 +14571,12 @@ snapshots:
 
   tslib@1.9.0: {}
 
-  tslint-config-airbnb@5.11.2(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
+  tslint-config-airbnb@5.11.2(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
     dependencies:
-      tslint: 5.20.1(typescript@4.9.5)
-      tslint-consistent-codestyle: 1.16.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-eslint-rules: 5.4.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-microsoft-contrib: 5.2.1(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
+      tslint: 5.20.1(typescript@5.9.3)
+      tslint-consistent-codestyle: 1.16.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-eslint-rules: 5.4.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-microsoft-contrib: 5.2.1(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
     transitivePeerDependencies:
       - typescript
 
@@ -14581,49 +14584,49 @@ snapshots:
     dependencies:
       tslib: 1.14.1
       tslint: 5.20.1(typescript@3.9.10)
-      tslint-config-airbnb: 5.11.2(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-consistent-codestyle: 1.16.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-eslint-rules: 5.4.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-no-circular-imports: 0.6.2(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
-      tslint-react: 3.6.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
+      tslint-config-airbnb: 5.11.2(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-consistent-codestyle: 1.16.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-eslint-rules: 5.4.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-no-circular-imports: 0.6.2(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
+      tslint-react: 3.6.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
       tsutils: 3.21.0(typescript@3.9.10)
       typescript: 3.9.10
 
-  tslint-consistent-codestyle@1.16.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
+  tslint-consistent-codestyle@1.16.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
     dependencies:
-      '@fimbul/bifrost': 0.21.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10)
+      '@fimbul/bifrost': 0.21.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10)
       tslib: 1.14.1
-      tslint: 5.20.1(typescript@4.9.5)
+      tslint: 5.20.1(typescript@5.9.3)
       tsutils: 2.29.0(typescript@3.9.10)
       typescript: 3.9.10
 
-  tslint-eslint-rules@5.4.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
+  tslint-eslint-rules@5.4.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
     dependencies:
       doctrine: 0.7.2
       tslib: 1.9.0
-      tslint: 5.20.1(typescript@4.9.5)
+      tslint: 5.20.1(typescript@5.9.3)
       tsutils: 3.21.0(typescript@3.9.10)
       typescript: 3.9.10
 
-  tslint-microsoft-contrib@5.2.1(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
+  tslint-microsoft-contrib@5.2.1(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
     dependencies:
-      tslint: 5.20.1(typescript@4.9.5)
+      tslint: 5.20.1(typescript@5.9.3)
       tsutils: 2.28.0(typescript@3.9.10)
       typescript: 3.9.10
 
-  tslint-no-circular-imports@0.5.2(tslint@5.20.1(typescript@3.9.10))(typescript@3.9.10):
+  tslint-no-circular-imports@0.5.2(tslint@5.20.1(typescript@5.9.3))(typescript@5.9.3):
     dependencies:
-      tslint: 5.20.1(typescript@3.9.10)
+      tslint: 5.20.1(typescript@5.9.3)
+      typescript: 5.9.3
+
+  tslint-no-circular-imports@0.6.2(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
+    dependencies:
+      tslint: 5.20.1(typescript@5.9.3)
       typescript: 3.9.10
 
-  tslint-no-circular-imports@0.6.2(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
+  tslint-react@3.6.0(tslint@5.20.1(typescript@5.9.3))(typescript@3.9.10):
     dependencies:
-      tslint: 5.20.1(typescript@4.9.5)
-      typescript: 3.9.10
-
-  tslint-react@3.6.0(tslint@5.20.1(typescript@4.9.5))(typescript@3.9.10):
-    dependencies:
-      tslint: 5.20.1(typescript@4.9.5)
+      tslint: 5.20.1(typescript@5.9.3)
       tsutils: 2.29.0(typescript@3.9.10)
       typescript: 3.9.10
 
@@ -14644,7 +14647,7 @@ snapshots:
       tsutils: 2.29.0(typescript@3.9.10)
       typescript: 3.9.10
 
-  tslint@5.20.1(typescript@4.9.5):
+  tslint@5.20.1(typescript@5.9.3):
     dependencies:
       '@babel/code-frame': 7.27.1
       builtin-modules: 1.1.1
@@ -14658,8 +14661,8 @@ snapshots:
       resolve: 1.22.11
       semver: 5.7.2
       tslib: 1.14.1
-      tsutils: 2.29.0(typescript@4.9.5)
-      typescript: 4.9.5
+      tsutils: 2.29.0(typescript@5.9.3)
+      typescript: 5.9.3
 
   tsutils@2.28.0(typescript@3.9.10):
     dependencies:
@@ -14671,10 +14674,10 @@ snapshots:
       tslib: 1.14.1
       typescript: 3.9.10
 
-  tsutils@2.29.0(typescript@4.9.5):
+  tsutils@2.29.0(typescript@5.9.3):
     dependencies:
       tslib: 1.14.1
-      typescript: 4.9.5
+      typescript: 5.9.3
 
   tsutils@3.21.0(typescript@3.9.10):
     dependencies:
@@ -14745,7 +14748,7 @@ snapshots:
 
   typescript@3.9.10: {}
 
-  typescript@4.9.5: {}
+  typescript@5.9.3: {}
 
   ua-parser-js@0.7.41: {}
 

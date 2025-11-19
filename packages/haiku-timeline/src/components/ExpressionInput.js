@@ -1,25 +1,25 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as CodeMirror from 'codemirror';
-import {clipboard} from 'electron';
+import { clipboard } from 'electron';
 import * as stripindent from 'strip-indent';
 import marshalParams from '@haiku/core/lib/reflection/marshalParams';
 import * as parseExpression from 'haiku-serialization/src/ast/parseExpression';
 import * as MathUtils from 'haiku-serialization/src/bll/MathUtils';
 import * as Expression from 'haiku-serialization/src/bll/Expression';
-import Palette from 'haiku-ui-common/lib/Palette';
-import * as EXPR_SIGNS from 'haiku-ui-common/lib/helpers/ExprSigns';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric';
-import retToEq from 'haiku-ui-common/lib/helpers/retToEq';
-import eqToRet from 'haiku-ui-common/lib/helpers/eqToRet';
-import ensureRet from 'haiku-ui-common/lib/helpers/ensureRet';
-import ensureEq from 'haiku-ui-common/lib/helpers/ensureEq';
-import doesValueImplyExpression from 'haiku-ui-common/lib/helpers/doesValueImplyExpression';
+import Palette from 'haiku-ui-common/src/Palette';
+import * as EXPR_SIGNS from 'haiku-ui-common/src/helpers/ExprSigns';
+import isNumeric from 'haiku-ui-common/src/helpers/isNumeric';
+import retToEq from 'haiku-ui-common/src/helpers/retToEq';
+import eqToRet from 'haiku-ui-common/src/helpers/eqToRet';
+import ensureRet from 'haiku-ui-common/src/helpers/ensureRet';
+import ensureEq from 'haiku-ui-common/src/helpers/ensureEq';
+import doesValueImplyExpression from 'haiku-ui-common/src/helpers/doesValueImplyExpression';
 import AutoCompleter from './AutoCompleter';
 import zIndex from './styles/zIndex';
-import RangePicker from 'haiku-ui-common/lib/react/InspectorPanels/RangePicker';
-import ColorPicker from 'haiku-ui-common/lib/react/InspectorPanels/ColorPicker';
-import {derivateDisplayValueFromColorString, derivateStringFromColorResult} from 'haiku-ui-common/lib/helpers/uiColorHelpers';
+import RangePicker from 'haiku-ui-common/src/react/InspectorPanels/RangePicker';
+import ColorPicker from 'haiku-ui-common/src/react/InspectorPanels/ColorPicker';
+import { derivateDisplayValueFromColorString, derivateStringFromColorResult } from 'haiku-ui-common/src/helpers/uiColorHelpers';
 import * as Property from 'haiku-serialization/src/bll/Property';
 
 const haikuMode = require('./modes/haiku');
@@ -63,7 +63,7 @@ const NUMERIC_CHANGE_SINGLE = 1;
 const PADDING = 10;
 const FIXED_WIDTH = 210;
 
-function setOptions (opts) {
+function setOptions(opts) {
   for (const key in opts) {
     this.setOption(key, opts[key]);
   }
@@ -74,7 +74,7 @@ function setOptions (opts) {
  * @function toValueDescriptor
  * @description Convert from object format provided by timeline to our internal format.
  */
-function toValueDescriptor ({bookendValue, computedValue}) {
+function toValueDescriptor({ bookendValue, computedValue }) {
   if (bookendValue && bookendValue.__function) {
     return {
       kind: EXPR_KINDS.MACHINE,
@@ -96,7 +96,7 @@ function toValueDescriptor ({bookendValue, computedValue}) {
   };
 }
 
-function safeDisplayableStringValue (val) {
+function safeDisplayableStringValue(val) {
   if (typeof val === 'string') {
     return val;
   }
@@ -108,11 +108,11 @@ function safeDisplayableStringValue (val) {
   }
 }
 
-function getRenderableValueSingleline (valueDescriptor) {
+function getRenderableValueSingleline(valueDescriptor) {
   return retToEq(valueDescriptor.body.trim());
 }
 
-function getRenderableValueMultiline (valueDescriptor, skipFormatting) {
+function getRenderableValueMultiline(valueDescriptor, skipFormatting) {
   let params = '';
   if (valueDescriptor.params && valueDescriptor.params.length > 0) {
     params = marshalParams(valueDescriptor.params);
@@ -136,7 +136,7 @@ ${valueDescriptor.body}
 }
 
 export default class ExpressionInput extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this._context = null; // Our context element on which to mount codemirror
@@ -173,22 +173,22 @@ export default class ExpressionInput extends React.Component {
     this.handleUpdate = this.handleUpdate.bind(this);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.mounted = false;
     this.unlistenToComponent(this.props.component);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.mounted = true;
     this.listenToComponent(this.props.component);
     this.mountCodeMirror();
   }
 
-  componentWillUpdate () {
+  componentWillUpdate() {
     this.mountCodeMirror();
   }
 
-  mountCodeMirror () {
+  mountCodeMirror() {
     if (this._context) {
       while (this._context.firstChild) {
         this._context.removeChild(this._context.firstChild);
@@ -197,22 +197,22 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.component !== this.props.component) {
       this.unlistenToComponent(this.props.component);
       this.listenToComponent(nextProps.component);
     }
   }
 
-  listenToComponent (component) {
+  listenToComponent(component) {
     component.on('update', this.handleUpdate);
   }
 
-  unlistenToComponent (component) {
+  unlistenToComponent(component) {
     component.removeListener('update', this.handleUpdate);
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
       return null;
     }
@@ -226,7 +226,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  isCommittableValueInvalid (committable, original) {
+  isCommittableValueInvalid(committable, original) {
     // If we have any error/warning in the evaluator, assume it as grounds not to commit
     // the current content of the field. Basically leveraging pre-validation we've already done.
     if (this.state.evaluatorState > EVALUATOR_STATES.INFO) {
@@ -238,12 +238,12 @@ export default class ExpressionInput extends React.Component {
     return false;
   }
 
-  requestNavigate (maybeDirection, maybeDoFocus) {
+  requestNavigate(maybeDirection, maybeDoFocus) {
     const direction = (maybeDirection === undefined) ? NAVIGATION_DIRECTIONS.NEXT : maybeDirection;
     this.props.onNavigateRequested(direction, maybeDoFocus);
   }
 
-  getCommitableValue (valueDescriptor, originalDescriptor, editingMode = this.state.editingMode) {
+  getCommitableValue(valueDescriptor, originalDescriptor, editingMode = this.state.editingMode) {
     // If we are in multi-line mode then assume we want to create an expression as opposed to a string.
     // We get problems if we don't do this like a function that doesn't match our naive expression check
     // e.g. function () { if (foo) { ... } else { ... }} which doesn't begin with a return
@@ -263,7 +263,7 @@ export default class ExpressionInput extends React.Component {
     return Expression.parseValue(valueDescriptor.body, this.getPropertyName());
   }
 
-  performCommit (maybeNavigationDirection, doFocusSubsequentCell, avoidNavigation = false) {
+  performCommit(maybeNavigationDirection, doFocusSubsequentCell, avoidNavigation = false) {
     const focusedRow = this.props.component.getFocusedRow();
 
     // There is some race condition where this isn't present;
@@ -295,7 +295,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  handleEditorChange (cm, changeObject) {
+  handleEditorChange(cm, changeObject) {
     if (changeObject.origin === SET_VALUE_ORIGIN) {
       return void (0);
     }
@@ -418,7 +418,7 @@ export default class ExpressionInput extends React.Component {
     });
   }
 
-  getCursorOffsetLine (curs, src) {
+  getCursorOffsetLine(curs, src) {
     if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
       return curs.line + 1;
     }
@@ -426,7 +426,7 @@ export default class ExpressionInput extends React.Component {
     return curs.line + 2; // Offset to account for 1-based index and initial function signature line
   }
 
-  getCursorOffsetChar (curs, src) {
+  getCursorOffsetChar(curs, src) {
     if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
       return curs.ch;
     }
@@ -434,7 +434,7 @@ export default class ExpressionInput extends React.Component {
     return curs.ch + 5; // Offset to account for replacing = with 'return'
   }
 
-  resetSyntaxInjectables (injectables) {
+  resetSyntaxInjectables(injectables) {
     // Remove all former entries in the keywords list
     for (const key in this._injectables) {
       if (!injectables[key]) { // No point deleting if it will be in the new list
@@ -454,7 +454,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  rawValueToOfficialValue (raw, desiredExpressionSign, skipFormatting, editingMode = this.state.editingMode) {
+  rawValueToOfficialValue(raw, desiredExpressionSign, skipFormatting, editingMode = this.state.editingMode) {
     if (editingMode === EDITOR_MODES.SINGLE_LINE) {
       if (doesValueImplyExpression(raw)) {
         let clean = raw.trim();
@@ -499,7 +499,7 @@ export default class ExpressionInput extends React.Component {
     throw new Error('[timeline] Expression input saw unexpexcted editing mode');
   }
 
-  changeCurrentValueIfNumericBy (number) {
+  changeCurrentValueIfNumericBy(number) {
     if (this.state.editedValue && isNumeric(this.state.editedValue.body)) {
       const currentValue = Number(this.state.editedValue.body);
       const newValue = String(currentValue + number);
@@ -508,7 +508,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  handleEditorKeydown (cm, keydownEvent) {
+  handleEditorKeydown(cm, keydownEvent) {
     keydownEvent._alreadyHandled = true;
 
     const highlightedAutoCompletions = this.state.autoCompletions.filter((completion) => {
@@ -535,13 +535,13 @@ export default class ExpressionInput extends React.Component {
 
       if (keydownEvent.which === 27) { // Escape
         keydownEvent.preventDefault();
-        return this.setState({autoCompletions: []});
+        return this.setState({ autoCompletions: [] });
       }
 
       if (keydownEvent.which === 37) { // ArrowLeft
-        this.setState({autoCompletions: []});
+        this.setState({ autoCompletions: [] });
       } else if (keydownEvent.which === 39) { // ArrowRight
-        this.setState({autoCompletions: []});
+        this.setState({ autoCompletions: [] });
       }
     }
 
@@ -612,7 +612,7 @@ export default class ExpressionInput extends React.Component {
     // Let all other keys pass through
   }
 
-  navigateAutoCompletion (direction) {
+  navigateAutoCompletion(direction) {
     // If only one item in the list, no need to do anything, since there's nowhere to navigate
     if (this.state.autoCompletions.length < 2) {
       return void (0);
@@ -640,11 +640,11 @@ export default class ExpressionInput extends React.Component {
     });
   }
 
-  handleAutoCompleterClick (completion) {
+  handleAutoCompleterClick(completion) {
     this.chooseAutoCompletion(completion);
   }
 
-  chooseHighlightedAutoCompletion () {
+  chooseHighlightedAutoCompletion() {
     const completion = this.state.autoCompletions.filter((autocompletion) => {
       return !!autocompletion.highlighted;
     })[0];
@@ -662,21 +662,21 @@ export default class ExpressionInput extends React.Component {
     this.chooseAutoCompletion(completion);
   }
 
-  chooseAutoCompletion (completion) {
+  chooseAutoCompletion(completion) {
     const len = this._parse.target.end - this._parse.target.start;
     const doc = this.codemirror.getDoc();
     const cur = this.codemirror.getCursor();
 
     doc.replaceRange(
       completion.name,
-      {line: cur.line, ch: cur.ch - len},
+      { line: cur.line, ch: cur.ch - len },
       cur, // { line: Number, ch: Number }
     );
 
-    this.setState({autoCompletions: []});
+    this.setState({ autoCompletions: [] });
   }
 
-  willHandlePasteEvent () {
+  willHandlePasteEvent() {
     const selectedRow = this.props.component.getSelectedRow();
     const text = clipboard.readText();
 
@@ -689,7 +689,7 @@ export default class ExpressionInput extends React.Component {
     if (parsedText.split('\n').length > 1) {
       mode = EDITOR_MODES.MULTI_LINE;
       if (!parsedText.startsWith('function')) {
-        parsedText = getRenderableValueMultiline({body: parsedText});
+        parsedText = getRenderableValueMultiline({ body: parsedText });
       }
     } else {
       mode = EDITOR_MODES.SINGLE_LINE;
@@ -721,7 +721,7 @@ export default class ExpressionInput extends React.Component {
    * @description If we want to handle this, return true to short circuit higher-level handlers.
    * If we don't care, return a falsy value to indicate downstream handlers can take it.
    */
-  willHandleExternalKeydownEvent (keydownEvent) {
+  willHandleExternalKeydownEvent(keydownEvent) {
     if (keydownEvent._alreadyHandled) {
       return 1;
     }
@@ -805,7 +805,7 @@ export default class ExpressionInput extends React.Component {
     return false;
   }
 
-  launchMultilineMode () {
+  launchMultilineMode() {
     this.setState({
       editingMode: EDITOR_MODES.MULTI_LINE,
     }, () => {
@@ -813,7 +813,7 @@ export default class ExpressionInput extends React.Component {
     });
   }
 
-  launchSinglelineMode () {
+  launchSinglelineMode() {
     this.setState({
       editingMode: EDITOR_MODES.SINGLE_LINE,
     }, () => {
@@ -821,7 +821,7 @@ export default class ExpressionInput extends React.Component {
     });
   }
 
-  engageFocus (props) {
+  engageFocus(props) {
     const focusedRow = props.component.getFocusedRow();
 
     // There may be a race condition where this isn't available,
@@ -863,26 +863,26 @@ export default class ExpressionInput extends React.Component {
     }, () => {
       this.recalibrateEditor();
       if (!this._historyMap.get(focusedRow.getUniqueKey())) {
-        this._historyMap.set(focusedRow.getUniqueKey(), {done: [], undone: []});
+        this._historyMap.set(focusedRow.getUniqueKey(), { done: [], undone: [] });
       }
       this.codemirror.setHistory(this._historyMap.get(focusedRow.getUniqueKey()));
       this.handleEditorChange(this.codemirror, {});
     });
   }
 
-  setEditorValue (value) {
+  setEditorValue(value) {
     this.codemirror.setValue(value);
 
     // Mark the first and last lines (function signature and closing bracket)
     // as non-editable content.
     if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
       const lastLine = this.codemirror.lastLine();
-      this.codemirror.markText({line: 0, ch: 0}, {line: 1, ch: 0}, {readOnly: true, atomic: true});
-      this.codemirror.markText({line: lastLine, ch: 0}, {line: lastLine, ch: 1}, {readOnly: true, atomic: true});
+      this.codemirror.markText({ line: 0, ch: 0 }, { line: 1, ch: 0 }, { readOnly: true, atomic: true });
+      this.codemirror.markText({ line: lastLine, ch: 0 }, { line: lastLine, ch: 1 }, { readOnly: true, atomic: true });
     }
   }
 
-  recalibrateEditor (cursor) {
+  recalibrateEditor(cursor) {
     let renderable = '';
 
     switch (this.state.editingMode) {
@@ -912,9 +912,9 @@ export default class ExpressionInput extends React.Component {
       this.codemirror.setCursor(cursor);
     } else {
       if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
-        this.codemirror.setCursor({line: 1, ch: renderable.split('\n')[1].length});
+        this.codemirror.setCursor({ line: 1, ch: renderable.split('\n')[1].length });
       } else {
-        this.codemirror.setCursor({line: 1, ch: renderable.length});
+        this.codemirror.setCursor({ line: 1, ch: renderable.length });
       }
     }
 
@@ -929,7 +929,7 @@ export default class ExpressionInput extends React.Component {
     this.forceUpdate();
   }
 
-  getInjectables () {
+  getInjectables() {
     // We'll use these both for auto-assigning function signature params and for syntax highlighting.
     // We do this first because it populates HaikuMode.keywords with vars, which we will use when
     // parsing to produce a summary that includes add'l validation information about the contents
@@ -939,7 +939,7 @@ export default class ExpressionInput extends React.Component {
     return (instance && instance.getInjectables()) || {};
   }
 
-  getEditorWidth () {
+  getEditorWidth() {
     const longest = this.getLongestLine();
     const pxw = longest.length * this.getEstimatedCharWidth();
     switch (this.state.editingMode) {
@@ -962,7 +962,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  getEditorHeight () {
+  getEditorHeight() {
     let rowh = this.props.reactParent.state.rowHeight;
     switch (this.state.editingMode) {
       case EDITOR_MODES.MULTI_LINE:
@@ -976,20 +976,20 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  getEstimatedCharWidth () {
+  getEstimatedCharWidth() {
     // Trivial for monospace, but for normal fonts, what to use?
     return 9; // ???
   }
 
-  getLines () {
+  getLines() {
     return this.codemirror.getValue().split('\n');
   }
 
-  getTotalLineCount () {
+  getTotalLineCount() {
     return this.getLines().length;
   }
 
-  getLongestLine () {
+  getLongestLine() {
     let max = '';
     const lines = this.getLines();
     for (let i = 0; i < lines.length; i++) {
@@ -1000,13 +1000,13 @@ export default class ExpressionInput extends React.Component {
     return max;
   }
 
-  getPropertyName () {
+  getPropertyName() {
     const row = this.props.component.getFocusedRow();
     const name = (row && row.getPropertyName()) || '';
     return name;
   }
 
-  getRootRect () {
+  getRootRect() {
     const row = this.props.component.getFocusedRow();
 
     if (!row) {
@@ -1032,7 +1032,7 @@ export default class ExpressionInput extends React.Component {
     return domElementFellow.getBoundingClientRect();
   }
 
-  getEvalutatorStateColor () {
+  getEvalutatorStateColor() {
     switch (this.state.evaluatorState) {
       case EVALUATOR_STATES.WARN: return Palette.ORANGE;
       case EVALUATOR_STATES.ERROR: return Palette.RED;
@@ -1040,7 +1040,7 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  getRootStyle (hasFixedWidth) {
+  getRootStyle(hasFixedWidth) {
     const style = lodash.assign({
       height: this.getEditorHeight() + 1,
       left: 0,
@@ -1063,7 +1063,7 @@ export default class ExpressionInput extends React.Component {
     return style;
   }
 
-  getSubWrapperStyle (hasPopover) {
+  getSubWrapperStyle(hasPopover) {
     return {
       padding: PADDING,
       background: Palette.FATHER_COAL,
@@ -1074,7 +1074,7 @@ export default class ExpressionInput extends React.Component {
     };
   }
 
-  getEditorContextStyle (hasFixedWidth) {
+  getEditorContextStyle(hasFixedWidth) {
     return {
       border: `1px solid ${Palette.MEDIUM_COAL}`,
       color: Palette.PALE_GRAY,
@@ -1095,14 +1095,14 @@ export default class ExpressionInput extends React.Component {
     };
   }
 
-  getEditorContextClassName () {
+  getEditorContextClassName() {
     const name = [];
     name.push((this.state.editingMode === EDITOR_MODES.SINGLE_LINE) ? 'haiku-singleline' : 'haiku-multiline');
     name.push((this.state.evaluatorState > EVALUATOR_STATES.NONE) ? 'haiku-dynamic' : 'haiku-static');
     return name.join(' ');
   }
 
-  getTooltipStyle () {
+  getTooltipStyle() {
     const style = {
       backgroundColor: Palette.FATHER_COAL,
       borderRadius: 3,
@@ -1138,7 +1138,7 @@ export default class ExpressionInput extends React.Component {
     return style;
   }
 
-  getTooltipTriStyle () {
+  getTooltipTriStyle() {
     const style = {
       position: 'absolute',
       width: 0,
@@ -1158,7 +1158,7 @@ export default class ExpressionInput extends React.Component {
     return style;
   }
 
-  getValueDescriptorForPopover () {
+  getValueDescriptorForPopover() {
     const focusedRow = this.props.component && this.props.component.getFocusedRow();
 
     if (
@@ -1172,7 +1172,7 @@ export default class ExpressionInput extends React.Component {
     return focusedRow.getPropertyValueDescriptor();
   }
 
-  getDisplayColor (rawValueDescriptor) {
+  getDisplayColor(rawValueDescriptor) {
     if (rawValueDescriptor && Property.hasColorPopup(rawValueDescriptor.propertyName)) {
       if (rawValueDescriptor.computedValue && derivateDisplayValueFromColorString(rawValueDescriptor.computedValue) !== null) {
         return rawValueDescriptor.computedValue;
@@ -1184,7 +1184,7 @@ export default class ExpressionInput extends React.Component {
     return false;
   }
 
-  getDisplayRange (rawValueDescriptor) {
+  getDisplayRange(rawValueDescriptor) {
     if (rawValueDescriptor) {
       const rangeAttributes = Property.hasRangePopup(rawValueDescriptor.propertyName);
 
@@ -1236,7 +1236,7 @@ export default class ExpressionInput extends React.Component {
     }, this.performCommitWithoutNavigating);
   };
 
-  renderRangePopover (rawValueDescriptor) {
+  renderRangePopover(rawValueDescriptor) {
     const range = this.getDisplayRange(rawValueDescriptor);
 
     if (range) {
@@ -1266,14 +1266,14 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  renderColorPopover (rawValueDescriptor) {
+  renderColorPopover(rawValueDescriptor) {
     const displayColor = this.getDisplayColor(rawValueDescriptor);
 
     if (displayColor) {
       return (
         <div
           onClick={this.stopPropagation}
-          style={{position: 'absolute', width: 'auto', height: 'auto', top: '-115px', left: 0}}
+          style={{ position: 'absolute', width: 'auto', height: 'auto', top: '-115px', left: 0 }}
         >
           <ColorPicker
             displayValue={derivateDisplayValueFromColorString(displayColor)}
@@ -1290,10 +1290,10 @@ export default class ExpressionInput extends React.Component {
     this.performCommit(NAVIGATION_DIRECTIONS.NEXT, false);
   };
 
-  renderSaveButton () {
+  renderSaveButton() {
     if (this.state.editingMode === EDITOR_MODES.MULTI_LINE) {
       return (
-        <div style={{textAlign: 'right', marginTop: 5, marginBottom: -5}}>
+        <div style={{ textAlign: 'right', marginTop: 5, marginBottom: -5 }}>
           <button
             style={{
               fontSize: '10px',
@@ -1312,11 +1312,11 @@ export default class ExpressionInput extends React.Component {
     }
   }
 
-  doesClickOriginatedFromMouseDown () {
+  doesClickOriginatedFromMouseDown() {
     return this._mouseDownStarted;
   }
 
-  cleanMouseDownTracker () {
+  cleanMouseDownTracker() {
     this._mouseDownStarted = false;
   }
 
@@ -1328,7 +1328,7 @@ export default class ExpressionInput extends React.Component {
     this._mouseDownStarted = true;
   };
 
-  render () {
+  render() {
     const rawValueDescriptor = this.getValueDescriptorForPopover();
     const rangePopover = this.renderRangePopover(rawValueDescriptor);
     const colorPopover = this.renderColorPopover(rawValueDescriptor);

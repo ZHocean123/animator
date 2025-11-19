@@ -4,13 +4,13 @@ const async = require('async');
 const WebSocket = require('ws');
 const lodash = require('lodash');
 const jss = require('json-stable-stringify');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
-const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default;
-const EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default;
-const {GLASS_CHANNEL} = require('haiku-sdk-creator/lib/glass');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
+const EnvoyClient = require('haiku-sdk-creator/src/envoy/EnvoyClient').default;
+const EnvoyLogger = require('haiku-sdk-creator/src/envoy/EnvoyLogger').default;
+const { GLASS_CHANNEL } = require('haiku-sdk-creator/src/glass');
 const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
-const {InteractionMode} = require('@haiku/core/lib/helpers/interactionModes');
+const { InteractionMode } = require('@haiku/core/lib/helpers/interactionModes');
 const toTitleCase = require('./helpers/toTitleCase');
 const Lock = require('./Lock');
 const ActionStack = require('./ActionStack');
@@ -44,7 +44,7 @@ const SILENT_METHODS = {
  *  TODO: A nice next step would be to Envoy-ize all of this.
  */
 class Project extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     // Super hack, but it turns out we need to have this in a LOT of places in order for routing to work
@@ -97,7 +97,7 @@ class Project extends BaseModel {
     this.actionStackIndex = 0;
   }
 
-  teardown () {
+  teardown() {
     this.stopHandlingMethods();
     this.getEnvoyClient().closeConnection();
     if (this.websocket) {
@@ -106,15 +106,15 @@ class Project extends BaseModel {
     this.actionStack.stop();
   }
 
-  stopHandlingMethods () {
+  stopHandlingMethods() {
     this.isHandlingMethods = false;
   }
 
-  startHandlingMethods () {
+  startHandlingMethods() {
     this.isHandlingMethods = true;
   }
 
-  connectClients () {
+  connectClients() {
     this.startHandlingMethods();
 
     if (this.websocket) {
@@ -166,14 +166,14 @@ class Project extends BaseModel {
     }
   }
 
-  isIgnoringMethodRequestsForMethod (method) {
+  isIgnoringMethodRequestsForMethod(method) {
     // HACK: This probably doesn't/shouldn't belong as a part of 'fileOptions'
     // It's a hacky way for MasterProcess to handle certain methods it cares about
     const fileOptions = this.getFileOptions();
     return fileOptions && fileOptions.methodsToIgnore && fileOptions.methodsToIgnore[method];
   }
 
-  receiveMethodCall (method, params, message, cb) {
+  receiveMethodCall(method, params, message, cb) {
     if (!this.isHandlingMethods) {
       return cb();
     }
@@ -185,7 +185,7 @@ class Project extends BaseModel {
     return this.handleMethodCall(method, params, message, cb);
   }
 
-  handleMethodCall (method, params, message, cb) {
+  handleMethodCall(method, params, message, cb) {
     return Lock.request(Lock.LOCKS.ProjectMethodHandler, false, (release) => {
       // Try matching a method on a given active component
       if (typeof params[0] === 'string' && ActiveComponent.prototype[method] instanceof Function) {
@@ -225,7 +225,7 @@ class Project extends BaseModel {
     });
   }
 
-  ensurePlatformHaikuRegistry () {
+  ensurePlatformHaikuRegistry() {
     if (!this.platform) {
       this.platform = {};
     }
@@ -237,42 +237,42 @@ class Project extends BaseModel {
     }
   }
 
-  getName () {
+  getName() {
     const parts = this.folder.split(path.sep);
     const last = parts[parts.length - 1];
     return last;
   }
 
-  getNameVariations () {
+  getNameVariations() {
     return Project.getProjectNameVariations(this.getFolder());
   }
 
-  getFriendlyName (maybeProjectName) {
+  getFriendlyName(maybeProjectName) {
     return maybeProjectName || toTitleCase(this.getName());
   }
 
-  getCurrentActiveComponentSceneName () {
+  getCurrentActiveComponentSceneName() {
     const ac = this.getCurrentActiveComponent();
     return ac && ac.getSceneName();
   }
 
-  getCurrentActiveComponentRelpath () {
+  getCurrentActiveComponentRelpath() {
     const ac = this.getCurrentActiveComponent();
     return ac && ac.getRelpath();
   }
 
-  getCurrentActiveComponent () {
+  getCurrentActiveComponent() {
     if (!this._activeComponentSceneName) {
       return null;
     }
     return this.findActiveComponentBySceneName(this._activeComponentSceneName);
   }
 
-  getAllActiveComponents () {
-    return ActiveComponent.where({project: this});
+  getAllActiveComponents() {
+    return ActiveComponent.where({ project: this });
   }
 
-  addActiveComponentToMultiComponentTabs (scenename, active = false) {
+  addActiveComponentToMultiComponentTabs(scenename, active = false) {
     // Update the active tabs in memory used for displaying in the UI
     for (const tab of this._multiComponentTabs) {
       if (tab.scenename === scenename) {
@@ -281,18 +281,18 @@ class Project extends BaseModel {
       }
     }
 
-    this._multiComponentTabs.push({scenename, active});
+    this._multiComponentTabs.push({ scenename, active });
   }
 
-  removeActiveComponentFromMultiComponentTabs (scenename) {
+  removeActiveComponentFromMultiComponentTabs(scenename) {
     const index = this._multiComponentTabs.findIndex((tab) => tab.scenename === scenename);
     if (index !== -1) {
       this._multiComponentTabs.splice(index, 1);
     }
   }
 
-  describeSubComponents () {
-    return this._multiComponentTabs.map(({scenename, active}) => {
+  describeSubComponents() {
+    return this._multiComponentTabs.map(({ scenename, active }) => {
       return {
         isActive: !!active,
         scenename,
@@ -301,7 +301,7 @@ class Project extends BaseModel {
     });
   }
 
-  describeUndoState () {
+  describeUndoState() {
     const ac = this.getCurrentActiveComponent();
     const filter = (doable) => !doable.ac || doable.ac === ac;
     return {
@@ -310,14 +310,14 @@ class Project extends BaseModel {
     };
   }
 
-  describeTopMenu () {
+  describeTopMenu() {
     return {
       subComponents: this.describeSubComponents(),
       undoState: this.describeUndoState(),
     };
   }
 
-  getExistingComponentNames () {
+  getExistingComponentNames() {
     const names = {
       main: true, // Never allow 'main'
     };
@@ -329,7 +329,7 @@ class Project extends BaseModel {
     return names;
   }
 
-  getNextAvailableSceneNameWithPrefix (prefix, num = 0) {
+  getNextAvailableSceneNameWithPrefix(prefix, num = 0) {
     // myName, myName_2, myName_3, ...
     const full = `${prefix}${(num < 2) ? '' : `_${num}`}`;
     if (!this.findActiveComponentBySceneName(full)) {
@@ -338,35 +338,35 @@ class Project extends BaseModel {
     return this.getNextAvailableSceneNameWithPrefix(prefix, num + 1);
   }
 
-  getMultiComponentTabs () {
+  getMultiComponentTabs() {
     return this._multiComponentTabs;
   }
 
-  getMetadata () {
+  getMetadata() {
     return this.metadata;
   }
 
-  getFileOptions () {
+  getFileOptions() {
     return this.fileOptions;
   }
 
-  getEnvoyOptions () {
+  getEnvoyOptions() {
     return this.envoyOptions;
   }
 
-  getFolder () {
+  getFolder() {
     return this.folder;
   }
 
-  getAlias () {
+  getAlias() {
     return this.alias;
   }
 
-  buildFileUid (relpath) {
+  buildFileUid(relpath) {
     return path.join(this.getFolder(), relpath);
   }
 
-  getEnvoyChannel (name) {
+  getEnvoyChannel(name) {
     switch (name) {
       case 'timeline': return this._envoyTimelineChannel;
       case 'glass': return this._envoyGlassChannel;
@@ -376,27 +376,27 @@ class Project extends BaseModel {
     }
   }
 
-  getEnvoyClient () {
+  getEnvoyClient() {
     return this._envoyClient;
   }
 
-  getPlatform () {
+  getPlatform() {
     return this.platform;
   }
 
-  undo (options, metadata, cb) {
+  undo(options, metadata, cb) {
     this.actionStack.undo(options, metadata, cb);
   }
 
-  redo (options, metadata, cb) {
+  redo(options, metadata, cb) {
     this.actionStack.redo(options, metadata, cb);
   }
 
-  advanceActionStackIndex () {
+  advanceActionStackIndex() {
     this.actionStackIndex++;
   }
 
-  updateHook (...args) {
+  updateHook(...args) {
     const method = args.shift();
     const tx = args.pop();
     // Make our own copy of metadata to munge on, to ensure that we don't pass actionStackIndex along to dependent
@@ -437,7 +437,7 @@ class Project extends BaseModel {
             }
           }
 
-          Object.assign(metadata, {integrity});
+          Object.assign(metadata, { integrity });
         }
 
         // If we originated the action, notify all other views
@@ -459,7 +459,7 @@ class Project extends BaseModel {
     );
   }
 
-  getWebsocketBroadcastDefaults () {
+  getWebsocketBroadcastDefaults() {
     return {
       time: Date.now(),
       type: 'broadcast',
@@ -468,12 +468,12 @@ class Project extends BaseModel {
     };
   }
 
-  broadcastPayload (mainPayload) {
+  broadcastPayload(mainPayload) {
     const fullPayloadWithMetadata = Object.assign(this.getWebsocketBroadcastDefaults(), mainPayload);
     this.websocket.send(fullPayloadWithMetadata);
   }
 
-  upsertFile ({relpath, type}) {
+  upsertFile({ relpath, type }) {
     const spec = Object.assign({}, File.DEFAULT_ATTRIBUTES, {
       uid: this.buildFileUid(relpath),
       folder: this.getFolder(),
@@ -486,15 +486,15 @@ class Project extends BaseModel {
     return File.upsert(spec, this.getFileOptions());
   }
 
-  isRemoteRequest (metadata) {
+  isRemoteRequest(metadata) {
     return metadata && metadata.from !== this.getAlias();
   }
 
-  isLocalUpdate (metadata) {
+  isLocalUpdate(metadata) {
     return metadata && metadata.from === this.getAlias();
   }
 
-  masterHeartbeat (cb) {
+  masterHeartbeat(cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'masterHeartbeat',
@@ -502,7 +502,7 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  saveProject (project, saveOptions = {}, cb) {
+  saveProject(project, saveOptions = {}, cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'saveProject',
@@ -513,8 +513,8 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  setInteractionMode (interactionMode, metadata, cb) {
-    const components = ActiveComponent.where({project: this});
+  setInteractionMode(interactionMode, metadata, cb) {
+    const components = ActiveComponent.where({ project: this });
 
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       return async.eachSeries(components, (component, next) => {
@@ -543,11 +543,11 @@ class Project extends BaseModel {
     });
   }
 
-  getInteractionMode () {
+  getInteractionMode() {
     return this.interactionMode;
   }
 
-  toggleInteractionMode (metadata, cb) {
+  toggleInteractionMode(metadata, cb) {
     const interactionMode = this.interactionMode === InteractionMode.EDIT
       ? InteractionMode.LIVE
       : InteractionMode.EDIT;
@@ -555,7 +555,7 @@ class Project extends BaseModel {
     this.setInteractionMode(interactionMode, metadata, cb);
   }
 
-  linkAsset (assetAbspath, cb) {
+  linkAsset(assetAbspath, cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'linkAsset',
@@ -566,7 +566,7 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  unlinkAsset (assetRelpath, cb) {
+  unlinkAsset(assetRelpath, cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'unlinkAsset',
@@ -577,7 +577,7 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  bulkLinkAssets (assetAbspaths, cb) {
+  bulkLinkAssets(assetAbspaths, cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'bulkLinkAssets',
@@ -588,7 +588,7 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  listAssets (cb) {
+  listAssets(cb) {
     return this.websocket.request({
       folder: this.getFolder(),
       method: 'listAssets',
@@ -596,7 +596,7 @@ class Project extends BaseModel {
     }, cb);
   }
 
-  readAllStateValues (cb) {
+  readAllStateValues(cb) {
     return this.websocket.method(
       'readAllStateValues',
       [
@@ -607,7 +607,7 @@ class Project extends BaseModel {
     );
   }
 
-  queryImageSize (abspath, cb) {
+  queryImageSize(abspath, cb) {
     return this.websocket.method(
       'queryImageSize',
       [abspath],
@@ -615,7 +615,7 @@ class Project extends BaseModel {
     );
   }
 
-  mergeDesigns (designs, metadata, cb) {
+  mergeDesigns(designs, metadata, cb) {
     const ac = this.getCurrentActiveComponent();
 
     if (!ac) {
@@ -630,7 +630,7 @@ class Project extends BaseModel {
 
     return Lock.request(Lock.LOCKS.ActiveComponentWork, false, (release) => {
       return this.updateHook('mergeDesigns', designs, metadata || this.getMetadata(), (fire) => {
-        const components = ActiveComponent.where({project: this});
+        const components = ActiveComponent.where({ project: this });
 
         return async.eachSeries(components, (component, next) => {
           return component.moduleFindOrCreate('basicReload', {}, (err) => {
@@ -664,7 +664,7 @@ class Project extends BaseModel {
     });
   }
 
-  addActiveComponentToRegistry (activeComponent) {
+  addActiveComponentToRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
       activeComponent.getRelpath(),
@@ -674,7 +674,7 @@ class Project extends BaseModel {
     this.addActiveComponentToMultiComponentTabs(activeComponent.getSceneName(), false);
   }
 
-  removeActiveComponentFromRegistry (activeComponent) {
+  removeActiveComponentFromRegistry(activeComponent) {
     const activeComponentKey = path.join(
       this.getFolder(),
       activeComponent.getRelpath(),
@@ -684,7 +684,7 @@ class Project extends BaseModel {
     this.removeActiveComponentFromMultiComponentTabs(activeComponent.getSceneName());
   }
 
-  deleteSceneByName (scenename, cb) {
+  deleteSceneByName(scenename, cb) {
     // Note: this is a VERY ROUGH implementation of subcomponent destruction that is only meant to be used to undo
     // subcomponent creation in its current form. If planning to use this for proper subcomponent deletion in any context,
     // we would also need to find/destroy any subcomponent instances that would have require(...) broken by these actions.
@@ -705,12 +705,12 @@ class Project extends BaseModel {
     return cb();
   }
 
-  upsertSceneByName (scenename, cb) {
+  upsertSceneByName(scenename, cb) {
     const relpath = path.join('code', scenename, 'code.js');
     return this.upsertComponentBytecodeToModule(relpath, cb);
   }
 
-  findOrCreateActiveComponent (scenename, cb) {
+  findOrCreateActiveComponent(scenename, cb) {
     const ac = this.findActiveComponentBySceneName(scenename);
 
     if (ac) {
@@ -726,7 +726,7 @@ class Project extends BaseModel {
     });
   }
 
-  setCurrentActiveComponent (scenename, metadata, cb) {
+  setCurrentActiveComponent(scenename, metadata, cb) {
     metadata.integrity = false;
     return Lock.request(Lock.LOCKS.SetCurrentActiveComponent, false, (release) => {
       // If not in read only mode, create the component entity for the scene in question
@@ -761,7 +761,7 @@ class Project extends BaseModel {
     });
   }
 
-  closeNamedActiveComponent (scenename, metadata, cb) {
+  closeNamedActiveComponent(scenename, metadata, cb) {
     for (let i = this._multiComponentTabs.length - 1; i >= 0; i--) {
       const tab = this._multiComponentTabs[i];
       if (tab.scenename === scenename) {
@@ -778,7 +778,7 @@ class Project extends BaseModel {
     }
   }
 
-  renameComponent (scenenameOld, scenenameNew, metadata, cb) {
+  renameComponent(scenenameOld, scenenameNew, metadata, cb) {
     // TODO, important for multi-component, launching straight to editing, etc.
     // Need to change all in-memory references to the name,
     // all existing file-system references to the name including other components
@@ -794,7 +794,7 @@ class Project extends BaseModel {
    * - Filtering files that are not supported
    * - Linking the assets via plumbing
    */
-  linkExternalAssetOnDrop (event, cb) {
+  linkExternalAssetOnDrop(event, cb) {
     if (Asset.isInternalDrop(event)) {
       return cb();
     }
@@ -821,7 +821,7 @@ class Project extends BaseModel {
    * @param relpath {String} Relative path to destination code file within project
    * @param cb {Function}
    */
-  upsertComponentBytecodeToModule (relpath, cb) {
+  upsertComponentBytecodeToModule(relpath, cb) {
     // Note: This assumes that the basic bytecode file *has already been created*
     this.upsertActiveComponentInstance(relpath, (err, ac) => {
       if (err) {
@@ -838,12 +838,12 @@ class Project extends BaseModel {
     });
   }
 
-  relpathToSceneName (relpath) {
+  relpathToSceneName(relpath) {
     // Must normalize so ./foo/bar/baz becomes foo/bar/baz (note number of slashes)
     return path.normalize(relpath).split(path.sep)[1];
   }
 
-  upsertActiveComponentInstance (relpath, cb) {
+  upsertActiveComponentInstance(relpath, cb) {
     const abspath = path.join(this.getFolder(), relpath);
     return Lock.request(Lock.LOCKS.FileReadWrite(abspath), false, (release) => {
       const file = this.upsertFile({
@@ -856,33 +856,33 @@ class Project extends BaseModel {
     });
   }
 
-  findActiveComponentBySource (relpath, cb) {
+  findActiveComponentBySource(relpath, cb) {
     const scenename = ModuleWrapper.getScenenameFromRelpath(relpath);
     return this.findOrCreateActiveComponent(scenename, cb);
   }
 
-  findActiveComponentBySourceIfPresent (relpath) {
+  findActiveComponentBySourceIfPresent(relpath) {
     const scenename = ModuleWrapper.getScenenameFromRelpath(relpath);
     return this.findActiveComponentBySceneName(scenename);
   }
 
-  findActiveComponentBySceneName (scenename) {
+  findActiveComponentBySceneName(scenename) {
     return ActiveComponent.findById(ActiveComponent.buildPrimaryKey(this.getFolder(), scenename));
   }
 
-  getPackageJsonPath () {
+  getPackageJsonPath() {
     return path.join(this.getFolder(), 'package.json');
   }
 
-  getDefaultComponentInfo () {
+  getDefaultComponentInfo() {
 
   }
 
-  readPackageJsonSafe (cb) {
+  readPackageJsonSafe(cb) {
     let pkg;
 
     try {
-      pkg = fse.readJsonSync(this.getPackageJsonPath(), {throws: false});
+      pkg = fse.readJsonSync(this.getPackageJsonPath(), { throws: false });
     } catch (exception) {
       logger.warn(`[project (${this.getAlias()})] package.json error:`, exception);
       pkg = {};
@@ -891,7 +891,7 @@ class Project extends BaseModel {
     return cb(pkg);
   }
 
-  writePackageJson (pkg, cb) {
+  writePackageJson(pkg, cb) {
     try {
       fse.outputJsonSync(this.getPackageJsonPath(), pkg);
     } catch (exception) {
@@ -901,7 +901,7 @@ class Project extends BaseModel {
     return cb();
   }
 
-  readComponentInfo (scenename, cb) {
+  readComponentInfo(scenename, cb) {
     return this.readPackageJsonSafe((pkg) => {
       const info = lodash.get(pkg, `haiku.${scenename}`) || {};
 
@@ -928,11 +928,11 @@ class Project extends BaseModel {
     });
   }
 
-  getCodeFolderAbspath () {
+  getCodeFolderAbspath() {
     return path.join(this.getFolder(), 'code');
   }
 
-  rehydrate () {
+  rehydrate() {
     fse.readdirSync(this.getCodeFolderAbspath()).filter((entry) => {
       // Ignore hidden files that may appear here such as everyone's favorite .DS_Store
       return entry && entry[0] !== '.';
@@ -941,7 +941,7 @@ class Project extends BaseModel {
     });
   }
 
-  describeIntegrity () {
+  describeIntegrity() {
     const descriptor = {};
 
     this.getAllActiveComponents().forEach((ac) => {
@@ -951,7 +951,7 @@ class Project extends BaseModel {
         hash,
       } = ac.getInsertionPointInfo();
 
-      descriptor[relpath] = {hash};
+      descriptor[relpath] = { hash };
     });
 
     return descriptor;

@@ -1,21 +1,21 @@
 import {shell} from 'electron';
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common/src/environments/os';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 // @ts-ignore
 import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import Palette from 'haiku-ui-common/src/Palette';
 import {
   FigmaIconSVG,
   IllustratorIconSVG,
   SketchIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common/src/react/OtherIcons';
 import * as path from 'path';
 import * as React from 'react';
 // @ts-ignore
 import FigmaPopover from './importers/FigmaPopover';
 
-const STYLES: React.CSSProperties = {
+const STYLES: {[key: string]: React.CSSProperties} = {
   container: {
     padding: '0 13px',
   },

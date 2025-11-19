@@ -70,7 +70,7 @@ export default class TopMenu {
     let didChange = false;
 
     for (const key in this.options) {
-      if (nextOptions[key] !== undefined && !isEqual(nextOptions[key], this.options[key])) {
+      if (nextOptions[key as keyof TopMenuOptions] !== undefined && !isEqual(nextOptions[key as keyof TopMenuOptions], this.options[key as keyof TopMenuOptions])) {
         didChange = true;
         break;
       }

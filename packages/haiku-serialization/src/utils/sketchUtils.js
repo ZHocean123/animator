@@ -1,23 +1,23 @@
 const path = require('path');
-const {exec} = require('child_process');
+const { exec } = require('child_process');
 const logger = require('./LoggerInstance');
-const {isMac} = require('haiku-common/lib/environments/os');
+const { isMac } = require('haiku-common/src/environments/os');
 
 const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`;
 const PARSER_CLI_PATH = '/Contents/Resources/sketchtool/bin/sketchtool';
 let sketchInstalledCache = null;
 
 module.exports = {
-  dumpToPaths (rawDump) {
+  dumpToPaths(rawDump) {
     logger.info('[sketch utils] about to parse Sketch paths', rawDump);
 
     return rawDump
-        .trim()
-        .split('\n')
-        .filter(Boolean);
+      .trim()
+      .split('\n')
+      .filter(Boolean);
   },
 
-  pathsToInstallationInfo (sketchPaths) {
+  pathsToInstallationInfo(sketchPaths) {
     const resolvingSketchPaths = sketchPaths.map((sketchPath) => {
       return new Promise((resolve, reject) => {
         const sketchtoolPath = path.join(sketchPath, PARSER_CLI_PATH);
@@ -29,7 +29,7 @@ module.exports = {
 
           const rawBuildNumber = stdout.match(/\((.*?)\)/)[1];
           const sketchtoolBuildNumber = Number(rawBuildNumber);
-          return resolve({sketchPath, sketchtoolBuildNumber});
+          return resolve({ sketchPath, sketchtoolBuildNumber });
         });
       });
     });
@@ -37,7 +37,7 @@ module.exports = {
     return Promise.all(resolvingSketchPaths);
   },
 
-  getDumpInfo () {
+  getDumpInfo() {
     return new Promise((resolve, reject) => {
       exec(SKETCH_PATH_FINDER, (error, stdout, stderr) => {
         if (error || !stdout || stdout.trim().length === 0 || stderr) {
@@ -49,7 +49,7 @@ module.exports = {
     });
   },
 
-  findBestPath (sketchPaths) {
+  findBestPath(sketchPaths) {
     const sortedPaths = sketchPaths
       .filter(Boolean)
       .sort((a, b) => b.sketchtoolBuildNumber - a.sketchtoolBuildNumber);
@@ -57,11 +57,11 @@ module.exports = {
     return sortedPaths[0] && sortedPaths[0].sketchPath;
   },
 
-  unsetSketchInstalledCache () {
+  unsetSketchInstalledCache() {
     sketchInstalledCache = null;
   },
 
-  checkIfInstalled () {
+  checkIfInstalled() {
     // Only Mac has sketch support
     if (isMac()) {
       return new Promise((resolve, reject) => {

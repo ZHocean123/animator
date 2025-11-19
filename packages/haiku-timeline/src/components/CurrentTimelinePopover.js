@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as Radium from 'radium';
-import DuplicateIconSVG from 'haiku-ui-common/lib/react/icons/DuplicateIconSVG';
-import EditsIconSVG from 'haiku-ui-common/lib/react/icons/EditsIconSVG';
-import DeleteIconSVG from 'haiku-ui-common/lib/react/icons/DeleteIconSVG';
-import CheckmarkIconSVG from 'haiku-ui-common/lib/react/icons/CheckmarkIconSVG';
-import ChevronLeftIconSVG from 'haiku-ui-common/lib/react/icons/ChevronLeftIconSVG';
-import Palette from 'haiku-ui-common/lib/Palette';
+import DuplicateIconSVG from 'haiku-ui-common/src/react/icons/DuplicateIconSVG';
+import EditsIconSVG from 'haiku-ui-common/src/react/icons/EditsIconSVG';
+import DeleteIconSVG from 'haiku-ui-common/src/react/icons/DeleteIconSVG';
+import CheckmarkIconSVG from 'haiku-ui-common/src/react/icons/CheckmarkIconSVG';
+import ChevronLeftIconSVG from 'haiku-ui-common/src/react/icons/ChevronLeftIconSVG';
+import Palette from 'haiku-ui-common/src/Palette';
 
 const popoverWidth = 170;
 const popoverHeight = '200px';
@@ -147,63 +147,63 @@ const STYLES = {
 };
 
 class CurrentTimelinePopover extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
-    this.state = {onPageTwo: false};
+    this.state = { onPageTwo: false };
   }
 
-  goToPageOne () {
-    this.setState({onPageTwo: false});
+  goToPageOne() {
+    this.setState({ onPageTwo: false });
   }
 
-  goToPageTwo () {
-    this.setState({onPageTwo: true});
+  goToPageTwo() {
+    this.setState({ onPageTwo: true });
     setTimeout(() => {
       this.creationInput.focus();
     }, pageTransDur);
   }
 
-  handleRename (event, timelineName) {
+  handleRename(event, timelineName) {
     event.preventDefault();
     const originalName = this.state.focusedTimeline;
     const newName = this[timelineName].value;
-    this.props.changeTimelineName({originalName, newName});
+    this.props.changeTimelineName({ originalName, newName });
     this[timelineName].blur();
   }
 
-  handleCreateTimeline (event, form) {
+  handleCreateTimeline(event, form) {
     event.preventDefault();
     const name = this.creationInput.value;
     this.props.createTimeline(name);
     this.creationInput.blur();
     this.creationInput.value = '';
-    this.setState({onPageTwo: false});
+    this.setState({ onPageTwo: false });
   }
 
-  handleDuplicateTimeline (event, timelineName) {
+  handleDuplicateTimeline(event, timelineName) {
     event.preventDefault();
     event.stopPropagation();
     this.props.duplicateTimeline(timelineName);
   }
 
-  showRenameField (event, timelineName) {
+  showRenameField(event, timelineName) {
     event.preventDefault();
     event.stopPropagation();
     // this[timelineName].focus() // ?
   }
 
-  handleDeleteTimeline (event, timelineName) {
+  handleDeleteTimeline(event, timelineName) {
     event.preventDefault();
     event.stopPropagation();
     this.props.deleteTimeline(timelineName);
   }
 
-  handleSelectTimeline (event, timelineName) {
+  handleSelectTimeline(event, timelineName) {
     this.props.selectTimeline(timelineName);
     this.props.closePopover();
   }
 
-  timelineElementsList () {
+  timelineElementsList() {
     return (
       <div>
         {this.props.timelineNames.map((timelineName) => {
@@ -215,13 +215,13 @@ class CurrentTimelinePopover extends React.Component {
                   this.handleSelectTimeline(e, timelineName);
                 }
               }}
-              style={{position: 'relative'}}>
+              style={{ position: 'relative' }}>
               <form
                 onSubmit={(e) => {
                   this.handleRename(e, timelineName);
                 }}
                 onFocus={(e) => {
-                  this.setState({focusedTimeline: timelineName});
+                  this.setState({ focusedTimeline: timelineName });
                 }}
                 key={`timelineName-${timelineName}`}
                 style={[STYLES.timelineNameRow, Radium.getState(this.state, `t-${timelineName}`, ':focus') && STYLES.rowNoBg]}>
@@ -236,17 +236,17 @@ class CurrentTimelinePopover extends React.Component {
                       this[timelineName] = input;
                     }} />
                   {Radium.getState(this.state, `t-${timelineName}`, ':focus')
-                      ? (<button
-                        key={`b-${timelineName}`}
-                        style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini, STYLES.rogueLayout]}
-                        type="submit">
-                        <CheckmarkIconSVG color={Palette.ROCK} />
-                      </button>)
-                      : null}
+                    ? (<button
+                      key={`b-${timelineName}`}
+                      style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini, STYLES.rogueLayout]}
+                      type="submit">
+                      <CheckmarkIconSVG color={Palette.ROCK} />
+                    </button>)
+                    : null}
                 </div>
               </form>
               {!Radium.getState(this.state, `t-${timelineName}`, ':focus')
-                ? (<span style={{position: 'absolute', right: '4px', top: '5px'}}>
+                ? (<span style={{ position: 'absolute', right: '4px', top: '5px' }}>
                   <button
                     onClick={this.handleDeleteTimeline.bind(this)}
                     key={`d-${timelineName}`}
@@ -275,7 +275,7 @@ class CurrentTimelinePopover extends React.Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container}>
         <div style={STYLES.pagesWrapper}>
@@ -293,7 +293,7 @@ class CurrentTimelinePopover extends React.Component {
                 onClick={this.goToPageOne.bind(this)}>
                 <ChevronLeftIconSVG color={Palette.ROCK} />
               </button>
-              <div style={{paddingTop: '5px', width: '100%'}}>NEW TIMELINE</div>
+              <div style={{ paddingTop: '5px', width: '100%' }}>NEW TIMELINE</div>
             </div>
             <form
               onSubmit={this.handleCreateTimeline.bind(this)}

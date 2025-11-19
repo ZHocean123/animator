@@ -1,6 +1,6 @@
 const lodash = require('lodash');
 
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
 
 const BaseModel = require('./BaseModel');
 const Lock = require('./Lock');
@@ -93,7 +93,7 @@ const shouldAccumulate = (method, params) => ACCUMULATORS[method] && !params[par
  *     - actions should be equivalent across processes (or we'll get crashes)
  */
 class ActionStack extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
     this.resetData();
     this.processActions();
@@ -106,7 +106,7 @@ class ActionStack extends BaseModel {
    * closed and then reopened again, otherwise it will have stale data from
    * the previous project editing session.
    */
-  resetData () {
+  resetData() {
     this.stopped = false;
     this.undoables = [];
     this.redoables = [];
@@ -125,11 +125,11 @@ class ActionStack extends BaseModel {
     };
   }
 
-  stop () {
+  stop() {
     this.stopped = true;
   }
 
-  processActions () {
+  processActions() {
     const action = this.actions[0];
 
     if (!action) {
@@ -156,7 +156,7 @@ class ActionStack extends BaseModel {
     this.shiftAndProcessLatestAction();
   }
 
-  forceAccumulation () {
+  forceAccumulation() {
     for (const method in this.accumulatorTimeouts) {
       clearTimeout(this.accumulatorTimeouts[method]);
       delete this.accumulatorTimeouts[method];
@@ -164,7 +164,7 @@ class ActionStack extends BaseModel {
     }
   }
 
-  shiftAndProcessLatestAction () {
+  shiftAndProcessLatestAction() {
     const action = this.actions.shift();
 
     if (action) {
@@ -174,7 +174,7 @@ class ActionStack extends BaseModel {
     }
   }
 
-  processAction (action) {
+  processAction(action) {
     const {
       method,
       params,
@@ -190,7 +190,7 @@ class ActionStack extends BaseModel {
     return this.emit('next', method, params, () => this.processActions());
   }
 
-  enqueueAction (method, params, before) {
+  enqueueAction(method, params, before) {
     if (shouldAccumulate(method, params)) {
       for (let i = this.actions.length - 1; i >= 0; i--) {
         // Find the most recent action that meets our criteria, and merge our payload with it
@@ -224,7 +224,7 @@ class ActionStack extends BaseModel {
     }
   }
 
-  addDoable (doable, stack) {
+  addDoable(doable, stack) {
     stack.push(doable);
 
     if (stack.length > MAX_UNDOABLES_LEN) {
@@ -234,17 +234,17 @@ class ActionStack extends BaseModel {
     this.project.emit('update', 'updateMenu');
   }
 
-  addUndoable (undoable, ac) {
+  addUndoable(undoable, ac) {
     // TODO: reimplement this.undoables as a Map<ActiveComponent, Undoable[]>
-    this.addDoable(Object.assign(undoable, {ac}), this.undoables);
+    this.addDoable(Object.assign(undoable, { ac }), this.undoables);
   }
 
-  addRedoable (redoable, ac) {
+  addRedoable(redoable, ac) {
     // TODO: reimplement this.redoables as a Map<ActiveComponent, Undoable[]>
-    this.addDoable(Object.assign(redoable, {ac}), this.redoables);
+    this.addDoable(Object.assign(redoable, { ac }), this.redoables);
   }
 
-  popDoable (stack, ac) {
+  popDoable(stack, ac) {
     // If no active component context, just use the top of the stack.
     if (!ac) {
       return stack.pop();
@@ -274,23 +274,23 @@ class ActionStack extends BaseModel {
     return null;
   }
 
-  popUndoable (ac) {
+  popUndoable(ac) {
     return this.popDoable(this.undoables, ac);
   }
 
-  popRedoable (ac) {
+  popRedoable(ac) {
     return this.popDoable(this.redoables, ac);
   }
 
-  getUndoables () {
+  getUndoables() {
     return this.undoables;
   }
 
-  getRedoables () {
+  getRedoables() {
     return this.redoables;
   }
 
-  buildMethodInverterAction (ac, method, params, metadata, when, output) {
+  buildMethodInverterAction(ac, method, params, metadata, when, output) {
     if (
       ActionStack.METHOD_INVERTERS[method] &&
       ActionStack.METHOD_INVERTERS[method][when]
@@ -322,17 +322,17 @@ class ActionStack extends BaseModel {
     return null;
   }
 
-  shouldOrderRemoteUpdate (metadata) {
+  shouldOrderRemoteUpdate(metadata) {
     return experimentIsEnabled(Experiment.OrderedActionStack) &&
       metadata.hasOwnProperty('actionStackIndex') &&
       this.project.isRemoteRequest(metadata);
   }
 
-  advanceActionStackIndexForMetadata (metadata) {
+  advanceActionStackIndexForMetadata(metadata) {
     this.actionStackIndices[metadata.from]++;
   }
 
-  orderedAction (method, metadata, cb) {
+  orderedAction(method, metadata, cb) {
     if (this.shouldOrderRemoteUpdate(metadata)) {
       if (this.actionStackIndices[metadata.from] !== metadata.actionStackIndex) {
         logger.info(`[action stack] received out-of-order ${method}; deferring until other actions complete`);
@@ -349,7 +349,7 @@ class ActionStack extends BaseModel {
     return cb();
   }
 
-  handleActionInitiation (method, params, metadata, continuation) {
+  handleActionInitiation(method, params, metadata, continuation) {
     if (this.project.isRemoteRequest(metadata)) {
       // If we're receiving an action whose originator (not us) modified its
       // undo/redo stack, we need to make sure we do that action as well
@@ -423,7 +423,7 @@ class ActionStack extends BaseModel {
     return finish(this.buildMethodInverterAction(ac, method, params, metadata, 'before'));
   }
 
-  undo (options, metadata, cb) {
+  undo(options, metadata, cb) {
     this.forceAccumulation();
 
     if (this.getUndoables().length < 1) {
@@ -440,14 +440,14 @@ class ActionStack extends BaseModel {
         return cb();
       }
 
-      const {method, params, ac} = undoable;
+      const { method, params, ac } = undoable;
 
       if (!ac) {
         release();
         return cb();
       }
 
-      const metadata = lodash.assign({}, params.pop(), {cursor: 'redo', from: this.project.getAlias()});
+      const metadata = lodash.assign({}, params.pop(), { cursor: 'redo', from: this.project.getAlias() });
       params.push(metadata);
 
       // We need to slice off the 'relpath' parameter (sorry)
@@ -458,7 +458,7 @@ class ActionStack extends BaseModel {
     });
   }
 
-  redo (options, metadata, cb) {
+  redo(options, metadata, cb) {
     this.forceAccumulation();
 
     if (this.getRedoables().length < 1) {
@@ -475,14 +475,14 @@ class ActionStack extends BaseModel {
         return cb();
       }
 
-      const {method, params, ac} = redoable;
+      const { method, params, ac } = redoable;
 
       if (!ac) {
         release();
         return cb();
       }
 
-      const metadata = lodash.assign({}, params.pop(), {cursor: 'undo', from: this.project.getAlias()});
+      const metadata = lodash.assign({}, params.pop(), { cursor: 'undo', from: this.project.getAlias() });
       params.push(metadata);
 
       // We need to slice off the 'relpath' parameter (sorry)
@@ -563,13 +563,13 @@ ActionStack.METHOD_INVERTERS = {
       params: [
         haikuIds.map((haikuId) => ac.findElementByComponentId(haikuId)).filter((element) => !!element).map((element) => element.clip()),
         // Paste the content-as is; don't pad ids or our previous undoable references won't match the new content
-        {skipHashPadding: true},
+        { skipHashPadding: true },
       ],
     }),
   },
 
   pasteThings: {
-    after: (ac, _, {haikuIds}) => {
+    after: (ac, _, { haikuIds }) => {
       return {
         method: ac.deleteComponents.name,
         params: [haikuIds],

@@ -1,12 +1,12 @@
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal';
+import Palette from 'haiku-ui-common/src/Palette';
+import ExternalLinkIconSVG from 'haiku-ui-common/src/react/icons/ExternalLinkIconSVG';
+import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/src/react/Modal';
 import * as React from 'react';
 import {BTN_STYLES} from '../styles/btnShared';
 
-const STYLES: React.CSSProperties = {
+const STYLES: {[key: string]: React.CSSProperties} = {
   wrapper: {
     width: 500,
     overflow: 'hidden',

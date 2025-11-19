@@ -1,16 +1,16 @@
 import * as React from 'react';
 import * as marked from 'marked';
-import {shell} from 'electron';
+import { shell } from 'electron';
 import {
   ModalWrapper,
   ModalHeader,
-} from 'haiku-ui-common/lib/react/Modal';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG';
-import {BTN_STYLES} from '../styles/btnShared';
-import {DASH_STYLES} from '../styles/dashShared';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {PrettyScroll} from 'haiku-ui-common/lib/react/PrettyScroll';
+} from 'haiku-ui-common/src/react/Modal';
+import AnimatorSVG from 'haiku-ui-common/src/react/icons/AnimatorSVG';
+import ExternalLinkIconSVG from 'haiku-ui-common/src/react/icons/ExternalLinkIconSVG';
+import { BTN_STYLES } from '../styles/btnShared';
+import { DASH_STYLES } from '../styles/dashShared';
+import Palette from 'haiku-ui-common/src/Palette';
+import { PrettyScroll } from 'haiku-ui-common/src/react/PrettyScroll';
 import * as Changelog from 'haiku-serialization/src/bll/Changelog';
 
 const STYLES = {
@@ -59,7 +59,7 @@ const STYLES = {
 };
 
 class ChangelogModal extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super();
     this.changelogManager = new Changelog(props.lastViewedChangelog);
     this.state = {
@@ -67,13 +67,13 @@ class ChangelogModal extends React.PureComponent {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.changelogManager.getChangelog().then((changelog) => {
-      this.setState({changelog});
+      this.setState({ changelog });
     });
   }
 
-  renderSections (changelog) {
+  renderSections(changelog) {
     const result = [];
     for (const section in changelog.sections) {
       result.push(
@@ -84,7 +84,7 @@ class ChangelogModal extends React.PureComponent {
               return (
                 <li
                   key={idx}
-                  dangerouslySetInnerHTML={{__html: marked(entry)}}
+                  dangerouslySetInnerHTML={{ __html: marked(entry) }}
                 />
               );
             })}
@@ -95,7 +95,7 @@ class ChangelogModal extends React.PureComponent {
     return result;
   }
 
-  render () {
+  render() {
     const changelog = this.state.changelog;
     if (!changelog) {
       return null;
@@ -112,7 +112,7 @@ class ChangelogModal extends React.PureComponent {
               }}
             >
               Full Changelog
-              <span style={{marginLeft: 6, width: 11, height: 11, display: 'inline-block'}}>
+              <span style={{ marginLeft: 6, width: 11, height: 11, display: 'inline-block' }}>
                 <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
               </span>
             </span>
@@ -160,7 +160,7 @@ class ChangelogModal extends React.PureComponent {
             </PrettyScroll>
           </div>
         </ModalWrapper>;
-    </div>);
+      </div>);
   }
 }
 

@@ -2,11 +2,11 @@
 import * as Element from 'haiku-serialization/src/bll/Element';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
-import DownCarrotSVG from 'haiku-ui-common/lib/react/icons/DownCarrotSVG';
-import DragGrip from 'haiku-ui-common/lib/react/icons/DragGrip';
-import RightCarrotSVG from 'haiku-ui-common/lib/react/icons/RightCarrotSVG';
-import {LockIconSVG, UnlockIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import Palette from 'haiku-ui-common/src/Palette';
+import DownCarrotSVG from 'haiku-ui-common/src/react/icons/DownCarrotSVG';
+import DragGrip from 'haiku-ui-common/src/react/icons/DragGrip';
+import RightCarrotSVG from 'haiku-ui-common/src/react/icons/RightCarrotSVG';
+import {LockIconSVG, UnlockIconSVG} from 'haiku-ui-common/src/react/OtherIcons';
 import * as React from 'react';
 import CollapsedPropertyTimelineSegments from './CollapsedPropertyTimelineSegments';
 import ComponentHeadingRowHeading from './ComponentHeadingRowHeading';

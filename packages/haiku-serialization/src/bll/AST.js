@@ -4,7 +4,7 @@ const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').defa
 const bytecodeObjectToAST = require('./../ast/bytecodeObjectToAST');
 const normalizeBytecodeAST = require('./../ast/normalizeBytecodeAST');
 const parseCode = require('./../ast/parseCode');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const { Experiment, experimentIsEnabled } = require('haiku-common/src/experiments');
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var';
@@ -16,14 +16,14 @@ const HAIKU_VAR_ATTRIBUTE = 'haiku-var';
  *  more convenient. Includes static helper methods for AST manpulation.
  */
 class AST extends BaseModel {
-  constructor (props, opts) {
+  constructor(props, opts) {
     super(props, opts);
 
     // To contain the actual AST object from our associated file
     this.obj = {};
   }
 
-  updateWithBytecode (bytecode, previousSourceCodeString) {
+  updateWithBytecode(bytecode, previousSourceCodeString) {
     // Grab imports before we strip the __reference property
     const imports = AST.findImportsFromTemplate(this.file, bytecode.template);
 
@@ -54,12 +54,12 @@ class AST extends BaseModel {
     return this.obj;
   }
 
-  updateWithBytecodeAndReturnCode (bytecode, previousSourceCodeString) {
+  updateWithBytecodeAndReturnCode(bytecode, previousSourceCodeString) {
     this.updateWithBytecode(bytecode, previousSourceCodeString);
     return this.toCode();
   }
 
-  toCode () {
+  toCode() {
     // Prettier doesn't expose a public API that would allow us to "cheat" elegantly, but…
     return prettier.format(
       // …as long as we pass in some nonempty string…
@@ -174,7 +174,7 @@ const isModuleExportsNode = (node) => {
 AST.normalizeBytecode = (bytecode) => {
   const safe = AST.safeBytecode(bytecode);
 
-  const decycled = Bytecode.decycle(safe, {doCleanMana: false});
+  const decycled = Bytecode.decycle(safe, { doCleanMana: false });
 
   // Strip off `__max` and other cruft editor/core may have added
   Bytecode.cleanBytecode(decycled);
