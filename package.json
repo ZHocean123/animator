@@ -172,7 +172,6 @@
       "!node_modules/sinon",
       "!node_modules/table",
       "!node_modules/ffmpeg-static",
-      "!node_modules/nodegit/vendor",
       "!node_modules/haiku-plumbing/dev${/*}",
       "!node_modules/haiku-plumbing/docs${/*}",
       "!node_modules/haiku-plumbing/src${/*}",

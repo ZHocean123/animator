@@ -137,7 +137,7 @@ export class ProjectHandler extends EnvoyHandler {
       this.currentSha = sha;
 
       if (skipSaveSnapshot || !this.currentProject) {
-        return resolve();
+        resolve(undefined);
       }
 
       inkstone.project.createSnapshot({
@@ -446,7 +446,7 @@ export class ProjectHandler extends EnvoyHandler {
             if (httpError || response.statusCode > 299) {
               reject(httpError);
             } else {
-              resolve();
+              resolve(undefined);
             }
           });
         });

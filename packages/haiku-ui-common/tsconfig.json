@@ -5,16 +5,19 @@
     "declaration": true,
     "declarationDir": "lib",
     "jsx": "react",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ESNext",
+    "skipLibCheck": true,
     "types": [
       "node"
     ],

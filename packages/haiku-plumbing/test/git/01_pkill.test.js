@@ -9,7 +9,7 @@ tape('git.pkill', (t) => {
     process.env.GIT_PKILL_DIR = folder;
     const PROC_FILE = path.join(__dirname, 'git1.js');
     const proc = cp.fork(
-      './node_modules/.bin/ts-node',
+      './node_modules/ts-node/dist/bin.js',
       [
         '-r',
         'tsconfig-paths/register',

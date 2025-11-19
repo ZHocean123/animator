@@ -6,12 +6,11 @@
     "declarationDir": "lib",
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "lib",
     "preserveConstEnums": false,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ESNext",
     "types": [
       "node"

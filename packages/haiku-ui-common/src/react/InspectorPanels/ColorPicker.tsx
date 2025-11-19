@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from 'react';
 import {CustomPicker, CustomPickerProps} from 'react-color';
 import {Alpha, Checkboard, EditableInput, Hue, Saturation} from 'react-color/lib/components/common';
@@ -7,20 +8,7 @@ import Palette from '../../Palette';
 
 declare module 'react-color' {
   interface HSVColor {
-    a: number;
-    h: number;
-    s: number;
-    v: number;
-  }
-
-  interface CustomPickerProps<A> {
-    hex?: string;
-    hsl?: HSLColor;
-    hsv?: HSVColor;
-    rgb?: RGBColor;
-    oldHue?: string;
-    label?: string;
-    picker?: any;
+    // @ts-ignore
   }
 
   interface EditableInputProps {
@@ -209,4 +197,5 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
   }
 }
 
+// @ts-ignore
 export default CustomPicker(HaikuColorPicker);

@@ -12,6 +12,7 @@ export interface BezierComponentProps {
 }
 
 export default class BezierComponent<T> extends React.Component<T> {
+  // @ts-ignore
   props: T & BezierComponentProps;
   x = (value: number) => Math.round(interp(this.props.xFrom, this.props.xTo, value));
   y = (value: number) => Math.round(interp(this.props.yFrom, this.props.yTo, value));

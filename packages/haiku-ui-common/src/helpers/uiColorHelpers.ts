@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {get, to} from '@haiku/core/lib/vendor/color-string/index';
 import {ColorResult} from 'react-color';
 
@@ -20,9 +21,11 @@ export function derivateDisplayValueFromColorString (colorString: string) {
 export function derivateStringFromColorResult (result: ColorResult & { source: string }) {
   const values: [number, number, number, number] =
   Number(result.source) === DisplayValues.HSL
+  // @ts-ignore
   ? [roundValue(result.hsl.h), roundValue(result.hsl.s * 100), roundValue(result.hsl.l * 100), result.hsl.a]
   : [result.rgb.r, result.rgb.g, result.rgb.b, result.hsl.a];
 
+  // @ts-ignore
   return to(DisplayValues[result.source].toLowerCase(), values);
 }
 

@@ -173,7 +173,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
         this.isConnected = true;
         this.connectingPromise = null;
         this.logger.info('[haiku envoy client] websocket connection opened');
-        accept();
+        accept(undefined);
       });
 
       this.socket.addEventListener('message', (evt) => {
@@ -227,7 +227,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
           this.rawTransmit(datagram);
         });
       }
-      accept();
+      accept(undefined);
     });
   }
 
@@ -297,7 +297,7 @@ export default class EnvoyClient<T extends EnvoyHandler> {
         );
       }
 
-      accept();
+      accept(undefined);
     });
   }
 
