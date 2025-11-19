@@ -1,13 +1,14 @@
 import path from 'path';
 import cp from 'child_process';
 import os from 'os';
-import {createRequire} from 'module';
-import {fileURLToPath, pathToFileURL} from 'url';
+import {createRequire} from 'node:module';
+import {fileURLToPath} from 'node:url';
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+console.log('[main] starting');
 
-if (!global.process.env.NODE_ENV || global.process.env.NODE_ENV === 'production') {
+if (global.process.env.NODE_ENV === 'production') {
   process.env.HAIKU_GLASS_URL_MODE = 'distro';
   process.env.HAIKU_TIMELINE_URL_MODE = 'distro';
   process.env.HAIKU_INTERPRETER_URL_MODE = 'distro';
@@ -73,13 +74,50 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     }
 
     const {message} = data;
-    switch (message) {
-      case 'launchCreator':
-        global.process.env.HAIKU_ENV = JSON.stringify(data.haiku);
-        import('haiku-creator/lib/electron');
-        break;
+  switch (message) {
+    case 'launchCreator':
+      global.process.env.HAIKU_ENV = JSON.stringify(data.haiku);
+      try {
+        const {BrowserWindow, session} = require('electron');
+        const win = new BrowserWindow({
+          title: 'Haiku Animator',
+          show: true,
+          minWidth: 700,
+          minHeight: 650,
+          backgroundColor: '#343f41',
+          webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: true,
+            preload: path.join(__dirname, '..', '..', 'preload', 'index.js'),
+          },
+        });
+        if (process.env.RENDERER_VITE_DEV_SERVER_URL) {
+          win.loadURL(process.env.RENDERER_VITE_DEV_SERVER_URL);
+        } else {
+          const outHtml = path.join(__dirname, '..', '..', 'renderer', 'creator', 'index.html');
+          win.loadFile(outHtml);
+        }
+        win.on('closed', () => {});
+        win.on('ready-to-show', () => {
+          win.show();
+        });
+        const ses = session.fromPartition('persist:name');
+        ses.resolveProxy(process.env.HAIKU_PLUMBING_URL || '', (proxy) => {
+          const ProxyType = {Proxied: 'PROXY', Direct: 'DIRECT'};
+          const isProxied = (p) => p !== ProxyType.Direct;
+          const haiku = JSON.parse(global.process.env.HAIKU_ENV || '{}');
+          haiku.proxy = {
+            url: proxy.replace(`${ProxyType.Proxied} `, ''),
+            active: isProxied(proxy),
+          };
+          win.webContents.send('haiku', haiku);
+        });
+      } catch (err) {
+        console.error('Failed to create creator window', err);
+      }
+      break;
       case 'bakePngSequence':
-        import('haiku-creator/lib/bakery/electron')
+        import(require.resolve('haiku-creator/lib/bakery/electron.mjs'))
           .then((m) => m.default(
             data,
             () => {

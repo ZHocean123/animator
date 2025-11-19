@@ -7,6 +7,7 @@ import * as qs from "qs";
 import * as WebSocket from "ws";
 import { EventEmitter } from "events";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import EnvoyServer from "haiku-sdk-creator/lib/envoy/EnvoyServer.mjs";
 import EnvoyLogger from "haiku-sdk-creator/lib/envoy/EnvoyLogger.mjs";
 import {
@@ -381,9 +382,7 @@ export default class Plumbing extends EventEmitter {
                 message: "launchCreator"
               });
             } else if (process.versions && !!process.versions.electron) {
-              // We are in electron main (e.g. in a test context).
               global.process.env.HAIKU_ENV = JSON.stringify(haiku);
-              import("haiku-creator/lib/electron.mjs");
             }
           }
 

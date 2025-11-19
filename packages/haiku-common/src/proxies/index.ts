@@ -1,4 +1,4 @@
-import {parse} from 'url';
+import {URL} from 'node:url';
 
 /**
  * Proxy Type.
@@ -55,14 +55,15 @@ export const describeProxyFromUrl = (url?: string): ProxyDescriptor => {
     return {host: ''};
   }
 
-  const parsedUrl = parse(url.startsWith('http') ? url : `http://${url}`);
+  const parsedUrl = new URL(url.startsWith('http') ? url : `http://${url}`);
   const proxyDescriptor = {host: parsedUrl.hostname} as ProxyDescriptor;
   if (parsedUrl.port) {
     proxyDescriptor.port = Number(parsedUrl.port);
   }
 
-  if (parsedUrl.auth) {
-    [proxyDescriptor.username, proxyDescriptor.password] = parsedUrl.auth.split(':');
+  if (parsedUrl.username || parsedUrl.password) {
+    proxyDescriptor.username = parsedUrl.username || undefined;
+    proxyDescriptor.password = parsedUrl.password || undefined;
   }
 
   return proxyDescriptor;

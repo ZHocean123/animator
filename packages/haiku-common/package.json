@@ -3,7 +3,7 @@
   "version": "5.1.2",
   "description": "Common library for Haiku.",
   "type": "module",
-  "main": "lib/index.js",
+  "main": "lib/index.mjs",
   "directories": {
     "lib": "lib"
   },

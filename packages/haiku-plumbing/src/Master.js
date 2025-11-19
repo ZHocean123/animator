@@ -8,7 +8,7 @@ import { ErrorCode } from "@haiku/sdk-inkstone/lib/errors.mjs";
 import HaikuComponent from "@haiku/core/lib/HaikuComponent.js";
 import * as walkFiles from "haiku-serialization/src/utils/walkFiles.js";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
-import * as File from "haiku-serialization/src/bll/File.js";
+import * as File from "haiku-serialization/lib/bll/File.js";
 import * as Project from "haiku-serialization/src/bll/Project.js";
 import * as Sketch from "haiku-serialization/src/bll/Sketch.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";

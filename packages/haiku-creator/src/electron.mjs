@@ -1,6 +1,5 @@
 import * as EventEmitter from "events";
 import * as path from "path";
-import { parse } from "url";
 import { inherits } from "util";
 import { setBothGlobalAgents } from "./utils/httpProxy.js";
 
@@ -126,11 +125,11 @@ const handleUrl = url => {
     return;
   }
   logger.info(`[creator] handling custom protocol URL ${url}`);
-  const parsedUrl = parse(url);
+  const parsedUrl = new URL(url);
   browserWindow.webContents.send(
     `open-url:${parsedUrl.host}`,
     parsedUrl.pathname,
-    qs.parse(parsedUrl.query)
+    qs.parse(parsedUrl.search ? parsedUrl.search.slice(1) : "")
   );
 };
 

@@ -12,7 +12,7 @@ import * as EventEmitter from "event-emitter";
 import * as path from "path";
 import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
 import * as Project from "haiku-serialization/src/bll/Project.js";
-import * as File from "haiku-serialization/src/bll/File.js";
+import File from "haiku-serialization/lib/bll/File.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
 import EventHandlerEditor from "./components/EventHandlerEditor";
 import AuthenticationUI from "./components/AuthenticationUI";
@@ -36,7 +36,7 @@ import EnvoyClient from "haiku-sdk-creator/src/envoy/EnvoyClient.ts";
 import {
   EXPORTER_CHANNEL,
   ExporterFormat
-} from "haiku-sdk-creator/lib/exporter.mjs";
+} from "haiku-sdk-creator/lib/exporter/index.mjs";
 import { USER_CHANNEL, UserSettings } from "haiku-sdk-creator/lib/bll/User.mjs"; // eslint-disable-line no-unused-vars
 import { PROJECT_CHANNEL } from "haiku-sdk-creator/lib/bll/Project.mjs";
 import { TOUR_CHANNEL } from "haiku-sdk-creator/lib/tour/index.mjs";

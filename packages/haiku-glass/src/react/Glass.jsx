@@ -8,7 +8,7 @@ import * as BaseModel from 'haiku-serialization/src/bll/BaseModel.js';
 import * as Project from 'haiku-serialization/src/bll/Project.js';
 import Config from '@haiku/core/lib/Config.js';
 import * as Element from 'haiku-serialization/src/bll/Element.js';
-import * as File from 'haiku-serialization/src/bll/File.js';
+import File from 'haiku-serialization/lib/bll/File.js';
 import * as Template from 'haiku-serialization/src/bll/Template.js';
 import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy.js';
 import * as Asset from 'haiku-serialization/src/bll/Asset.js';

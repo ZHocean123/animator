@@ -1,7 +1,7 @@
 import * as electron from 'electron';
 import * as fs from 'fs';
 // @ts-ignore
-import {ditto, download, unzip} from 'haiku-serialization/src/utils/fileManipulation.js';
+import fileManipulation from 'haiku-serialization/src/utils/fileManipulation.js';
 // @ts-ignore
 import logger from 'haiku-serialization/src/utils/LoggerInstance.js';
 import nodeFetch from 'node-fetch';
@@ -42,10 +42,10 @@ export default {
       const extractPath = path.join(tempPath, v4());
       const appPath = path.resolve(electron.app.getPath('exe'), '..', '..', '..');
       logger.info('[autoupdater] About to download an update:', options, url);
-      await download(url, zipPath, progressCallback);
+      await fileManipulation.download(url, zipPath, progressCallback);
       // `unzip` first, you can unzip in `ditto` by providing the `-xk` flags, but trying to target `/Applications`
       // throws permission errors.
-      await unzip(zipPath, extractPath);
+      await fileManipulation.unzip(zipPath, extractPath);
       const newAppName = fs.readdirSync(extractPath).find((file) => {
         return path.extname(file) === '.app';
       });
@@ -55,7 +55,7 @@ export default {
       }
 
       // `ditto` the contents of the extract path folder (the .app package) into `appPath`
-      await ditto(path.join(extractPath, newAppName), appPath);
+      await fileManipulation.ditto(path.join(extractPath, newAppName), appPath);
       electron.app.relaunch();
       electron.app.exit();
     }

@@ -9,7 +9,7 @@ import * as BaseModel from "haiku-serialization/src/bll/BaseModel.js";
 import * as Project from "haiku-serialization/src/bll/Project.js";
 import * as Asset from "haiku-serialization/src/bll/Asset.js";
 import * as Row from "haiku-serialization/src/bll/Row.js";
-import * as File from "haiku-serialization/src/bll/File.js";
+import File from "haiku-serialization/lib/bll/File.js";
 import * as Keyframe from "haiku-serialization/src/bll/Keyframe.js";
 import * as Property from "haiku-serialization/src/bll/Property.js";
 import * as requestElementCoordinates from "haiku-serialization/src/utils/requestElementCoordinates.js";
