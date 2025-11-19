@@ -1,6 +1,6 @@
 import { shouldEmitErrors } from "haiku-common/lib/environments/index.mjs";
 // @ts-ignore
-import { HOMEDIR_CRASH_REPORTS_PATH } from "haiku-serialization/lib/utils/HaikuHomeDir.js";
+import { HOMEDIR_CRASH_REPORTS_PATH } from "haiku-serialization/src/utils/HaikuHomeDir";
 import { basename, join } from "path";
 import { crashReportFork } from "../dal/Carbonite";
 import { MaybeAsync } from "../envoy";

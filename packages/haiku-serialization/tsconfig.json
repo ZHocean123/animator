@@ -1,6 +1,9 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "types": [
+      "node"
+    ],
     "allowJs": true,
     "module": "esnext",
     "moduleResolution": "bundler",
