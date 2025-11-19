@@ -63,6 +63,7 @@
     "haiku-ui-common": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "10.12.30",
     "async": "^2.5.0",
     "aws-sdk": "^2.85.0",
     "cli-color": "^1.2.0",
@@ -71,7 +72,7 @@
     "dependency-graph": "^0.5.0",
     "derequire": "^2.0.6",
     "dotenv": "^5.0.1",
-    "electron": "2.0.8",
+    "electron": "^30.0.0",
     "electron-builder": "21.2.0",
     "electron-notarize": "^0.3.0",
     "electron-rebuild": "^1.8.4",
@@ -113,7 +114,7 @@
     "nodeGypRebuild": false,
     "productName": "Haiku",
     "forceCodeSigning": true,
-    "electronVersion": "2.0.8",
+    "electronVersion": "30.0.0",
     "afterSign": "scripts/notarize.js",
     "mac": {
       "category": "public.app-category.developer-tools",

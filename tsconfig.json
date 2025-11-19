@@ -10,6 +10,7 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "lib",
+    "baseUrl": ".",
     "paths": {
       "@admin-cli/*": [
         "packages/haiku-admin-cli/src/*"
@@ -48,7 +49,6 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ES6",
     "types": [
       "node"

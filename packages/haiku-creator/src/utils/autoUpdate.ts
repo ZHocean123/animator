@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import {ditto, download, unzip} from 'haiku-serialization/src/utils/fileManipulation';
 // @ts-ignore
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import nodeFetch from 'node-fetch';
+import fetch from 'node-fetch';
 import * as os from 'os';
 import * as path from 'path';
 import * as qs from 'qs';
@@ -40,7 +40,8 @@ export default {
       const tempPath = os.tmpdir();
       const zipPath = path.join(tempPath, `${v4()}.zip`);
       const extractPath = path.join(tempPath, v4());
-      const appPath = path.resolve(electron.remote.app.getPath('exe'), '..', '..', '..');
+      const appModule: any = (electron as any).remote?.app || electron.app
+      const appPath = path.resolve(appModule.getPath('exe'), '..', '..', '..');
       logger.info('[autoupdater] About to download an update:', options, url);
       await download(url, zipPath, progressCallback);
       // `unzip` first, you can unzip in `ditto` by providing the `-xk` flags, but trying to target `/Applications`
@@ -56,8 +57,8 @@ export default {
 
       // `ditto` the contents of the extract path folder (the .app package) into `appPath`
       await ditto(path.join(extractPath, newAppName), appPath);
-      electron.remote.app.relaunch();
-      electron.remote.app.exit();
+      appModule.relaunch();
+      appModule.exit();
     }
   },
 
@@ -77,7 +78,7 @@ export default {
     let status: number;
 
     return new Promise((resolve, reject) => {
-      nodeFetch(this.generateURL(DEFAULT_OPTIONS))
+      fetch(this.generateURL(DEFAULT_OPTIONS))
         .then((response) => {
           if (!response.ok) {
             reject(Error(`${response.statusText} : ${response.url}`));
