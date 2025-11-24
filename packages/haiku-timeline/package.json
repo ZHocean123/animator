@@ -3,6 +3,7 @@
   "version": "5.1.2",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "authors": [
     "Matthew Trost <matthew@haiku.ai>",
     "Taylor Poe <taylor@haiku.ai>",
@@ -15,9 +16,11 @@
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' | tap-spec",
     "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
-    "compile": "tsc",
-    "compile-declarations": "tsc -p tsconfig.declarations.json",
-    "develop": "tsc --watch",
+    "compile": "tsdown",
+    "compile-declarations": "tsdown -p tsconfig.declarations.json",
+    "develop": "tsdown --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "start": "cross-env AUTOSTART=main electron --enable-logging --remote-debugging-port=9222 ./lib/electron.js"
   },
   "dependencies": {

@@ -16,13 +16,12 @@ const makeBundle = () => {
 
 if (!argv['skip-compile']) {
   cp.execSync('yarn install', {cwd: global.process.cwd(), stdio: 'inherit'});
-  runScript('compile-package', ['--package=@haiku/core'], (err) => {
-    if (err) {
-      throw err;
-    }
-
-    makeBundle();
-  });
+  
+  // Try to use tsdown build command first, fallback to compile if not available
+  const buildCommand = core.pkg.scripts.build ? 'yarn run build' : 'yarn run compile';
+  cp.execSync(buildCommand, {cwd: core.abspath, stdio: 'inherit'});
+  
+  makeBundle();
 } else {
   makeBundle();
 }

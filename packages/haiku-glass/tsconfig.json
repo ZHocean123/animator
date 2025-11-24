@@ -1,29 +1,40 @@
 {
   "compileOnSave": true,
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // 覆盖基础配置的特定选项
     "allowJs": true,
-    "jsx": "react",
-    "lib": ["ES2017", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "outDir": "lib",
+    "declarationDir": "lib",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "preserveConstEnums": true,
+    "outDir": "lib",
     "rootDir": "src",
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
-    "types": [
-      "node"
-    ],
     "typeRoots": [
-      "node_modules/@types/"
-    ]
+      "node_modules/@types/",
+      "../../../node_modules/@types/"
+    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
+    "skipLibCheck": true,
+    // 包特定的路径映射
+    "baseUrl": ".",
+    "paths": {
+      "@glass/*": ["src/*"],
+      "@common/*": ["../haiku-common/src/*"],
+      "@ui-common/*": ["../haiku-ui-common/src/*"]
+    }
   },
   "include": [
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist",
+    "test/projects/**"
   ]
 }

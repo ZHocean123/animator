@@ -1279,7 +1279,7 @@ class Timeline extends React.Component {
 
     const frameInfo = this.getActiveComponent().getCurrentTimeline().getFrameInfo();
     const leftX = evt.clientX + (this.container.scrollLeft || 0) - this.getActiveComponent().getCurrentTimeline().getPropertiesPixelWidth() - TIMELINE_OFFSET_PADDING;
-    const frameX = Math.round(leftX / frameInfo.pxpf);
+    let frameX = Math.round(leftX / frameInfo.pxpf);
 
     // Allow the scrubber to be dragged past 0 in order to reach 0
     if (frameX < 0) {

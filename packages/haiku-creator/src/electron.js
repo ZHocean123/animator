@@ -1,6 +1,6 @@
 import * as EventEmitter from 'events';
-import * as http from 'http';
-import * as https from 'https';
+import http from 'http';
+import https from 'https';
 import * as path from 'path';
 import {parse} from 'url';
 import {inherits} from 'util';
@@ -15,7 +15,7 @@ import {isProxied, ProxyType} from 'haiku-common/lib/proxies';
 import TopMenu from 'haiku-common/lib/electron/TopMenu';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {isMac, isWindows} from 'haiku-common/lib/environments/os';
 import _ from 'lodash';
 import { writeJSON } from 'fs-extra';

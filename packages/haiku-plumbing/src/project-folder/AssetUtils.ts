@@ -5,7 +5,7 @@ import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
 // @ts-ignore
 import {LOCKS} from 'haiku-serialization/src/bll/Lock';
 import * as path from 'path';
-import Watcher from '../Watcher';
+import * as Watcher from '../Watcher';
 
 const IMAGE_DATA_INDICATOR = 'data:image/';
 const BASE64_DELIMITER = ';base64,';

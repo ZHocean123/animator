@@ -12,6 +12,7 @@
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
+    "skipLibCheck": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ESNext",

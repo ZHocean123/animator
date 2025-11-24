@@ -1,29 +1,31 @@
 {
   "compileOnSave": true,
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // 覆盖基础配置的特定选项
     "allowJs": false,
-    "declaration": true,
     "declarationDir": "lib",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "outDir": "lib",
     "preserveConstEnums": true,
+    "outDir": "lib",
     "rootDir": "src",
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
-    "types": [
-      "node"
-    ],
     "typeRoots": [
       "node_modules/@types/"
-    ]
+    ],
+    "lib": ["ES2022", "DOM"],
+    // 包特定的路径映射
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist"
   ]
 }

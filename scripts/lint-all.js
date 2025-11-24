@@ -5,6 +5,8 @@ const gitStatusInfo = require('./helpers/gitStatusInfo');
 const allPackages = require('./helpers/packages')();
 const unbuildables = require('./helpers/unbuildables');
 const ROOT = path.join(__dirname, '..');
+const fs = require("../packages/haiku-fs-extra");
+
 let clc = require('cli-color');
 
 const lintProcesses = [];
@@ -19,7 +21,18 @@ for (const pack of allPackages) {
   lintProcess.command = pack.pkg.scripts.fix || pack.pkg.scripts.lint;
   if (lintProcess.command) {
     lintProcess.output = '';
-    lintProcess.cp = cp.spawn(lintProcess.command, {cwd: pack.abspath, shell: true, env: {...global.process.env, FORCE_COLOR: true}});
+    
+    // Check if package has ESLint configuration, otherwise use root config
+    const hasEslintConfig = fs.existsSync(path.join(pack.abspath, '.eslintrc.js')) ||
+                          fs.existsSync(path.join(pack.abspath, '.eslintrc.json')) ||
+                          (pack.pkg.eslintConfig !== undefined);
+    
+    const env = {...global.process.env, FORCE_COLOR: true};
+    if (!hasEslintConfig) {
+      env.ESLINT_USE_FLAT_CONFIG = 'false';
+    }
+    
+    lintProcess.cp = cp.spawn(lintProcess.command, {cwd: pack.abspath, shell: true, env});
 
     lintProcess.cp.stdout.on('data', (data) => {
       lintProcess.output = lintProcess.output.concat(data);

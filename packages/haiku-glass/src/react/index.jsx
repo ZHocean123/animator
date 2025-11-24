@@ -5,7 +5,7 @@ import * as qs from 'qs';
 import {shouldEmitErrors} from 'haiku-common/lib/environments';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
-import Glass from './Glass';
+import Glass from './Glass.jsx';
 import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';

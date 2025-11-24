@@ -1,0 +1,71 @@
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default {
+  entry: [
+    'src/index.jsx',
+    'src/electron.js',
+    'src/components/AutoCompleter.jsx',
+    'src/components/BezierPopup.tsx',
+    'src/components/ClusterRow.tsx',
+    'src/components/ClusterRowHeading.tsx',
+    'src/components/CollapsedPropertyTimelineSegments.tsx',
+    'src/components/ComponentHeadingRow.tsx',
+    'src/components/ComponentHeadingRowHeading.tsx',
+    'src/components/ComponentRows.tsx',
+    'src/components/EventHandlerTriggerer.jsx',
+    'src/components/ExpressionInput.jsx',
+    'src/components/Gauge.jsx',
+    'src/components/GaugeTimeReadout.jsx',
+    'src/components/Marquee.ts',
+    'src/components/PostMaxKeyframeArea.jsx',
+    'src/components/PropertiesPanelResizer.jsx',
+    'src/components/PropertyInputField.jsx',
+    'src/components/PropertyManager.tsx',
+    'src/components/PropertyRow.tsx',
+    'src/components/RowManager.tsx',
+    'src/components/RowSegments.jsx',
+    'src/components/ScrollView.jsx',
+    'src/components/ScrubberInterior.tsx',
+    'src/components/SimplifiedFrameGrid.tsx',
+    'src/components/SoloKeyframe.jsx',
+    'src/components/Timeline.jsx',
+    'src/components/TrackedExporterRequests.tsx',
+    'src/components/styles/keyframeShared.js',
+    'src/components/styles/popoverShared.js',
+    'src/components/styles/propertyEditorShared.js',
+    'src/components/styles/zIndex.js',
+    'src/components/modes/haiku.jsx',
+    'src/components/icons/RepeatIconSVG.jsx',
+    'src/components/ClusterInputField.jsx',
+    'src/components/InvisibleKeyframeDragger.jsx',
+    'src/components/ConstantBody.jsx',
+    'src/components/PropertyTimelineSegments.jsx',
+    'src/components/FrameActionsGrid.jsx',
+    'src/components/TimelineRangeScrollbar.jsx',
+    'src/components/TimelineRangeScrollbarPlayheadIndicator.jsx',
+    'src/components/PlaybackButtons.jsx',
+    'src/components/ActiveComponentIndicator.jsx',
+    'src/components/ControlsArea.jsx',
+    'src/components/FrameAction.jsx',
+    'src/components/TimelineDraggable.jsx',
+    'src/components/TransitionBody.jsx',
+    'src/components/PropertyRowHeading.jsx'
+  ],
+  outDir: 'lib',
+  format: ['cjs', 'esm'],
+  clean: true,
+  watch: false,
+  tsconfig: resolve(__dirname, 'tsconfig.json'),
+  dts: true,
+  sourcemap: true,
+  minify: false,
+  esbuild: {
+    loader: 'jsx',
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment'
+  }
+};

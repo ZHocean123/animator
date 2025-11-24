@@ -73,3 +73,6 @@ export default class MasterModuleProject extends EventEmitter {
     this._modificationsQueue.push(file);
   }
 }
+
+// Also export as a named export for compatibility with tsdown compilation
+export { MasterModuleProject };

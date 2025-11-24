@@ -23,17 +23,33 @@ const children = [];
 
 const runInstruction = (pack, cb) => {
   const cmd = 'yarn';
-  const useTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
-  const cwd = useTscWatch ? global.process.cwd() : pack.abspath;
-  const args = useTscWatch ?
-    [
+  const cwd = pack.abspath;
+  
+  // Check if package has tsdown dev script
+  const hasTsdownDev = pack.pkg.scripts && pack.pkg.scripts.dev && pack.pkg.scripts.dev.includes('tsdown');
+  const hasTscWatch = pack.pkg.scripts.develop === 'tsc --watch';
+  
+  let args;
+  if (hasTsdownDev) {
+    // Use tsdown watch if available
+    args = ['dev'];
+  } else if (hasTscWatch) {
+    // Use tsc-watch for packages that still use it
+    args = [
       'tsc-watch',
       '-p',
       pack.abspath,
       '--onSuccess',
       `"node ${join(cwd, 'scripts', 'write-last-compiled')} --outputPath=${join(pack.abspath, '.last-compile')}"`
-    ] :
-    ['develop'];
+    ];
+  } else if (pack.pkg.scripts && pack.pkg.scripts.develop) {
+    // Fallback to develop script
+    args = ['develop'];
+  } else {
+    log.log(`No suitable dev script found for ${pack.name}, skipping...`);
+    return cb();
+  }
+  
   const proc = cp.spawn(cmd, args, {cwd, env: process.env, stdio: 'inherit', shell: true});
   children.push({
     info: {cwd, cmd, args},
@@ -59,7 +75,7 @@ async.each(allPackages, (pack, done) => {
       done();
       break;
     default:
-      // Standard, new way of doing things: `yarn develop`.
+      // Standard, new way of doing things: `yarn dev` with tsdown or fallback to `yarn develop`.
       runInstruction(pack, done);
       break;
   }

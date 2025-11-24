@@ -11,14 +11,22 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
+    "target": "ES2020",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "types": [
       "node"
     ],
     "typeRoots": [
       "node_modules/@types/"
-    ]
+    ],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*.ts"

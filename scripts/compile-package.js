@@ -28,7 +28,11 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-cp.execSync('yarn compile', {cwd: PACKAGE_PATH, stdio: 'inherit'});
+// Try to use tsdown build command first, fallback to compile if not available
+const groups = lodash.keyBy(allPackages, 'name');
+const packageInfo = groups[pkg];
+const buildCommand = packageInfo && packageInfo.pkg && packageInfo.pkg.scripts.build ? 'yarn run build' : 'yarn compile';
+cp.execSync(buildCommand, {cwd: PACKAGE_PATH, stdio: 'inherit'});
 
 if (argv.uglify) {
   const globule = path.join(PACKAGE_PATH, argv.uglify);

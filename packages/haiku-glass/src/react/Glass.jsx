@@ -6,7 +6,7 @@ import HaikuContext from '@haiku/core/lib/HaikuContext';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
 import * as Project from 'haiku-serialization/src/bll/Project';
 import Config from '@haiku/core/lib/Config';
-import * as Element from 'haiku-serialization/src/bll/Element';
+import  Element from 'haiku-serialization/src/bll/Element';
 import * as File from 'haiku-serialization/src/bll/File';
 import * as Template from 'haiku-serialization/src/bll/Template';
 import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
@@ -318,7 +318,13 @@ export class Glass extends React.Component {
           this.handleInteractionModeChange();
           break;
         case 'mergeDesigns':
-          Element.directlySelected = null;
+          // Reset direct selection before mounting new component
+          if (Element.directlySelected) {
+            // Reset direct selection before mounting new component
+            if (Element.directlySelected) {
+              Element.directlySelected = null;
+            }
+          }
           break;
         case 'setLockedStatusForComponent':
           // Unselect element after locking it
@@ -353,7 +359,13 @@ export class Glass extends React.Component {
 
   handleActiveComponentReady () {
     // Reset direct selection before mounting new component
-    Element.directlySelected = null;
+    // Reset direct selection before mounting new component
+    if (Element.directlySelected) {
+      // Reset direct selection before mounting new component
+      if (Element.directlySelected) {
+        Element.directlySelected = null;
+      }
+    }
 
     this.mountHaikuComponent();
     this.updateMenu();
@@ -565,223 +577,248 @@ export class Glass extends React.Component {
       logger.info('relay received', message.name, 'from', message.from);
 
       switch (message.name) {
-        case 'global-menu:open-dev-tools':
-          remote.getCurrentWebContents().openDevTools();
-          break;
+        case 'global-menu:open-dev-tools': {
+            remote.getCurrentWebContents().openDevTools();
+            break;
+        }
 
-        case 'global-menu:close-dev-tools':
-          if (remote.getCurrentWebContents().isDevToolsFocused()) {
-            remote.getCurrentWebContents().closeDevTools();
-          }
-          break;
+        case 'global-menu:close-dev-tools': {
+            if (remote.getCurrentWebContents().isDevToolsFocused()) {
+                remote.getCurrentWebContents().closeDevTools();
+            }
+            break;
+        }
 
-        case 'global-menu:zoom-in':
-          mixpanel.haikuTrack('creator:glass:zoom-in');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().zoomIn(1 + SHORTCUT_ZOOM_FACTOR);
-          }
-          break;
+        case 'global-menu:zoom-in': {
+            mixpanel.haikuTrack('creator:glass:zoom-in');
+            const component = this.getActiveComponent();
+            if (component) {
+                component.getArtboard().zoomIn(1 + SHORTCUT_ZOOM_FACTOR);
+            }
+            break;
+        }
 
-        case 'global-menu:zoom-out':
-          mixpanel.haikuTrack('creator:glass:zoom-out');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().zoomOut(1 + SHORTCUT_ZOOM_FACTOR);
-          }
-          break;
+        case 'global-menu:zoom-out': {
+            mixpanel.haikuTrack('creator:glass:zoom-out');
+            const component = this.getActiveComponent();
+            if (component) {
+                component.getArtboard().zoomOut(1 + SHORTCUT_ZOOM_FACTOR);
+            }
+            break;
+        }
 
-        case 'global-menu:reset-viewport':
-          mixpanel.haikuTrack('creator:glass:reset-viewport');
-          const component = this.getActiveComponent();
-          if (component) {
-            component.getArtboard().resetZoomPan();
-          }
-          break;
+        case 'global-menu:reset-viewport': {
+            mixpanel.haikuTrack('creator:glass:reset-viewport');
+            const component = this.getActiveComponent();
+            if (component) {
+                component.getArtboard().resetZoomPan();
+            }
+            break;
+        }
 
-        case 'global-menu:set-active-component':
-          this.project.setCurrentActiveComponent(message.data, {from: 'glass'}, () => {});
-          break;
-
-        case 'global-menu:group':
-          this.handleGroupDebounced();
-          break;
-
-        case 'global-menu:ungroup':
-          this.handleUngroupDebounced();
-          break;
-
-        case 'global-menu:cut':
-          const proxy = this.fetchProxyElementForSelection();
-          if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
-            this.handleCutDebounced();
-          }
-          break;
-
-        case 'global-menu:copy':
-          const proxy = this.fetchProxyElementForSelection();
-          if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
-            this.handleCopyDebounced();
-          }
-          break;
-
-        case 'global-menu:paste':
-          this.handlePasteDebounced();
-          break;
-
-        case 'global-menu:selectAll':
-          this.handleSelectAllDebounced();
-          break;
-
-        case 'global-menu:undo':
-          this.handleUndoDebounced(message);
-          break;
-
-        case 'global-menu:redo':
-          this.handleRedoDebounced(message);
-          break;
-
-        case 'global-menu:preview':
-          // This hook is only used for internal development
-          if (this.project) {
-            this.project.toggleInteractionMode({from: 'glass'}, () => {
-              this.handleInteractionModeChange();
+        case 'global-menu:set-active-component': {
+            this.project.setCurrentActiveComponent(message.data, {from: 'glass'}, () => {
             });
-          }
-          break;
+            break;
+        }
+
+        case 'global-menu:group': {
+            this.handleGroupDebounced();
+            break;
+        }
+
+        case 'global-menu:ungroup': {
+            this.handleUngroupDebounced();
+            break;
+        }
+
+        case 'global-menu:cut': {
+            const proxy = this.fetchProxyElementForSelection();
+            if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
+                this.handleCutDebounced();
+            }
+            break;
+        }
+
+        case 'global-menu:copy': {
+            const proxy = this.fetchProxyElementForSelection();
+            if (proxy && proxy.hasAnythingInSelectionButNotArtboard()) {
+                this.handleCopyDebounced();
+            }
+            break;
+        }
+
+        case 'global-menu:paste': {
+            this.handlePasteDebounced();
+            break;
+        }
+
+        case 'global-menu:selectAll': {
+            this.handleSelectAllDebounced();
+            break;
+        }
+
+        case 'global-menu:undo': {
+            this.handleUndoDebounced(message);
+            break;
+        }
+
+        case 'global-menu:redo': {
+            this.handleRedoDebounced(message);
+            break;
+        }
+
+        case 'global-menu:preview': {  // This hook is only used for internal development
+            if (this.project) {
+                this.project.toggleInteractionMode({from: 'glass'}, () => {
+                    this.handleInteractionModeChange();
+                });
+            }
+            break;
+        }
       }
     });
 
     this.addEmitterListener(this.props.websocket, 'broadcast', (message) => {
       switch (message.name) {
-        case 'remote-model:receive-sync':
-          BaseModel.receiveSync(message);
-          break;
+        case 'remote-model:receive-sync': {
+            BaseModel.receiveSync(message);
+            break;
+        }
 
-        case 'component:reload':
-          // Race condition where Master emits this event during initial load of assets in
-          // a project, resulting in this message arriving before we've initialized
-          if (this.getActiveComponent()) {
-            return this.getActiveComponent().moduleReplace((err) => {
-              // Notify the plumbing that the module replacement here has finished;
-              // Note how we do this whether or not we got an error from the action
-              this.props.websocket.send({
-                type: 'broadcast',
-                name: 'component:reload:complete',
-                from: 'glass',
-              });
+        case 'component:reload': {
+            // Race condition where Master emits this event during initial load of assets in
+            // a project, resulting in this message arriving before we've initialized
+            if (this.getActiveComponent()) {
+                return this.getActiveComponent().moduleReplace((err) => {
+                    // Notify the plumbing that the module replacement here has finished;
+                    // Note how we do this whether or not we got an error from the action
+                    this.props.websocket.send({
+                        type: 'broadcast',
+                        name: 'component:reload:complete',
+                        from: 'glass',
+                    });
 
-              if (err) {
-                logger.error(err);
-                return;
-              }
+                    if (err) {
+                        logger.error(err);
+                        return;
+                    }
 
-              this.getActiveComponent().getArtboard().updateMountSize(this.refs.container);
-            });
-          }
-
-          logger.warn('active component not initialized; cannot reload');
-          return;
-
-        case 'event-handlers-editor-open':
-          this.setState({isEventHandlerEditorOpen: true});
-          break;
-
-        case 'event-handlers-editor-closed':
-          this.setState({isEventHandlerEditorOpen: false});
-          break;
-
-        case 'confirm-group-ungroup-popup-open':
-          this.setState({isConfirmGroupUngroupPopupOpen: true});
-          break;
-
-        case 'confirm-group-ungroup-popup-closed':
-          this.setState({isConfirmGroupUngroupPopupOpen: false});
-          if (message.confirmed) {
-            if (message.groupOrUngroup === 'group') {
-              this.executeGroup();
-            } else if (message.groupOrUngroup === 'ungroup') {
-              this.executeUngroup();
+                    this.getActiveComponent().getArtboard().updateMountSize(this.refs.container);
+                });
             }
-          }
-          break;
 
-        case 'instantiate-component':
-          const component = this.getActiveComponent();
+            logger.warn('active component not initialized; cannot reload');
+            return;
+        }
+        case 'event-handlers-editor-open': {
+            this.setState({isEventHandlerEditorOpen: true});
+            break;
+        }
 
-          if (component) {
-            Element.where({component, _isSelected: true}).forEach((element) => {
-              element.unselectSoftly({from: 'glass'});
-            });
+        case 'event-handlers-editor-closed': {
+            this.setState({isEventHandlerEditorOpen: false});
+            break;
+        }
 
-            component.instantiateComponent(
-              message.relpath,
-              message.coords || {},
-              {from: 'glass'},
-              (err, mana) => {
-                if (err) {
-                  if (err.code === 'ENOENT') {
-                    console.error('We couldn\'t find that component. 😩 Please try again in a few moments. If you still see this error, contact Haiku for support.');
-                  } else {
-                    console.error(err.message);
-                  }
-                  return;
+        case 'confirm-group-ungroup-popup-open': {
+            this.setState({isConfirmGroupUngroupPopupOpen: true});
+            break;
+        }
+
+        case 'confirm-group-ungroup-popup-closed': {
+            this.setState({isConfirmGroupUngroupPopupOpen: false});
+            if (message.confirmed) {
+                if (message.groupOrUngroup === 'group') {
+                    this.executeGroup();
+                } else if (message.groupOrUngroup === 'ungroup') {
+                    this.executeUngroup();
                 }
+            }
+            break;
+        }
+        case 'instantiate-component': {
+            const component = this.getActiveComponent();
 
-                let foundTextNode = false;
-
-                Template.visitWithoutDescendingIntoSubcomponents(mana, (node) => {
-                  if (
-                    node &&
-                    node.elementName === 'text' ||
-                    node.elementName === 'tspan'
-                  ) {
-                    foundTextNode = true;
-                  }
+            if (component) {
+                Element.where({component, _isSelected: true}).forEach((element) => {
+                    element.unselectSoftly({from: 'glass'});
                 });
 
-                if (foundTextNode && !this.didAlreadyWarnAboutTextNodes) {
-                  this.didAlreadyWarnAboutTextNodes = true;
+                component.instantiateComponent(
+                    message.relpath,
+                    message.coords || {},
+                    {from: 'glass'},
+                    (err, mana) => {
+                        if (err) {
+                            if (err.code === 'ENOENT') {
+                                console.error('We couldn\'t find that component. 😩 Please try again in a few moments. If you still see this error, contact Haiku for support.');
+                            } else {
+                                console.error(err.message);
+                            }
+                            return;
+                        }
 
-                  // The '[notice]' substring tells Creator to display a toast
-                  console.info(`
+                        let foundTextNode = false;
+
+                        Template.visitWithoutDescendingIntoSubcomponents(mana, (node) => {
+                            if (
+                                node &&
+                                node.elementName === 'text' ||
+                                node.elementName === 'tspan'
+                            ) {
+                                foundTextNode = true;
+                            }
+                        });
+
+                        if (foundTextNode && !this.didAlreadyWarnAboutTextNodes) {
+                            this.didAlreadyWarnAboutTextNodes = true;
+
+                            // The '[notice]' substring tells Creator to display a toast
+                            console.info(`
                     [notice] ⚠️ You placed an element that contains text.
                     Since fonts on your system may not be available everywhere,
                     we recommend converting all text to outlines.
                     `.trim().replace(/\s+/g, ' '),
-                  );
-                }
-              },
-            );
-          }
-          break;
+                            );
+                        }
+                    },
+                );
+            }
+            break;
+        }
 
-        case 'edit-component':
-          this.editComponent(this.fetchProxyElementForSelection().getSingleComponentElementRelpath());
-          break;
+        case 'edit-component': {
+            this.editComponent(this.fetchProxyElementForSelection().getSingleComponentElementRelpath());
+            break;
+        }
 
-        case 'conglomerate-component':
-          this.setState({
-            conglomerateComponentOptions: {
-              isBlankComponent: message.isBlankComponent,
-              skipInstantiateInHost: message.skipInstantiateInHost,
-            },
-          }, () => {
-            this.launchComponentNameModal();
-          });
-          break;
+        case 'conglomerate-component': {
+            this.setState({
+                conglomerateComponentOptions: {
+                    isBlankComponent: message.isBlankComponent,
+                    skipInstantiateInHost: message.skipInstantiateInHost,
+                },
+            }, () => {
+                this.launchComponentNameModal();
+            });
+            break;
+        }
 
-        case 'perform-align':
-          this.fetchProxyElementForSelection().align(message.xEdge, message.yEdge, message.toStage);
-          break;
+        case 'perform-align': {
+            this.fetchProxyElementForSelection().align(message.xEdge, message.yEdge, message.toStage);
+            break;
+        }
 
-        case 'perform-distribute':
-          this.fetchProxyElementForSelection().distribute(message.xEdge, message.yEdge, message.toStage);
-          break;
+        case 'perform-distribute': {
+            this.fetchProxyElementForSelection().distribute(message.xEdge, message.yEdge, message.toStage);
+            break;
+        }
 
-        case 'assets-changed':
-          File.cache.clear();
-          break;
+        case 'assets-changed': {
+            File.cache.clear();
+            break;
+        }
       }
     });
 
@@ -939,7 +976,11 @@ overlays.push({
         }
         const selectedElement = component.findElementByComponentId(directlySelectedComponentId);
         if (selectedElement) {
-          Element.directlySelected = selectedElement.getHaikuElement();
+          if (Element.directlySelected) {
+            if (Element.directlySelected) {
+              Element.directlySelected = selectedElement.getHaikuElement();
+            }
+          }
         }
       });
     }
@@ -961,7 +1002,11 @@ overlays.push({
         }
         const selectedElement = component.findElementByComponentId(directlySelectedComponentId);
         if (selectedElement) {
-          Element.directlySelected = selectedElement.getHaikuElement();
+          if (Element.directlySelected) {
+            if (Element.directlySelected) {
+              Element.directlySelected = selectedElement.getHaikuElement();
+            }
+          }
         }
       });
     }
@@ -1649,7 +1694,11 @@ overlays.push({
                   )) {
                   clickedItemFound = descendant;
                   if (isDoubleClick && elementTargeted.isSelected()) {
-                    Element.directlySelected = descendant;
+                    if (Element.directlySelected) {
+                      if (Element.directlySelected) {
+                        Element.directlySelected = descendant;
+                      }
+                    }
                   }
                   return false; // stop searching
                 }

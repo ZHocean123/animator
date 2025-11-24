@@ -1,26 +1,29 @@
 {
   "compileOnSave": true,
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // 覆盖基础配置的特定选项
     "allowJs": false,
-    "declaration": true,
     "declarationDir": "lib",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "outDir": "lib",
     "preserveConstEnums": false,
+    "outDir": "lib",
     "rootDir": "src",
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "ESNext",
-    "types": [
-      "node"
-    ],
     "typeRoots": [
       "node_modules/@types/"
-    ]
+    ],
+    // 包特定的路径映射
+    "baseUrl": ".",
+    "paths": {
+      "@sdk-creator/*": ["src/*"],
+      "@common/*": ["../haiku-common/src/*"]
+    }
   },
   "include": [
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist"
   ]
 }

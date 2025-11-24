@@ -6,13 +6,18 @@ Some features:
 
  - Free-transform canvas for visual vector editing
  - Visual timeline for keyframe animations
- - Exporters for Lottie animations, GIFs, and videos 
+ - Exporters for Lottie animations, GIFs, and videos
  - Asset-linking from Figma, Illustrator, or Sketch
  - Spreadsheet-like property "Expressions" for interactions and animations
  - Code editors for interactive element actions & raw project source
 
 <img alt="Screenshot of Haiku Animator animating its own logo" src="haiku-animator-screenshot.png" />
 
+## Recent Updates
+
+- **Node.js 22 Support**: Upgraded from Node.js 8.15.1 to Node.js 22 for better performance, security, and modern JavaScript features
+- **tsdown Build System**: Migrated from TypeScript compiler (tsc) to tsdown for faster builds and improved development experience
+- **Enhanced TypeScript Configuration**: Updated to use modern TypeScript features and stricter type checking
 
 # Installation
 
@@ -32,9 +37,9 @@ It's important to use precise minor version numbers where specified.  `nodegit`/
 
     $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 
-2.) node 8.15.1:
+2.) node 22:
 
-    $ nvm install 8.15.1 && nvm alias default 8.15.1 && nvm use 8.15.1
+    $ nvm install 22 && nvm alias default 22 && nvm use 22
 
 3.) yarn 1.13.0:
 
@@ -54,12 +59,12 @@ Assuming a clean Windows 10, open a PowerShell with admin rights:
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Install git
-choco install git python2 -y 
+choco install git python2 -y
 
-# Install nodejs 
-choco install nodejs-lts -y --version 8.15.1
+# Install nodejs
+choco install nodejs-lts -y --version 22
 
-# Ignore dependencies to force using specified node version 
+# Ignore dependencies to force using specified node version
 choco install yarn -y --version 1.13.0  --ignore-dependencies
 
 # Update PowerShell environment vars
@@ -83,7 +88,7 @@ yarn electron-rebuild
 * Install a desktop environment like Gnome, XFCE, or KDE if machine does not already have one
 * Install dependences from system repositories: `apt install git curl python2 build-essential libgcrypt20 libcurl4-openssl-dev libssl-dev libgtk-3-0 libgconf-2-4 libnss3`
 * Install nvm: `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash`
-* Install node 8.15.1: `nvm install 8.15.1 && nvm alias default 8.15.1 && nvm use 8.15.1`
+* Install node 22: `nvm install 22 && nvm alias default 22 && nvm use 22`
 * Install yarn 1.13.0: `curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0`
 
 
@@ -105,6 +110,28 @@ You can also skip the interactive prompt and start with good defaults with:
     $ yarn go
 
 You can also set some overriding environment variables (e.g. `HAIKU_API`) by making a `.env` file in the mono root. Refer to `.env.example` for an example.
+
+### Building with tsdown
+
+Haiku Animator now uses tsdown for TypeScript compilation, which provides faster builds and improved development experience.
+
+#### Build all packages:
+
+    $ yarn build-all
+
+#### Development mode with file watching:
+
+    $ yarn dev-all
+
+#### Build a specific package:
+
+    $ cd packages/[package-name]
+    $ yarn build
+
+#### Development mode for a specific package:
+
+    $ cd packages/[package-name]
+    $ yarn dev
 
 ### Watching changes
 
