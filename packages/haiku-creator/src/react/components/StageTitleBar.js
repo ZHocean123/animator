@@ -761,7 +761,7 @@ class StageTitleBar extends React.Component {
             </button>
           </div>
         }
-        
+
         <button
           key="toggle-preview"
           id="preview"

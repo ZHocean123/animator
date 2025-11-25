@@ -10,11 +10,11 @@ import {join} from 'path';
  * `haiku-plumbing` for some reason I couldn't figure out.
  */
 export const getResourcesPath = () => {
-  if (process.env.NODE_ENV !== 'production') {
+  if(process.env.NODE_ENV !== 'production') {
     return null;
   }
 
-  if (isMac()) {
+  if(isMac()) {
     return join(process.execPath, '..', '..', '..', '..', '..', 'Resources');
   }
 

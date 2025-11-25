@@ -37,7 +37,7 @@ async.each(allPackages, (pack, done) => {
       log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Compiling....`);
       
       // Try to use tsdown build command first, fallback to compile if not available
-      const buildCommand = pack.pkg.scripts.build ? 'yarn run build' : 'yarn run compile';
+      const buildCommand = pack.pkg.scripts.build ? 'pnpm run build' : 'pnpm run compile';
       cp.execSync(buildCommand, {cwd: pack.abspath, stdio: 'inherit'});
     } else {
       log.log(`No changes in ${pack.shortname} since last compile. Skipping....`);

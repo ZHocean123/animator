@@ -114,7 +114,7 @@ process.on('SIGTERM', () => {
 });
 
 export default class Plumbing extends EventEmitter {
-  constructor () {
+  constructor() {
     super();
 
     // Keep track of all PLUMBING_INSTANCES so we can put our process.on listeners
@@ -137,11 +137,11 @@ export default class Plumbing extends EventEmitter {
     this.executeMethodMessagesWorker();
   }
 
-  emitError (error) {
+  emitError(error) {
 
   }
 
-  launch (haiku = {}, cb) {
+  launch(haiku = {}, cb) {
     haiku = merge({}, HAIKU_DEFAULTS, haiku);
 
     logger.info('[plumbing] launching plumbing', haiku);
@@ -153,7 +153,7 @@ export default class Plumbing extends EventEmitter {
     });
 
     return this.envoyServer.ready().then(() => {
-      if (!haiku.envoy) {
+      if(!haiku.envoy) {
         haiku.envoy = {};
       } // Gets stored in env vars before subprocs created
 
@@ -162,7 +162,7 @@ export default class Plumbing extends EventEmitter {
       haiku.envoy.token = HAIKU_WS_SECURITY_TOKEN;
 
       const error = new ErrorHandler(this.envoyServer);
-      if (global.sentryReporter) {
+      if(global.sentryReporter) {
         global.sentryReporter.envoy = error;
       }
       const user = new UserHandler(this.envoyServer);
@@ -194,7 +194,7 @@ export default class Plumbing extends EventEmitter {
 
       this.envoyHandlers.user.on(`${USER_CHANNEL}:load`, ({user: {Username}, organization: {Name}}) => {
         mixpanel.mergeToPayload({distinct_id: Username});
-        if (Raven) {
+        if(Raven) {
           Raven.mergeContext({user: {email: Username}, extra: {organizationName: Name}});
         }
       });
@@ -204,7 +204,7 @@ export default class Plumbing extends EventEmitter {
       haiku.socket.token = HAIKU_WS_SECURITY_TOKEN;
 
       return this.launchControlServer(haiku.socket, haiku.envoy.host, (err, server, host, port) => {
-        if (err) {
+        if(err) {
           return cb(err);
         }
 
@@ -213,7 +213,7 @@ export default class Plumbing extends EventEmitter {
         process.env.HAIKU_PLUMBING_HOST = host;
         process.env.HAIKU_WS_SECURITY_TOKEN = HAIKU_WS_SECURITY_TOKEN;
 
-        if (!haiku.socket) {
+        if(!haiku.socket) {
           haiku.socket = {};
         }
 
@@ -227,19 +227,19 @@ export default class Plumbing extends EventEmitter {
         server.on('connection', (websocket, request) => {
           const params = getWsParams(websocket, request);
 
-          if (haiku.socket.token && params.token !== haiku.socket.token) {
+          if(haiku.socket.token && params.token !== haiku.socket.token) {
             logger.info(`[plumbing] websocket connected with bad token ${params.token}`);
             websocket.close(WS_POLICY_VIOLATION_CODE, 'forbidden');
             return;
           }
 
-          if (!params.type) {
+          if(!params.type) {
             params.type = 'default';
           }
-          if (!params.haiku) {
+          if(!params.haiku) {
             params.haiku = {};
           }
-          if (!websocket.params) {
+          if(!websocket.params) {
             websocket.params = params;
           }
 
@@ -250,12 +250,12 @@ export default class Plumbing extends EventEmitter {
           logger.info(`[plumbing] websocket for ${folder || 'main'} connected (${type} ${alias})`);
 
           // Don't allow multiple clients of the same alias and folder
-          for (let i = this.clients.length - 1; i >= 0; i--) {
+          for(let i = this.clients.length - 1; i >= 0; i--) {
             const client = this.clients[i];
 
-            if (client.params) {
-              if (client.params.alias === alias && client.params.folder === folder) {
-                if (client.readyState === WebSocket.OPEN) {
+            if(client.params) {
+              if(client.params.alias === alias && client.params.folder === folder) {
+                if(client.readyState === WebSocket.OPEN) {
                   client.close();
                 }
 
@@ -291,13 +291,13 @@ export default class Plumbing extends EventEmitter {
         });
 
         // If we were spawned as a subprocess inside of electron main, tell our parent to launch creator.
-        if (haiku.mode !== 'headless') {
-          if (typeof process.send === 'function') {
+        if(haiku.mode !== 'headless') {
+          if(typeof process.send === 'function') {
             process.send({
               haiku,
               message: 'launchCreator',
             });
-          } else if (process.versions && !!process.versions.electron) {
+          } else if(process.versions && !!process.versions.electron) {
             // We are in electron main (e.g. in a test context).
             global.process.env.HAIKU_ENV = JSON.stringify(haiku);
             require('haiku-creator/lib/electron');
@@ -309,10 +309,10 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  removeWebsocketClient (websocket) {
-    for (let j = this.clients.length - 1; j >= 0; j--) {
+  removeWebsocketClient(websocket) {
+    for(let j = this.clients.length - 1; j >= 0; j--) {
       const client = this.clients[j];
-      if (client === websocket) {
+      if(client === websocket) {
         this.clients.splice(j, 1);
       }
     }
@@ -322,7 +322,7 @@ export default class Plumbing extends EventEmitter {
    * @method invokeAction
    * @description Convenience wrapper around making a generic action call
    */
-  invokeAction (folder, method, params, cb) {
+  invokeAction(folder, method, params, cb) {
     params.unshift(folder);
     return this.handleRemoteMessage(
       'controller',
@@ -333,62 +333,62 @@ export default class Plumbing extends EventEmitter {
     );
   }
 
-  handleRemoteMessage (type, alias, folder, message, cb) {
+  handleRemoteMessage(type, alias, folder, message, cb) {
     // IMPORTANT! Creator uses this
-    if (!folder && message.folder) {
+    if(!folder && message.folder) {
       folder = message.folder;
     }
 
-    if (message.type === 'relay') {
+    if(message.type === 'relay') {
       return this.relayMessage(
         folder,
         message,
       );
     }
 
-    if (message.type === 'broadcast') {
+    if(message.type === 'broadcast') {
       this.findMasterByFolder(folder).handleBroadcast(message);
 
       // Give clients the chance to emit events to all others
       return this.sendBroadcastMessage(message, folder, alias);
     }
 
-    if (message.id && this.requests[message.id]) {
+    if(message.id && this.requests[message.id]) {
       // If we have an entry in this.requests, that means this is a reply
       const {callback} = this.requests[message.id];
       delete this.requests[message.id];
       return callback(message.error, message.result, message);
     }
 
-    if (message.method) {
+    if(message.method) {
       // Ensure that actions/methods occur in order by using a queue
       return this.processMethodMessage(type, alias, folder, message, cb);
     }
   }
 
-  methodMessageBeforeLog (message, alias) {
-    if (!IGNORED_METHOD_MESSAGES[message.method]) {
+  methodMessageBeforeLog(message, alias) {
+    if(!IGNORED_METHOD_MESSAGES[message.method]) {
       logger.info(`[plumbing] ↓-- ${message.method} via ${alias} --↓`);
     }
   }
 
-  methodMessageAfterLog (message, err, result, alias) {
-    if (!IGNORED_METHOD_MESSAGES[message.method]) {
-      if ((err && err.message) || (err && err.stack)) {
+  methodMessageAfterLog(message, err, result, alias) {
+    if(!IGNORED_METHOD_MESSAGES[message.method]) {
+      if((err && err.message) || (err && err.stack)) {
         logger.info(`[plumbing] ${message.method} error ${err.stack || err.message}`);
       }
       logger.info(`[plumbing] ↑-- ${message.method} via ${alias} --↑`);
     }
   }
 
-  executeMethodMessagesWorker () {
-    if (this._isTornDown) {
+  executeMethodMessagesWorker() {
+    if(this._isTornDown) {
       return; // Avoid leaking a handle
     }
 
     const nextMethodMessage = this._methodMessages.shift();
 
-    if (!nextMethodMessage) {
+    if(!nextMethodMessage) {
       return setTimeout(() => this.executeMethodMessagesWorker(), 64);
     }
 
@@ -399,7 +399,7 @@ export default class Plumbing extends EventEmitter {
     // Actions are a special case of methods that end up routed through all of the clients,
     // glass -> timeline -> master before returning. They go through one handler as opposed
     // to the normal 'methods' which plumbing handles on a more a la carte basis
-    if (message.type === 'action') {
+    if(message.type === 'action') {
       return this.handleClientAction(type, alias, folder, message.method, message.params, (err, result) => {
 
         this.methodMessageAfterLog(message, err, result, alias);
@@ -415,11 +415,11 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  processMethodMessage (type, alias, folder, message, cb) {
+  processMethodMessage(type, alias, folder, message, cb) {
     // Certain messages aren't of a kind that we can reliably enqueue -
     // either they happen too fast or they are 'fire and forget'
-    if (METHOD_MESSAGES_TO_HANDLE_IMMEDIATELY[message.method]) {
-      if (message.type === 'action') {
+    if(METHOD_MESSAGES_TO_HANDLE_IMMEDIATELY[message.method]) {
+      if(message.type === 'action') {
         return this.handleClientAction(type, alias, folder, message.method, message.params, cb);
       }
 
@@ -429,15 +429,15 @@ export default class Plumbing extends EventEmitter {
     this._methodMessages.push({type, alias, folder, message, cb});
   }
 
-  sendBroadcastMessage (message, folder, alias) {
+  sendBroadcastMessage(message, folder, alias) {
     this.clients.forEach((client) => {
       // Don't send the broadcast to the sender
-      if (client && client.params && client.params.alias === alias) {
+      if(client && client.params && client.params.alias === alias) {
         return;
       }
 
       // Don't send if we know the socket isn't open
-      if (client.readyState !== WebSocket.OPEN) {
+      if(client.readyState !== WebSocket.OPEN) {
         return;
       }
 
@@ -447,11 +447,11 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  sendMessageToCreator (message, folder, alias) {
+  sendMessageToCreator(message, folder, alias) {
     this.clients.forEach((client) => {
 
       // Don't send if we know the socket isn't open
-      if (client.readyState !== WebSocket.OPEN || client.params.alias !== 'creator') {
+      if(client.readyState !== WebSocket.OPEN || client.params.alias !== 'creator') {
         return;
       }
 
@@ -461,20 +461,20 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  plumbingMethod (method, params = [], cb) {
-    if (typeof this[method] !== 'function') {
+  plumbingMethod(method, params = [], cb) {
+    if(typeof this[method] !== 'function') {
       return cb(new Error(`Plumbing has no method '${method}'`));
     }
     return this[method].apply(this, params.concat((error, result) => {
-      if (error) {
+      if(error) {
         return cb(error);
       }
       return cb(null, result);
     }));
   }
 
-  awaitClientWithQuery (query, timeout, cb) {
-    if (!query) {
+  awaitClientWithQuery(query, timeout, cb) {
+    if(!query) {
       throw new Error('Query is required');
     }
 
@@ -482,13 +482,13 @@ export default class Plumbing extends EventEmitter {
 
     // The creator socket doesn't have a folder param, so omit the folder
     // from the query otherwise we won't find the socket in the collection
-    if (fixed.alias !== 'creator') {
-      if (query.folder) {
+    if(fixed.alias !== 'creator') {
+      if(query.folder) {
         fixed.folder = query.folder;
       }
     }
 
-    if (timeout <= 0) {
+    if(timeout <= 0) {
       logger.warn(`[plumbing] timed out waiting for client ${JSON.stringify(fixed)}`);
       return cb(new Error('E_TIMEOUT'));
     }
@@ -498,7 +498,7 @@ export default class Plumbing extends EventEmitter {
       {params: fixed},
     );
 
-    if (clientMatching) {
+    if(clientMatching) {
       return cb(null, clientMatching);
     }
 
@@ -507,18 +507,18 @@ export default class Plumbing extends EventEmitter {
     }, AWAIT_INTERVAL);
   }
 
-  relayMessage (folder, message) {
+  relayMessage(folder, message) {
     let clientSpec;
-    if (message.view === 'glass') {
+    if(message.view === 'glass') {
       clientSpec = Q_GLASS;
     }
-    if (message.view === 'timeline') {
+    if(message.view === 'timeline') {
       clientSpec = Q_TIMELINE;
     }
-    if (message.view === 'creator') {
+    if(message.view === 'creator') {
       clientSpec = Q_CREATOR;
     }
-    if (message.view === 'master') {
+    if(message.view === 'master') {
       clientSpec = Q_MASTER;
     }
 
@@ -527,20 +527,20 @@ export default class Plumbing extends EventEmitter {
     logger.info(`[plumbing] relaying ${message.name} to ${message.view}`);
 
     return this.awaitClientWithQuery(clientQuery, WAIT_DELAY, (_, client) => {
-      if (client) {
+      if(client) {
         return this.sendClientMessage(client, message);
       }
     });
   }
 
-  sendQueriedClientMethod (query = {}, method, params = [], cb) {
+  sendQueriedClientMethod(query = {}, method, params = [], cb) {
     return this.awaitClientWithQuery(query, WAIT_DELAY, (err, client) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
       return this.sendClientMethod(client, method, params, (error, response) => {
-        if (error) {
+        if(error) {
           throw error;
         }
 
@@ -549,26 +549,26 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  sendClientMethod (websocket, method, params = [], callback) {
+  sendClientMethod(websocket, method, params = [], callback) {
     const message = {method, params};
     return this.sendClientRequest(websocket, message, callback);
   }
 
-  sendClientRequest (websocket, message, callback) {
-    if (message.id === undefined) {
+  sendClientRequest(websocket, message, callback) {
+    if(message.id === undefined) {
       message.id = `${Math.random()}`;
     }
     this.requests[message.id] = {websocket, message, callback};
     return this.sendClientMessage(websocket, message);
   }
 
-  sendClientMessage (websocket, message) {
+  sendClientMessage(websocket, message) {
     const data = JSON.stringify(message);
 
     // In case we get an error here, log it and then throw so we can see context
-    if (websocket.readyState === WebSocket.OPEN) {
+    if(websocket.readyState === WebSocket.OPEN) {
       return websocket.send(data, (err) => {
-        if (err) {
+        if(err) {
           logger.error(err);
           throw err;
         }
@@ -578,7 +578,7 @@ export default class Plumbing extends EventEmitter {
     throw new Error('WebSocket is not open');
   }
 
-  teardown (cb) {
+  teardown(cb) {
     logger.info('[plumbing] teardown method called');
 
     return async.eachOfSeries(this.masters, (master, folder, next) => {
@@ -586,7 +586,7 @@ export default class Plumbing extends EventEmitter {
         master.teardown(next);
       });
     }, () => {
-      if (this.envoyServer) {
+      if(this.envoyServer) {
         logger.info('[plumbing] closing envoy server');
         this.envoyServer.close();
       }
@@ -598,7 +598,7 @@ export default class Plumbing extends EventEmitter {
 
       this._isTornDown = true;
 
-      if (cb) {
+      if(cb) {
         cb();
       }
     });
@@ -608,7 +608,7 @@ export default class Plumbing extends EventEmitter {
    * Outward-facing
    */
 
-  masterHeartbeat (folder, cb) {
+  masterHeartbeat(folder, cb) {
     return this.awaitMasterAndCallMethod(folder, 'masterHeartbeat', [{from: 'master'}], cb);
   }
 
@@ -616,7 +616,7 @@ export default class Plumbing extends EventEmitter {
    * @method copyDefaultSketchFile
    * @description copy the default Sketch file to the given project
    */
-  copyDefaultSketchFile (projectName, assetPath, cb) {
+  copyDefaultSketchFile(projectName, assetPath, cb) {
     return cb(copyDefaultSketchFile(projectName, assetPath));
   }
 
@@ -624,7 +624,7 @@ export default class Plumbing extends EventEmitter {
    * @method copyDefaultIllustratorFile
    * @description copy the default Illustrator file to the given project
    */
-  copyDefaultIllustratorFile (projectName, assetPath, cb) {
+  copyDefaultIllustratorFile(projectName, assetPath, cb) {
     return cb(copyDefaultIllustratorFile(projectName, assetPath));
   }
 
@@ -634,7 +634,7 @@ export default class Plumbing extends EventEmitter {
    * We make a decision here as to where + whether to generate a new folder.
    * When it is ready, we kick off the content initialization step with initializeFolder.
    */
-  bootstrapProject (
+  bootstrapProject(
     project,
     finish,
   ) {
@@ -661,7 +661,7 @@ export default class Plumbing extends EventEmitter {
       (cb) => {
         // This check is needed since Creator may wish to specify that we do/don't automatically create content.
         // This is important because if we create content then pull from the remote, we'll get a weird initial state.
-        if (project.skipContentCreation) {
+        if(project.skipContentCreation) {
           logger.info('[plumbing] skipping content creation (I)');
           return cb();
         }
@@ -690,14 +690,14 @@ export default class Plumbing extends EventEmitter {
         cb();
       },
     ], (err) => {
-      if (err) {
+      if(err) {
         return finish(err);
       }
 
       return this.initializeFolder(
         project,
         (err) => {
-          if (err) {
+          if(err) {
             return finish(err);
           }
 
@@ -711,34 +711,34 @@ export default class Plumbing extends EventEmitter {
    * @method initializeFolder
    * @description Assuming we already have a folder created, an organization name, etc., now bootstrap the folder itself.
    */
-  initializeFolder (project, cb) {
+  initializeFolder(project, cb) {
     return this.awaitMasterAndCallMethod(project.projectPath, 'initializeFolder', [project, {from: 'master'}], cb);
   }
 
-  startProject ({projectPath}, cb) {
+  startProject({projectPath}, cb) {
     return this.awaitMasterAndCallMethod(projectPath, 'startProject', [{from: 'master'}], cb);
   }
 
-  resendEmailConfirmation (username, cb) {
+  resendEmailConfirmation(username, cb) {
     return inkstone.user.requestConfirmEmail(username, cb);
   }
 
-  getenv (cb) {
+  getenv(cb) {
     return cb(null, sdkClient.config.getenv());
   }
 
-  setenv (environmentVariables, cb) {
+  setenv(environmentVariables, cb) {
     return cb(null, sdkClient.config.setenv(environmentVariables));
   }
 
-  duplicateProject (destinationProject, sourceProject, cb) {
-    if (!sourceProject.projectExistsLocally) {
+  duplicateProject(destinationProject, sourceProject, cb) {
+    if(!sourceProject.projectExistsLocally) {
       logger.info(`[plumbing] source project did not exist during duplicate: ${sourceProject.projectName}`);
       // Unable to proceed; there is nothing from the source project that we could possibly copy.
       return cb();
     }
 
-    if (destinationProject.projectExistsLocally) {
+    if(destinationProject.projectExistsLocally) {
       // We don't actually need to return early here—but we should warn in logs in case something else bad happens
       // as a result.
       logger.warn(`[plumbing] source project existed locally during duplicate: ${destinationProject.projectName}`);
@@ -747,7 +747,7 @@ export default class Plumbing extends EventEmitter {
     // Duplicate project folder content from source to destination.
     duplicateProject(destinationProject, sourceProject, (err) => {
       // Note: we don't pass errors forward to Creator here. It wouldn't know what to do with it.
-      if (err) {
+      if(err) {
         logger.warn(`[plumbing] error during project duplication: ${err}`);
       }
 
@@ -755,13 +755,13 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  haltMasterForFolder (folder) {
-    if (this.masters[folder] && this.masters[folder].active) {
+  haltMasterForFolder(folder) {
+    if(this.masters[folder] && this.masters[folder].active) {
       this.masters[folder].halt();
     }
   }
 
-  teardownMaster (folder, cb) {
+  teardownMaster(folder, cb) {
     logger.info(`[plumbing] tearing down master ${folder}`);
     awaitAllLocksFree(() => {
       this.haltMasterForFolder(folder);
@@ -772,7 +772,7 @@ export default class Plumbing extends EventEmitter {
 
       clientsOfFolder.forEach((clientOfFolder) => {
         const alias = clientOfFolder.params.alias;
-        if (alias === 'glass' || alias === 'timeline') {
+        if(alias === 'glass' || alias === 'timeline') {
           logger.info(`[plumbing] closing client ${alias} of ${folder}`);
           clientOfFolder.close();
           this.removeWebsocketClient(clientOfFolder);
@@ -781,9 +781,9 @@ export default class Plumbing extends EventEmitter {
 
       // Any messages destined for the folder need to be cleared since there's now
       // nobody who is able to receive them
-      for (let i = this._methodMessages.length - 1; i >= 0; i--) {
+      for(let i = this._methodMessages.length - 1; i >= 0; i--) {
         const message = this._methodMessages[i];
-        if (message.folder === folder) {
+        if(message.folder === folder) {
           logger.info(`[plumbing] clearing message`);
           this._methodMessages.splice(i, 1);
         }
@@ -803,49 +803,49 @@ export default class Plumbing extends EventEmitter {
     });
   }
 
-  saveProject (project, saveOptions, cb) {
-    if (!saveOptions) {
+  saveProject(project, saveOptions, cb) {
+    if(!saveOptions) {
       saveOptions = {};
     }
     logger.info('[plumbing] saving with options', saveOptions);
     return this.awaitMasterAndCallMethod(project.projectPath, 'saveProject', [project, saveOptions, {from: 'master'}], cb);
   }
 
-  checkInkstoneUpdates (query = '', cb) {
+  checkInkstoneUpdates(query = '', cb) {
     const authToken = sdkClient.config.getAuthToken();
     return inkstone.updates.check(authToken, query, cb);
   }
 
-  listAssets (folder, cb) {
+  listAssets(folder, cb) {
     return this.awaitMasterAndCallMethod(folder, 'fetchAssets', [{from: 'master'}], cb);
   }
 
-  linkAsset (assetAbspath, folder, cb) {
+  linkAsset(assetAbspath, folder, cb) {
     return this.awaitMasterAndCallMethod(folder, 'linkAsset', [assetAbspath, {from: 'master'}], cb);
   }
 
-  bulkLinkAssets (assetsAbspaths, folder, cb) {
+  bulkLinkAssets(assetsAbspaths, folder, cb) {
     return this.awaitMasterAndCallMethod(folder, 'bulkLinkAssets', [assetsAbspaths, {from: 'master'}], cb);
   }
 
-  unlinkAsset (assetRelpath, folder, cb) {
+  unlinkAsset(assetRelpath, folder, cb) {
     return this.awaitMasterAndCallMethod(folder, 'unlinkAsset', [assetRelpath, {from: 'master'}], cb);
   }
 
-  readAllStateValues (folder, relpath, cb) {
+  readAllStateValues(folder, relpath, cb) {
     return this.awaitMasterAndCallMethod(folder, 'readAllStateValues', [relpath, {from: 'master'}], cb);
   }
 
-  readAllEventHandlers (folder, relpath, cb) {
+  readAllEventHandlers(folder, relpath, cb) {
     return this.awaitMasterAndCallMethod(folder, 'readAllEventHandlers', [relpath, {from: 'master'}], cb);
   }
 
-  handleClientAction (type, alias, folder, method, params, cb) {
+  handleClientAction(type, alias, folder, method, params, cb) {
     // Params always arrive with the folder as the first argument, so we strip that off
     params = params.slice(1);
 
     return async.eachSeries([Q_GLASS, Q_TIMELINE, Q_CREATOR, Q_MASTER], (clientSpec, nextStep) => {
-      if (clientSpec.alias === alias) {
+      if(clientSpec.alias === alias) {
         // Don't send methods that originated with ourself
         return nextStep();
       }
@@ -853,7 +853,7 @@ export default class Plumbing extends EventEmitter {
       logActionInitiation(method, clientSpec);
 
       // Master is handled differently because it's not actually a separate process
-      if (clientSpec === Q_MASTER) {
+      if(clientSpec === Q_MASTER) {
         return this.awaitMasterAndCallMethod(folder, method, params, nextStep);
       }
 
@@ -865,45 +865,45 @@ export default class Plumbing extends EventEmitter {
   }
 }
 
-function logActionInitiation (method, clientSpec) {
-  if (!IGNORED_METHOD_MESSAGES[method]) {
+function logActionInitiation(method, clientSpec) {
+  if(!IGNORED_METHOD_MESSAGES[method]) {
     logger.info(`[plumbing] -> client action ${method} being sent to ${clientSpec.alias}`);
   }
 }
 
-function logAndHandleActionResult (err, cb, method, type, alias) {
-  if (!IGNORED_METHOD_MESSAGES[method]) {
+function logAndHandleActionResult(err, cb, method, type, alias) {
+  if(!IGNORED_METHOD_MESSAGES[method]) {
     const status = (err) ? 'errored' : 'completed';
     logger.info(`[plumbing] <- client action ${method} from ${type}@${alias} ${status}`, err);
   }
 
-  if (err) {
-    if (cb) {
+  if(err) {
+    if(cb) {
       return cb(err);
     }
     return void (0);
   }
 
-  if (cb) {
+  if(cb) {
     return cb();
   }
   return void (0);
 }
 
-Plumbing.prototype.awaitMasterAndCallMethod = function (folder, method, params, cb) {
+Plumbing.prototype.awaitMasterAndCallMethod = function(folder, method, params, cb) {
   const master = this.findMasterByFolder(folder);
-  if (!master) {
+  if(!master) {
     return setTimeout(() => this.awaitMasterAndCallMethod(folder, method, params, cb), AWAIT_INTERVAL);
   }
 
   return master.handleMethodMessage(method, params, cb);
 };
 
-Plumbing.prototype.findMasterByFolder = function (folder) {
+Plumbing.prototype.findMasterByFolder = function(folder) {
   return this.masters[folder];
 };
 
-Plumbing.prototype.upsertMaster = function ({folder, fileOptions, envoyOptions, envoyHandlers}) {
+Plumbing.prototype.upsertMaster = function({folder, fileOptions, envoyOptions, envoyHandlers}) {
   const remote = (payload, cb) => {
     return this.handleRemoteMessage(
       'controllee',
@@ -917,7 +917,7 @@ Plumbing.prototype.upsertMaster = function ({folder, fileOptions, envoyOptions, 
   // When the user launches a project, we create a Master instance, and we keep it
   // running even if they navigate back to the dashboard to avoid a double expense
   // of initializing file watchers, Git, etc. This is just a simple multiton dict.
-  if (!this.masters[folder]) {
+  if(!this.masters[folder]) {
     const master = new Master(
       folder,
       fileOptions,
@@ -969,7 +969,7 @@ let portrange = 45032;
 
 // On the given host, return the port number of an open port. Note that the host must be
 // specified otherwise you end up getting false positives! E.g. ipv4 0.0.0.0 vs ipv6 ::.
-function getPort (host, cb) {
+function getPort(host, cb) {
   const port = portrange;
   portrange += 1;
   const server = net.createServer();
@@ -981,7 +981,7 @@ function getPort (host, cb) {
     server.close();
   });
   server.on('error', (err) => {
-    if (err && err.code === 'EADDRINUSE') {
+    if(err && err.code === 'EADDRINUSE') {
       return getPort(host, cb);
     }
     // If not an address-in-use error, something bad has happened and we likely shouldn't continue
@@ -990,8 +990,8 @@ function getPort (host, cb) {
   return server;
 }
 
-Plumbing.prototype.launchControlServer = function launchControlServer (socketInfo, host, cb) {
-  if (socketInfo && socketInfo.port) {
+Plumbing.prototype.launchControlServer = function launchControlServer(socketInfo, host, cb) {
+  if(socketInfo && socketInfo.port) {
     logger.info(`[plumbing] plumbing websocket server listening on specified port ${socketInfo.port}...`);
 
     const websocketServer = this.createControlSocket({
@@ -1003,7 +1003,7 @@ Plumbing.prototype.launchControlServer = function launchControlServer (socketInf
   }
 
   return getPort(host, (err, port) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
@@ -1016,14 +1016,14 @@ Plumbing.prototype.launchControlServer = function launchControlServer (socketInf
   });
 };
 
-Plumbing.prototype.extendEnvironment = function extendEnvironment (haiku) {
+Plumbing.prototype.extendEnvironment = function extendEnvironment(haiku) {
   const HAIKU_ENV = JSON.parse(process.env.HAIKU_ENV || '{}');
   merge(HAIKU_ENV, haiku);
   logger.info('[plumbing] environment forwarding:', JSON.stringify(HAIKU_ENV, 2, null));
   process.env.HAIKU_ENV = JSON.stringify(HAIKU_ENV); // Forward env to subprocesses
 };
 
-function getWsParams (websocket, request) {
+function getWsParams(websocket, request) {
   const url = request.url || '';
   const query = url.split('?')[1] || '';
   const params = qs.parse(query);
@@ -1031,33 +1031,33 @@ function getWsParams (websocket, request) {
   return params;
 }
 
-Plumbing.prototype.createControlSocket = function createControlSocket (socketInfo) {
+Plumbing.prototype.createControlSocket = function createControlSocket(socketInfo) {
   return new WebSocket.Server({
     port: socketInfo.port,
     host: socketInfo.host,
   });
 };
 
-function sendMessageToClient (client, message) {
+function sendMessageToClient(client, message) {
   const data = JSON.stringify(message);
-  if (client.readyState === WebSocket.OPEN) {
+  if(client.readyState === WebSocket.OPEN) {
     return client.send(data, (err) => {
-      if (err) {
+      if(err) {
         // This should never happen.
         throw new Error(`Error during send: ${err}`);
       }
     });
   }
 
-  if (data.type || data.name || data.method) {
+  if(data.type || data.name || data.method) {
     // Only throw if the message has request content; responses can be ignored
     // safely since the requester has been closed down
     throw new Error(`Attempted message to non-open WebSocket: ${data}`);
   }
 }
 
-function createResponder (message, websocket) {
-  return function messageResponder (error, result) {
+function createResponder(message, websocket) {
+  return function messageResponder(error, result) {
     const reply = {
       jsonrpc: '2.0',
       id: message.id,

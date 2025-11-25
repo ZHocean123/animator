@@ -30,7 +30,7 @@ try {
 } catch (e) {}
 
 // Compile packages.
-cp.execSync('yarn install --frozen-lockfile', processOptions);
+cp.execSync('pnpm install --frozen-lockfile', processOptions);
 cp.execSync('yarn compile-all --force', processOptions);
 openSourcePackages.forEach((pack) => {
   const compileCommand = `node ./scripts/compile-package.js --package=${pack.name}`;

@@ -709,7 +709,6 @@ export default class Creator extends React.Component {
         this.setState({isUserAuthenticated: true});
       });
 
-
       this.checkOnlineStatus();
 
       this.user.isTrialExpired().then((isTrialExpired) => {

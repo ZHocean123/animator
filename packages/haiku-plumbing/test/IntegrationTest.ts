@@ -12,8 +12,8 @@ export const INTEGRATION_TESTS_ENABLED = os.platform() === 'darwin';
 export default class IntegrationTest {
   private application: Application;
 
-  async start (browser = false): Promise<Application> {
-    if (this.application) {
+  async start(browser = false): Promise<Application> {
+    if(this.application) {
       throw new Error('Already started');
     }
 
@@ -40,8 +40,8 @@ export default class IntegrationTest {
     return this.application.start();
   }
 
-  async teardown (): Promise<Application> {
-    if (!this.application) {
+  async teardown(): Promise<Application> {
+    if(!this.application) {
       throw new Error('Not started');
     }
 

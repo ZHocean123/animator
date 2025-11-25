@@ -15,10 +15,10 @@ const makeBundle = () => {
 };
 
 if (!argv['skip-compile']) {
-  cp.execSync('yarn install', {cwd: global.process.cwd(), stdio: 'inherit'});
+  cp.execSync('pnpm install', {cwd: global.process.cwd(), stdio: 'inherit'});
   
   // Try to use tsdown build command first, fallback to compile if not available
-  const buildCommand = core.pkg.scripts.build ? 'yarn run build' : 'yarn run compile';
+  const buildCommand = core.pkg.scripts.build ? 'pnpm run build' : 'pnpm run compile';
   cp.execSync(buildCommand, {cwd: core.abspath, stdio: 'inherit'});
   
   makeBundle();

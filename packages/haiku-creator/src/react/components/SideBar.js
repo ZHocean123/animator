@@ -118,7 +118,7 @@ class SideBar extends React.Component {
               {trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''}`}
             </div>
           }
-          
+
         </div>
         <div style={STYLES.nav}>
           <div style={[

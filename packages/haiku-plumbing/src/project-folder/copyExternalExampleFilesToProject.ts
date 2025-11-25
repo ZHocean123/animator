@@ -4,7 +4,7 @@ import * as path from 'path';
 import {getResourcesPath} from './getResourcesPath';
 
 const getTemplateDesignFilesPath = () => {
-  if (process.env.NODE_ENV === 'production') {
+  if(process.env.NODE_ENV === 'production') {
     return path.join(getResourcesPath(), 'template-design-files');
   }
 
@@ -15,10 +15,10 @@ export const copyAssetFile = (projectPath: string, assetPath: string, bin: strin
   try {
     const assetDir = path.join(projectPath, assetPath);
 
-    if (!fse.existsSync(assetDir)) {
+    if(!fse.existsSync(assetDir)) {
       fse.copySync(bin, assetDir);
     }
-  } catch (error) {
+  } catch(error) {
     return error;
   }
 };

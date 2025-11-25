@@ -508,9 +508,8 @@ class AssetItem extends React.Component {
     if (this.props.asset.isDesignsHostFolder()) {
       if (isMac()) {
         return 'Your design assets — import from Sketch, Figma, or Illustrator';
-      } 
+      }
         return 'Your design assets — import from Figma or Illustrator';
-      
 
     }
 

@@ -1,10 +1,25 @@
 /* tslint:disable:no-shadowed-variable only-arrow-functions ter-prefer-arrow-callback max-line-length no-parameter-reassignment */
-import {Repository, Reference, Signature, Reset, Remote, Clone, Commit, Merge, RevWalk, Checkout, Tag, Diff} from 'nodegit';
+// Temporary compatibility layer - nodegit functions will be replaced with simple-git
+import {GitWrapper, Repository_open, Repository_init, Clone_clone} from './GitSimple';
 import * as path from 'path';
 import * as fs from 'haiku-fs-extra';
 import * as async from 'async';
 import {Environment} from 'haiku-common/lib/environments';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+
+// Temporary mock for nodegit compatibility during migration
+const nodegit = {
+  Repository: {
+    open: Repository_open,
+    init: Repository_init,
+  },
+  Clone: {
+    clone: Clone_clone,
+  },
+  // Add more nodegit mock functions as needed
+  Diff: { OPTION: { SHOW_UNTRACKED_CONTENT: 1, RECURSE_UNTRACKED_DIRS: 2 } },
+  Reset: { TYPE: { HARD: 1 } },
+};
 
 const DEFAULT_COMMITTER_EMAIL = 'contact@haiku.ai';
 const DEFAULT_COMMITTER_NAME = 'Haiku Plumbing';
@@ -13,7 +28,7 @@ const DEFAULT_GIT_USERNAME = 'Haiku-Plumbing';
 const DEFAULT_GIT_EMAIL = 'contact@haiku.ai';
 const DEFAULT_GIT_COMMIT_MESSAGE = 'Edited project with Haiku Desktop';
 
-function globalExceptionCatcher (exception) {
+function globalExceptionCatcher(exception) {
   logger.error(exception);
   throw exception;
 }
@@ -30,7 +45,7 @@ export const globalCloneOpts = {
   fetchOpts: globalFetchOpts,
 };
 
-if (global.process.env.NODE_ENV !== Environment.Production) {
+if(global.process.env.NODE_ENV !== Environment.Production) {
   // Don't enforce strict SSL in dev mode.
   globalCallbacks.certificateCheck = () => 1;
 }
@@ -39,8 +54,8 @@ if (global.process.env.NODE_ENV !== Environment.Production) {
 const LOCKED_INDEXES = {};
 const INDEX_LOCK_INTERVAL = 0;
 
-function _gimmeIndex (pwd, cb) {
-  if (!LOCKED_INDEXES[pwd]) {
+function _gimmeIndex(pwd, cb) {
+  if(!LOCKED_INDEXES[pwd]) {
     LOCKED_INDEXES[pwd] = true;
     // eslint-disable-next-line
     return cb(() => {
@@ -52,37 +67,37 @@ function _gimmeIndex (pwd, cb) {
   }, INDEX_LOCK_INTERVAL);
 }
 
-export function open (pwd, cb) {
+export function open(pwd, cb) {
   return forceOpen(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return cb(null, repository || undefined);
   });
 }
 
-export function forceOpen (pwd, cb) {
+export function forceOpen(pwd, cb) {
   return Repository.open(pwd).then((repository) => {
     return cb(null, repository);
   }, cb).catch(globalExceptionCatcher);
 }
 
-export function init (pwd, cb) {
+export function init(pwd, cb) {
   const isBare = 0; // false! We want to create the .git folder _in_ the folder
   return Repository.init(pwd, isBare).then((repository) => {
     return cb(null, repository);
   }, cb);
 }
 
-export function status (pwd, opts, cb) {
+export function status(pwd, opts, cb) {
   return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
+    function done(err, out) {
       freeIndex();
       return cb(err, out);
     }
 
     return open(pwd, (err, repository) => {
-      if (err) {
+      if(err) {
         return done(err);
       }
       // return repository.refreshIndex().then((index) => {}, done) // Might need this?
@@ -91,7 +106,7 @@ export function status (pwd, opts, cb) {
       };
       return Diff.indexToWorkdir(repository, null, diffOptions).then((diff) => {
         const changes = {};
-        for (let i = 0; i < diff.numDeltas(); i++) {
+        for(let i = 0; i < diff.numDeltas(); i++) {
           const delta = diff.getDelta(i);
           const oldPath = delta.oldFile().path();
           const newPath = delta.newFile().path();
@@ -121,13 +136,13 @@ export function status (pwd, opts, cb) {
 //   })
 // }
 
-export function hardReset (pwd, targetRef, cb) {
+export function hardReset(pwd, targetRef, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return referenceNameToId(pwd, targetRef, (err, id) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       return repository.getCommit(id.toString()).then((commit) => {
@@ -139,24 +154,24 @@ export function hardReset (pwd, targetRef, cb) {
   });
 }
 
-export function removeUntrackedFiles (pwd, cb) {
+export function removeUntrackedFiles(pwd, cb) {
   return status(pwd, (err, statusesDict) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
-    if (Object.keys(statusesDict).length < 1) {
+    if(Object.keys(statusesDict).length < 1) {
       return cb();
     }
     return async.each(statusesDict, (statusItem, next) => {
       const abspath = path.join(pwd, statusItem.path);
       return fs.remove(abspath, (err) => {
-        if (err) {
+        if(err) {
           return next(err);
         }
         return next();
       });
     }, (err) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       return cb();
@@ -164,21 +179,21 @@ export function removeUntrackedFiles (pwd, cb) {
   });
 }
 
-export function upsertRemoteDirectly (pwd, name, url, cb) {
+export function upsertRemoteDirectly(pwd, name, url, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
-    return Remote.list(repository).then(function (remotes) {
+    return Remote.list(repository).then(function(remotes) {
       const found = findExistingRemote(remotes, name);
-      if (found) {
+      if(found) {
         // In case we have a project folder that was initially set up with Code Commit, ensure the remote URLs are
         // correct.
         return Remote.lookup(repository, name).then((remote) => {
-          if (remote.url() !== url) {
+          if(remote.url() !== url) {
             Remote.setUrl(repository, name, url);
           }
-          if (remote.pushurl() !== url) {
+          if(remote.pushurl() !== url) {
             Remote.setPushurl(repository, name, url);
           }
           return cb(null, found);
@@ -191,36 +206,36 @@ export function upsertRemoteDirectly (pwd, name, url, cb) {
   });
 }
 
-function findExistingRemote (remotes, name) {
-  if (remotes.length < 1) {
+function findExistingRemote(remotes, name) {
+  if(remotes.length < 1) {
     return null;
   }
   let found = null;
   remotes.forEach((remote) => {
-    if (typeof remote === 'string' && remote === name) {
+    if(typeof remote === 'string' && remote === name) {
       found = remote;
-    } else if (remote.name && remote.name() === name) {
+    } else if(remote.name && remote.name() === name) {
       found = remote;
     }
   });
   return found;
 }
 
-export function maybeInit (pwd, cb) {
+export function maybeInit(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err && /could not find repository/i.test(err.message)) {
+    if(err && /could not find repository/i.test(err.message)) {
       return init(pwd, cb);
     }
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return cb(null, repository, true); // <~ true == wasAlreadyInitialized
   });
 }
 
-export function getIndexLockAgnostic (pwd, cb) {
+export function getIndexLockAgnostic(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.index().then((index) => {
@@ -229,7 +244,7 @@ export function getIndexLockAgnostic (pwd, cb) {
   });
 }
 
-export function writeIndexLockAgnostic (index, pwd, cb) {
+export function writeIndexLockAgnostic(index, pwd, cb) {
   return index.write().then(() => {
     return index.writeTree().then((oid) => {
       return cb(null, oid);
@@ -238,30 +253,30 @@ export function writeIndexLockAgnostic (index, pwd, cb) {
 }
 
 // HACK: This assumes we are only running one thread against this repo
-export function destroyIndexLockSync (pwd) {
+export function destroyIndexLockSync(pwd) {
   const lockPath = path.join(pwd, '.git', 'index.lock');
   delete LOCKED_INDEXES[pwd]; // Remove the in-memory mutex too in case one is hanging around
   try {
-    if (fs.existsSync(lockPath)) {
+    if(fs.existsSync(lockPath)) {
       fs.removeSync(lockPath);
     }
-  } catch (exception) {
+  } catch(exception) {
     logger.info('[git]', exception);
   }
 }
 
-export function addPathsToIndex (pwd, relpaths = [], cb) {
-  if (relpaths.length < 1) {
+export function addPathsToIndex(pwd, relpaths = [], cb) {
+  if(relpaths.length < 1) {
     return cb(new Error('Empty paths list given'));
   }
   return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
+    function done(err, out) {
       freeIndex();
       return cb(err, out);
     }
 
     return getIndexLockAgnostic(pwd, (err, index) => {
-      if (err) {
+      if(err) {
         return done(err);
       }
       return async.eachSeries(relpaths, (relpath, next) => {
@@ -269,7 +284,7 @@ export function addPathsToIndex (pwd, relpaths = [], cb) {
           return next();
         }, next);
       }, (err) => {
-        if (err) {
+        if(err) {
           return done(err);
         }
         return writeIndexLockAgnostic(index, pwd, done);
@@ -278,15 +293,15 @@ export function addPathsToIndex (pwd, relpaths = [], cb) {
   });
 }
 
-export function addAllPathsToIndex (pwd, cb) {
+export function addAllPathsToIndex(pwd, cb) {
   return _gimmeIndex(pwd, (freeIndex) => {
-    function done (err, out) {
+    function done(err, out) {
       freeIndex();
       return cb(err, out);
     }
 
     return getIndexLockAgnostic(pwd, (err, index) => {
-      if (err) {
+      if(err) {
         return done(err);
       }
       return index.addAll('.').then(() => {
@@ -296,9 +311,9 @@ export function addAllPathsToIndex (pwd, cb) {
   });
 }
 
-export function referenceNameToId (pwd, name, cb) {
+export function referenceNameToId(pwd, name, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Reference.nameToId(repository, name).then((id) => {
@@ -310,30 +325,30 @@ export function referenceNameToId (pwd, name, cb) {
   });
 }
 
-export function createSignature (name, email) {
+export function createSignature(name, email) {
   const time = ~~(Date.now() / 1000);
   const tzoffset = 0; // minutes
   return Signature.create(name, email, time, tzoffset);
 }
 
-export function buildCommit (pwd, username, email, message, oid, updateRef, parentRef, cb) {
+export function buildCommit(pwd, username, email, message, oid, updateRef, parentRef, cb) {
   const author = createSignature(username || DEFAULT_COMMITTER_NAME, email || DEFAULT_COMMITTER_EMAIL);
   const committer = createSignature(DEFAULT_COMMITTER_NAME, DEFAULT_COMMITTER_EMAIL);
 
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
     // If no parent, assume first commit - the first commit should always use this pathway
-    if (!parentRef) {
+    if(!parentRef) {
       return repository.createCommit(updateRef, author, committer, message, oid, []).then((commitId) => {
         return cb(null, commitId);
       }, cb);
     }
 
     return referenceNameToId(pwd, parentRef, (err, parentId) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       return repository.createCommit(updateRef, author, committer, message, oid, [parentId]).then((commitId) => {
@@ -343,9 +358,9 @@ export function buildCommit (pwd, username, email, message, oid, updateRef, pare
   });
 }
 
-function getRepositoryHeadReference (pwd, cb) {
+function getRepositoryHeadReference(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.head().then((reference) => {
@@ -354,12 +369,12 @@ function getRepositoryHeadReference (pwd, cb) {
   });
 }
 
-export function getCurrentBranchName (pwd, cb) {
+export function getCurrentBranchName(pwd, cb) {
   return getRepositoryHeadReference(pwd, (err, reference, type, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
-    if (!reference.isBranch()) {
+    if(!reference.isBranch()) {
       return cb(new Error('Head reference is not a branch'));
     }
     const full = reference.name();
@@ -368,21 +383,21 @@ export function getCurrentBranchName (pwd, cb) {
   });
 }
 
-export function cloneRepoDirectly (gitRemoteUrl, abspath, cb) {
+export function cloneRepoDirectly(gitRemoteUrl, abspath, cb) {
   return Clone.clone(gitRemoteUrl, abspath, globalCloneOpts).then((repository) => {
     return cb(null, repository, abspath);
   }, cb);
 }
 
-export function pushToRemoteDirectly (pwd, remoteName, fullBranchName, doForcePush, cb) {
+export function pushToRemoteDirectly(pwd, remoteName, fullBranchName, doForcePush, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     const refSpecs = [`${(doForcePush) ? FORCE_PUSH_REFSPEC_PREFIX : ''}${fullBranchName}:${fullBranchName}`];
     return Remote.list(repository).then((remotes) => {
       const found = findExistingRemote(remotes, remoteName);
-      if (!found) {
+      if(!found) {
         return cb(new Error(`Remote with name '${remoteName}' not found`));
       }
       return Remote.lookup(repository, remoteName).then((remote) => {
@@ -398,9 +413,9 @@ export function pushToRemoteDirectly (pwd, remoteName, fullBranchName, doForcePu
   });
 }
 
-export function lookupRemote (pwd, remoteName, cb) {
+export function lookupRemote(pwd, remoteName, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Remote.lookup(repository, remoteName).then((remote) => {
@@ -409,9 +424,9 @@ export function lookupRemote (pwd, remoteName, cb) {
   });
 }
 
-export function listRemotes (pwd, cb) {
+export function listRemotes(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Remote.list(repository).then((remotes) => {
@@ -420,9 +435,9 @@ export function listRemotes (pwd, cb) {
   });
 }
 
-export function doesRemoteExist (pwd, remoteName, cb) {
+export function doesRemoteExist(pwd, remoteName, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Remote.list(repository).then((remotes) => {
@@ -432,9 +447,9 @@ export function doesRemoteExist (pwd, remoteName, cb) {
   });
 }
 
-export function getCurrentCommit (pwd, cb) {
+export function getCurrentCommit(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.getHeadCommit().then((commit) => {
@@ -443,9 +458,9 @@ export function getCurrentCommit (pwd, cb) {
   });
 }
 
-export function hardResetFromSHA (pwd, sha, cb) {
+export function hardResetFromSHA(pwd, sha, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Commit.lookup(repository, sha).then((commit) => {
@@ -456,9 +471,9 @@ export function hardResetFromSHA (pwd, sha, cb) {
   });
 }
 
-export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
+export function fetchFromRemoteDirectly(pwd, remoteName, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Remote.lookup(repository, remoteName).then((remote) => {
@@ -471,11 +486,11 @@ export function fetchFromRemoteDirectly (pwd, remoteName, cb) {
   });
 }
 
-export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
+export function mergeBranches(pwd, branchNameOurs, branchNameTheirs, fileFavorName, doFindRenames, cb) {
   logger.info('[git] merging branches from', branchNameTheirs, 'to', branchNameOurs);
 
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
@@ -494,17 +509,17 @@ export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorN
 
     return repository.mergeBranches(branchNameOurs, branchNameTheirs, null, Merge.PREFERENCE.NONE, mergeOptions).then((result) => {
       // If result is an oid string, the commit was successful. (The oid is a commit id.)
-      if (result && typeof result === 'string') {
+      if(result && typeof result === 'string') {
         return cb(null, false, result.toString(), result);
       }
 
       // If result is an oid object, the commit was successful. (The oid is a commit id.)
-      if (result && result.constructor && result.constructor.name === 'Oid') {
+      if(result && result.constructor && result.constructor.name === 'Oid') {
         return cb(null, false, result.toString(), result);
       }
 
       // If the result is an index, there were conflicts. (The index is the index of conflicts.)
-      if (result && result.constructor && result.constructor.name === 'Index') {
+      if(result && result.constructor && result.constructor.name === 'Index') {
         logger.info('[git] merge conflict index (as index)', result);
         return cb(null, true, result, result);
       }
@@ -512,7 +527,7 @@ export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorN
       return cb(new Error('Branch merge got unexpected result'), result, result);
     }, (err) => {
       // Upon a merge conflict, nodegit might return the index _as_ an error object. :-(  (The index is the index of conflicts.)
-      if (err && err.constructor && err.constructor.name === 'Index') {
+      if(err && err.constructor && err.constructor.name === 'Index') {
         logger.info('[git] merge conflict index (as error)', err);
         return cb(null, true, err, err);
       }
@@ -522,18 +537,18 @@ export function mergeBranches (pwd, branchNameOurs, branchNameTheirs, fileFavorN
   });
 }
 
-export function cleanAllChanges (pwd, cb) {
+export function cleanAllChanges(pwd, cb) {
   return hardReset(pwd, 'HEAD', (err, repository, commit) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return removeUntrackedFiles(pwd, cb);
   });
 }
 
-export function rebaseBranches (folder, upstreamName, branchName, ontoStr, cb) {
+export function rebaseBranches(folder, upstreamName, branchName, ontoStr, cb) {
   return open(folder, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.rebaseBranches(branchName, upstreamName, ontoStr, null).then((oid) => {
@@ -542,9 +557,9 @@ export function rebaseBranches (folder, upstreamName, branchName, ontoStr, cb) {
   });
 }
 
-export function getCommitHistoryForFile (folder, filePath, maxEntries = 1000, cb) {
+export function getCommitHistoryForFile(folder, filePath, maxEntries = 1000, cb) {
   return open(folder, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.getHeadCommit().then((headCommit) => {
@@ -558,9 +573,9 @@ export function getCommitHistoryForFile (folder, filePath, maxEntries = 1000, cb
   });
 }
 
-export function getMasterCommitHistory (folder, cb) {
+export function getMasterCommitHistory(folder, cb) {
   return open(folder, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.getMasterCommit().then((firstCommit) => {
@@ -573,23 +588,23 @@ export function getMasterCommitHistory (folder, cb) {
   });
 }
 
-export function mergeBranchesWithoutBase (folder, toName, fromName, signature, mergePreference, fileFavorName, cb) {
+export function mergeBranchesWithoutBase(folder, toName, fromName, signature, mergePreference, fileFavorName, cb) {
   logger.info('[git] merging branches (without base) from', fromName, 'to', toName);
 
   return _gimmeIndex(folder, (freeIndex) => {
-    function done (err, out) {
+    function done(err, out) {
       freeIndex();
       return cb(err, out);
     }
 
     return open(folder, (err, repository) => {
-      if (err) {
+      if(err) {
         return done(err);
       }
-      if (!mergePreference) {
+      if(!mergePreference) {
         mergePreference = Merge.PREFERENCE.NONE;
       }
-      if (!signature) {
+      if(!signature) {
         signature = signature || repository.defaultSignature();
       }
 
@@ -615,13 +630,13 @@ export function mergeBranchesWithoutBase (folder, toName, fromName, signature, m
                   logger.info('[git] merge using options:', mergeOptions);
 
                   return Merge.commits(repository, toCommitOid, fromCommitOid, mergeOptions).then((index) => {
-                    if (index.hasConflicts()) {
+                    if(index.hasConflicts()) {
                       return done(null, true, index);
                     }
                     return index.writeTreeTo(repository).then((oid) => {
                       const commitMessage = `Merged ${fromBranch.shorthand()} into ${toBranch.shorthand()}`;
                       return repository.createCommit(toBranch.name(), signature, signature, commitMessage, oid, [toCommitOid, fromCommitOid]).then((mergeCommit) => {
-                        if (!updateHead) {
+                        if(!updateHead) {
                           return done(null, false, mergeCommit.toString());
                         }
                         // Make sure head is updated so index isn't messed up
@@ -649,9 +664,9 @@ export function mergeBranchesWithoutBase (folder, toName, fromName, signature, m
   });
 }
 
-export function createTag (pwd, tagNameProbablySemver, commitId, tagMessage, cb) {
+export function createTag(pwd, tagNameProbablySemver, commitId, tagMessage, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return repository.createTag(commitId.toString(), tagNameProbablySemver, tagMessage).then((tagOid) => {
@@ -660,14 +675,14 @@ export function createTag (pwd, tagNameProbablySemver, commitId, tagMessage, cb)
   });
 }
 
-export function pushTagToRemoteDirectly (pwd, remoteName, tagName, cb) {
+export function pushTagToRemoteDirectly(pwd, remoteName, tagName, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Remote.list(repository).then((remotes) => {
       const found = findExistingRemote(remotes, remoteName);
-      if (!found) {
+      if(!found) {
         return cb(new Error(`Remote with name '${remoteName}' not found`));
       }
       return Remote.lookup(repository, remoteName).then((remote) => {
@@ -684,15 +699,15 @@ export function pushTagToRemoteDirectly (pwd, remoteName, tagName, cb) {
   });
 }
 
-export function listTags (pwd, cb) {
+export function listTags(pwd, cb) {
   return open(pwd, (err, repository) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Tag.list(repository).then((tags) => {
       return repository.getReferences(Reference.TYPE.OID).then((refs) => {
-        refs.forEach(function (ref) {
-          if (ref.isTag()) {
+        refs.forEach(function(ref) {
+          if(ref.isTag()) {
             tags.push(ref.name());
           }
         });
@@ -710,24 +725,24 @@ export function listTags (pwd, cb) {
  * @param saveOptions {Object}
  * @param pathsToAdd {String|Array} - '.' to add all paths, [path, path] to add individual paths
  */
-export function commitProject (folder, username, useHeadAsParent, saveOptions = {}, pathsToAdd, cb) {
+export function commitProject(folder, username, useHeadAsParent, saveOptions = {}, pathsToAdd, cb) {
   // Depending on the 'pathsToAdd' given, either add specific paths to the index, or commit them all
   // Supported paths:
   // '.'
   // 'foo/bar'
   // ['foo/bar', 'baz/qux', ...]
-  function pathAdder (done) {
-    if (pathsToAdd === '.') {
+  function pathAdder(done) {
+    if(pathsToAdd === '.') {
       logger.info(`[git] adding all paths to index`);
       return addAllPathsToIndex(folder, done);
     }
 
-    if (typeof pathsToAdd === 'string') {
+    if(typeof pathsToAdd === 'string') {
       logger.info(`[git] adding path ${pathsToAdd} to index`);
       return addPathsToIndex(folder, [pathsToAdd], done);
     }
 
-    if (Array.isArray(pathsToAdd) && pathsToAdd.length > 0) {
+    if(Array.isArray(pathsToAdd) && pathsToAdd.length > 0) {
       logger.info(`[git] adding paths ${pathsToAdd.join(', ')} to index`);
       return addPathsToIndex(folder, pathsToAdd, done);
     }
@@ -737,11 +752,11 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
   }
 
   return pathAdder((err, oid) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
-    if (!oid) {
+    if(!oid) {
       logger.info(`[git] blank oid so cannot commit`);
       // return cb()
     }
@@ -756,7 +771,7 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
     logger.info(`[git] committing ${JSON.stringify(message)} in ${folder} [${updateRef} onto ${parentRef}] ...`);
 
     return buildCommit(folder, user, email, message, oid, updateRef, parentRef, (err, commitId) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
 
@@ -767,16 +782,16 @@ export function commitProject (folder, username, useHeadAsParent, saveOptions = 
   });
 }
 
-export function fetchProjectDirectly (folder, projectName, repositoryUrl, cb) {
+export function fetchProjectDirectly(folder, projectName, repositoryUrl, cb) {
   return upsertRemoteDirectly(folder, projectName, repositoryUrl, (err) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
     logger.info(`[git] fetching ${projectName} from remote ${repositoryUrl}`);
 
     return fetchFromRemoteDirectly(folder, projectName, (err) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       logger.info('[git] fetch done');
@@ -785,9 +800,9 @@ export function fetchProjectDirectly (folder, projectName, repositoryUrl, cb) {
   });
 }
 
-export function pushProjectDirectly (folder, projectName, cb) {
+export function pushProjectDirectly(folder, projectName, cb) {
   return getCurrentBranchName(folder, (err, partialBranchName, fullBranchName) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
 
@@ -796,7 +811,7 @@ export function pushProjectDirectly (folder, projectName, cb) {
     const doForcePush = true;
 
     return pushToRemoteDirectly(folder, projectName, fullBranchName, doForcePush, (err) => {
-      if (err) {
+      if(err) {
         return cb(err);
       }
       logger.info('[git] push done');
@@ -805,33 +820,33 @@ export function pushProjectDirectly (folder, projectName, cb) {
   });
 }
 
-export function combineHistories (folder, projectName, ourBranchName, theirBranchName, saveOptions = {}, cb) {
+export function combineHistories(folder, projectName, ourBranchName, theirBranchName, saveOptions = {}, cb) {
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
 
   return mergeBranchesWithoutBase(folder, ourBranchName, theirBranchName, null, null, fileFavorName, (err, didHaveConflicts, shaOrIndex) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return cb(null, didHaveConflicts, shaOrIndex);
   });
 }
 
-export function getReference (folder, name, cb) {
+export function getReference(folder, name, cb) {
   return open(folder, (err, repo) => {
-    if (err) {
+    if(err) {
       return cb(err);
     }
     return Reference.nameToId(repo, name).then((oid) => {
       return Reference.lookup(repo, oid).then((ref) => {
         return cb(null, ref);
       }, (err) => {
-        if (err) {
+        if(err) {
           logger.info('[git]', err);
         }
         return cb(null, false);
       });
     }, (err) => {
-      if (err) {
+      if(err) {
         logger.info('[git]', err);
       }
       return cb(null, false);
@@ -839,11 +854,11 @@ export function getReference (folder, name, cb) {
   });
 }
 
-export function getRemoteBranchRefName (projectName, partialBranchName) {
+export function getRemoteBranchRefName(projectName, partialBranchName) {
   return `remotes/${projectName}/${partialBranchName}`;
 }
 
-export function mergeProject (folder, projectName, partialBranchName, saveOptions = {}, cb) {
+export function mergeProject(folder, projectName, partialBranchName, saveOptions = {}, cb) {
   const remoteBranchRefName = getRemoteBranchRefName(projectName, partialBranchName);
   const fileFavorName = saveStrategyToFileFavorName(saveOptions && saveOptions.saveStrategy);
 
@@ -857,11 +872,11 @@ export function mergeProject (folder, projectName, partialBranchName, saveOption
   logger.info(`[git] merging '${remoteBranchRefName}' into '${partialBranchName}' via '${fileFavorName}' (${folder})`);
 
   return mergeBranches(folder, partialBranchName, remoteBranchRefName, fileFavorName, doFindRenames, (err, didHaveConflicts, shaOrIndex) => {
-    if (!err) {
+    if(!err) {
       return cb(null, didHaveConflicts, shaOrIndex);
     }
 
-    if (err.message && err.message.match(/No merge base found/i)) {
+    if(err.message && err.message.match(/No merge base found/i)) {
       logger.info(`[git] histories lack common ancestor; trying to combine`);
 
       // This should return the same payload as Git.mergeBranches returns
@@ -872,65 +887,65 @@ export function mergeProject (folder, projectName, partialBranchName, saveOption
   });
 }
 
-export function logStatuses (statuses) {
-  for (const key in statuses) {
+export function logStatuses(statuses) {
+  for(const key in statuses) {
     const status = statuses[key];
     logger.info('[git] git status:' + status.path + ' ' + statusToText(status));
   }
 }
 
-export function statusToText (status) {
+export function statusToText(status) {
   const words = [];
-  if (status.num === Diff.DELTA.UNMODIFIED) {
+  if(status.num === Diff.DELTA.UNMODIFIED) {
     words.push('UNMODIFIED');
   }
-  if (status.num === Diff.DELTA.ADDED) {
+  if(status.num === Diff.DELTA.ADDED) {
     words.push('ADDED');
   }
-  if (status.num === Diff.DELTA.DELETED) {
+  if(status.num === Diff.DELTA.DELETED) {
     words.push('DELETED');
   }
-  if (status.num === Diff.DELTA.MODIFIED) {
+  if(status.num === Diff.DELTA.MODIFIED) {
     words.push('MODIFIED');
   }
-  if (status.num === Diff.DELTA.RENAMED) {
+  if(status.num === Diff.DELTA.RENAMED) {
     words.push('RENAMED');
   }
-  if (status.num === Diff.DELTA.COPIED) {
+  if(status.num === Diff.DELTA.COPIED) {
     words.push('COPIED');
   }
-  if (status.num === Diff.DELTA.IGNORED) {
+  if(status.num === Diff.DELTA.IGNORED) {
     words.push('IGNORED');
   }
-  if (status.num === Diff.DELTA.UNTRACKED) {
+  if(status.num === Diff.DELTA.UNTRACKED) {
     words.push('UNTRACKED');
   }
-  if (status.num === Diff.DELTA.TYPECHANGE) {
+  if(status.num === Diff.DELTA.TYPECHANGE) {
     words.push('TYPECHANGE');
   }
-  if (status.num === Diff.DELTA.UNREADABLE) {
+  if(status.num === Diff.DELTA.UNREADABLE) {
     words.push('UNREADABLE');
   }
-  if (status.num === Diff.DELTA.CONFLICTED) {
+  if(status.num === Diff.DELTA.CONFLICTED) {
     words.push('CONFLICTED');
   }
   return words.join(' ');
 }
 
-export function saveStrategyToFileFavorName (saveStrategy) {
-  if (!saveStrategy) {
+export function saveStrategyToFileFavorName(saveStrategy) {
+  if(!saveStrategy) {
     return 'normal';
   }
-  if (!saveStrategy.strategy) {
+  if(!saveStrategy.strategy) {
     return 'normal';
   }
-  if (saveStrategy.strategy === 'recursive') {
+  if(saveStrategy.strategy === 'recursive') {
     return 'normal';
   }
-  if (saveStrategy.strategy === 'ours') {
+  if(saveStrategy.strategy === 'ours') {
     return 'ours';
   }
-  if (saveStrategy.strategy === 'theirs') {
+  if(saveStrategy.strategy === 'theirs') {
     return 'theirs';
   }
   return 'normal';

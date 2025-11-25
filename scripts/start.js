@@ -267,7 +267,7 @@ function go () {
     log.hat('first building everything');
     // Use tsdown build script if available, fallback to compile-all
     const buildCommand = fse.existsSync(path.join(ROOT, 'scripts/build-with-tsdown.js')) ?
-      'yarn run build-all' : 'yarn run compile-all';
+      'pnpm run build-all' : 'pnpm run compile-all';
     cp.execSync(buildCommand, {cwd: ROOT, stdio: 'inherit'});
   }
 

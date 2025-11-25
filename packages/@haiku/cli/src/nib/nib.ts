@@ -42,7 +42,7 @@ export class Nib {
   private options: NibOptions;
   private rootContext: IContext;
 
-  constructor (options: NibOptions) {
+  constructor(options: NibOptions) {
     const args = argv._;
     const flags = _.clone(argv);
     delete flags._;
@@ -60,14 +60,14 @@ export class Nib {
    * Kicks off CLI process.  Separated from constructor for ease of testing.
    * @param mockContext optional override IContext, useful for testing
    */
-  run (mockContext?: IContext) {
-    if (mockContext) {
+  run(mockContext?: IContext) {
+    if(mockContext) {
       this.rootContext = mockContext;
     }
     this.interpretContext(this.rootContext);
   }
 
-  private usage (head: string[], command: Command | Command[], context: IContext) {
+  private usage(head: string[], command: Command | Command[], context: IContext) {
     const topLevel = head.length === 0;
     const vals: {
       name?: string,
@@ -80,7 +80,7 @@ export class Nib {
     };
 
     // Different values for 'top-level' help vs. nested help.
-    if (topLevel) {
+    if(topLevel) {
       vals.name = this.options.name + ((this.options.description && ' - ' + this.options.description) || '');
       vals.usage = this.options.name + ' [global options] command [command options] [arguments...]';
       vals.commands = '';
@@ -108,7 +108,7 @@ export class Nib {
             ret += ' <' + arg.name + '>';
           },
         );
-        if (nonRequiredArgs && nonRequiredArgs.length) {
+        if(nonRequiredArgs && nonRequiredArgs.length) {
           ret += ' [';
           _.forEach(
             nonRequiredArgs,
@@ -118,7 +118,7 @@ export class Nib {
           );
           ret += ' ]';
         }
-        if (castCmd.flags && castCmd.flags.length) {
+        if(castCmd.flags && castCmd.flags.length) {
           ret += ' [ ';
           _.forEach(
             castCmd.flags,
@@ -162,14 +162,14 @@ ${vals.options || ''}`);
    * Runs the CLI process by executing the provided context
    * @param context IContext specifying flags, args, etc.
    */
-  private interpretContext (context: IContext) {
+  private interpretContext(context: IContext) {
     const head = [];
     const arg = context.argList.shift();
-    if (arg) {
+    if(arg) {
       head.push(arg);
     }
 
-    if (this.options.preAction) {
+    if(this.options.preAction) {
       this.options.preAction(context);
     }
 
@@ -180,14 +180,14 @@ ${vals.options || ''}`);
         return cmd.name === arg;
       },
     );
-    if (matchedCommand) {
+    if(matchedCommand) {
       this.evaluateCommand(
         matchedCommand,
         context,
         head,
       );
     } else {
-      if (context.flags.help !== undefined) {
+      if(context.flags.help !== undefined) {
         this.usage(
           head,
           commands,
@@ -212,10 +212,10 @@ ${vals.options || ''}`);
    * @param context
    * @param head
    */
-  private evaluateCommand (command: Command, context: IContext, head: string[]) {
+  private evaluateCommand(command: Command, context: IContext, head: string[]) {
     let evaluatingSubcommand = false;
     const args = context.argList;
-    if (command.subcommands && args.length) {
+    if(command.subcommands && args.length) {
       const arg = args[0];
       const matchedCommand = _.find<Command>(
         command.subcommands,
@@ -223,7 +223,7 @@ ${vals.options || ''}`);
           return cmd.name === arg || cmd.aliases.indexOf(arg) > -1;
         },
       );
-      if (matchedCommand) {
+      if(matchedCommand) {
         evaluatingSubcommand = true;
         head.push(context.argList.shift());
         this.evaluateCommand(
@@ -233,14 +233,14 @@ ${vals.options || ''}`);
         );
       }
     }
-    if (!evaluatingSubcommand) {
+    if(!evaluatingSubcommand) {
       const requiredArgs = _.filter(
         command.args,
         (arg) => {
           return arg.required;
         },
       );
-      if (requiredArgs.length > args.length) {
+      if(requiredArgs.length > args.length) {
         // TODO: check `required`.
         context.writeLine('Too few arguments.');
         this.usage(
@@ -249,7 +249,7 @@ ${vals.options || ''}`);
           context,
         );
         context.exit(1);
-      } else if (command.args) {
+      } else if(command.args) {
         _.forEach(
           command.args,
           (arg: ArgumentDefinition, i) => {
@@ -261,13 +261,13 @@ ${vals.options || ''}`);
       _.forEach(
         command.flags,
         (flagDef: FlagDefinition) => {
-          if (!context.flags[flagDef.name]) {
+          if(!context.flags[flagDef.name]) {
             context.flags[flagDef.name] = flagDef.defaultValue;
           }
         },
       );
 
-      if (context.flags.help !== undefined) {
+      if(context.flags.help !== undefined) {
         this.usage(
           head,
           command,
@@ -296,20 +296,20 @@ export interface IContext {
 export class Context implements IContext {
   args = {};
 
-  constructor (
+  constructor(
     readonly argList: string[],
     readonly flags: {[key: string]: string},
     readonly logger?: {log: (...args: any[]) => void},
     readonly mockMode = false,
   ) {}
 
-  exit (code: number) {
-    if (!this.mockMode) {
+  exit(code: number) {
+    if(!this.mockMode) {
       process.exit(code);
     }
   }
 
-  writeLine (string: string) {
+  writeLine(string: string) {
     this.logger.log(string);
   }
 }

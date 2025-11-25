@@ -1,10 +1,6 @@
 {
   "name": "haiku-mono",
   "private": true,
-  "workspaces": [
-    "packages/@haiku/*",
-    "packages/haiku-*"
-  ],
   "version": "5.1.2",
   "description": "Haiku Animator",
   "main": "index.js",
@@ -16,9 +12,9 @@
     "changelog": "node ./scripts/changelog.js",
     "demos": "node ./scripts/demos.js",
     "doctor": "node ./scripts/doctor.js",
-    "go": "yarn start default",
+    "go": "pnpm start default",
     "lint": "eslint scripts/**.js scripts/**.ts",
-    "fix": "yarn lint --fix",
+    "fix": "pnpm lint --fix",
     "push": "node ./scripts/push.js",
     "semver": "node ./scripts/semver.js",
     "setup": "node ./scripts/setup.js",
@@ -35,27 +31,29 @@
     "dev-all": "node ./scripts/dev-with-tsdown.js",
     "verify-compatibility": "node ./scripts/verify-build-compatibility.js"
   },
-  "resolutions": {
-    "@haiku/core": "^5.0.0",
-    "**/@types/react": "^18.2.0",
-    "@types/node": "^22.0.0"
+  "pnpm": {
+    "overrides": {
+      "@haiku/core": "^5.0.0",
+      "@types/react": "^18.2.0",
+      "@types/node": "^22.0.0"
+    }
   },
   "dependencies": {
-    "@haiku/cli": "5.1.2",
-    "@haiku/core": "5.1.2",
+    "@haiku/cli": "workspace:*",
+    "@haiku/core": "workspace:*",
     "@haiku/player": "^3.0.4",
-    "@haiku/sdk-client": "5.1.2",
-    "@haiku/sdk-inkstone": "5.1.2",
-    "haiku-common": "5.1.2",
-    "haiku-creator": "5.1.2",
-    "haiku-formats": "5.1.2",
-    "haiku-fs-extra": "5.1.2",
-    "haiku-glass": "5.1.2",
-    "haiku-plumbing": "5.1.2",
-    "haiku-sdk-creator": "5.1.2",
-    "haiku-serialization": "5.1.2",
-    "haiku-timeline": "5.1.2",
-    "haiku-ui-common": "5.1.2"
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
+    "haiku-common": "workspace:*",
+    "haiku-creator": "workspace:*",
+    "haiku-formats": "workspace:*",
+    "haiku-fs-extra": "workspace:*",
+    "haiku-glass": "workspace:*",
+    "haiku-plumbing": "workspace:*",
+    "haiku-sdk-creator": "workspace:*",
+    "haiku-serialization": "workspace:*",
+    "haiku-timeline": "workspace:*",
+    "haiku-ui-common": "workspace:*"
   },
   "devDependencies": {
     "async": "^3.2.4",
@@ -68,8 +66,8 @@
     "dotenv": "^16.3.1",
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1",
-    "electron-notarize": "^2.0.1",
-    "electron-rebuild": "^3.2.13",
+    "electron-notarize": "^1.2.2",
+    "electron-rebuild": "^3.2.9",
     "fs-extra": "^11.1.1",
     "git-branch": "^2.0.1",
     "glob": "^10.3.10",
@@ -82,7 +80,7 @@
     "node-gyp": "^10.0.1",
     "semver": "^7.5.4",
     "semver-sort": "^0.0.4",
-    "slack": "^11.12.0",
+    "slack": "^11.0.2",
     "spectron": "^19.0.0",
     "tap-spec": "^5.0.0",
     "tape": "^5.7.2",

@@ -22,13 +22,13 @@ export const dumpBase64Images = (
   force = false,
 ) => {
   // Nothing to do if we're not looking at an SVG file.
-  if (!doDumpBase64Images || path.extname(relpath) !== '.svg') {
+  if(!doDumpBase64Images || path.extname(relpath) !== '.svg') {
     return;
   }
 
   // If not forcing and a marker file indicates this SVG has already been processed, we can leave this be.
   const processedPath = `${abspath}.processed`;
-  if (!force && existsSync(processedPath)) {
+  if(!force && existsSync(processedPath)) {
     return;
   }
 
@@ -56,7 +56,7 @@ export const dumpBase64Images = (
   do {
     // Look for data:image/, as in xlink:href="data:image/…".
     imageStart = buffer.indexOf(IMAGE_DATA_INDICATOR, cursor);
-    if (imageStart === -1) {
+    if(imageStart === -1) {
       break;
     }
 
@@ -64,7 +64,7 @@ export const dumpBase64Images = (
     const encodingMarkStart = buffer.indexOf(BASE64_DELIMITER, imageStart + 1);
     // Ensure we support both single and double quotes by pulling out the first character *before* the data URL.
     const quotation = buffer.toString(UNICODE_ENCODING, imageStart - 1, imageStart);
-    if (encodingMarkStart === -1 || (quotation !== '\'' && quotation !== '"')) {
+    if(encodingMarkStart === -1 || (quotation !== '\'' && quotation !== '"')) {
       break;
     }
 
@@ -84,17 +84,17 @@ export const dumpBase64Images = (
     );
     xml += 'web+haikuroot://' + path.posix.normalize(outputFilename);
     xml += quotation;
-  } while (cursor !== -1);
-  if (changed) {
+  } while(cursor !== -1);
+  if(changed) {
     // We should never encounter the negation of this condition, but just in case….
-    if (cursor !== -1) {
+    if(cursor !== -1) {
       xml += buffer.toString(UNICODE_ENCODING, cursor);
     }
-    if (watcher) {
+    if(watcher) {
       watcher.blacklistKey(LOCKS.FileReadWrite(abspath));
     }
     writeFileSync(abspath, xml);
-    if (watcher) {
+    if(watcher) {
       watcher.unblacklistKey(LOCKS.FileReadWrite(abspath));
     }
   }

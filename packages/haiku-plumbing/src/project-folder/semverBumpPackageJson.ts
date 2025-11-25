@@ -4,7 +4,7 @@ import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as path from 'path';
 import * as semver from 'semver';
 
-export function semverBumpPackageJson (projectPath: string, maybeVersionToBumpTo: string, cb: any) {
+export function semverBumpPackageJson(projectPath: string, maybeVersionToBumpTo: string, cb: any) {
   try {
     const jsonPath = path.join(projectPath, 'package.json');
 
@@ -17,7 +17,7 @@ export function semverBumpPackageJson (projectPath: string, maybeVersionToBumpTo
     // Allow a version to be specified explicitly. This turns out to be useful in plumbing/master
     // where we might find a previously-used tag and need to explicitly bump from it, instead of using
     // what might be defined in the package.json.
-    if (maybeVersionToBumpTo) {
+    if(maybeVersionToBumpTo) {
       logger.info(`[project folder] semver bump: got explicit version ${maybeVersionToBumpTo}`);
       newVersion = maybeVersionToBumpTo;
     } else {
@@ -33,7 +33,7 @@ export function semverBumpPackageJson (projectPath: string, maybeVersionToBumpTo
     fse.writeFileSync(jsonPath, newJson);
 
     return cb(null, newVersion);
-  } catch (exception) {
+  } catch(exception) {
     return cb(exception);
   }
 }

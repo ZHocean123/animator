@@ -2,7 +2,7 @@ import {Application} from 'spectron';
 import * as tape from 'tape';
 import IntegrationTest, {INTEGRATION_TESTS_ENABLED} from '../IntegrationTest';
 
-if (!INTEGRATION_TESTS_ENABLED) {
+if(!INTEGRATION_TESTS_ENABLED) {
   global.process.exit(0);
 }
 

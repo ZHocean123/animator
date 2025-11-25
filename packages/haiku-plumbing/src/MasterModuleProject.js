@@ -5,12 +5,12 @@ const QUEUE_INTERVAL = 64;
 const LAST_WRITE_MARGIN_OF_ERROR_MILLISECONDS = 500;
 
 export default class MasterModuleProject extends EventEmitter {
-  constructor (folder) {
+  constructor(folder) {
     super();
 
     this.folder = folder; // String
 
-    if (!this.folder) {
+    if(!this.folder) {
       throw new Error('[master-module] MasterModuleProject cannot launch without a folder defined');
     }
 
@@ -25,28 +25,28 @@ export default class MasterModuleProject extends EventEmitter {
     // handle sequential reloads a bit more gracefully.
     this._modificationsInterval = setInterval(() => {
       const moduleMods = this._modificationsQueue.splice(0);
-      if (moduleMods.length < 1) {
+      if(moduleMods.length < 1) {
         return void (0);
       }
       this.maybeSendComponentReloadRequest(moduleMods[moduleMods.length - 1]);
     }, QUEUE_INTERVAL);
   }
 
-  restart () {
+  restart() {
     // Remove anything pending we have in the queues to avoid any mistaken
     // reloads that may still be pending in case the window was refreshed.
     this._modificationsQueue.splice(0);
     this._pendingReloads.splice(0);
   }
 
-  maybeSendComponentReloadRequest (file) {
+  maybeSendComponentReloadRequest(file) {
     const lastWrite = (parseInt(file.dtLastWriteStart, 10) || 0) + LAST_WRITE_MARGIN_OF_ERROR_MILLISECONDS;
 
     // If the last time we read from the file system came after the last time we wrote to it,
     // that's a decent indication that the last known change occurred directly on the file system.
     const lastRead = file.dtLastReadStart;
 
-    if (lastRead < lastWrite) {
+    if(lastRead < lastWrite) {
       return void (0);
     }
 
@@ -60,16 +60,16 @@ export default class MasterModuleProject extends EventEmitter {
     this.emit('component:reload', file);
   }
 
-  handleReloadComplete (message) {
+  handleReloadComplete(message) {
     // We remove a pending reload only if the glass told us it completed a reload,
     // since that is the place it counts (and we only want to do this once per reload).
-    if (message.from === 'glass') {
+    if(message.from === 'glass') {
       this._pendingReloads.shift();
       logger.info('[master module] module replacment finished');
     }
   }
 
-  handleModuleChange (file) {
+  handleModuleChange(file) {
     this._modificationsQueue.push(file);
   }
 }

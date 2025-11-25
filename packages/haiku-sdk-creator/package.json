@@ -8,10 +8,10 @@
   },
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
-    "lint-report": "yarn lint -f checkstyle -o checkstyle-result.xml",
-    "fix": "yarn lint --fix",
+    "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
+    "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
-    "test": "yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
+    "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
     "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsdown",
     "build": "tsdown",
@@ -24,10 +24,10 @@
   ],
   "license": "UNLICENSED",
   "dependencies": {
-    "@haiku/sdk-client": "5.1.2",
-    "@haiku/sdk-inkstone": "5.1.2",
-    "haiku-common": "5.1.2",
-    "haiku-serialization": "5.1.2",
+    "@haiku/sdk-client": "workspace:*",
+    "@haiku/sdk-inkstone": "workspace:*",
+    "haiku-common": "workspace:*",
+    "haiku-serialization": "workspace:*",
     "qs": "^6.11.2",
     "ws": "^8.16.0"
   },
@@ -46,6 +46,6 @@
     "@typescript-eslint/parser": "^6.18.1",
     "typescript": "^5.3.3",
     "leaked-handles": "^5.2.0",
-    "haiku-testing": "5.1.2"
+    "haiku-testing": "workspace:*"
   }
 }

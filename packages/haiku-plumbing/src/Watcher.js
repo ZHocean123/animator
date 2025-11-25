@@ -12,7 +12,7 @@ const IGNORE_PATTERN = new RegExp(
 );
 
 export default class Watcher extends EventEmitter {
-  constructor () {
+  constructor() {
     super();
     this.boundBlacklister = (key) => {
       this.blacklistKey(key);
@@ -24,28 +24,28 @@ export default class Watcher extends EventEmitter {
     this.blacklistTimeouts = {};
   }
 
-  blacklistKey (fileReadWriteLockKey) {
+  blacklistKey(fileReadWriteLockKey) {
     this.blacklist[fileReadWriteLockKey] = true;
-    if (!this.blacklistTimeouts[fileReadWriteLockKey]) {
+    if(!this.blacklistTimeouts[fileReadWriteLockKey]) {
       this.blacklistTimeouts[fileReadWriteLockKey] = [];
     }
     // Cancel any pending unblacklists for this key.
-    while (this.blacklistTimeouts[fileReadWriteLockKey].length > 0) {
+    while(this.blacklistTimeouts[fileReadWriteLockKey].length > 0) {
       clearTimeout(this.blacklistTimeouts[fileReadWriteLockKey].shift());
     }
   }
 
-  unblacklistKey (fileReadWriteLockKey) {
+  unblacklistKey(fileReadWriteLockKey) {
     this.blacklistTimeouts[fileReadWriteLockKey].push(setTimeout(() => {
       this.blacklist[fileReadWriteLockKey] = false;
     }, WRITE_WAIT_DELAY));
   }
 
-  isBlacklisted (abspath) {
+  isBlacklisted(abspath) {
     return this.blacklist[LOCKS.FileReadWrite(abspath)];
   }
 
-  watch (entry) {
+  watch(entry) {
     this.watcher = chokidar.watch(entry, {
       // - Avoid any git blobs (there are tons of these)
       // - Avoid any sketch tempfiles (these are ephemeral and not needed)
@@ -63,7 +63,7 @@ export default class Watcher extends EventEmitter {
     this.watcher.on('ready', this.emit.bind(this, 'ready'));
     this.watcher.on('add', this.emit.bind(this, 'add'));
     this.watcher.on('change', (path, maybeStats) => {
-      if (this.isBlacklisted(path)) {
+      if(this.isBlacklisted(path)) {
         // In case a subscriber really wants to know about changes despite the blacklist
         this.emit('change-blacklisted', path, maybeStats);
       } else {
@@ -74,7 +74,7 @@ export default class Watcher extends EventEmitter {
     this.watcher.on('error', this.emit.bind(this, 'error'));
   }
 
-  stop () {
+  stop() {
     this.watcher.close();
     emitter.removeListener('lock-on', this.boundBlacklister);
     emitter.removeListener('lock-off', this.boundUnblacklister);

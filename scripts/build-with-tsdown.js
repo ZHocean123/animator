@@ -37,7 +37,7 @@ async.each(allPackages, (pack, done) => {
       log.warn(`Detected ${modifiedFiles.length} changed file(s) in ${pack.shortname}. Building with tsdown....`);
       
       // Try to use tsdown build command first, fallback to compile if not available
-      const buildCommand = pack.pkg.scripts.build ? 'yarn run build' : 'yarn run compile';
+      const buildCommand = pack.pkg.scripts.build ? 'pnpm run build' : 'pnpm run compile';
       
       try {
         log.log(`Running command: ${buildCommand} in ${pack.abspath}`);
