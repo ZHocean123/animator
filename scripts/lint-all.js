@@ -22,15 +22,10 @@ for (const pack of allPackages) {
   if (lintProcess.command) {
     lintProcess.output = '';
     
-    // Check if package has ESLint configuration, otherwise use root config
-    const hasEslintConfig = fs.existsSync(path.join(pack.abspath, '.eslintrc.js')) ||
-                          fs.existsSync(path.join(pack.abspath, '.eslintrc.json')) ||
-                          (pack.pkg.eslintConfig !== undefined);
-    
+    // Use root ESLint configuration for all packages
     const env = {...global.process.env, FORCE_COLOR: true};
-    if (!hasEslintConfig) {
-      env.ESLINT_USE_FLAT_CONFIG = 'false';
-    }
+    // Point ESLint to root config since we use unified configuration
+    env.ESLINT_USE_FLAT_CONFIG = 'false';
     
     lintProcess.cp = cp.spawn(lintProcess.command, {cwd: pack.abspath, shell: true, env});
 

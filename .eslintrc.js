@@ -4,9 +4,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    project: './tsconfig.json',
   },
-  plugins: ['@typescript-eslint'],
   extends: [
     'eslint:recommended',
     '@typescript-eslint/recommended',
@@ -18,12 +16,21 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-non-null-assertion': 'warn',
-    
-    // General rules
-    'no-console': 'off',
-    'no-debugger': 'error',
-    'prefer-const': 'error',
+    '@typescript-eslint/no-var-requires': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'warn',
+    '@typescript-eslint/no-empty-function': 'warn',
+
+    // Legacy tslint equivalents
+    'prefer-for-of': 'warn',
     'no-var': 'error',
+    'prefer-const': 'error',
+    'no-console': 'off', // Allow console for debugging
+
+    // General rules
+    'no-debugger': 'error',
+    'eqeqeq': 'off', // Allow == for simplicity
+    'curly': 'error',
+    'brace-style': ['error', '1tbs'],
   },
   env: {
     node: true,
@@ -37,6 +44,14 @@ module.exports = {
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
+      },
+    },
+    {
+      files: ['*.test.ts', '*.spec.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'no-console': 'off',
       },
     },
   ],
@@ -46,5 +61,7 @@ module.exports = {
     'lib/',
     'coverage/',
     '*.d.ts',
+    'build/',
+    'vendor/',
   ],
 };

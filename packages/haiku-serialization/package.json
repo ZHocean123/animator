@@ -9,8 +9,8 @@
     "test:utils": "cross-env NODE_ENV=test tape \"test/utils/**/*.test.js\" | tap-spec || true",
     "test:bll": "cross-env NODE_ENV=test tape \"test/bll/**/*.test.js\" | tap-spec || true",
     "test-report": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" > test-result.tap",
-    "lint": "tslint 'src/**/*.js' -t stylish",
-    "lint-report": "pnpm lint -t checkstyle -o checkstyle-result.xml",
+    "lint": "eslint --ext .ts",
+    "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "pnpm lint --fix"
   },
   "author": "Matthew Trost <matthew@haiku.ai>",
@@ -81,8 +81,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-    "tslint": "^5.11.0",
-    "tslint-config-haiku": "^1.0.16",
-    "typescript": "^3.0.3"
+        "typescript": "^3.0.3"
   }
 }
