@@ -1,6 +1,4 @@
-const {default: Plumbing} = require('haiku-plumbing/lib/Plumbing');
-const {default: envInfo} = require('haiku-plumbing/lib/envInfo');
-const {default: haikuInfo} = require('haiku-plumbing/lib/haikuInfo');
+const {Plumbing, envInfo, haikuInfo} = require('haiku-plumbing');
 const path = require('path');
 const logger = require('haiku-serialization/src/utils/LoggerInstance');
 

@@ -8,7 +8,20 @@
     "Taylor Poe <taylor@haiku.ai>"
   ],
   "license": "UNLICENSED",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    },
+    "./*": {
+      "import": "./lib/*.mjs",
+      "require": "./lib/*.cjs",
+      "types": "./lib/*.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint --ext .ts",
     "lint-report": "pnpm lint -t checkstyle -o checkstyle-result.xml",

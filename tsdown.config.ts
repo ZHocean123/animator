@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, '..');
 
 export default defineConfig({
+  skipNodeModulesBundle: true,
+
   // 入口配置
   entry: {
     // 根级别不需要构建，只是配置基础
