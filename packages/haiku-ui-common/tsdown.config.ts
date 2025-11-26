@@ -5,7 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default {
-  entry: ['src/**/*.ts', 'src/**/*.tsx'],
+  entry: ['src/index.ts'],
   outDir: 'lib',
   format: ['cjs', 'esm'],
   clean: true,

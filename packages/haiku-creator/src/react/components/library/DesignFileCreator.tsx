@@ -4,12 +4,12 @@ import {isMac} from 'haiku-common';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 // @ts-ignore
 import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import {
   FigmaIconSVG,
   IllustratorIconSVG,
   SketchIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common';
 import * as path from 'path';
 import * as React from 'react';
 // @ts-ignore

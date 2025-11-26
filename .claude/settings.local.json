@@ -6,7 +6,10 @@
       "Bash(pnpm:*)",
       "Bash(find:*)",
       "Bash(findstr:*)",
-      "Bash(pnpm run compile)"
+      "Bash(pnpm run compile)",
+      "Bash(powershell:*)",
+      "Bash(yarn build:*)",
+      "Bash(npx tsdown:*)"
     ],
     "deny": [],
     "ask": []

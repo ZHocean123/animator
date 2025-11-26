@@ -2,9 +2,17 @@
   "name": "haiku-ui-common",
   "version": "5.1.2",
   "description": "Common UI components for Haiku projects.",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    },
+    "./*": {
+      "import": "./lib/*.mjs",
+      "require": "./lib/*.cjs",
+      "types": "./lib/*.d.ts"
+    }
   },
   "scripts": {
     "lint": "eslint --ext .ts",
@@ -38,7 +46,7 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-        "typescript": "^3.0.3",
+    "typescript": "^3.0.3",
     "leaked-handles": "^5.2.0",
     "haiku-testing": "workspace:*"
   },

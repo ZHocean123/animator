@@ -5,7 +5,7 @@ import {TOUR_STYLES} from '../../styles/tourShared';
 import * as steps from './Steps';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import {TourUtils} from 'haiku-common';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import {TOUR_CHANNEL} from 'haiku-sdk-creator';
 
 class Tour extends React.Component {
   constructor () {

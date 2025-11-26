@@ -1,5 +1,5 @@
 import {HaikuBytecode} from '@haiku/core/lib/api';
-import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator/lib/exporter';
+import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator';
 
 import {BodymovinExporter} from './bodymovin/bodymovinExporter';
 import {GifExporter} from './gif/gifExporter';

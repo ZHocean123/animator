@@ -2,7 +2,7 @@ const numeral = require('numeral');
 const TimelineProperty = require('haiku-serialization/src/bll/TimelineProperty');
 const BaseModel = require('./BaseModel');
 const MathUtils = require('./MathUtils');
-const formatSeconds = require('haiku-ui-common/lib/helpers/formatSeconds').default;
+const {formatSeconds} = require('haiku-ui-common').default;
 const logger = require('haiku-serialization/src/utils/LoggerInstance');
 
 const DURATION_DRAG_INCREASE = 20; // Increase by this much per each duration increase

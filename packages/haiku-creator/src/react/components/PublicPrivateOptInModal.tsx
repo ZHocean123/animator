@@ -1,9 +1,9 @@
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal';
+import {Palette} from 'haiku-ui-common';
+import {ExternalLink} from 'haiku-ui-common';
+import {ExternalLinkIconSVG} from 'haiku-ui-common';
+import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common';
 import * as React from 'react';
 import {BTN_STYLES} from '../styles/btnShared';
 

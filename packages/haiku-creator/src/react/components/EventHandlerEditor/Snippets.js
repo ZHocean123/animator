@@ -1,8 +1,8 @@
 /* global monaco */
 import * as React from 'react';
 import {shell} from 'electron';
-import Palette from 'haiku-ui-common/lib/Palette';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
+import {Palette } from 'haiku-ui-common';
+import {PopoverMenu} from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {

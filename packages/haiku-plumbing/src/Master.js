@@ -26,8 +26,8 @@ import MasterModuleProject from './MasterModuleProject';
 import getExporterListener from './envoy/getExporterListener';
 import Raven from './Raven';
 import saveExport from './publish-hooks/saveExport';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
-import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
+import {createProjectFiles} from '@haiku/sdk-client';
+import {ExporterFormat, EXPORTER_CHANNEL} from 'haiku-sdk-creator';
 import {createCDNBundles} from './project-folder/createCDNBundle';
 import {
   getHaikuCoreVersion,

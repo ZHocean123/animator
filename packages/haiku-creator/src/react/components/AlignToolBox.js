@@ -2,9 +2,9 @@ import * as Radium from 'radium';
 import * as React from 'react';
 import * as Popover from 'react-popover';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import {BTN_STYLES} from '../styles/btnShared';
-import {AlignDistributeIcons} from 'haiku-ui-common/lib/react/OtherIcons';
+import {AlignDistributeIcons} from 'haiku-ui-common';
 
 const STYLES = {
   alignDistributeBtn: {

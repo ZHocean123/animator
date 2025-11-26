@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import * as Color from 'color';
 
 export const BTN_STYLES = {

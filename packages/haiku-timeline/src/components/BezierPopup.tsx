@@ -1,4 +1,4 @@
-import BezierEditor from 'haiku-ui-common/lib/react/Bezier/BezierEditor';
+import {BezierEditor} from 'haiku-ui-common';
 import * as React from 'react';
 // @ts-ignore
 import * as Draggable from 'react-draggable';

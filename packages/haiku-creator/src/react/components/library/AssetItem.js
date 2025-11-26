@@ -6,9 +6,9 @@ import * as Asset from 'haiku-serialization/src/bll/Asset';
 import {Figma} from 'haiku-serialization/src/bll/Figma';
 import {Draggable} from 'react-drag-and-drop';
 import AssetList from './AssetList';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
+import {PopoverMenu} from 'haiku-ui-common';
 import {isMac, isWindows} from 'haiku-common';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette} from 'haiku-ui-common';
 import * as Popover from 'react-popover';
 import {
   CollapseChevronRightSVG,
@@ -21,12 +21,11 @@ import {
   ComponentIconSVG,
   SyncIconSVG,
   FontIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common';
 
-import ControlImage from 'haiku-ui-common/lib/react/icons/ControlImage';
-import ControlText from 'haiku-ui-common/lib/react/icons/ControlText';
-import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML';
-// import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput'
+import {ControlImage} from 'haiku-ui-common';
+import {ControlText} from 'haiku-ui-common';
+import {ControlHTML} from 'haiku-ui-common';
 import FigmaPopover from './importers/FigmaPopover';
 import {experimentIsEnabled, Experiment} from 'haiku-common';
 

@@ -1,6 +1,6 @@
 /* global monaco */
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import SyntaxEvaluator from './SyntaxEvaluator';
 import Snippets from './Snippets';
 

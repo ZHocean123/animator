@@ -1,10 +1,10 @@
 // @ts-ignore
 import * as HaikuError from '@haiku/tina-haikuerror/react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import {
   ModalHeader,
   ModalWrapper,
-} from 'haiku-ui-common/lib/react/Modal';
+} from 'haiku-ui-common';
 import * as React from 'react';
 import {BTN_STYLES} from '../../styles/btnShared';
 import {DASH_STYLES} from '../../styles/dashShared';

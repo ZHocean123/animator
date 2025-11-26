@@ -8,7 +8,7 @@ const logger = require('./../utils/LoggerInstance');
 const getSvgOptimizer = require('./../svg/getSvgOptimizer');
 const Lock = require('./Lock');
 const Cache = require('./Cache');
-const {bootstrapSceneFilesSync} = require('@haiku/sdk-client/lib/bootstrapSceneFilesSync');
+const {bootstrapSceneFilesSync} = require('@haiku/sdk-client');
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.

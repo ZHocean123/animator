@@ -4,26 +4,26 @@ import * as ReactDOM from 'react-dom';
 import {ipcRenderer, shell} from 'electron';
 import {ErrorCode} from '@haiku/sdk-inkstone';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
-import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {EXPORTER_CHANNEL} from 'haiku-sdk-creator';
+import {Palette } from 'haiku-ui-common';
 import * as Color from 'color';
 import {BTN_STYLES} from '../styles/btnShared';
 import Toggle from './Toggle';
 import {PublicPrivateOptInModal} from './PublicPrivateOptInModal';
-import {ShareModal} from 'haiku-ui-common/lib/react/ShareModal';
+import {ShareModal} from 'haiku-ui-common';
 import {
   EyeIconSVG, ComponentIconSVG, ConnectionIconSVG, DangerIconSVG, EventsBoltIcon, PublishSnapshotSVG, WarningIconSVG,
-} from 'haiku-ui-common/lib/react/OtherIcons';
+} from 'haiku-ui-common';
 import * as Element from 'haiku-serialization/src/bll/Element';
 import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {ProjectError} from 'haiku-sdk-creator/lib/bll/Project';
+import {ProjectError} from 'haiku-sdk-creator';
 import {
   isPreviewMode,
   isEditMode,
   isCodeEditorMode,
   showGlassOnStage,
-} from 'haiku-ui-common/lib/interactionModes';
+} from 'haiku-ui-common';
 import AlignToolBox from './AlignToolBox';
 
 const mixpanel = require('haiku-serialization/src/utils/Mixpanel');

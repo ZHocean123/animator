@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {createSketchDialogFile} from 'haiku-serialization/src/utils/HaikuHomeDir';
 import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
+import {ExternalLink} from 'haiku-ui-common';
 
 const DOWNLOAD_URL = 'https://download.sketchapp.com/sketch.zip';
 

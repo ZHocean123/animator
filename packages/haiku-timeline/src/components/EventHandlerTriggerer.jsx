@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
+import {Bolt} from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {

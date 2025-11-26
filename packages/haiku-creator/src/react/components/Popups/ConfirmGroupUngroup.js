@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {ModalWrapper, ModalFooter, ModalHeader} from 'haiku-ui-common/lib/react/Modal';
+import {ModalWrapper, ModalFooter, ModalHeader} from 'haiku-ui-common';
 import {BTN_STYLES} from '../../styles/btnShared';
-import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';
+import {UserSettings} from 'haiku-sdk-creator';
 
 const STYLES = {
   modalWrapper: {

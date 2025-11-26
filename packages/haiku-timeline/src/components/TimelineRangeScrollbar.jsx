@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import {DraggableCore} from 'react-draggable';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette} from 'haiku-ui-common';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
 import TimelineRangeScrollbarPlayheadIndicator from './TimelineRangeScrollbarPlayheadIndicator';
 

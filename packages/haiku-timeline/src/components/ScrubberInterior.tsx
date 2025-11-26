@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import * as React from 'react';
 import zIndex from './styles/zIndex';
 

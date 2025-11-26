@@ -7,14 +7,14 @@ import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import StageTitleBar from './StageTitleBar';
 import ComponentMenu from './ComponentMenu/ComponentMenu';
 import CodeEditor from './CodeEditor/CodeEditor';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import {TOUR_CHANNEL} from 'haiku-sdk-creator';
 import {
   isPreviewMode,
   isEditMode,
   showGlassOnStage,
-} from 'haiku-ui-common/lib/interactionModes';
+} from 'haiku-ui-common';
 
 const STAGE_BOX_STYLE = {
   overflow: 'hidden',

@@ -28,19 +28,19 @@ import ProxyHelpScreen from './components/ProxyHelpScreen';
 import ProxySettingsScreen from './components/ProxySettingsScreen';
 import ChangelogModal from './components/ChangelogModal';
 import NewProjectModal from './components/NewProjectModal';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {EXPORTER_CHANNEL, ExporterFormat} from 'haiku-sdk-creator/lib/exporter';
-import {USER_CHANNEL, UserSettings} from 'haiku-sdk-creator/lib/bll/User'; // eslint-disable-line no-unused-vars
-import {PROJECT_CHANNEL} from 'haiku-sdk-creator/lib/bll/Project';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
-import {SERVICES_CHANNEL} from 'haiku-sdk-creator/lib/services';
-import {ERROR_CHANNEL, isUserlandCulprit} from 'haiku-sdk-creator/lib/bll/Error';
+import {EnvoyClient} from 'haiku-sdk-creator';
+import {EXPORTER_CHANNEL, ExporterFormat} from 'haiku-sdk-creator';
+import {USER_CHANNEL, UserSettings} from 'haiku-sdk-creator'; // eslint-disable-line no-unused-vars
+import {PROJECT_CHANNEL} from 'haiku-sdk-creator';
+import {TOUR_CHANNEL} from 'haiku-sdk-creator';
+import {SERVICES_CHANNEL} from 'haiku-sdk-creator';
+import {ERROR_CHANNEL, isUserlandCulprit} from 'haiku-sdk-creator';
 import {
   InteractionMode,
   isPreviewMode,
-} from 'haiku-ui-common/lib/interactionModes';
-import Palette from 'haiku-ui-common/lib/Palette';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
+} from 'haiku-ui-common';
+import {Palette} from 'haiku-ui-common';
+import {AnimatorSVG} from 'haiku-ui-common';
 import ActivityMonitor from '../utils/activityMonitor.js';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
 import {buildProxyUrl, describeProxyFromUrl} from 'haiku-common';
@@ -49,7 +49,7 @@ import * as opn from 'opn';
 import ConfirmGroupUngroupPopup from './components/Popups/ConfirmGroupUngroup';
 import {FailWhale} from './components/Popups/FailWhale';
 import {getAccountUrl, shouldEmitErrors} from 'haiku-common';
-import Globals from 'haiku-ui-common/lib/Globals';
+import {Globals} from 'haiku-ui-common';
 import {inkstone} from '@haiku/sdk-inkstone';
 import {isMac, isWindows} from 'haiku-common';
 

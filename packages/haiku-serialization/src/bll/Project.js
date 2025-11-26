@@ -5,9 +5,7 @@ const WebSocket = require('ws');
 const lodash = require('lodash');
 const jss = require('json-stable-stringify');
 const {Experiment, experimentIsEnabled} = require('haiku-common');
-const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default;
-const EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default;
-const {GLASS_CHANNEL} = require('haiku-sdk-creator/lib/glass');
+const {EnvoyClient, EnvoyLogger, GLASS_CHANNEL} = require('haiku-sdk-creator');
 const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
 const {InteractionMode} = require('@haiku/core/lib/helpers/interactionModes');
@@ -23,7 +21,7 @@ const {
   getProjectNameLowerCase,
   readPackageJson,
   getAngularSelectorName,
-} = require('@haiku/sdk-client/lib/ProjectDefinitions');
+} = require('@haiku/sdk-client');
 
 const SILENT_METHODS = {
   hoverElement: true,

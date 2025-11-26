@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import * as Radium from 'radium';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 
 // monaco is on global namespace as it uses vscode loader scheme
 // import * as monaco from 'monaco-editor';

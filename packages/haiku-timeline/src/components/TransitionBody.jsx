@@ -2,13 +2,13 @@ import * as React from 'react';
 import * as Color from 'color';
 import * as lodash from 'lodash';
 import zIndex from './styles/zIndex';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette} from 'haiku-ui-common';
 import TimelineDraggable from './TimelineDraggable';
-import KeyframeSVG from 'haiku-ui-common/lib/react/icons/KeyframeSVG';
-import Globals from 'haiku-ui-common/lib/Globals';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
+import {KeyframeSVG} from 'haiku-ui-common';
+import {Globals} from 'haiku-ui-common';
+import {PopoverMenu} from 'haiku-ui-common';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
-import BezierDerivativeGraph from 'haiku-ui-common/lib/react/Bezier/BezierDerivativeGraph';
+import {BezierDerivativeGraph} from 'haiku-ui-common';
 
 import {
   EaseInElasticSVG,
@@ -17,7 +17,7 @@ import {
   EaseInBounceSVG,
   EaseInOutBounceSVG,
   EaseOutBounceSVG,
-} from 'haiku-ui-common/lib/react/icons/CurveSVGS';
+} from 'haiku-ui-common';
 
 const CURVESVGS = {
   EaseInElasticSVG,

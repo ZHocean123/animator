@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 
 export default ({color = Palette.SUNSTONE}) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">

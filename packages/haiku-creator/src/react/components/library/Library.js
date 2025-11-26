@@ -3,11 +3,11 @@ import * as React from 'react';
 import * as lodash from 'lodash';
 import * as Radium from 'radium';
 import {shell, ipcRenderer} from 'electron';
-import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';
+import {UserSettings} from 'haiku-sdk-creator';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import {isMac} from 'haiku-common';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {LoadingTopBar} from 'haiku-ui-common/lib/react/LoadingTopBar';
+import {Palette } from 'haiku-ui-common';
+import {LoadingTopBar} from 'haiku-ui-common';
 import {didAskedForSketch} from 'haiku-serialization/src/utils/HaikuHomeDir';
 import * as Asset from 'haiku-serialization/src/bll/Asset';
 import {Figma, MAX_ITEMS_TO_IMPORT} from 'haiku-serialization/src/bll/Figma';
@@ -18,7 +18,7 @@ import FileImporter from './FileImporter';
 import DesignFileCreator from './DesignFileCreator';
 import {statSync} from 'fs';
 import {basename, extname} from 'path';
-import {ExternalLink} from 'haiku-ui-common/lib/react/ExternalLink';
+import {ExternalLink} from 'haiku-ui-common';
 
 const openWithDefaultProgram = (asset) => {
   shell.openItem(asset.getAbspath());

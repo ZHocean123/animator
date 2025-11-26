@@ -1,7 +1,6 @@
 import * as React from 'react';
-import * as path from 'path';
-import Palette from 'haiku-ui-common/lib/Palette';
-import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
+import {Palette} from 'haiku-ui-common';
+import {AnimatorSVG} from 'haiku-ui-common';
 
 const STYLES = {
   fullScreenCenterWrap: {

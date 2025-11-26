@@ -2,8 +2,8 @@ import * as Color from 'color';
 import * as Radium from 'radium';
 import * as React from 'react';
 
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ModalHeader, ModalWrapper} from 'haiku-ui-common/lib/react/Modal';
+import {Palette } from 'haiku-ui-common';
+import {ModalHeader, ModalWrapper} from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {

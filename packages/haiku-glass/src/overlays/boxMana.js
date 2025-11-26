@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 
 /**
  * Provides mana for the lines connecting control points rendered on stage.

@@ -8,6 +8,11 @@ import * as mkdirp from 'mkdirp';
 import * as os from 'os';
 import * as path from 'path';
 
+// Export ProjectDefinitions functionality
+export * from './ProjectDefinitions';
+export { bootstrapSceneFilesSync } from './bootstrapSceneFilesSync';
+export { createProjectFiles } from './createProjectFiles';
+
 const HAIKU_HOME = path.join(os.homedir(), '.haiku');
 
 export const FILE_PATHS = {

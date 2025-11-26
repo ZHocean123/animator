@@ -1,8 +1,8 @@
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import Globals from 'haiku-ui-common/lib/Globals';
-import humanizePropertyName from 'haiku-ui-common/lib/helpers/humanizePropertyName';
-import Palette from 'haiku-ui-common/lib/Palette';
-import DownCarrotSVG from 'haiku-ui-common/lib/react/icons/DownCarrotSVG';
+import {PopoverMenu} from 'haiku-ui-common';
+import {Globals} from 'haiku-ui-common';
+import {humanizePropertyName} from 'haiku-ui-common';
+import {Palette} from 'haiku-ui-common';
+import {DownCarrotSVG} from 'haiku-ui-common';
 import * as React from 'react';
 import PropertyInputField from './PropertyInputField';
 import PropertyRowHeading from './PropertyRowHeading';

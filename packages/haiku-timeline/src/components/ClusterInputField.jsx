@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 
 export default class ClusterInputField extends React.Component {
   render () {

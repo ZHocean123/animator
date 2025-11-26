@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as lodash from 'lodash';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import Palette from 'haiku-ui-common/lib/Palette';
-import formatSeconds from 'haiku-ui-common/lib/helpers/formatSeconds';
+import {Palette } from 'haiku-ui-common';
+import formatSeconds from 'haiku-ui-common';
 import * as Timeline from 'haiku-serialization/src/bll/Timeline';
 
 export default class GaugeTimeReadout extends React.Component {

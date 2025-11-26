@@ -902,7 +902,7 @@ Crash in Master, Plumbing, Glass, Timeline, or Creator sends Sentry notice
 An error response in Plumbing method sends Sentry notice
 An error will upload the user's project and metadata to S3 (Carbonite)
 If rapid errors occur, Carbonite snapshots only occur once per 10 minutes
-Carbonite errors can originate successfully from from Master, Plumbing, Glass, Timeline, or Creator
+Carbonite errors can originate successfully from Master, Plumbing, Glass, Timeline, or Creator
 Errors result in a toast being displayed to the user on any screen
 Carbonite report still gets sent even if the app crashes quickly
 

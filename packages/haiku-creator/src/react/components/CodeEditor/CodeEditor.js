@@ -7,7 +7,7 @@ import * as Radium from 'radium';
 import MonacoEditor from './MonacoEditor';
 import SaveContentsPopup from './SaveContentsPopup';
 import BytecodeErrorPopup from './BytecodeErrorPopup';
-import {isCodeEditorMode} from 'haiku-ui-common/lib/interactionModes';
+import {isCodeEditorMode} from 'haiku-ui-common';
 
 const EDITOR_FONT = 'Fira Mono';
 

@@ -1,5 +1,5 @@
 import * as dedent from 'dedent';
-import {HaikuShareUrls} from 'haiku-sdk-creator/lib/bll/Project';
+import {HaikuShareUrls} from 'haiku-sdk-creator';
 import * as React from 'react';
 import {CodeBox} from '../../CodeBox';
 import {PUBLISH_SHARED} from './PublishStyles';

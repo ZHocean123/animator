@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as qs from 'qs';
 import * as assign from 'lodash.assign';
 import * as path from 'path';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
+import {Palette } from 'haiku-ui-common';
+import {TOUR_CHANNEL} from 'haiku-sdk-creator';
 
 export default class Timeline extends React.Component {
   constructor (props) {

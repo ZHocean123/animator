@@ -9,16 +9,16 @@ import * as net from 'net';
 import * as qs from 'qs';
 import * as WebSocket from 'ws';
 import {EventEmitter} from 'events';
-import EnvoyServer from 'haiku-sdk-creator/lib/envoy/EnvoyServer';
-import EnvoyLogger from 'haiku-sdk-creator/lib/envoy/EnvoyLogger';
-import {EXPORTER_CHANNEL, ExporterHandler} from 'haiku-sdk-creator/lib/exporter';
-import {ERROR_CHANNEL, ErrorHandler} from 'haiku-sdk-creator/lib/bll/Error';
-import {USER_CHANNEL, UserHandler} from 'haiku-sdk-creator/lib/bll/User';
-import {PROJECT_CHANNEL, ProjectHandler} from 'haiku-sdk-creator/lib/bll/Project';
-import {GLASS_CHANNEL, GlassHandler} from 'haiku-sdk-creator/lib/glass';
-import {TIMELINE_CHANNEL, TimelineHandler} from 'haiku-sdk-creator/lib/timeline';
-import {TOUR_CHANNEL, TourHandler} from 'haiku-sdk-creator/lib/tour';
-import {SERVICES_CHANNEL, ServicesHandler} from 'haiku-sdk-creator/lib/services';
+import EnvoyServer from 'haiku-sdk-creator';
+import EnvoyLogger from 'haiku-sdk-creator';
+import {EXPORTER_CHANNEL, ExporterHandler} from 'haiku-sdk-creator';
+import {ERROR_CHANNEL, ErrorHandler} from 'haiku-sdk-creator';
+import {USER_CHANNEL, UserHandler} from 'haiku-sdk-creator';
+import {PROJECT_CHANNEL, ProjectHandler} from 'haiku-sdk-creator';
+import {GLASS_CHANNEL, GlassHandler} from 'haiku-sdk-creator';
+import {TIMELINE_CHANNEL, TimelineHandler} from 'haiku-sdk-creator';
+import {TOUR_CHANNEL, TourHandler} from 'haiku-sdk-creator';
+import {SERVICES_CHANNEL, ServicesHandler} from 'haiku-sdk-creator';
 import {inkstone} from '@haiku/sdk-inkstone';
 import {client as sdkClient} from '@haiku/sdk-client';
 import * as serializeError from 'haiku-serialization/src/utils/serializeError';
@@ -27,7 +27,7 @@ import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';
 import {awaitAllLocksFree} from 'haiku-serialization/src/bll/Lock';
 import Master from './Master';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
+import {createProjectFiles} from '@haiku/sdk-client';
 import {
   copyDefaultSketchFile,
   copyDefaultIllustratorFile,

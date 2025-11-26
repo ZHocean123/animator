@@ -1,8 +1,8 @@
 import * as React from 'react';
-import isNumeric from 'haiku-ui-common/lib/helpers/isNumeric';
-import {TrashIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import Palette from 'haiku-ui-common/lib/Palette';
-import truncate from 'haiku-ui-common/lib/helpers/truncate';
+import {isNumeric} from 'haiku-ui-common';
+import {TrashIconSVG} from 'haiku-ui-common';
+import {Palette } from 'haiku-ui-common';
+import {truncate} from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {

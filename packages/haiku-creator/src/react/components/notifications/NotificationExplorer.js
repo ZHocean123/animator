@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {PresentIconSVG} from 'haiku-ui-common';
+import {Palette } from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {

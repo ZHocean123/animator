@@ -1,7 +1,7 @@
 import {JSDOM} from 'jsdom';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
+import {fetchProjectConfigInfo} from '@haiku/sdk-client';
 
 export default class TestHelpers {
   static awaitElementById (window, id, cb) {

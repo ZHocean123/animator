@@ -2,7 +2,18 @@
   "name": "@haiku/sdk-client",
   "version": "5.1.2",
   "description": "Haiku SDK for Client",
-  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    },
+    "./*": {
+      "import": "./lib/*.mjs",
+      "require": "./lib/*.cjs",
+      "types": "./lib/*.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint --ext .ts",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
@@ -20,7 +31,6 @@
   ],
   "author": "Zack Brown <zack@haiku.ai>",
   "license": "UNLICENSED",
-  "types": "./lib/index.d.ts",
   "dependencies": {
     "@haiku/sdk-inkstone": "workspace:*",
     "dedent": "^0.7.0",

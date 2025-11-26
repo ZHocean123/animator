@@ -4,7 +4,7 @@ import * as lodash from 'lodash';
 import * as Color from 'color';
 import StateRow from './StateRow';
 import Loader from './Loader';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 
 const NEW_ROW_NAME = `new-row`;
 

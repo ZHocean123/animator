@@ -2,9 +2,9 @@ import {shell} from 'electron';
 import * as path from 'path';
 import * as Radium from 'radium';
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import ProjectPreview from './ProjectPreview';
-import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import {StackMenuSVG} from 'haiku-ui-common';
 import {DASH_STYLES} from '../styles/dashShared';
 import {isMac, isWindows} from 'haiku-common';
 

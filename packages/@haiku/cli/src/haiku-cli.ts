@@ -7,10 +7,10 @@ import {
   fetchProjectConfigInfo,
   getHaikuComponentInitialVersion,
   storeConfigValues,
-} from '@haiku/sdk-client/lib/ProjectDefinitions';
+} from '@haiku/sdk-client';
 
-import {bootstrapSceneFilesSync} from '@haiku/sdk-client/lib/bootstrapSceneFilesSync';
-import {createProjectFiles} from '@haiku/sdk-client/lib/createProjectFiles';
+import {bootstrapSceneFilesSync} from '@haiku/sdk-client';
+import {createProjectFiles} from '@haiku/sdk-client';
 
 import chalk from 'chalk';
 import {execSync} from 'child_process';

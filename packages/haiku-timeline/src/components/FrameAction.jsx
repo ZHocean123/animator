@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Bolt from 'haiku-ui-common/lib/react/icons/Bolt';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Bolt} from 'haiku-ui-common';
+import {Palette } from 'haiku-ui-common';
 
 const STYLE = {
   base: {

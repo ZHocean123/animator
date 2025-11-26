@@ -3,11 +3,11 @@ import {
   ModalWrapper,
   ModalHeader,
   ModalFooter,
-} from 'haiku-ui-common/lib/react/Modal';
+} from 'haiku-ui-common';
 import {BTN_STYLES} from '../styles/btnShared';
 import {DASH_STYLES} from '../styles/dashShared';
-import ExternalLinkIconSVG from 'haiku-ui-common/lib/react/icons/ExternalLinkIconSVG';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {ExternalLinkIconSVG} from 'haiku-ui-common';
+import {Palette} from 'haiku-ui-common';
 
 const STYLES = {
   modalWrapper: {

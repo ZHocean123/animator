@@ -13,11 +13,11 @@ import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelec
 import * as Asset from 'haiku-serialization/src/bll/Asset';
 import * as EmitterManager from 'haiku-serialization/src/utils/EmitterManager';
 import {isCoordInsideBoxPoints} from 'haiku-serialization/src/bll/MathUtils';
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import Preview from './Preview';
 import CreateComponentModal from './modals/CreateComponentModal';
-import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
+import {PopoverMenu} from 'haiku-ui-common';
+import {ComponentIconSVG} from 'haiku-ui-common';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
 import originMana from '../overlays/originMana';
@@ -41,15 +41,15 @@ import {
 } from 'haiku-common';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
-import Globals from 'haiku-ui-common/lib/Globals';
+import {Globals } from 'haiku-ui-common';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import {clipboard, shell, remote, ipcRenderer} from 'electron';
 
 import * as fse from 'haiku-fs-extra';
 import * as moment from 'moment';
 import {HOMEDIR_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import EnvoyClient from 'haiku-sdk-creator/lib/envoy/EnvoyClient';
-import {ERROR_CHANNEL} from 'haiku-sdk-creator/lib/bll/Error';
+import {EnvoyClient} from 'haiku-sdk-creator';
+import {ERROR_CHANNEL} from 'haiku-sdk-creator';
 
 // #FIXME: Why is this the responsibility of Glass???
 fse.mkdirpSync(HOMEDIR_PATH);

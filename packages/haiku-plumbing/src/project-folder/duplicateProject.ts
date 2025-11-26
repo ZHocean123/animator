@@ -1,5 +1,5 @@
 import {copySync, existsSync, rmdirSync} from 'fs-extra';
-import {HaikuProject} from 'haiku-sdk-creator/lib/bll/Project';
+import {HaikuProject} from 'haiku-sdk-creator';
 import {join} from 'path';
 
 export function duplicateProject(destinationProject: HaikuProject, sourceProject: HaikuProject, cb: any) {

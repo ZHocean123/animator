@@ -1,4 +1,4 @@
-import {getAngularSelectorName} from '@haiku/sdk-client/lib/ProjectDefinitions';
+import {getAngularSelectorName} from '@haiku/sdk-client';
 import * as dedent from 'dedent';
 // @ts-ignore
 import * as React from 'react';

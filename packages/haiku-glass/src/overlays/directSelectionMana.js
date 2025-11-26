@@ -1,4 +1,4 @@
-import Palette from 'haiku-ui-common/lib/Palette';
+import {Palette } from 'haiku-ui-common';
 import Layout3D from '@haiku/core/lib/Layout3D';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {mat4_multiply_vec4} from '@haiku/core/lib/helpers/PathUtils';

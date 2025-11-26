@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Palette from 'haiku-ui-common/lib/Palette';
-import {ModalWrapper, ModalHeader} from 'haiku-ui-common/lib/react/Modal';
+import {Palette } from 'haiku-ui-common';
+import {ModalWrapper, ModalHeader} from 'haiku-ui-common';
 
 const STYLES = {
   wrapper: {
