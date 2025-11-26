@@ -2,11 +2,11 @@
 import type * as request from 'request'
 import type { InkstoneConfig } from './config'
 import type { MaybeAuthToken } from './services'
-
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json')
 import { inkstoneConfig } from './config'
 import { Endpoints, newDeleteRequest, newGetRequest, newPostRequest, newPutRequest } from './services'
+
 import { requestInstance } from './transport'
 
 // Export all individual modules for simplified imports

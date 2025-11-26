@@ -16,10 +16,7 @@ import {
 import { synchronizePathStructure } from '@haiku/core/lib/helpers/PathUtils'
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
 import { existsSync, readFileSync, writeFile } from 'fs-extra'
-// @ts-ignore
-import * as Template from 'haiku-serializationbll/Template'
-// @ts-ignore
-import * as LoggerInstance from 'haiku-serialization'
+import { logger, Template } from 'haiku-serialization'
 
 import * as imageSize from 'image-size'
 
@@ -738,7 +735,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
       )
     }
     catch (e) {
-      LoggerInstance.warn(`[formats] encountered error during image export: ${e}`)
+      logger.warn(`[formats] encountered error during image export: ${e}`)
     }
   }
 
@@ -939,7 +936,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
         break
       default:
         // This is probably a pattern fill, which Bodymovin doesn't seem to support.
-        LoggerInstance.warn(`[formats] encountered unsupported paint server: ${node.elementName}`)
+        logger.warn(`[formats] encountered unsupported paint server: ${node.elementName}`)
     }
   }
 
@@ -1632,7 +1629,7 @@ export class BodymovinExporter extends BaseExporter implements ExporterInterface
       return writeFile(filename, this.binaryOutput())
     }
     catch (e) {
-      LoggerInstance.error(`[formats]; caught exception during bodymovin export: ${e.toString()}`)
+      logger.error(`[formats]; caught exception during bodymovin export: ${e.toString()}`)
     }
 
     return writeFile(filename, '{}')

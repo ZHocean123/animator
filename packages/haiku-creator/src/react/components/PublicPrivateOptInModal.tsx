@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as mixpanel from 'haiku-serialization'
+import { mixpanel } from 'haiku-serialization'
 import { ExternalLink, ExternalLinkIconSVG, ModalFooter, ModalHeader, ModalWrapper, Palette } from 'haiku-ui-common'
 
 import * as React from 'react'

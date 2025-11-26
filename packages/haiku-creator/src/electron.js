@@ -10,10 +10,7 @@ import { app, BrowserWindow, ipcMain, protocol, session, systemPreferences } fro
 import * as ElectronProxyAgent from 'electron-proxy-agent'
 
 import { isMac, isProxied, isWindows, ProxyType, TopMenu } from 'haiku-common'
-
-import * as ensureTrailingSlash from 'haiku-serializationutils/ensureTrailingSlash'
-import logger from 'haiku-serialization'
-import * as mixpanel from 'haiku-serializationutils/Mixpanel'
+import { ensureTrailingSlash, logger, mixpanel } from 'haiku-serialization'
 import * as qs from 'qs'
 
 if (!app) {

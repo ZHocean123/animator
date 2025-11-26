@@ -2,10 +2,9 @@ import { fetchProjectConfigInfo } from '@haiku/sdk-client'
 import { ipcRenderer } from 'electron'
 import { shouldEmitErrors } from 'haiku-common'
 import { SentryReporter } from 'haiku-sdk-creator'
-import * as MockWebsocket from 'haiku-serialization'
-import * as Websocket from 'haiku-serialization'
+import { mixpanel, MockWebsocket, Websocket } from 'haiku-serialization'
 import * as qs from 'qs'
-import * as ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import Timeline from './components/Timeline'
 
 // We are in a webview; use query string parameters for boot-up configuration
@@ -15,8 +14,6 @@ const config = Object.assign({}, params)
 if (config.dotenv) {
   Object.assign(global.process.env, config.dotenv)
 }
-
-const mixpanel = require('haiku-serialization')
 
 global.sentryReporter = new SentryReporter()
 window.Raven.config('https://d045653ab5d44c808480fa6c3fa8e87c@sentry.io/226387', {
@@ -62,7 +59,7 @@ try {
 
     window.isWebview = config.webview
 
-    ReactDOM.render(
+    createRoot(document.getElementById('root')).render(
       <Timeline
         mixpanel={mixpanel}
         envoy={config.envoy}
@@ -70,7 +67,6 @@ try {
         websocket={websocket}
         folder={config.folder}
       />,
-      document.getElementById('root'),
     )
   })
 }

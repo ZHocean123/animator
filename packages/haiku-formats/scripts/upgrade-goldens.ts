@@ -1,30 +1,29 @@
-import {createComponent} from '@haiku/core/test/TestHelpers';
-import {each} from 'async';
+import { join } from 'node:path'
+import { createComponent } from '@haiku/core/test/TestHelpers'
+import { each } from 'async'
 // @ts-ignore
-import {readdir, writeFile} from 'haiku-fs-extra';
-// @ts-ignore
-import * as AST from 'haiku-serializationbll/AST';
-import {join} from 'path';
+import { readdir, writeFile } from 'haiku-fs-extra'
+import { AST } from 'haiku-serialization'
 
-const goldensRoot = join(global.process.cwd(), 'test/goldens');
-const ast = AST.upsert({uid: 'upgrader', file: {getImportPathTo: () => {}}});
+const goldensRoot = join(global.process.cwd(), 'test/goldens')
+const ast = AST.upsert({ uid: 'upgrader', file: { getImportPathTo: () => {} } })
 
 readdir(join(goldensRoot, 'bytecode'), (_: any, bytecodeFiles: string[]) => {
   each(bytecodeFiles, (filename, next) => {
-    const bytecodeFilename = join(goldensRoot, 'bytecode', filename);
-    createComponent(require(bytecodeFilename), {hotEditingMode: true}, (component: any, teardown: () => void) => {
+    const bytecodeFilename = join(goldensRoot, 'bytecode', filename)
+    createComponent(require(bytecodeFilename), { hotEditingMode: true }, (component: any, teardown: () => void) => {
       const contents = ast.updateWithBytecodeAndReturnCode(
         component.bytecode,
         null, // previous: string // The previous code string
-      );
+      )
       writeFile(
         bytecodeFilename,
         contents,
         (err: any) => {
-          teardown();
-          next(err);
+          teardown()
+          next(err)
         },
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

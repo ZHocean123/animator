@@ -2,16 +2,8 @@ import { ipcRenderer, remote } from 'electron'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import { EnvoyClient, ERROR_CHANNEL, EXPORTER_CHANNEL, USER_CHANNEL, UserSettings } from 'haiku-sdk-creator'
 
-import * as Asset from 'haiku-serializationbll/Asset'
-import * as BaseModel from 'haiku-serializationbll/BaseModel'
-import * as File from 'haiku-serializationbll/File'
-import * as Keyframe from 'haiku-serializationbll/Keyframe'
-import * as Project from 'haiku-serializationbll/Project'
-import * as Property from 'haiku-serializationbll/Property'
-import * as Row from 'haiku-serializationbll/Row'
-import * as EmitterManager from 'haiku-serializationutils/EmitterManager'
-import * as logger from 'haiku-serialization'
-import * as requestElementCoordinates from 'haiku-serializationutils/requestElementCoordinates'
+import { Asset, BaseModel, File, Keyframe, Project, Property, requestElementCoordinates, Row } from 'haiku-serialization'
+
 import { Globals, InteractionMode, isPreviewMode, Palette, PopoverMenu } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'

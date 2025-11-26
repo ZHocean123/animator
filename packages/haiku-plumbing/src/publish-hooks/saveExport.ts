@@ -1,10 +1,8 @@
 import type { ExporterRequest } from 'haiku-sdk-creator'
-// @ts-ignore
-import type * as ActiveComponent from 'haiku-serializationbll/ActiveComponent'
+import type { ActiveComponent } from 'haiku-serialization'
 import { handleExporterSaveRequest } from 'haiku-formats'
 import { ExporterFormat } from 'haiku-sdk-creator'
-// @ts-ignore
-import * as Bytecode from 'haiku-serializationbll/Bytecode'
+import { Bytecode } from 'haiku-serialization'
 
 export default (request: ExporterRequest, activeComponent: ActiveComponent, cb: (err: Error | void) => void) => {
   const bytecode = activeComponent.fetchActiveBytecodeFile().getReifiedDecycledBytecode({

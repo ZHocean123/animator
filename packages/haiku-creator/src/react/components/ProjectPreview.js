@@ -3,7 +3,7 @@ import * as Module from 'node:module'
 import * as path from 'node:path'
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter'
 import { TourUtils } from 'haiku-common'
-import * as ensureTrailingSlash from 'haiku-serializationutils/ensureTrailingSlash'
+import { ensureTrailingSlash } from 'haiku-serialization'
 import { InteractionMode } from 'haiku-ui-common'
 import * as React from 'react'
 

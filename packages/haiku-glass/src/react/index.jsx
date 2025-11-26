@@ -2,11 +2,9 @@ import { fetchProjectConfigInfo } from '@haiku/sdk-client'
 import { ipcRenderer } from 'electron'
 import { shouldEmitErrors } from 'haiku-common'
 import { SentryReporter } from 'haiku-sdk-creator'
-
-const mixpanel = require('haiku-serializationutils/Mixpanel')
-import * as MockWebsocket from 'haiku-serializationws/MockWebsocket'
-import * as Websocket from 'haiku-serializationws/Websocket'
+const {mixpanel,Websocket,MockWebsocket} = require('haiku-serialization')
 import * as qs from 'qs'
+
 import * as ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import Glass from './Glass.jsx'

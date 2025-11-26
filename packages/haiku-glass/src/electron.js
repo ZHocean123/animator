@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { TopMenu } from 'haiku-common'
-import * as logger from 'haiku-serialization'
+import { logger } from 'haiku-serialization'
 import * as qs from 'qs'
 
 /**

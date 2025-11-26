@@ -1,6 +1,6 @@
 import { parse } from '@babel/parser'
 import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
-import * as logger from 'haiku-serialization'
+import { logger } from 'haiku-serialization'
 import * as prettier from 'prettier'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'

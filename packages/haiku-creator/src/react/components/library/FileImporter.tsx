@@ -1,9 +1,7 @@
 import * as Color from 'color'
-// @ts-ignore
-import * as mixpanel from 'haiku-serialization'
+import { mixpanel } from 'haiku-serialization'
 import { Palette } from 'haiku-ui-common'
 import * as React from 'react'
-// @ts-ignore
 import * as Popover from 'react-popover'
 import { DASH_STYLES } from '../../styles/dashShared'
 import FigmaImporter from './importers/FigmaImporter'

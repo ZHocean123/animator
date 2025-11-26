@@ -1,4 +1,4 @@
-const TimelineProperty = require('haiku-serializationbll/TimelineProperty')
+const { TimelineProperty } = require('haiku-serialization')
 const BaseModel = require('./BaseModel')
 
 const NAVIGATION_DIRECTIONS = {

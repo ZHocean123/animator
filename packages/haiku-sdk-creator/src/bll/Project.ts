@@ -9,7 +9,7 @@ import { ErrorCode, inkstone, requestInstance } from '@haiku/sdk-inkstone'
 
 import { existsSync, move, readFile } from 'fs-extra'
 // @ts-ignore
-import { HOMEDIR_PROJECTS_PATH } from 'haiku-serializationutils/HaikuHomeDir'
+import { HOMEDIR_PROJECTS_PATH } from 'haiku-serialization'
 import { Registry } from '../dal/Registry'
 import EnvoyHandler from '../envoy/EnvoyHandler'
 import { ExporterFormat } from '../exporter'

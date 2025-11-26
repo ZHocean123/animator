@@ -1,10 +1,7 @@
 import type { BytecodeNode, BytecodeSummonable } from '@haiku/core/lib/api'
 import type { ExporterInterface } from '..'
 import { writeFile } from 'fs-extra'
-// @ts-ignore
-import * as Template from 'haiku-serializationbll/Template'
-// @ts-ignore
-import * as LoggerInstance from 'haiku-serialization'
+import { logger, Template } from 'haiku-serialization'
 import BaseExporter from '../BaseExporter'
 import { evaluateInjectedFunctionInExportContext } from '../injectables'
 
@@ -97,7 +94,7 @@ export class HaikuStaticExporter extends BaseExporter implements ExporterInterfa
       return writeFile(filename, this.binaryOutput())
     }
     catch (e) {
-      LoggerInstance.error(`[formats] caught exception during static export: ${e.toString()}`)
+      logger.error(`[formats] caught exception during static export: ${e.toString()}`)
     }
 
     return writeFile(filename, '{}')

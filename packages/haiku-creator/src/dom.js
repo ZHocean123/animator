@@ -1,6 +1,5 @@
-import * as MockWebsocket from 'haiku-serializationws/MockWebsocket'
-import * as Websocket from 'haiku-serializationws/Websocket'
-import { render } from 'react-dom'
+import { MockWebsocket, Websocket } from 'haiku-serialization'
+import { createRoot } from 'react-dom/client'
 import Creator from './react/Creator'
 
 const remote = require('electron').remote
@@ -37,13 +36,12 @@ export default function dom(haiku) {
     }
   })
 
-  render(
+  createRoot(document.getElementById('mount')).render(
     <Creator
       websocket={websocket}
       haiku={haiku}
       folder={haiku.folder}
       {...props}
     />,
-    document.getElementById('mount'),
   )
 }

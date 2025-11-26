@@ -1,4 +1,4 @@
-import * as mixpanel from 'haiku-serializationutils/Mixpanel'
+import { mixpanel } from 'haiku-serialization'
 import { AlignDistributeIcons, Palette } from 'haiku-ui-common'
 
 import * as Radium from 'radium'

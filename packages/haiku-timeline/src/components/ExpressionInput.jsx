@@ -1,10 +1,7 @@
 import marshalParams from '@haiku/core/lib/reflection/marshalParams'
 import * as CodeMirror from 'codemirror'
 import { clipboard } from 'electron'
-import * as parseExpression from 'haiku-serializationast/parseExpression'
-import * as Expression from 'haiku-serializationbll/Expression'
-import * as MathUtils from 'haiku-serializationbll/MathUtils'
-import * as Property from 'haiku-serializationbll/Property'
+import { Expression, MathUtils, parseExpression, Property } from 'haiku-serialization'
 import { ColorPicker, derivateDisplayValueFromColorString, derivateStringFromColorResult, doesValueImplyExpression, ensureEq, ensureRet, eqToRet, isNumeric, Palette, RangePicker, retToEq } from 'haiku-ui-common'
 import * as EXPR_SIGNS from 'haiku-ui-common'
 

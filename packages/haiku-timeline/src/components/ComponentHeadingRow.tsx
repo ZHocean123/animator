@@ -1,7 +1,5 @@
+import { Element, mixpanel } from 'haiku-serialization'
 // @ts-ignore
-import * as Element from 'haiku-serializationbll/Element'
-// @ts-ignore
-import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 import { DownCarrotSVG, DragGrip, LockIconSVG, Palette, RightCarrotSVG, UnlockIconSVG } from 'haiku-ui-common'
 
 import * as React from 'react'

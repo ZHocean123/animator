@@ -1,11 +1,9 @@
+/* eslint-disable node/prefer-global/process */
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as electron from 'electron'
-// @ts-ignore
-import { ditto, download, unzip } from 'haiku-serializationutils/fileManipulation'
-// @ts-ignore
-import * as logger from 'haiku-serialization'
+import { ditto, download, logger, unzip } from 'haiku-serialization'
 import nodeFetch from 'node-fetch'
 import * as qs from 'qs'
 import { v4 } from 'uuid'

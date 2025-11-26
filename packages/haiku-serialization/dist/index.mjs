@@ -5148,7 +5148,7 @@ var require_State = /* @__PURE__ */ __commonJS({ "src/bll/State.js": ((exports, 
 //#region src/bll/TimelineProperty.js
 var require_TimelineProperty = /* @__PURE__ */ __commonJS({ "src/bll/TimelineProperty.js": ((exports, module) => {
 	const { getFallback: getFallback$1 } = __require("@haiku/core/lib/HaikuComponent");
-	const logger$14 = __require("haiku-serialization");
+	const { logger: logger$14 } = __require("haiku-serialization");
 	const TimelineProperty$7 = {};
 	TimelineProperty$7.getSelectorForComponentId = (componentId) => {
 		return `haiku:${componentId}`;
@@ -5315,7 +5315,7 @@ var require_Bytecode = /* @__PURE__ */ __commonJS({ "src/bll/Bytecode.js": ((exp
 	const { xmlToMana: xmlToMana$1, default: convertManaLayout } = __require("haiku-common");
 	const expressionToRO$3 = __require("@haiku/core/lib/reflection/expressionToRO").default;
 	const reifyRO = __require("@haiku/core/lib/reflection/reifyRO").default;
-	const logger$13 = __require("haiku-serialization");
+	const { logger: logger$13 } = __require("haiku-serialization");
 	const HAIKU_ID_ATTRIBUTE$3 = "haiku-id";
 	const HAIKU_TITLE_ATTRIBUTE$3 = "haiku-title";
 	const DEFAULT_TIMELINE_NAME$1 = "Default";
@@ -6083,7 +6083,7 @@ var require_Figma = /* @__PURE__ */ __commonJS({ "src/bll/Figma.js": ((exports, 
 	const { URL, URLSearchParams } = __require("node:url");
 	const { inkstone } = __require("@haiku/sdk-inkstone");
 	const fse$6 = __require("haiku-fs-extra");
-	const mixpanel$1 = __require("haiku-serializationutils/Mixpanel");
+	const { mixpanel: mixpanel$1 } = __require("haiku-serialization");
 	const request = __require("request");
 	const { sanitize } = require_fileManipulation();
 	const logger$12 = require_LoggerInstance();
@@ -9142,12 +9142,11 @@ var require_ElementSelectionProxy = /* @__PURE__ */ __commonJS({ "src/bll/Elemen
 //#endregion
 //#region src/bll/Timeline.js
 var require_Timeline = /* @__PURE__ */ __commonJS({ "src/bll/Timeline.js": ((exports, module) => {
-	const TimelineProperty$4 = __require("haiku-serializationbll/TimelineProperty");
 	const numeral = __require("numeral");
 	const BaseModel$16 = require_BaseModel();
 	const MathUtils$2 = require_MathUtils();
 	const { formatSeconds } = __require("haiku-ui-common").default;
-	const logger$7 = __require("haiku-serialization");
+	const { logger: logger$7, TimelineProperty: TimelineProperty$4 } = __require("haiku-serialization");
 	const DURATION_DRAG_INCREASE = 20;
 	const DURATION_DRAG_TIMEOUT = 300;
 	const DURATION_MOD_TIMEOUT = 100;
@@ -10420,7 +10419,7 @@ var require_Keyframe = /* @__PURE__ */ __commonJS({ "src/bll/Keyframe.js": ((exp
 //#endregion
 //#region src/bll/Row.js
 var require_Row = /* @__PURE__ */ __commonJS({ "src/bll/Row.js": ((exports, module) => {
-	const TimelineProperty$3 = __require("haiku-serializationbll/TimelineProperty");
+	const { TimelineProperty: TimelineProperty$3 } = __require("haiku-serialization");
 	const BaseModel$14 = require_BaseModel();
 	const NAVIGATION_DIRECTIONS = {
 		SAME: 0,
@@ -20918,7 +20917,7 @@ var require_Mixpanel = /* @__PURE__ */ __commonJS({ "src/utils/Mixpanel.js": ((e
 //#endregion
 //#region src/utils/requestElementCoordinates.js
 var require_requestElementCoordinates = /* @__PURE__ */ __commonJS({ "src/utils/requestElementCoordinates.js": ((exports, module) => {
-	const logger$1 = __require("haiku-serialization");
+	const { logger: logger$1 } = __require("haiku-serialization");
 	module.exports = function requestElementCoordinates$1({ currentWebview, requestedWebview, selector, shouldNotifyEnvoy, tourClient }, maxNumberOfTries = 15, currentNumberOfTries = 0) {
 		if (currentWebview !== requestedWebview) return;
 		if (document.getElementById("js-helper-project-loader")) return setTimeout(() => {

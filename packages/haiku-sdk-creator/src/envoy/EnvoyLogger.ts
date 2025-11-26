@@ -1,6 +1,3 @@
-// @ts-ignore
-import * as LoggerInstance from 'haiku-serialization'
-
 export type EnvoyLogLevel = 'info' | 'log' | 'warn' | 'error'
 
 export default class EnvoyLogger implements Console {
@@ -10,7 +7,7 @@ export default class EnvoyLogger implements Console {
 
   constructor(private readonly logLevel: EnvoyLogLevel, private readonly logger?: any) {
     if (!this.logger) {
-      this.logger = LoggerInstance
+      this.logger = logger
     }
   }
 

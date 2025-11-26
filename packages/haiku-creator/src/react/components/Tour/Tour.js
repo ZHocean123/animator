@@ -1,7 +1,7 @@
 import { shell } from 'electron'
 import { TourUtils } from 'haiku-common'
 import { TOUR_CHANNEL } from 'haiku-sdk-creator'
-import * as mixpanel from 'haiku-serializationutils/Mixpanel'
+import { mixpanel } from 'haiku-serialization'
 import * as React from 'react'
 import { TOUR_STYLES } from '../../styles/tourShared'
 import * as steps from './Steps'

@@ -6,12 +6,7 @@ import { buildProxyUrl, describeProxyFromUrl, getAccountUrl, isMac, isWindows, s
 
 import { EnvoyClient, ERROR_CHANNEL, EXPORTER_CHANNEL, ExporterFormat, isUserlandCulprit, PROJECT_CHANNEL, SERVICES_CHANNEL, TOUR_CHANNEL, USER_CHANNEL, UserSettings } from 'haiku-sdk-creator'
 
-import * as Asset from 'haiku-serialization'
-import * as BaseModel from 'haiku-serialization'
-import * as File from 'haiku-serialization'
-import * as Project from 'haiku-serialization'
-import * as logger from 'haiku-serialization'
-import * as requestElementCoordinates from 'haiku-serialization'
+import { Asset, BaseModel, File, logger, Project, requestElementCoordinates } from 'haiku-serialization'
 import {
   AnimatorSVG,
   Globals,
@@ -50,14 +45,14 @@ import { DASH_STYLES } from './styles/dashShared'
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = 'creator'
 
-const mixpanel = require('haiku-serialization')
+const { mixpanel } = require('haiku-serialization')
 
 const pkg = require('./../../package.json')
 
 const { dialog } = remote
 
 function isNumeric(n) {
-  return !isNaN(Number.parseFloat(n)) && isFinite(n)
+  return !Number.isNaN(Number.parseFloat(n)) && Number.isFinite(n)
 }
 
 if (webFrame) {

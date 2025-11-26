@@ -2,7 +2,7 @@ import type { MaybeAsync } from '../envoy'
 import { basename, join } from 'node:path'
 import { shouldEmitErrors } from 'haiku-common'
 // @ts-ignore
-import { HOMEDIR_CRASH_REPORTS_PATH } from 'haiku-serializationutils/HaikuHomeDir'
+import { HOMEDIR_CRASH_REPORTS_PATH } from 'haiku-serialization'
 import { crashReportFork } from '../dal/Carbonite'
 import EnvoyHandler from '../envoy/EnvoyHandler'
 import generateUUIDv4 from '../utils/generateUUIDv4'

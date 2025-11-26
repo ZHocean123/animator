@@ -1,4 +1,4 @@
-import * as mixpanel from 'haiku-serializationutils/Mixpanel'
+import { mixpanel } from 'haiku-serialization'
 import * as lodash from 'lodash'
 import * as React from 'react'
 import ConstantBody from './ConstantBody'

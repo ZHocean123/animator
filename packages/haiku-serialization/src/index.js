@@ -47,6 +47,8 @@ export { default as Expression } from './bll/Expression'
 export { default as Figma } from './bll/Figma'
 export { default as File } from './bll/File'
 export { default as FontComponent } from './bll/FontComponent'
+// BLL Helpers
+export { default as toTitleCase } from './bll/helpers/toTitleCase'
 export { default as Illustrator } from './bll/Illustrator'
 export { default as ImageComponent } from './bll/ImageComponent'
 export { default as InstalledComponent } from './bll/InstalledComponent'
@@ -62,17 +64,15 @@ export { default as Row } from './bll/Row'
 export { default as SelectionMarquee } from './bll/SelectionMarquee'
 export { default as Sketch } from './bll/Sketch'
 export { default as State } from './bll/State'
-export { default as Template } from './bll/Template'
-export { default as Timeline } from './bll/Timeline'
-export { default as TimelineProperty } from './bll/TimelineProperty'
-export { default as TransformCache } from './bll/TransformCache'
-
 // BLL Storage
 export { default as DiskStorage } from './bll/storage/DiskStorage'
 export { default as MemoryStorage } from './bll/storage/MemoryStorage'
+export { default as Template } from './bll/Template'
 
-// BLL Helpers
-export { default as toTitleCase } from './bll/helpers/toTitleCase'
+export { default as Timeline } from './bll/Timeline'
+export { default as TimelineProperty } from './bll/TimelineProperty'
+
+export { default as TransformCache } from './bll/TransformCache'
 
 // SVG utilities
 export { default as getSvgOptimizer } from './svg/getSvgOptimizer'

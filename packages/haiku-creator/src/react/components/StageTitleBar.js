@@ -4,25 +4,16 @@ import { ipcRenderer, shell } from 'electron'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import { EXPORTER_CHANNEL, ProjectError } from 'haiku-sdk-creator'
 
-import * as Element from 'haiku-serialization'
-import * as ElementSelectionProxy from 'haiku-serialization'
-import * as logger from 'haiku-serialization'
-const mixpanel = require('haiku-serialization')
-import { Palette,ShareModal,
-  EyeIconSVG, ComponentIconSVG, ConnectionIconSVG, DangerIconSVG, EventsBoltIcon, PublishSnapshotSVG, WarningIconSVG,
-  isPreviewMode,
-  isEditMode,
-  isCodeEditorMode,
-  showGlassOnStage } from 'haiku-ui-common';
+import { Element, ElementSelectionProxy, logger, mixpanel } from 'haiku-serialization'
+import { ComponentIconSVG, DangerIconSVG, EventsBoltIcon, EyeIconSVG, isCodeEditorMode, isEditMode, isPreviewMode, Palette, PublishSnapshotSVG, ShareModal, showGlassOnStage } from 'haiku-ui-common'
+
 import * as Radium from 'radium'
 import * as React from 'react'
-
 import * as ReactDOM from 'react-dom'
+
 import { BTN_STYLES } from '../styles/btnShared'
 import AlignToolBox from './AlignToolBox'
-
 import { PublicPrivateOptInModal } from './PublicPrivateOptInModal'
-import Toggle from './Toggle'
 
 const STYLES = {
   hide: {
