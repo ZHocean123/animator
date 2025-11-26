@@ -1,4 +1,4 @@
-import * as Timeline from 'haiku-serialization/src/bll/Timeline'
+import * as Timeline from 'haiku-serializationbll/Timeline'
 import formatSeconds, { Palette } from 'haiku-ui-common'
 
 import * as React from 'react'

@@ -1,6 +1,6 @@
 const {Plumbing, envInfo, haikuInfo} = require('haiku-plumbing');
 const path = require('path');
-const logger = require('haiku-serialization/src/utils/LoggerInstance');
+const logger = require('haiku-serialization');
 
 global.eval = function () {
   // noop: eval is forbidden

@@ -1,5 +1,5 @@
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket'
-import * as Websocket from 'haiku-serialization/src/ws/Websocket'
+import * as MockWebsocket from 'haiku-serializationws/MockWebsocket'
+import * as Websocket from 'haiku-serializationws/Websocket'
 import { render } from 'react-dom'
 import Creator from './react/Creator'
 

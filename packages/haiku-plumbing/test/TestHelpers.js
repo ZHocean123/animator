@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as Websocket from 'ws';
 import * as tmp from 'tmp';
 import * as fse from 'haiku-fs-extra';
-import * as randomAlphabetical from 'haiku-serialization/src/utils/randomAlphabetical';
+import * as randomAlphabetical from 'haiku-serializationutils/randomAlphabetical';
 import Plumbing, {HAIKU_WS_SECURITY_TOKEN} from '@plumbing/Plumbing';
 
 

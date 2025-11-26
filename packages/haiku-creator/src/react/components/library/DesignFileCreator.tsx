@@ -2,9 +2,9 @@ import * as path from 'node:path'
 import { shell } from 'electron'
 import { isMac } from 'haiku-common'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 // @ts-ignore
-import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils'
+import * as sketchUtils from 'haiku-serializationutils/sketchUtils'
 import { FigmaIconSVG, IllustratorIconSVG, Palette, SketchIconSVG } from 'haiku-ui-common'
 
 import * as React from 'react'

@@ -1,6 +1,6 @@
 import * as Color from 'color'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as mixpanel from 'haiku-serialization'
 import { Palette } from 'haiku-ui-common'
 import * as React from 'react'
 // @ts-ignore

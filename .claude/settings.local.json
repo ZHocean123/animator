@@ -10,7 +10,12 @@
       "Bash(powershell:*)",
       "Bash(yarn build:*)",
       "Bash(npx tsdown:*)",
-      "Bash(yarn build-all:*)"
+      "Bash(yarn build-all:*)",
+      "Bash(for:*)",
+      "Bash(do sed:*)",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(yarn compile:*)"
     ],
     "deny": [],
     "ask": []

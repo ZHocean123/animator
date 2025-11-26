@@ -6,12 +6,12 @@ import { buildProxyUrl, describeProxyFromUrl, getAccountUrl, isMac, isWindows, s
 
 import { EnvoyClient, ERROR_CHANNEL, EXPORTER_CHANNEL, ExporterFormat, isUserlandCulprit, PROJECT_CHANNEL, SERVICES_CHANNEL, TOUR_CHANNEL, USER_CHANNEL, UserSettings } from 'haiku-sdk-creator'
 
-import * as Asset from 'haiku-serialization/src/bll/Asset'
-import * as BaseModel from 'haiku-serialization/src/bll/BaseModel'
-import * as File from 'haiku-serialization/src/bll/File'
-import * as Project from 'haiku-serialization/src/bll/Project'
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
-import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates'
+import * as Asset from 'haiku-serialization'
+import * as BaseModel from 'haiku-serialization'
+import * as File from 'haiku-serialization'
+import * as Project from 'haiku-serialization'
+import * as logger from 'haiku-serialization'
+import * as requestElementCoordinates from 'haiku-serialization'
 import {
   AnimatorSVG,
   Globals,
@@ -50,7 +50,7 @@ import { DASH_STYLES } from './styles/dashShared'
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = 'creator'
 
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel')
+const mixpanel = require('haiku-serialization')
 
 const pkg = require('./../../package.json')
 

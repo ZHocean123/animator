@@ -4,10 +4,10 @@ import { ipcRenderer, shell } from 'electron'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import { EXPORTER_CHANNEL, ProjectError } from 'haiku-sdk-creator'
 
-import * as Element from 'haiku-serialization/src/bll/Element'
-import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy'
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel')
+import * as Element from 'haiku-serialization'
+import * as ElementSelectionProxy from 'haiku-serialization'
+import * as logger from 'haiku-serialization'
+const mixpanel = require('haiku-serialization')
 import { Palette,ShareModal,
   EyeIconSVG, ComponentIconSVG, ConnectionIconSVG, DangerIconSVG, EventsBoltIcon, PublishSnapshotSVG, WarningIconSVG,
   isPreviewMode,

@@ -17,9 +17,9 @@ import { synchronizePathStructure } from '@haiku/core/lib/helpers/PathUtils'
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
 import { existsSync, readFileSync, writeFile } from 'fs-extra'
 // @ts-ignore
-import * as Template from 'haiku-serialization/src/bll/Template'
+import * as Template from 'haiku-serializationbll/Template'
 // @ts-ignore
-import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance'
+import * as LoggerInstance from 'haiku-serialization'
 
 import * as imageSize from 'image-size'
 

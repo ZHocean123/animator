@@ -1,6 +1,6 @@
 import type { ExporterHandler, ExporterRequest } from 'haiku-sdk-creator'
 // @ts-ignore
-import type * as ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent'
+import type * as ActiveComponent from 'haiku-serializationbll/ActiveComponent'
 import type * as MasterGitProject from '../MasterGitProject'
 import { queue } from 'async'
 import { ExporterFormat } from 'haiku-sdk-creator'

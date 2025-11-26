@@ -9,9 +9,9 @@ import {
   HOMEDIR_PATH,
   HOMEDIR_PROJECTS_PATH,
   // @ts-ignore
-} from 'haiku-serialization/src/utils/HaikuHomeDir'
+} from 'haiku-serializationutils/HaikuHomeDir'
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+import * as logger from 'haiku-serialization'
 import * as request from 'request'
 
 const cleanPresignedUrl = (url: string) => url.split('?')[0]

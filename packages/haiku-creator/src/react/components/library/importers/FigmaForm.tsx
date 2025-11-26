@@ -1,7 +1,7 @@
 // @ts-ignore
-import { Figma } from 'haiku-serialization/src/bll/Figma'
+import { Figma } from 'haiku-serializationbll/Figma'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 import { Palette } from 'haiku-ui-common'
 import * as React from 'react'
 import { BTN_STYLES } from '../../../styles/btnShared'

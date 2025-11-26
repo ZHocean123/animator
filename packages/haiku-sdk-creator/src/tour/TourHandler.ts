@@ -3,7 +3,7 @@ import type { EnvoyEvent } from '../envoy'
 import type EnvoyServer from '../envoy/EnvoyServer'
 import { TourUtils } from 'haiku-common'
 // @ts-ignore
-import { createTourFile, didTakeTour } from 'haiku-serialization/src/utils/HaikuHomeDir'
+import { createTourFile, didTakeTour } from 'haiku-serializationutils/HaikuHomeDir'
 
 export const TOUR_CHANNEL = 'tour'
 

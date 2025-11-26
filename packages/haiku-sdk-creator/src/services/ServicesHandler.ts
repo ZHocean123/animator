@@ -1,6 +1,6 @@
 import type { ImportSpec, MaybeAsync, TokenExchange } from '.'
 // @ts-ignore
-import { Figma } from 'haiku-serialization/src/bll/Figma'
+import { Figma } from 'haiku-serializationbll/Figma'
 
 export interface Services {
   figmaImportSVG: (importSpec: ImportSpec, authToken: string) => MaybeAsync<void>

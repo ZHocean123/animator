@@ -1,5 +1,5 @@
 const { getFallback } = require('@haiku/core/lib/HaikuComponent')
-const logger = require('haiku-serialization/src/utils/LoggerInstance')
+const logger = require('haiku-serialization')
 
 const TimelineProperty = {}
 

@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance'
+import * as LoggerInstance from 'haiku-serialization'
 
 export type EnvoyLogLevel = 'info' | 'log' | 'warn' | 'error'
 

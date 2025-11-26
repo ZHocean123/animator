@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import * as async from 'async'
 import * as fse from 'fs-extra'
 // @ts-ignore
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+import * as logger from 'haiku-serialization'
 // @ts-ignore
 import * as rollup from 'rollup'
 // @ts-ignore

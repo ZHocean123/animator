@@ -3,7 +3,7 @@ import {each} from 'async';
 // @ts-ignore
 import {readdir, writeFile} from 'haiku-fs-extra';
 // @ts-ignore
-import * as AST from 'haiku-serialization/src/bll/AST';
+import * as AST from 'haiku-serializationbll/AST';
 import {join} from 'path';
 
 const goldensRoot = join(global.process.cwd(), 'test/goldens');

@@ -1,4 +1,4 @@
-import { createSketchDialogFile } from 'haiku-serialization/src/utils/HaikuHomeDir'
+import { createSketchDialogFile } from 'haiku-serializationutils/HaikuHomeDir'
 import { ExternalLink } from 'haiku-ui-common'
 import * as React from 'react'
 import { DOWNLOAD_STYLES as STYLES } from '../styles/downloadShared'

@@ -14,7 +14,7 @@ const SYNC_DEBOUNCE_TIME = 100 // ms
 /**
  * @class BaseModel
  * @description
- *  Base model class from which all entities in haiku-serialization/src/bll inherit.
+ *  Base model class from which all entities in haiku-serializationbll inherit.
  *  (Note: This author does not care if we call these models "BLL" entities or not;
  *  the point is that these are extremely useful; call them 'Snogglegorks' if you want.)
  *

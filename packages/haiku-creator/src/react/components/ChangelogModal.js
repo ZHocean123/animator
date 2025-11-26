@@ -1,5 +1,5 @@
 import { shell } from 'electron'
-import * as Changelog from 'haiku-serialization/src/bll/Changelog'
+import * as Changelog from 'haiku-serializationbll/Changelog'
 import {
   ModalHeader,
   ModalWrapper,

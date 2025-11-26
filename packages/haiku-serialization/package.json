@@ -2,7 +2,9 @@
   "name": "haiku-serialization",
   "version": "5.1.2",
   "description": "Serialization utilities",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "pnpm test:all",
     "test:all": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" | tap-spec || true",
@@ -11,7 +13,11 @@
     "test-report": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" > test-result.tap",
     "lint": "eslint --ext .ts",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
-    "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix"
+    "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
+    "compile": "tsdown",
+    "develop": "tsdown --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch"
   },
   "author": "Matthew Trost <matthew@haiku.ai>",
   "license": "UNLICENSED",

@@ -36,5 +36,5 @@
   },
   "include": [
     "packages/**/*.ts"
-  ]
+, "packages/haiku-serialization/src/index.js"  ]
 }

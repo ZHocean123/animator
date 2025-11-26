@@ -14,9 +14,9 @@
      * This file is bootstrapped by Electron for the purpose of collecting a PNG sequence for export.
      */
     const {ipcRenderer} = require('electron');
-    const {requireFromFile} = require('haiku-serialization/src/bll/ModuleWrapper');
+    const {requireFromFile} = require('haiku-serializationbll/ModuleWrapper');
     const {default: HaikuDOMAdapter} = require('@haiku/core/lib/adapters/dom/HaikuDOMAdapter');
-    const ensureTrailingSlash = require('haiku-serialization/src/utils/ensureTrailingSlash');
+    const ensureTrailingSlash = require('haiku-serializationutils/ensureTrailingSlash');
 
     try {
       const abspath = window.location.hash.slice(1);

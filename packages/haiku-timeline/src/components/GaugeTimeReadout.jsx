@@ -1,5 +1,5 @@
-import * as Timeline from 'haiku-serialization/src/bll/Timeline'
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as Timeline from 'haiku-serializationbll/Timeline'
+import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 import formatSeconds, { Palette } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'

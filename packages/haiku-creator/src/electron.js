@@ -11,9 +11,9 @@ import * as ElectronProxyAgent from 'electron-proxy-agent'
 
 import { isMac, isProxied, isWindows, ProxyType, TopMenu } from 'haiku-common'
 
-import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash'
-import logger from 'haiku-serialization/src/utils/LoggerInstance'
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as ensureTrailingSlash from 'haiku-serializationutils/ensureTrailingSlash'
+import logger from 'haiku-serialization'
+import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 import * as qs from 'qs'
 
 if (!app) {

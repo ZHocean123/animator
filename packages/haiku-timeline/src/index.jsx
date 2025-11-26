@@ -2,8 +2,8 @@ import { fetchProjectConfigInfo } from '@haiku/sdk-client'
 import { ipcRenderer } from 'electron'
 import { shouldEmitErrors } from 'haiku-common'
 import { SentryReporter } from 'haiku-sdk-creator'
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket'
-import * as Websocket from 'haiku-serialization/src/ws/Websocket'
+import * as MockWebsocket from 'haiku-serialization'
+import * as Websocket from 'haiku-serialization'
 import * as qs from 'qs'
 import * as ReactDOM from 'react-dom'
 import Timeline from './components/Timeline'
@@ -16,7 +16,7 @@ if (config.dotenv) {
   Object.assign(global.process.env, config.dotenv)
 }
 
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel')
+const mixpanel = require('haiku-serialization')
 
 global.sentryReporter = new SentryReporter()
 window.Raven.config('https://d045653ab5d44c808480fa6c3fa8e87c@sentry.io/226387', {

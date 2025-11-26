@@ -997,7 +997,7 @@ class Element extends BaseModel {
       // Fix for this will be to display <g> elements, but that involves more work
       // than just showing them.
       //
-      // [1]: https://github.com/HaikuTeam/mono/blob/5613bab3cc6006a72acc00c99bf42d723c01ed74/packages/haiku-serialization/src/bll/Property.js#L241
+      // [1]: https://github.com/HaikuTeam/mono/blob/5613bab3cc6006a72acc00c99bf42d723c01ed74/packages/haiku-serializationbll/Property.js#L241
       // [2]: https://github.com/HaikuTeam/mono/blob/65cbfd8e0f2d32ac285c84a45753d741cf2d421b/packages/haiku-timeline/src/components/RowManager.js#L106-L107
       headingRow.parent.silentlyExpandAllGParents()
       return headingRow

@@ -1,6 +1,6 @@
 import {
   didTakeTour,
-} from 'haiku-serialization/src/utils/HaikuHomeDir'
+} from 'haiku-serializationutils/HaikuHomeDir'
 import * as React from 'react'
 
 const STYLES = {

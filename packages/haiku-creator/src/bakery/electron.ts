@@ -4,7 +4,7 @@ import { queue } from 'async'
 import { BrowserWindow, ipcMain } from 'electron'
 import { existsSync, mkdirpSync, removeSync, writeFile } from 'fs-extra'
 // @ts-ignore
-import LoggerInstance from 'haiku-serialization/src/utils/LoggerInstance'
+import LoggerInstance from 'haiku-serialization'
 
 let browserWindow: BrowserWindow
 let outputDirectory: string

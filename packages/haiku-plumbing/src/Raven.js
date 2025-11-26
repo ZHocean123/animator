@@ -1,6 +1,6 @@
 import { shouldEmitErrors } from 'haiku-common'
 import { SentryReporter } from 'haiku-sdk-creator'
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+import * as logger from 'haiku-serialization'
 import * as Raven from 'raven'
 
 global.sentryReporter = new SentryReporter()

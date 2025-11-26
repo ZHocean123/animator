@@ -1,5 +1,5 @@
 import * as Color from 'color'
-import * as State from 'haiku-serialization/src/bll/State'
+import * as State from 'haiku-serializationbll/State'
 import { Palette, StackMenuSVG } from 'haiku-ui-common'
 
 import * as Radium from 'radium'

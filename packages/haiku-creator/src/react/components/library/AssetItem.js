@@ -1,8 +1,8 @@
 import * as Color from 'color'
 import { isMac, isWindows } from 'haiku-common'
 
-import * as Asset from 'haiku-serialization/src/bll/Asset'
-import { Figma } from 'haiku-serialization/src/bll/Figma'
+import * as Asset from 'haiku-serializationbll/Asset'
+import { Figma } from 'haiku-serializationbll/Figma'
 import { CollapseChevronDownSVG, CollapseChevronRightSVG, ComponentIconSVG, ControlHTML, ControlImage, ControlText, FigmaIconSVG, FolderIconSVG, FontIconSVG, IllustratorIconSVG, Palette, PopoverMenu, SketchIconSVG, SyncIconSVG, TrashIconSVG } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'

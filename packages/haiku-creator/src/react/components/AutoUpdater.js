@@ -1,5 +1,5 @@
 import { isMac } from 'haiku-common'
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+import * as logger from 'haiku-serialization'
 import * as React from 'react'
 import autoUpdate from '../../utils/autoUpdate'
 import { DOWNLOAD_STYLES as STYLES } from '../styles/downloadShared'

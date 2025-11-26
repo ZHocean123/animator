@@ -1,4 +1,4 @@
-import * as Property from 'haiku-serialization/src/bll/Property'
+import * as Property from 'haiku-serializationbll/Property'
 import { Globals, PopoverMenu } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'

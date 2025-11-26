@@ -1,4 +1,4 @@
-const logger = require('haiku-serialization/src/utils/LoggerInstance')
+const logger = require('haiku-serialization')
 
 module.exports = function requestElementCoordinates(
   { currentWebview, requestedWebview, selector, shouldNotifyEnvoy, tourClient },

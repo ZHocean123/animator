@@ -2,7 +2,7 @@ import * as NoCon from '@haiku/taylor-nocon/react' // Actual Ku Credit: Ms Tina!
 import { TourUtils } from 'haiku-common'
 import { ProjectError, TOUR_CHANNEL } from 'haiku-sdk-creator'
 
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as mixpanel from 'haiku-serializationutils/Mixpanel'
 import { AnimatorSVG, ExternalLink, ExternalLinkSVG, LogOutSVG, Paginator, Palette, PresentIconSVG, UserIconSVG } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'
