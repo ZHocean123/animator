@@ -1,12 +1,12 @@
-import * as Color from 'color';
-import {shell} from 'electron';
-import * as os from 'os';
-import * as React from 'react';
-import Palette from '../../Palette';
-import {ExternalLink} from '../ExternalLink';
-import ExternalLinkIconSVG from '../icons/ExternalLinkIconSVG';
-import {TooltipBasic} from '../TooltipBasic';
-import {LinkHolster} from './LinkHolster';
+import * as os from 'node:os'
+import * as Color from 'color'
+import { shell } from 'electron'
+import * as React from 'react'
+import Palette from '../../Palette'
+import { ExternalLink } from '../ExternalLink'
+import ExternalLinkIconSVG from '../icons/ExternalLinkIconSVG'
+import { TooltipBasic } from '../TooltipBasic'
+import { LinkHolster } from './LinkHolster'
 
 const STYLES = {
   wrapper: {
@@ -73,7 +73,7 @@ const STYLES = {
     display: 'inline-block',
   },
   toggleActive: {
-    backgroundColor: Color(Palette.LIGHTEST_PINK).fade(.5),
+    backgroundColor: Color(Palette.LIGHTEST_PINK).fade(0.5),
   },
   knob: {
     display: 'inline-block',
@@ -113,7 +113,7 @@ const STYLES = {
   },
   upgradeWrap: {
     color: Palette.SUNSTONE,
-    border: '1px solid ' + Palette.BLUE,
+    border: `1px solid ${Palette.BLUE}`,
     padding: '14px 20px',
     marginBottom: 20,
     textAlign: 'center',
@@ -131,82 +131,82 @@ const STYLES = {
     display: 'inline-block',
     marginTop: 10,
     backgroundColor: 'transparent',
-    border: '1px solid ' + Palette.LIGHT_BLUE,
+    border: `1px solid ${Palette.LIGHT_BLUE}`,
   },
   externalLink: {
     color: Palette.BLUE,
     cursor: 'pointer',
   },
-} as React.CSSProperties;
+} as React.CSSProperties
 
 export interface ProjectShareDetailsProps {
-  semverVersion: string;
-  projectName: string;
-  folder: string;
-  linkAddress: string;
-  isSnapshotSaveInProgress: boolean;
-  isPublic: boolean;
-  shouldShowPrivateWarning: boolean;
-  togglePublic: () => void;
-  mixpanel: any;
-  explorePro: (source?: string) => void;
-  privateProjectCount: number;
-  privateProjectLimit: number;
-  hasError: boolean;
-  organizationName: string;
+  semverVersion: string
+  projectName: string
+  folder: string
+  linkAddress: string
+  isSnapshotSaveInProgress: boolean
+  isPublic: boolean
+  shouldShowPrivateWarning: boolean
+  togglePublic: () => void
+  mixpanel: any
+  explorePro: (source?: string) => void
+  privateProjectCount: number
+  privateProjectLimit: number
+  hasError: boolean
+  organizationName: string
 }
 
 export interface ProjectShareDetailsStates {
-  showTooltip: boolean;
+  showTooltip: boolean
 }
 
 export class ProjectShareDetails extends React.PureComponent<ProjectShareDetailsProps, ProjectShareDetailsStates> {
   state = {
     showTooltip: false,
-  };
+  }
 
   private togglePublic = () => {
-    this.props.togglePublic();
-  };
+    this.props.togglePublic()
+  }
 
   private openInFinder = () => {
-    shell.openItem(this.props.folder);
-  };
+    shell.openItem(this.props.folder)
+  }
 
   private showTooltip = () => {
-    this.setState({showTooltip: true});
-  };
+    this.setState({ showTooltip: true })
+  }
 
   private hideTooltip = () => {
-    this.setState({showTooltip: false});
-  };
+    this.setState({ showTooltip: false })
+  }
 
   private onCopy = () => {
     this.props.mixpanel.haikuTrack('install-options', {
       from: 'app',
       event: 'copy-share-link',
-    });
-  };
+    })
+  }
 
   private onLinkOpen = () => {
     this.props.mixpanel.haikuTrack('install-options', {
       from: 'app',
       event: 'open-share-link',
-    });
-  };
+    })
+  }
 
   private explorePro = () => {
-    this.props.explorePro('publish-modal-toggle');
-  };
+    this.props.explorePro('publish-modal-toggle')
+  }
 
   private trackPublicProfileClick = () => {
     this.props.mixpanel.haikuTrack('install-options', {
       from: 'app',
       event: 'open-public-profile',
-    });
-  };
+    })
+  }
 
-  render () {
+  render() {
     const {
       projectName,
       folder,
@@ -214,24 +214,29 @@ export class ProjectShareDetails extends React.PureComponent<ProjectShareDetails
       linkAddress,
       isSnapshotSaveInProgress,
       isPublic,
-    } = this.props;
+    } = this.props
 
     return (
       <div>
         <div style={STYLES.wrapper}>
-          <div style={{maxWidth: '50%'}}>
+          <div style={{ maxWidth: '50%' }}>
             <h2 style={STYLES.title}>{projectName}</h2>
             <p style={STYLES.info}>
-              <span style={STYLES.label}>ID</span> {projectName}
+              <span style={STYLES.label}>ID</span>
+              {' '}
+              {projectName}
             </p>
-            {!isSnapshotSaveInProgress ? (
-              <p style={STYLES.info}>
-                <span style={STYLES.label}>Version</span>{' '}
-                {semverVersion}
-              </p>
-            ) : (
-              <p style={{height: 16, ...STYLES.info}} />
-            )}
+            {!isSnapshotSaveInProgress
+              ? (
+                  <p style={STYLES.info}>
+                    <span style={STYLES.label}>Version</span>
+                    {' '}
+                    {semverVersion}
+                  </p>
+                )
+              : (
+                  <p style={{ height: 16, ...STYLES.info }} />
+                )}
             <p style={STYLES.info}>
               <span
                 style={STYLES.label}
@@ -241,15 +246,15 @@ export class ProjectShareDetails extends React.PureComponent<ProjectShareDetails
               </span>
             </p>
 
-            {<span style={{visibility: (this.props.isPublic === undefined && false) ? 'hidden' : 'visible'}}>
+            <span style={{ visibility: (this.props.isPublic === undefined && false) ? 'hidden' : 'visible' }}>
               <span
-                style={{...STYLES.toggle, ...(isPublic && STYLES.toggleActive)}}
+                style={{ ...STYLES.toggle, ...(isPublic && STYLES.toggleActive) }}
                 onClick={this.togglePublic}
               >
-                  <span style={{...STYLES.knob, ...(isPublic && STYLES.knobActive)}}/>
+                <span style={{ ...STYLES.knob, ...(isPublic && STYLES.knobActive) }} />
               </span>
               <span
-                style={{...STYLES.info, ...STYLES.infoSpecial2}}
+                style={{ ...STYLES.info, ...STYLES.infoSpecial2 }}
               >
                 <span
                   id="public-private-label"
@@ -262,21 +267,23 @@ export class ProjectShareDetails extends React.PureComponent<ProjectShareDetails
                 style={STYLES.circle}
                 onMouseOver={this.showTooltip}
                 onMouseOut={this.hideTooltip}
-              >?
-              {this.state.showTooltip &&
-                <TooltipBasic light={true} top={16} width={170}>
-                  <div style={STYLES.tiptext}>
-                    Projects set to 'Public' are visible on the Haiku Community and able to be forked.
-                    We also select our favorite haiku to showcase!
-                  </div>
-                </TooltipBasic>
-              }
+              >
+                ?
+                {this.state.showTooltip
+                  && (
+                    <TooltipBasic light={true} top={16} width={170}>
+                      <div style={STYLES.tiptext}>
+                        Projects set to 'Public' are visible on the Haiku Community and able to be forked.
+                        We also select our favorite haiku to showcase!
+                      </div>
+                    </TooltipBasic>
+                  )}
               </span>
-            </span>}
+            </span>
           </div>
 
-          <div style={{width: '50%'}}>
-            <p style={{...STYLES.info, ...STYLES.infoHeading}}>
+          <div style={{ width: '50%' }}>
+            <p style={{ ...STYLES.info, ...STYLES.infoHeading }}>
               <strong>Shareable link:</strong>
             </p>
             <LinkHolster
@@ -286,16 +293,19 @@ export class ProjectShareDetails extends React.PureComponent<ProjectShareDetails
               onLinkOpen={this.onLinkOpen}
               hasError={this.props.hasError}
             />
-            <p style={{...STYLES.info, ...STYLES.infoSpecial}}>
+            <p style={{ ...STYLES.info, ...STYLES.infoSpecial }}>
               Anyone&nbsp;
               {
                 !this.props.isPublic && <span>with the link&nbsp;</span>
               }
-              <strong>can view and install</strong> your project&nbsp;
+              <strong>can view and install</strong>
+              {' '}
+              your project&nbsp;
               {this.props.isPublic && (
                 <span>
                   <br />
-                  from your{' '}
+                  from your
+                  {' '}
                   <ExternalLink
                     style={STYLES.externalLink}
                     href={`https://share.haiku.ai/u/${
@@ -310,25 +320,31 @@ export class ProjectShareDetails extends React.PureComponent<ProjectShareDetails
             </p>
           </div>
         </div>
-        {this.props.shouldShowPrivateWarning &&
-          (<div style={{width: '100%'}}>
-            <div style={STYLES.upgradeWrap}>
-              <div>
-                This project cannot be set to private because you are at the limit
-                <span style={{fontWeight: 600, marginLeft: 4}}>
-                  ({this.props.privateProjectCount}/{this.props.privateProjectLimit})
+        {this.props.shouldShowPrivateWarning
+          && (
+            <div style={{ width: '100%' }}>
+              <div style={STYLES.upgradeWrap}>
+                <div>
+                  This project cannot be set to private because you are at the limit
+                  <span style={{ fontWeight: 600, marginLeft: 4 }}>
+                    (
+                    {this.props.privateProjectCount}
+                    /
+                    {this.props.privateProjectLimit}
+                    )
+                  </span>
+                </div>
+                <div>Upgrade for unlimited private projects and pro features.</div>
+                <span onClick={this.explorePro} style={STYLES.btnSecondary}>
+                  Go Pro
+                  <span style={{ width: 11, height: 11, display: 'inline-block', marginLeft: 4, transform: 'translateY(1px)' }}>
+                    <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
+                  </span>
                 </span>
               </div>
-              <div>Upgrade for unlimited private projects and pro features.</div>
-              <span onClick={this.explorePro} style={STYLES.btnSecondary}>Go Pro
-                  <span style={{width: 11, height: 11, display: 'inline-block', marginLeft: 4, transform: 'translateY(1px)'}}>
-                    <ExternalLinkIconSVG color={Palette.LIGHT_BLUE}/>
-                  </span>
-              </span>
             </div>
-          </div>
-        )}
+          )}
       </div>
-    );
+    )
   }
 }

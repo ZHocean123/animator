@@ -1,21 +1,21 @@
-import * as React from 'react';
+import * as React from 'react'
 
 const STYLES: React.CSSProperties = {
   position: 'absolute',
   bottom: '20px',
   right: '20px',
-};
+}
 
 export interface ModalFooterProps {
-  style?: React.CSSProperties;
+  style?: React.CSSProperties
 }
 
 export class ModalFooter extends React.PureComponent<ModalFooterProps> {
-  render () {
+  render() {
     return (
-      <div style={{...STYLES, ...this.props.style}}>
+      <div style={{ ...STYLES, ...this.props.style }}>
         {this.props.children}
       </div>
-    );
+    )
   }
 }

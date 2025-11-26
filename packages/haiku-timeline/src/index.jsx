@@ -1,68 +1,66 @@
-import {ipcRenderer} from 'electron';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as qs from 'qs';
-import * as Websocket from 'haiku-serialization/src/ws/Websocket';
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
-import Timeline from './components/Timeline';
-import {SentryReporter} from 'haiku-sdk-creator';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {fetchProjectConfigInfo} from '@haiku/sdk-client';
-import {shouldEmitErrors} from 'haiku-common';
+import { fetchProjectConfigInfo } from '@haiku/sdk-client'
+import { ipcRenderer } from 'electron'
+import { shouldEmitErrors } from 'haiku-common'
+import { SentryReporter } from 'haiku-sdk-creator'
+import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket'
+import * as Websocket from 'haiku-serialization/src/ws/Websocket'
+import * as qs from 'qs'
+import * as ReactDOM from 'react-dom'
+import Timeline from './components/Timeline'
 
 // We are in a webview; use query string parameters for boot-up configuration
-const search = (window.location.search || '').split('?')[1] || '';
-const params = qs.parse(search, {plainObjects: true});
-const config = Object.assign({}, params);
+const search = (window.location.search || '').split('?')[1] || ''
+const params = qs.parse(search, { plainObjects: true })
+const config = Object.assign({}, params)
 if (config.dotenv) {
-  Object.assign(global.process.env, config.dotenv);
+  Object.assign(global.process.env, config.dotenv)
 }
 
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel');
+const mixpanel = require('haiku-serialization/src/utils/Mixpanel')
 
-global.sentryReporter = new SentryReporter();
+global.sentryReporter = new SentryReporter()
 window.Raven.config('https://d045653ab5d44c808480fa6c3fa8e87c@sentry.io/226387', {
   environment: process.env.NODE_ENV,
   release: process.env.HAIKU_RELEASE_VERSION,
   dataCallback: global.sentryReporter.callback.bind(global.sentryReporter),
   shouldSendCallback: shouldEmitErrors,
-});
+})
 
-window.Raven.install();
+window.Raven.install()
 
 try {
   if (!config.folder) {
-    throw new Error('A folder (the absolute path to the user project) is required');
+    throw new Error('A folder (the absolute path to the user project) is required')
   }
-  function _fixPlumbingUrl (url) {
-    return url.replace(/^http/, 'ws');
+  function _fixPlumbingUrl(url) {
+    return url.replace(/^http/, 'ws')
   }
 
   fetchProjectConfigInfo(config.folder, (err, userconfig) => {
     if (err) {
-      throw err;
+      throw err
     }
 
     const websocket = (config.plumbing)
       ? new Websocket(_fixPlumbingUrl(config.plumbing), config.folder, 'controllee', 'timeline', null, config.socket.token)
-      : new MockWebsocket(ipcRenderer);
+      : new MockWebsocket(ipcRenderer)
 
     // Add extra context to Sentry reports, this info is also used by carbonite.
-    const folderHelper = config.folder.split('/').reverse();
+    const folderHelper = config.folder.split('/').reverse()
     window.Raven.setExtraContext({
       organizationName: folderHelper[1] || 'unknown',
       projectName: folderHelper[0] || 'unknown',
       projectPath: config.folder,
-    });
+    })
     window.Raven.setUserContext({
       email: config.email,
-    });
+    })
 
     mixpanel.mergeToPayload({
       distinct_id: config.email,
-    });
+    })
 
-    window.isWebview = config.webview;
+    window.isWebview = config.webview
 
     ReactDOM.render(
       <Timeline
@@ -71,12 +69,13 @@ try {
         userconfig={userconfig}
         websocket={websocket}
         folder={config.folder}
-        />,
+      />,
       document.getElementById('root'),
-    );
-  });
-} catch (e) {
+    )
+  })
+}
+catch (e) {
   Raven.captureException(e, () => {
-    throw e;
-  });
+    throw e
+  })
 }

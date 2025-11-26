@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import * as Color from 'color';
-import {Palette } from 'haiku-ui-common';
-import {SuccessIconSVG, InfoIconSVG, WarningIconSVG, DangerIconSVG} from 'haiku-ui-common';
+import * as Color from 'color'
+import { DangerIconSVG, InfoIconSVG, Palette, SuccessIconSVG, WarningIconSVG } from 'haiku-ui-common'
+
+import * as Radium from 'radium'
+import * as React from 'react'
 
 const STYLES = {
   cap: {
@@ -78,53 +78,66 @@ const STYLES = {
     color: Palette.ROCK,
     width: '190px',
   },
-};
+}
 
 class Toast extends React.Component {
-  constructor () {
-    super();
+  constructor() {
+    super()
 
-    this.closeNotice = this.closeNotice.bind(this);
+    this.closeNotice = this.closeNotice.bind(this)
   }
 
-  closeNotice () {
-    this.props.removeNotice(this.props.myKey);
+  closeNotice() {
+    this.props.removeNotice(this.props.myKey)
   }
 
-  render () {
-    const {toastType, toastTitle, toastMessage, closeText, lightScheme, toastCount} = this.props;
-    let icon;
+  render() {
+    const { toastType, toastTitle, toastMessage, closeText, lightScheme, toastCount } = this.props
+    let icon
 
     if (toastType === 'info') {
-      icon = <InfoIconSVG />;
-    } else if (toastType === 'success') {
-      icon = <SuccessIconSVG />;
-    } else if (toastType === 'warning') {
-      icon = <WarningIconSVG />;
-    } else if (toastType === 'danger' || toastType === 'error') {
-      icon = <DangerIconSVG />;
+      icon = <InfoIconSVG />
+    }
+    else if (toastType === 'success') {
+      icon = <SuccessIconSVG />
+    }
+    else if (toastType === 'warning') {
+      icon = <WarningIconSVG />
+    }
+    else if (toastType === 'danger' || toastType === 'error') {
+      icon = <DangerIconSVG />
     }
 
     return (
-      <div style={STYLES.container}
+      <div
+        style={STYLES.container}
         id="toast"
-        className="toast">
-        <div style={[
-          STYLES.cap,
-          STYLES[toastType],
-          lightScheme && {backgroundColor: Color(STYLES[toastType].backgroundColor).fade(0.27)},
-        ]}
-          onClick={this.closeNotice}>{icon}
+        className="toast"
+      >
+        <div
+          style={[
+            STYLES.cap,
+            STYLES[toastType],
+            lightScheme && { backgroundColor: Color(STYLES[toastType].backgroundColor).fade(0.27) },
+          ]}
+          onClick={this.closeNotice}
+        >
+          {icon}
         </div>
-        <div style={[STYLES.title]}>{toastTitle}{(toastCount > 1) ? ` (${toastCount})` : ''}</div>
+        <div style={[STYLES.title]}>
+          {toastTitle}
+          {(toastCount > 1) ? ` (${toastCount})` : ''}
+        </div>
         <div style={[STYLES.body]}>{toastMessage}</div>
         <span
           style={[STYLES.closer, lightScheme && STYLES.lightCloser]}
-          onClick={this.closeNotice}>{closeText || 'Got it'}
+          onClick={this.closeNotice}
+        >
+          {closeText || 'Got it'}
         </span>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(Toast);
+export default Radium(Toast)

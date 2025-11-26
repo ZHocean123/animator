@@ -1,55 +1,58 @@
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
-import zIndex from './styles/zIndex';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import zIndex from './styles/zIndex'
 
 export interface ScrubberInteriorProps {
-  timeline: any;
-  timelineOffsetPadding: number;
-  onMouseDown: React.MouseEventHandler<HTMLElement>;
+  timeline: any
+  timelineOffsetPadding: number
+  onMouseDown: React.MouseEventHandler<HTMLElement>
 }
 
 export default class ScrubberInterior extends React.Component<ScrubberInteriorProps> {
-  private mounted = false;
+  private mounted = false
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps: ScrubberInteriorProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ScrubberInteriorProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
   handleUpdate = (what: string): null => {
     if (!this.mounted) {
-      return null;
+      return null
     }
 
     if (what === 'timeline-frame') {
-      this.forceUpdate();
-    } else if (what === 'timeline-frame-range') {
-      this.forceUpdate();
-    } else if (what === 'time-display-mode-change') {
-      this.forceUpdate();
-    } else if (what === 'timeline-scroll' || what === 'timeline-scroll-from-scrollbar') {
-      this.forceUpdate();
+      this.forceUpdate()
     }
-  };
+    else if (what === 'timeline-frame-range') {
+      this.forceUpdate()
+    }
+    else if (what === 'time-display-mode-change') {
+      this.forceUpdate()
+    }
+    else if (what === 'timeline-scroll' || what === 'timeline-scroll-from-scrollbar') {
+      this.forceUpdate()
+    }
+  }
 
-  render () {
-    const frameInfo = this.props.timeline.getFrameInfo();
-    const currFrame = this.props.timeline.getCurrentFrame();
-    const pxOffset = currFrame * frameInfo.pxpf;
-    const translation = this.props.timeline.getPropertiesPixelWidth() + pxOffset + this.props.timelineOffsetPadding;
+  render() {
+    const frameInfo = this.props.timeline.getFrameInfo()
+    const currFrame = this.props.timeline.getCurrentFrame()
+    const pxOffset = currFrame * frameInfo.pxpf
+    const translation = this.props.timeline.getPropertiesPixelWidth() + pxOffset + this.props.timelineOffsetPadding
 
     return (
       <div
@@ -128,6 +131,6 @@ export default class ScrubberInterior extends React.Component<ScrubberInteriorPr
           }}
         />
       </div>
-    );
+    )
   }
 }

@@ -7,22 +7,23 @@
  * The only change is the addition of ` && !g.hasAttr('filter')` on line 65.
  */
 
-'use strict';
+'use strict'
 
-exports.type = 'perItemReverse';
+exports.type = 'perItemReverse'
 
-exports.active = true;
+exports.active = true
 
-exports.description = 'collapses useless groups';
+exports.description = 'collapses useless groups'
 
-let collections = require('svgo/plugins/_collections'),
-  attrsInheritable = collections.inheritableAttrs,
-  animationElems = collections.elemsGroups.animation;
+const collections = require('svgo/plugins/_collections')
 
-function hasAnimatedAttr (item) {
+const attrsInheritable = collections.inheritableAttrs
+const animationElems = collections.elemsGroups.animation
+
+function hasAnimatedAttr(item) {
   /* jshint validthis:true */
-  return item.isElem(animationElems) && item.hasAttr('attributeName', this) ||
-    !item.isEmpty() && item.content.some(hasAnimatedAttr, this);
+  return item.isElem(animationElems) && item.hasAttr('attributeName', this)
+    || !item.isEmpty() && item.content.some(hasAnimatedAttr, this)
 }
 
 /*
@@ -49,60 +50,63 @@ function hasAnimatedAttr (item) {
  * @author Kir Belevich
  */
 exports.fn = function (item) {
-
   // non-empty elements
   if (item.isElem() && (!item.isElem('switch') || isFeaturedSwitch(item)) && !item.isEmpty()) {
-    item.content.forEach(function (g, i) {
+    item.content.forEach((g, i) => {
       // non-empty groups
       if (g.isElem('g') && !g.isEmpty()) {
         // move group attibutes to the single content element
         if (g.hasAttr() && g.content.length === 1) {
-          const inner = g.content[0];
+          const inner = g.content[0]
 
-          if (inner.isElem() && !inner.hasAttr('id') &&
-            !(g.hasAttr('class') && inner.hasAttr('class')) && (
-              !g.hasAttr('clip-path') && !g.hasAttr('mask') ||
-              inner.isElem('g') && !g.hasAttr('transform') && !inner.hasAttr('transform') && !g.hasAttr('filter')
-            )
+          if (inner.isElem() && !inner.hasAttr('id')
+            && !(g.hasAttr('class') && inner.hasAttr('class')) && (
+            !g.hasAttr('clip-path') && !g.hasAttr('mask')
+            || inner.isElem('g') && !g.hasAttr('transform') && !inner.hasAttr('transform') && !g.hasAttr('filter')
+          )
           ) {
-            g.eachAttr(function (attr) {
+            g.eachAttr((attr) => {
               if (g.content.some(hasAnimatedAttr, attr.name)) {
-                return;
+                return
               }
 
               if (!inner.hasAttr(attr.name)) {
-                inner.addAttr(attr);
-              } else if (attr.name == 'transform') {
-                inner.attr(attr.name).value = attr.value + ' ' + inner.attr(attr.name).value;
-              } else if (inner.hasAttr(attr.name, 'inherit')) {
-                inner.attr(attr.name).value = attr.value;
-              } else if (
-                attrsInheritable.indexOf(attr.name) < 0 &&
-                !inner.hasAttr(attr.name, attr.value)
+                inner.addAttr(attr)
+              }
+              else if (attr.name == 'transform') {
+                inner.attr(attr.name).value = `${attr.value} ${inner.attr(attr.name).value}`
+              }
+              else if (inner.hasAttr(attr.name, 'inherit')) {
+                inner.attr(attr.name).value = attr.value
+              }
+              else if (
+                !attrsInheritable.includes(attr.name)
+                && !inner.hasAttr(attr.name, attr.value)
               ) {
-                return;
+                return
               }
 
-              g.removeAttr(attr.name);
-            });
+              g.removeAttr(attr.name)
+            })
           }
         }
 
         // collapse groups without attributes
-        if (!g.hasAttr() && !g.content.some(function (item) {
-          return item.isElem(animationElems);
+        if (!g.hasAttr() && !g.content.some((item) => {
+          return item.isElem(animationElems)
         })) {
-          item.spliceContent(i, 1, g.content);
+          item.spliceContent(i, 1, g.content)
         }
-      } else if (isFeaturedSwitch(g)) {
-        item.spliceContent(i, 1, g.content);
       }
-    });
+      else if (isFeaturedSwitch(g)) {
+        item.spliceContent(i, 1, g.content)
+      }
+    })
   }
-};
+}
 
-function isFeaturedSwitch (elem) {
+function isFeaturedSwitch(elem) {
   return elem.isElem('switch') && !elem.isEmpty() && !elem.content.some(child =>
     child.hasAttr('systemLanguage') || child.hasAttr('requiredFeatures') || child.hasAttr('requiredExtensions'),
-  );
+  )
 }

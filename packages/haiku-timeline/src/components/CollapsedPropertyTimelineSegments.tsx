@@ -1,19 +1,19 @@
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
-import RowSegments from './RowSegments';
-import zIndex from './styles/zIndex';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import RowSegments from './RowSegments'
+import zIndex from './styles/zIndex'
 
 export interface CollapsedPropertyTimelineSegmentsProps {
-  row: any;
-  timeline: any;
-  component: any;
-  rowHeight: number;
+  row: any
+  timeline: any
+  component: any
+  rowHeight: number
 }
 
 export default class CollapsedPropertyTimelineSegments extends React.PureComponent<
   CollapsedPropertyTimelineSegmentsProps
 > {
-  render () {
+  render() {
     // TODO: Optimize this? We don't need to render every segment since some of them overlap.
     // Maybe keep a list of keyframe 'poles' rendered, and only render once in that spot?
     return (
@@ -39,6 +39,6 @@ export default class CollapsedPropertyTimelineSegments extends React.PureCompone
           rowHeight={this.props.rowHeight}
         />
       </div>
-    );
+    )
   }
 }

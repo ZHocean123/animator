@@ -1,10 +1,10 @@
-import {readJsonSync} from 'fs-extra';
-import {join, resolve} from 'path';
+import { join, resolve } from 'node:path'
+import { readJsonSync } from 'fs-extra'
 
 /**
  * Retrieve the experiment config from disk.
  */
-export const getExperimentConfig = () => {
-  const experimentsFolder = resolve(__dirname, '..', '..', 'config');
-  return readJsonSync(join(experimentsFolder, 'experiments.json'));
-};
+export function getExperimentConfig() {
+  const experimentsFolder = resolve(__dirname, '..', '..', 'config')
+  return readJsonSync(join(experimentsFolder, 'experiments.json'))
+}

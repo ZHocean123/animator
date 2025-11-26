@@ -1,23 +1,23 @@
-import {Glass} from '.';
-import {EnvoyEvent, MaybeAsync} from '../envoy';
-import EnvoyServer from '../envoy/EnvoyServer';
+import type { Glass } from '.'
+import type { EnvoyEvent, MaybeAsync } from '../envoy'
+import type EnvoyServer from '../envoy/EnvoyServer'
 
-export const GLASS_CHANNEL = 'glass';
+export const GLASS_CHANNEL = 'glass'
 
 export class GlassHandler implements Glass {
-  constructor (private readonly server: EnvoyServer) {}
+  constructor(private readonly server: EnvoyServer) {}
 
-  cut (): MaybeAsync<void> {
+  cut(): MaybeAsync<void> {
     this.server.emit(GLASS_CHANNEL, {
       payload: {},
       name: 'cut',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
-  copy (): MaybeAsync<void> {
+  copy(): MaybeAsync<void> {
     this.server.emit(GLASS_CHANNEL, {
       payload: {},
       name: 'copy',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 }

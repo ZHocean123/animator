@@ -1,11 +1,9 @@
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {Palette} from 'haiku-ui-common';
-import {ExternalLink} from 'haiku-ui-common';
-import {ExternalLinkIconSVG} from 'haiku-ui-common';
-import {ModalFooter, ModalHeader, ModalWrapper} from 'haiku-ui-common';
-import * as React from 'react';
-import {BTN_STYLES} from '../styles/btnShared';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import { ExternalLink, ExternalLinkIconSVG, ModalFooter, ModalHeader, ModalWrapper, Palette } from 'haiku-ui-common'
+
+import * as React from 'react'
+import { BTN_STYLES } from '../styles/btnShared'
 
 const STYLES: React.CSSProperties = {
   disabledForm: {
@@ -60,7 +58,7 @@ const STYLES: React.CSSProperties = {
   },
   upgradeWrap: {
     color: Palette.SUNSTONE,
-    border: '1px solid ' + Palette.BLUE,
+    border: `1px solid ${Palette.BLUE}`,
     padding: '14px 20px',
     marginTop: 20,
     textAlign: 'center',
@@ -72,49 +70,49 @@ const STYLES: React.CSSProperties = {
     display: 'inline-block',
     marginTop: 10,
     backgroundColor: 'transparent',
-    border: '1px solid ' + Palette.LIGHT_BLUE,
+    border: `1px solid ${Palette.LIGHT_BLUE}`,
   },
-};
-
-export interface PublicPrivateOptInModalProps {
-  isPublic: boolean;
-  forceDisablePrivate: boolean;
-  onToggle: () => void;
-  onContinue: () => void;
-  onClose: () => void;
-  explorePro: (source?: string) => void;
-  privateProjectCount: number;
-  privateProjectLimit: number;
 }
 
-const SOURCE = 'public-private-opt-in-modal';
+export interface PublicPrivateOptInModalProps {
+  isPublic: boolean
+  forceDisablePrivate: boolean
+  onToggle: () => void
+  onContinue: () => void
+  onClose: () => void
+  explorePro: (source?: string) => void
+  privateProjectCount: number
+  privateProjectLimit: number
+}
+
+const SOURCE = 'public-private-opt-in-modal'
 
 export class PublicPrivateOptInModal extends React.PureComponent<PublicPrivateOptInModalProps> {
-  private initiallyPrivate = false;
-  private get shouldDisablePrivate () {
+  private initiallyPrivate = false
+  private get shouldDisablePrivate() {
     return this.props.forceDisablePrivate || (
-      !this.initiallyPrivate &&
-      this.props.privateProjectLimit !== null &&
-      this.props.privateProjectCount >= this.props.privateProjectLimit
-    );
+      !this.initiallyPrivate
+      && this.props.privateProjectLimit !== null
+      && this.props.privateProjectCount >= this.props.privateProjectLimit
+    )
   }
 
-  constructor (props: PublicPrivateOptInModalProps) {
-    super(props);
-    this.initiallyPrivate = !props.isPublic;
+  constructor(props: PublicPrivateOptInModalProps) {
+    super(props)
+    this.initiallyPrivate = !props.isPublic
   }
 
   private explorePro = () => {
-    this.props.explorePro(SOURCE);
-  };
+    this.props.explorePro(SOURCE)
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.shouldDisablePrivate) {
-      mixpanel.haikuTrack(`creator:upgrade-cta-shown:${SOURCE}`);
+      mixpanel.haikuTrack(`creator:upgrade-cta-shown:${SOURCE}`)
     }
   }
 
-  render () {
+  render() {
     return (
       <ModalWrapper style={STYLES.wrapper} onEsc={this.props.onClose}>
         <ModalHeader><h2>Confirm privacy settings</h2></ModalHeader>
@@ -130,22 +128,27 @@ export class PublicPrivateOptInModal extends React.PureComponent<PublicPrivateOp
             />
             <span style={STYLES.label}>Public</span>
             <div style={STYLES.description}>
-              Visible on the <ExternalLink
+              Visible on the
+              {' '}
+              <ExternalLink
                 style={STYLES.link}
-                href={'https://share.haiku.ai/'}
+                href="https://share.haiku.ai/"
               >
                 Haiku Community
-              </ExternalLink>,
-              and able to be <ExternalLink
+              </ExternalLink>
+              ,
+              and able to be
+              {' '}
+              <ExternalLink
                 style={STYLES.link}
-                href={'https://docs.haiku.ai/embedding-and-using-haiku/publishing-and-embedding.html#forking'}
+                href="https://docs.haiku.ai/embedding-and-using-haiku/publishing-and-embedding.html#forking"
               >
                 forked
               </ExternalLink>
               .
             </div>
           </label>
-          <label style={{...STYLES.field, ...(this.shouldDisablePrivate && STYLES.disabledForm)}}>
+          <label style={{ ...STYLES.field, ...(this.shouldDisablePrivate && STYLES.disabledForm) }}>
             <input
               type="radio"
               value="private"
@@ -163,35 +166,40 @@ export class PublicPrivateOptInModal extends React.PureComponent<PublicPrivateOp
             <div style={STYLES.upgradeWrap}>
               <div>
                 You've used all your private projects
-                <span style={{fontWeight: 600, marginLeft: 4}}>
-                  ({this.props.privateProjectCount}/{this.props.privateProjectLimit})
+                <span style={{ fontWeight: 600, marginLeft: 4 }}>
+                  (
+                  {this.props.privateProjectCount}
+                  /
+                  {this.props.privateProjectLimit}
+                  )
                 </span>
               </div>
               <div>Upgrade for unlimited private projects and pro features.</div>
-              <span onClick={this.explorePro} style={STYLES.btnSecondary}>Go Pro
-                  <span
-                    style={{
-                      width: 11,
-                      height: 11,
-                      display: 'inline-block',
-                      marginLeft: 4,
-                      transform: 'translateY(1px)',
-                    }}
-                  >
-                    <ExternalLinkIconSVG color={Palette.LIGHT_BLUE}/>
-                  </span>
+              <span onClick={this.explorePro} style={STYLES.btnSecondary}>
+                Go Pro
+                <span
+                  style={{
+                    width: 11,
+                    height: 11,
+                    display: 'inline-block',
+                    marginLeft: 4,
+                    transform: 'translateY(1px)',
+                  }}
+                >
+                  <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
+                </span>
               </span>
             </div>
           )}
         </form>
         <ModalFooter>
-          <div style={{display: 'inline-block'}}>
-          <button
-            onClick={this.props.onClose}
-            style={STYLES.cancelButton}
-          >
-            Cancel
-          </button>
+          <div style={{ display: 'inline-block' }}>
+            <button
+              onClick={this.props.onClose}
+              style={STYLES.cancelButton}
+            >
+              Cancel
+            </button>
             <button
               onClick={this.props.onContinue}
               style={STYLES.button}
@@ -202,6 +210,6 @@ export class PublicPrivateOptInModal extends React.PureComponent<PublicPrivateOp
           </div>
         </ModalFooter>
       </ModalWrapper>
-    );
+    )
   }
 }

@@ -1,7 +1,7 @@
-const Svgo = require('svgo');
-const customPlugins = require('./plugins');
+const Svgo = require('svgo')
+const customPlugins = require('./plugins')
 
-let singleton;
+let singleton
 
 const plugins = [
   'removeMetadata',
@@ -17,7 +17,7 @@ const plugins = [
   'removeViewBox',
   'convertStyleToAttrs',
   customPlugins,
-];
+]
 
 module.exports = () => {
   if (!singleton) {
@@ -25,8 +25,8 @@ module.exports = () => {
       full: true,
       floatPrecision: 3,
       plugins,
-    });
+    })
   }
 
-  return singleton;
-};
+  return singleton
+}

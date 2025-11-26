@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {SimpleSelect} from 'react-selectize';
-import {Palette } from 'haiku-ui-common';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import { SimpleSelect } from 'react-selectize'
 
 const STYLES = {
   selectWrapper: {
@@ -9,31 +9,32 @@ const STYLES = {
     display: 'inline-block',
     width: '100%',
   },
-};
+}
 
 class EventSelector extends React.Component {
   onValueChange = (selected) => {
     if (selected) {
-      this.props.onChange(selected.value);
+      this.props.onChange(selected.value)
     }
-  };
+  }
 
   createFromSearch = (options, search) => {
-    return {label: search, value: search, groupId: 'Custom Events'};
-  };
+    return { label: search, value: search, groupId: 'Custom Events' }
+  }
 
-  optionToLabel (option) {
-    let label = option.label;
+  optionToLabel(option) {
+    let label = option.label
 
     if (option.newOption) {
       if (option.label) {
-        label = `Add '${option.label}'`;
-      } else {
-        label = 'To add a custom event, type anything and press Enter';
+        label = `Add '${option.label}'`
+      }
+      else {
+        label = 'To add a custom event, type anything and press Enter'
       }
     }
 
-    return label;
+    return label
   }
 
   renderOption = (item) => {
@@ -47,19 +48,19 @@ class EventSelector extends React.Component {
       >
         {this.optionToLabel(item)}
       </div>
-    );
-  };
+    )
+  }
 
-  render () {
-    const groups = [];
-    const select = [];
+  render() {
+    const groups = []
+    const select = []
 
-    this.props.options.forEach(({label, options}) => {
-      groups.push({groupId: label, title: label});
+    this.props.options.forEach(({ label, options }) => {
+      groups.push({ groupId: label, title: label })
       options.forEach((option) => {
-        select.push({groupId: label, ...option});
-      });
-    });
+        select.push({ groupId: label, ...option })
+      })
+    })
 
     return (
       <div style={STYLES.selectWrapper}>
@@ -114,7 +115,7 @@ class EventSelector extends React.Component {
           groups={groups}
           options={select}
           hideResetButton={true}
-          placeholder={'Add a new Action'}
+          placeholder="Add a new Action"
           createFromSearch={this.createFromSearch}
           value={null}
           onValueChange={this.onValueChange}
@@ -123,7 +124,7 @@ class EventSelector extends React.Component {
           renderOption={this.renderOption}
         />
       </div>
-    );
+    )
   }
 }
 
@@ -132,6 +133,6 @@ EventSelector.propTypes = {
   defaultEventName: React.PropTypes.string,
   options: React.PropTypes.array.isRequired,
   disabledOptions: React.PropTypes.object.isRequired,
-};
+}
 
-export default EventSelector;
+export default EventSelector

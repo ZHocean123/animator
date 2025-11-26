@@ -1,25 +1,23 @@
-import * as React from 'react';
-import {render} from 'react-dom';
-import * as Websocket from 'haiku-serialization/src/ws/Websocket';
-import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
-import Creator from './react/Creator';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket'
+import * as Websocket from 'haiku-serialization/src/ws/Websocket'
+import { render } from 'react-dom'
+import Creator from './react/Creator'
 
-const remote = require('electron').remote;
+const remote = require('electron').remote
 
-function _fixPlumbingUrl (url) {
-  return url.replace(/^http/, 'ws');
+function _fixPlumbingUrl(url) {
+  return url.replace(/^http/, 'ws')
 }
 
-export default function dom (haiku) {
-  const listeners = {};
+export default function dom(haiku) {
+  const listeners = {}
 
   const props = {
     medium: window,
     listen: (key, fn) => {
-      listeners[key] = fn;
+      listeners[key] = fn
     },
-  };
+  }
 
   const websocket = haiku.plumbing && !haiku.proxy.active
     ? new Websocket(
@@ -30,14 +28,14 @@ export default function dom (haiku) {
         null,
         haiku.socket.token,
       )
-    : new MockWebsocket();
+    : new MockWebsocket()
 
   websocket.on('close', () => {
-    const currentWindow = remote.getCurrentWindow();
+    const currentWindow = remote.getCurrentWindow()
     if (currentWindow) {
-      currentWindow.destroy();
+      currentWindow.destroy()
     }
-  });
+  })
 
   render(
     <Creator
@@ -47,5 +45,5 @@ export default function dom (haiku) {
       {...props}
     />,
     document.getElementById('mount'),
-  );
+  )
 }

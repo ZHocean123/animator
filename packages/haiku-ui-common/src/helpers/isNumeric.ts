@@ -1,3 +1,3 @@
-export default function isNumeric (n: any) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+export default function isNumeric(n: any) {
+  return !isNaN(Number.parseFloat(n)) && isFinite(n)
 }

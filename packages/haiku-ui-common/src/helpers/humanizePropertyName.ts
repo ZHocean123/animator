@@ -1,4 +1,4 @@
-import * as decamelize from 'decamelize';
+import * as decamelize from 'decamelize'
 
 const HUMANIZED_PROP_NAMES = {
   'rotation.z': 'Rotation Z', // Change me if we enable other types of rotation again
@@ -11,11 +11,11 @@ const HUMANIZED_PROP_NAMES = {
   'sizeAbsolute.y': 'Size Y',
   'style.overflowX': 'Overflow X',
   'style.overflowY': 'Overflow Y',
-};
+}
 
-export default function humanizePropertyName (propertyName: string) {
+export default function humanizePropertyName(propertyName: string) {
   if (HUMANIZED_PROP_NAMES[propertyName]) {
-    return HUMANIZED_PROP_NAMES[propertyName];
+    return HUMANIZED_PROP_NAMES[propertyName]
   }
-  return decamelize(propertyName).replace(/[\W_]/g, ' ');
+  return decamelize(propertyName).replace(/[\W_]/g, ' ')
 }

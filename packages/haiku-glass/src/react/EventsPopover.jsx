@@ -1,22 +1,22 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import {Palette } from 'haiku-ui-common';
-import {ChevronLeftIconSVG, ChevronRightIconSVG} from 'haiku-ui-common';
+import { ChevronLeftIconSVG, ChevronRightIconSVG, Palette } from 'haiku-ui-common'
 
-const popoverWidth = 210;
-const popoverHeight = '200px';
-const pageTransDur = 170;
+import * as Radium from 'radium'
+import * as React from 'react'
+
+const popoverWidth = 210
+const popoverHeight = '200px'
+const pageTransDur = 170
 
 const STYLES = {
   container: {
     borderRadius: '4px',
     minHeight: '155px',
     maxHeight: '200px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     display: 'relative',
     backgroundColor: Palette.FATHER_COAL,
     color: Palette.ROCK,
-    boxShadow: '0 6px 25px 0 ' + Palette.FATHER_COAL,
+    boxShadow: `0 6px 25px 0 ${Palette.FATHER_COAL}`,
     overflowX: 'hidden',
     overflowY: 'auto',
   },
@@ -24,7 +24,7 @@ const STYLES = {
     overflow: 'hidden',
     position: 'relative',
     borderRadius: '4px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     height: popoverHeight,
   },
   pages: {
@@ -32,7 +32,7 @@ const STYLES = {
     top: 0,
     left: 0,
     borderRadius: '4px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     height: popoverHeight,
     fontSize: '12px',
     WebkitUserSelect: 'none',
@@ -46,8 +46,8 @@ const STYLES = {
     transform: 'translate3d(100%, 0, 0)',
     transition: `transform ${pageTransDur}ms ease-out`,
     color: 'white',
-    width: popoverWidth + 1 + 'px',
-    borderLeft: '1px solid ' + Palette.COAL,
+    width: `${popoverWidth + 1}px`,
+    borderLeft: `1px solid ${Palette.COAL}`,
     marginLeft: '-1px',
   },
   pageThree: {
@@ -55,8 +55,8 @@ const STYLES = {
     transform: 'translate3d(100%, 0, 0)',
     transition: `transform ${pageTransDur}ms ease-out`,
     color: 'white',
-    width: popoverWidth + 1 + 'px',
-    borderLeft: '1px solid ' + Palette.COAL,
+    width: `${popoverWidth + 1}px`,
+    borderLeft: `1px solid ${Palette.COAL}`,
     marginLeft: '-1px',
   },
   onPage: {
@@ -74,7 +74,7 @@ const STYLES = {
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: '1.3px',
-    borderBottom: '1px solid ' + Palette.COAL,
+    borderBottom: `1px solid ${Palette.COAL}`,
   },
   title: {
     paddingTop: 3,
@@ -92,10 +92,10 @@ const STYLES = {
     fontWeight: 700,
   },
   btn: {
-    backgroundColor: Palette.COAL,
-    color: Palette.ROCK,
-    padding: '4px 12px',
-    borderRadius: '3px',
+    'backgroundColor': Palette.COAL,
+    'color': Palette.ROCK,
+    'padding': '4px 12px',
+    'borderRadius': '3px',
     ':hover': {
       backgroundColor: Palette.GRAY,
     },
@@ -109,7 +109,7 @@ const STYLES = {
     padding: '8px !important',
   },
   bottomRow: {
-    borderTop: '1px solid ' + Palette.COAL,
+    borderTop: `1px solid ${Palette.COAL}`,
     padding: 6,
     position: 'absolute',
     bottom: 0,
@@ -117,9 +117,9 @@ const STYLES = {
     right: 0,
   },
   btnMini: {
-    padding: '4px 4px',
-    opacity: 0.7,
-    float: 'right',
+    'padding': '4px 4px',
+    'opacity': 0.7,
+    'float': 'right',
     ':hover': {
       opacity: 1,
     },
@@ -128,7 +128,7 @@ const STYLES = {
     marginTop: '3px',
   },
   btnTrans: {
-    backgroundColor: 'transparent',
+    'backgroundColor': 'transparent',
     ':hover': {
       backgroundColor: 'transparent',
     },
@@ -139,10 +139,10 @@ const STYLES = {
     top: '6px',
   },
   row: {
-    position: 'relative',
-    width: '100%',
-    padding: '3px 10px 3px 10px',
-    cursor: 'pointer',
+    'position': 'relative',
+    'width': '100%',
+    'padding': '3px 10px 3px 10px',
+    'cursor': 'pointer',
     ':hover': {
       backgroundColor: Palette.DARK_GRAY,
     },
@@ -167,52 +167,52 @@ const STYLES = {
   activeIndicator: {
     backgroundColor: Palette.LIGHT_PINK,
   },
-};
+}
 
 class EventsPopover extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       onPageTwo: false,
       onPageThree: false,
       prevPage: null,
       selectedEvent: null,
-    };
-    this.goToPageOne = this.goToPageOne.bind(this);
-    this.goToPageTwo = this.goToPageTwo.bind(this);
-    this.goToPageThree = this.goToPageThree.bind(this);
-    this.goPrevPage = this.goPrevPage.bind(this);
-    this.selectTimeline = this.selectTimeline.bind(this);
+    }
+    this.goToPageOne = this.goToPageOne.bind(this)
+    this.goToPageTwo = this.goToPageTwo.bind(this)
+    this.goToPageThree = this.goToPageThree.bind(this)
+    this.goPrevPage = this.goPrevPage.bind(this)
+    this.selectTimeline = this.selectTimeline.bind(this)
   }
 
-  goToPageOne () {
-    this.setState({onPageTwo: false});
-    this.setState({onPageThree: false});
-    this.setState({prevPage: null});
+  goToPageOne() {
+    this.setState({ onPageTwo: false })
+    this.setState({ onPageThree: false })
+    this.setState({ prevPage: null })
   }
 
-  goToPageTwo () {
-    this.setState({onPageTwo: true});
-    this.setState({onPageThree: false});
+  goToPageTwo() {
+    this.setState({ onPageTwo: true })
+    this.setState({ onPageThree: false })
   }
 
-  goToPageThree (prevPage, chosenEvent) {
-    this.setState({onPageThree: true});
-    this.setState({prevPage});
-    this.setState({selectedEvent: chosenEvent});
+  goToPageThree(prevPage, chosenEvent) {
+    this.setState({ onPageThree: true })
+    this.setState({ prevPage })
+    this.setState({ selectedEvent: chosenEvent })
   }
 
-  goPrevPage () {
+  goPrevPage() {
     this.state.prevPage === 'Two'
       ? this.goToPageTwo()
-      : this.goToPageOne();
+      : this.goToPageOne()
   }
 
-  selectTimeline () {
+  selectTimeline() {
     // TODO
   }
 
-  renderConnections () {
+  renderConnections() {
     return (
       <div>
         {this.props.connections.map((connection) => {
@@ -220,24 +220,29 @@ class EventsPopover extends React.Component {
             <div
               key={`main-${connection}`}
               style={STYLES.row}
-              onClick={() => this.goToPageThree('One', connection[0])}>
-              {connection[0]} <span style={STYLES.mutedText}>plays</span> {connection[1]}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              onClick={() => this.goToPageThree('One', connection[0])}
+            >
+              {connection[0]}
+              {' '}
+              <span style={STYLES.mutedText}>plays</span>
+              {' '}
+              {connection[1]}
+              <span style={{ position: 'absolute', right: '4px', top: 0 }}>
                 <button
                   key={`v-${connection}`}
-                  style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
+                  style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}
+                >
                   <ChevronRightIconSVG color={Palette.ROCK} />
                 </button>
               </span>
             </div>
-          );
-        })
-        }
+          )
+        })}
       </div>
-    );
+    )
   }
 
-  renderAvailEvents () {
+  renderAvailEvents() {
     return (
       <div>
         {this.props.availEvents.map((theEvent) => {
@@ -245,55 +250,56 @@ class EventsPopover extends React.Component {
             <div
               key={`main-${theEvent}`}
               style={STYLES.row}
-              onClick={() => this.goToPageThree('Two', theEvent)}>
+              onClick={() => this.goToPageThree('Two', theEvent)}
+            >
               {theEvent}
-              <span style={{position: 'absolute', right: '4px', top: 0}}>
+              <span style={{ position: 'absolute', right: '4px', top: 0 }}>
                 <button
                   key={`v-${theEvent}`}
-                  style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
+                  style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}
+                >
                   <ChevronRightIconSVG color={Palette.ROCK} />
                 </button>
               </span>
             </div>
-          );
-        })
-        }
+          )
+        })}
       </div>
-    );
+    )
   }
 
-  renderAvailTimelines () {
-    const connections = this.props.connections;
-    let match;
-    let active;
+  renderAvailTimelines() {
+    const connections = this.props.connections
+    let match
+    let active
 
     return (
       <div>
         {this.props.availTimelines.map((timeline) => {
           connections.forEach((connection) => {
             if (connection[0] === this.state.selectedEvent) {
-              active = connection[1];
+              active = connection[1]
             }
-          });
+          })
 
-          match = active === timeline;
+          match = active === timeline
 
           return (
             <div
               key={`main-${timeline}`}
               style={STYLES.row}
-              onClick={this.selectTimeline}>
+              onClick={this.selectTimeline}
+            >
               <span style={[STYLES.indicator, match && STYLES.activeIndicator]} />
               {timeline}
             </div>
-          );
-        })
-        }
+          )
+        })}
       </div>
-    );
+    )
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container}>
         <div style={STYLES.pagesWrapper}>
@@ -313,7 +319,8 @@ class EventsPopover extends React.Component {
               <button
                 key="btn2"
                 style={[STYLES.btn, STYLES.btnTrans, STYLES.btnPrev]}
-                onClick={this.goToPageOne}>
+                onClick={this.goToPageOne}
+              >
                 <ChevronLeftIconSVG color={Palette.ROCK} />
               </button>
               <div style={STYLES.title}>Select Event</div>
@@ -326,10 +333,16 @@ class EventsPopover extends React.Component {
               <button
                 key="btn3"
                 style={[STYLES.btn, STYLES.btnTrans, STYLES.btnPrev]}
-                onClick={this.goPrevPage}>
+                onClick={this.goPrevPage}
+              >
                 <ChevronLeftIconSVG color={Palette.ROCK} />
               </button>
-              <div style={STYLES.title}>On <span style={STYLES.strong}>{this.state.selectedEvent}</span> Play</div>
+              <div style={STYLES.title}>
+                On
+                <span style={STYLES.strong}>{this.state.selectedEvent}</span>
+                {' '}
+                Play
+              </div>
             </div>
             {this.renderAvailTimelines()}
             <div style={STYLES.bottomRow}>
@@ -339,8 +352,8 @@ class EventsPopover extends React.Component {
 
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(EventsPopover);
+export default Radium(EventsPopover)

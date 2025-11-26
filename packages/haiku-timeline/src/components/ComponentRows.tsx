@@ -1,62 +1,63 @@
-import {Palette } from 'haiku-ui-common';
-import {throttle} from 'lodash';
-import * as React from 'react';
-import RowManager from './RowManager';
+import { Palette } from 'haiku-ui-common'
+import { throttle } from 'lodash'
+import * as React from 'react'
+import RowManager from './RowManager'
 
 export interface ComponentRowsProps {
-  rowHeight: number;
-  propertiesPixelWidth: number;
-  mixpanel: any;
-  getActiveComponent (): any;
-  showEventHandlersEditor (): void;
-  onDoubleClickToMoveGauge (): void;
-  setEditingRowTitleStatus (): void;
-  showBezierEditor (): void;
+  rowHeight: number
+  propertiesPixelWidth: number
+  mixpanel: any
+  getActiveComponent: () => any
+  showEventHandlersEditor: () => void
+  onDoubleClickToMoveGauge: () => void
+  setEditingRowTitleStatus: () => void
+  showBezierEditor: () => void
 }
 
 export default class ComponentRows extends React.Component<ComponentRowsProps> {
-  private timelineViewport: HTMLElement;
+  private timelineViewport: HTMLElement
 
   state = {
     forceCollapse: false,
     currentDraggingComponent: '',
-  };
+  }
 
-  componentDidMount () {
-    this.timelineViewport = document.getElementById('timeline');
+  componentDidMount() {
+    this.timelineViewport = document.getElementById('timeline')
   }
 
   enterDragState = (componentID: string) => {
-    this.setState({forceCollapse: true, currentDraggingComponent: componentID});
-  };
+    this.setState({ forceCollapse: true, currentDraggingComponent: componentID })
+  }
 
   leaveDragState = () => {
-    this.setState({forceCollapse: false, currentDraggingComponent: ''});
-  };
+    this.setState({ forceCollapse: false, currentDraggingComponent: '' })
+  }
 
   onDragOver = (event: React.DragEvent<any>) => {
-    this.adjustViewportScroll(event.nativeEvent.y);
-  };
+    this.adjustViewportScroll(event.nativeEvent.y)
+  }
 
   adjustViewportScroll = throttle((y: number) => {
-    let top = 0;
-    const threshold = this.props.rowHeight * 3;
+    let top = 0
+    const threshold = this.props.rowHeight * 3
 
     if (y < threshold) {
-      top = -threshold;
-    } else if (window.innerHeight + window.scrollY - y < threshold) {
-      top = threshold;
+      top = -threshold
+    }
+    else if (window.innerHeight + window.scrollY - y < threshold) {
+      top = threshold
     }
 
     this.timelineViewport.scrollBy({
       top,
       behavior: 'smooth',
-    });
-  }, 60);
+    })
+  }, 60)
 
-  render () {
-    const activeComponent = this.props.getActiveComponent();
-    const groups = activeComponent.getDisplayableRowsGroupedByElementInZOrder();
+  render() {
+    const activeComponent = this.props.getActiveComponent()
+    const groups = activeComponent.getDisplayableRowsGroupedByElementInZOrder()
 
     return (
       <div onDragOver={this.onDragOver} onDragEnd={this.leaveDragState}>
@@ -94,6 +95,6 @@ export default class ComponentRows extends React.Component<ComponentRowsProps> {
           />
         ))}
       </div>
-    );
+    )
   }
 }

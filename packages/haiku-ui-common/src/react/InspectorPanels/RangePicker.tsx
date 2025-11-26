@@ -1,76 +1,77 @@
-import * as memoizeOne from 'memoize-one';
-import * as React from 'react';
-import Palette from '../../Palette';
+import * as memoizeOne from 'memoize-one'
+import * as React from 'react'
+import Palette from '../../Palette'
 
 export interface RangePickerTick {
-  value: number;
-  label?: string;
+  value: number
+  label?: string
 }
 
 export interface RangePickerProps {
-  id?: string;
-  min?: number|string;
-  max?: number|string;
-  step?: number|string;
-  value?: number|string;
-  ticks?: RangePickerTick[];
-  thumbHeight?: number;
-  trackHeight?: number;
-  onValueChange?: (value: number) => null;
+  id?: string
+  min?: number | string
+  max?: number | string
+  step?: number | string
+  value?: number | string
+  ticks?: RangePickerTick[]
+  thumbHeight?: number
+  trackHeight?: number
+  onValueChange?: (value: number) => null
 }
 
 export default class RangePicker extends React.PureComponent<RangePickerProps> {
   static defaultProps: RangePickerProps = {
     thumbHeight: 10,
     trackHeight: 3,
-  };
+  }
 
   /* Makes the background fill, credits: https://codepen.io/dbushell/pen/awgLZK */
   generateShadow = memoizeOne((thumbHeight: number, trackHeight: number) => {
-    let i = 1;
-    const sum = (thumbHeight - trackHeight) / 2;
-    let val = `1px 0 0 -${sum}px ${Palette.GRAY}`;
+    let i = 1
+    const sum = (thumbHeight - trackHeight) / 2
+    let val = `1px 0 0 -${sum}px ${Palette.GRAY}`
 
     while (i <= 1000) {
-      val += `, ${i}px 0 0 -${sum}px ${Palette.GRAY}`;
-      i++;
+      val += `, ${i}px 0 0 -${sum}px ${Palette.GRAY}`
+      i++
     }
 
-    return val;
-  });
+    return val
+  })
 
-  get datalist () {
+  get datalist() {
     if (!this.props.ticks) {
-      return null;
+      return null
     }
 
     return (
       <datalist id={this.props.id}>
         {this.props.ticks.map((tick) => {
-          return <option value={tick.value} label={tick.label} key={tick.value} />;
+          return <option value={tick.value} label={tick.label} key={tick.value} />
         })}
       </datalist>
-    );
+    )
   }
 
   handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     // FIXME: for some reason the combination of position sticky + range inputs behaves a little weird
     // causing 'jumps' because `event.target.value` randomly takes the max value. This is a hack in order
     // to ignore those false positives.
-    const val = Number(event.target.value);
-    const step = Number(this.props.step);
+    const val = Number(event.target.value)
+    const step = Number(this.props.step)
     if (val < this.props.max) {
       if (val + step === this.props.max) {
-        this.props.onValueChange(val + step);
-      } else {
-        this.props.onValueChange(val);
+        this.props.onValueChange(val + step)
+      }
+      else {
+        this.props.onValueChange(val)
       }
     }
-  };
+  }
 
-  render () {
-    const className = 'ui-common-range-picker';
+  render() {
+    const className = 'ui-common-range-picker'
     return (
       <div>
         <input
@@ -86,7 +87,8 @@ export default class RangePicker extends React.PureComponent<RangePickerProps> {
 
         {this.datalist}
 
-        <style>{`
+        <style>
+          {`
           .${className} {
             display: block;
             -webkit-appearance: none;
@@ -119,8 +121,9 @@ export default class RangePicker extends React.PureComponent<RangePickerProps> {
             box-shadow: ${this.generateShadow(this.props.thumbHeight, this.props.trackHeight)};
             transition: background-color 150ms;
           }
-        `}</style>
+        `}
+        </style>
       </div>
-    );
+    )
   }
 }

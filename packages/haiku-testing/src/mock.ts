@@ -1,11 +1,11 @@
 // @ts-ignore
-import * as sinon from 'sinon';
+import * as sinon from 'sinon'
 
 /**
  * Retrieves a fresh stub.
  */
 // @ts-ignore
-export const getStub = () => sinon.stub();
+export const getStub = () => sinon.stub()
 
 /**
  * A light-weight stub "applicator" for single objects.
@@ -31,10 +31,10 @@ export const getStub = () => sinon.stub();
  *   test.equal(a.foo(), 'baz');
  *   unstub();
  */
-export const stubProperties = (target: object, ...properties: string[]) => {
+export function stubProperties(target: object, ...properties: string[]) {
   // @ts-ignore
-  const stubs = properties.map((property) => sinon.stub(target, property));
+  const stubs = properties.map(property => sinon.stub(target, property))
   return [...stubs, () => {
-    stubs.forEach((stub) => stub.restore());
-  }];
-};
+    stubs.forEach(stub => stub.restore())
+  }]
+}

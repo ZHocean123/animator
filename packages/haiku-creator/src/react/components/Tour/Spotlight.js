@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {throttle} from 'lodash';
+import { throttle } from 'lodash'
+import * as React from 'react'
 
 const STYLES = {
   spotlight: {
@@ -10,80 +10,80 @@ const STYLES = {
     background: 'transparent',
     pointerEvents: 'none',
   },
-};
+}
 
 class Spotlight extends React.PureComponent {
-  constructor () {
-    super();
+  constructor() {
+    super()
 
-    this.setMouseOverHole = throttle(this.setMouseOverHole.bind(this), 350);
+    this.setMouseOverHole = throttle(this.setMouseOverHole.bind(this), 350)
     this.state = {
       mouseOverHole: false,
       showBackground: true,
-    };
+    }
   }
 
-  componentWillReceiveProps () {
-    this.setState({showBackground: true});
+  UNSAFE_componentWillReceiveProps() {
+    this.setState({ showBackground: true })
   }
 
-  setMouseOverHole (event) {
-    const sizeReference = this.props.holeStyles ? this.props.holeStyles : STYLES.spotlight;
-    const {width, height} = sizeReference;
-    const {display} = this.props;
-    let {top, left} = this.props.position;
+  setMouseOverHole(event) {
+    const sizeReference = this.props.holeStyles ? this.props.holeStyles : STYLES.spotlight
+    const { width, height } = sizeReference
+    const { display } = this.props
+    let { top, left } = this.props.position
 
     switch (display) {
       case 'top':
         // top = top + height
-        left = left - (width / 2);
-        break;
+        left = left - (width / 2)
+        break
       case 'bottom':
-        top = top - height;
-        left = left - (width / 2);
-        break;
+        top = top - height
+        left = left - (width / 2)
+        break
       case 'left':
-        top = top - (height / 2);
-        break;
+        top = top - (height / 2)
+        break
       case 'right':
-        left = left - width;
-        top = top - (height / 2);
-        break;
+        left = left - width
+        top = top - (height / 2)
+        break
     }
 
     if (typeof top !== 'number') {
-      return;
+      return
     }
 
-    const inHoleHeight = event.pageY >= top && event.pageY <= top + height;
-    const inHoleWidth = event.pageX >= left && event.pageX <= left + width;
-    const inHole = inHoleWidth && inHoleHeight;
+    const inHoleHeight = event.pageY >= top && event.pageY <= top + height
+    const inHoleWidth = event.pageX >= left && event.pageX <= left + width
+    const inHole = inHoleWidth && inHoleHeight
 
     if (inHole && !this.state.mouseOverHole) {
-      this.setState({mouseOverHole: true});
+      this.setState({ mouseOverHole: true })
     }
 
     if (!inHole && this.state.mouseOverHole) {
-      this.setState({mouseOverHole: false});
+      this.setState({ mouseOverHole: false })
     }
   }
 
-  componentWillMount () {
-    document.addEventListener('mousemove', this.setMouseOverHole);
+  UNSAFE_componentWillMount() {
+    document.addEventListener('mousemove', this.setMouseOverHole)
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('mousemove', this.setMouseOverHole);
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.setMouseOverHole)
   }
 
-  render () {
-    const {offset, holeStyles, containerStyles} = this.props;
+  render() {
+    const { offset, holeStyles, containerStyles } = this.props
     return (
       <div style={containerStyles}>
         <div
           onClick={() => {
             if (this.props.isOverlayHideable) {
-              this.setState({showBackground: false});
+              this.setState({ showBackground: false })
             }
           }}
           style={{
@@ -107,7 +107,7 @@ class Spotlight extends React.PureComponent {
           }}
         />
       </div>
-    );
+    )
   }
 }
 
@@ -118,6 +118,6 @@ Spotlight.propTypes = {
   holeStyles: React.PropTypes.object,
   display: React.PropTypes.string,
   isOverlayHideable: React.PropTypes.bool,
-};
+}
 
-export default Spotlight;
+export default Spotlight

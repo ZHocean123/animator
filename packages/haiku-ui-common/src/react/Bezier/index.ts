@@ -6,4 +6,4 @@
  * - https://github.com/ChromeDevTools/devtools-frontend
  */
 
-export * from './BezierEditor';
+export * from './BezierEditor'

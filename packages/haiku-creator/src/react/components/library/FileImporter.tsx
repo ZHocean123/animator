@@ -1,13 +1,13 @@
-import * as Color from 'color';
+import * as Color from 'color'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
 // @ts-ignore
-import * as Popover from 'react-popover';
-import {DASH_STYLES} from '../../styles/dashShared';
-import FigmaImporter from './importers/FigmaImporter';
-import FileSystemImporter from './importers/FileSystemImporter';
+import * as Popover from 'react-popover'
+import { DASH_STYLES } from '../../styles/dashShared'
+import FigmaImporter from './importers/FigmaImporter'
+import FileSystemImporter from './importers/FileSystemImporter'
 
 const STYLES: React.CSSProperties = {
   popover: {
@@ -27,18 +27,18 @@ const STYLES: React.CSSProperties = {
     },
   },
   button: {
-    position: 'relative',
-    zIndex: 2,
-    padding: '3px 9px',
-    backgroundColor: Palette.DARKER_GRAY,
-    color: Palette.ROCK,
-    fontSize: 13,
-    fontWeight: 'bold',
-    marginTop: -4,
-    borderRadius: 3,
-    cursor: 'pointer',
-    transform: 'scale(1)',
-    transition: 'transform 200ms ease',
+    'position': 'relative',
+    'zIndex': 2,
+    'padding': '3px 9px',
+    'backgroundColor': Palette.DARKER_GRAY,
+    'color': Palette.ROCK,
+    'fontSize': 13,
+    'fontWeight': 'bold',
+    'marginTop': -4,
+    'borderRadius': 3,
+    'cursor': 'pointer',
+    'transform': 'scale(1)',
+    'transition': 'transform 200ms ease',
     ':hover': {
       backgroundColor: Color(Palette.DARKER_GRAY).darken(0.2),
     },
@@ -46,46 +46,46 @@ const STYLES: React.CSSProperties = {
       transform: 'scale(.8)',
     },
   },
-};
+}
 
 export interface FileImporterProps {
-  onFileDrop (paths: string[]): void;
-  conglomerateComponent (options: any): void;
-  onImportFigmaAsset (url: string, warnOnComplexFile?: boolean): void;
-  onAskForFigmaAuth (): void;
-  figma: any;
+  onFileDrop: (paths: string[]) => void
+  conglomerateComponent: (options: any) => void
+  onImportFigmaAsset: (url: string, warnOnComplexFile?: boolean) => void
+  onAskForFigmaAuth: () => void
+  figma: any
 }
 
 class FileImporter extends React.PureComponent<FileImporterProps> {
   state = {
     isPopoverOpen: false,
-  };
+  }
 
   showPopover = () => {
-    this.setState({isPopoverOpen: true});
-    mixpanel.haikuTrack('creator:file-importer:open-all');
-  };
+    this.setState({ isPopoverOpen: true })
+    mixpanel.haikuTrack('creator:file-importer:open-all')
+  }
 
   hidePopover = () => {
-    this.setState({isPopoverOpen: false});
-  };
+    this.setState({ isPopoverOpen: false })
+  }
 
   onFileDrop = (filePaths: string[]) => {
-    this.hidePopover();
+    this.hidePopover()
 
     if (filePaths) {
-      this.props.onFileDrop(filePaths);
+      this.props.onFileDrop(filePaths)
     }
-  };
+  }
 
   conglomerateComponent = () => {
     this.props.conglomerateComponent({
       isBlankComponent: true,
       skipInstantiateInHost: true,
-    });
-  };
+    })
+  }
 
-  get popoverBody () {
+  get popoverBody() {
     return (
       <div
         style={{
@@ -119,10 +119,10 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
           />
         </div>
       </div>
-    );
+    )
   }
 
-  render () {
+  render() {
     return (
       <Popover
         onOuterAction={this.hidePopover}
@@ -141,8 +141,8 @@ class FileImporter extends React.PureComponent<FileImporterProps> {
           +
         </button>
       </Popover>
-    );
+    )
   }
 }
 
-export default FileImporter;
+export default FileImporter

@@ -1,47 +1,47 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
-import zIndex from './styles/zIndex';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import zIndex from './styles/zIndex'
 
 class ScrollView extends React.PureComponent {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (
-      what === 'timeline-frame-range' ||
-      what === 'timeline-max-frame-changed'
+      what === 'timeline-frame-range'
+      || what === 'timeline-max-frame-changed'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
   }
 
-  render () {
+  render() {
     return (
       <div
-        ref="scrollview"
+        ref={(ref) => { this.refs.scrollview = ref }}
         id="property-rows"
         className="no-select"
         style={{
@@ -67,10 +67,11 @@ class ScrollView extends React.PureComponent {
           left: 0,
           paddingBottom: 20,
           marginTop: -20,
-        }} />
+        }}
+        />
       </div>
-    );
+    )
   }
 }
 
-export default ScrollView;
+export default ScrollView

@@ -6,7 +6,7 @@
  * @param cursor
  * @returns {*}
  */
-export default (scale, {x, y}, index, cursor) => ({
+export default (scale, { x, y }, index, cursor) => ({
   elementName: 'g',
   attributes: {
     transform: `scale(${scale}) translate(${x - 12.5} ${y - 12.5})`,
@@ -41,13 +41,13 @@ export default (scale, {x, y}, index, cursor) => ({
     {
       elementName: 'circle',
       attributes: {
-        cx: 12.5,
-        cy: 12.5,
-        r: 12.5,
-        fill: 'none',
-        class: 'control-point',
+        'cx': 12.5,
+        'cy': 12.5,
+        'r': 12.5,
+        'fill': 'none',
+        'class': 'control-point',
         'data-index': index,
       },
     },
   ],
-});
+})

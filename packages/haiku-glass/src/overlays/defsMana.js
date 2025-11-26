@@ -24,19 +24,26 @@ export default {
         {
           elementName: 'feOffset',
           attributes: {
-            dy: '1', in: 'shadowSpreadOuter1', result: 'shadowOffsetOuter1',
+            dy: '1',
+            in: 'shadowSpreadOuter1',
+            result: 'shadowOffsetOuter1',
           },
         },
         {
           elementName: 'feGaussianBlur',
           attributes: {
-            stdDeviation: '.5', in: 'shadowOffsetOuter1', result: 'shadowBlurOuter1',
+            stdDeviation: '.5',
+            in: 'shadowOffsetOuter1',
+            result: 'shadowBlurOuter1',
           },
         },
         {
           elementName: 'feComposite',
           attributes: {
-            in: 'shadowBlurOuter1', in2: 'SourceAlpha', operator: 'out', result: 'shadowBlurOuter1',
+            in: 'shadowBlurOuter1',
+            in2: 'SourceAlpha',
+            operator: 'out',
+            result: 'shadowBlurOuter1',
           },
         },
         {
@@ -243,4 +250,4 @@ export default {
       ],
     },
   ],
-};
+}

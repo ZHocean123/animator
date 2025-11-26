@@ -1,72 +1,72 @@
-const path = require('path');
-const {exec} = require('child_process');
-const logger = require('./LoggerInstance');
-const {isMac} = require('haiku-common');
+const { exec } = require('node:child_process')
+const path = require('node:path')
+const { isMac } = require('haiku-common')
+const logger = require('./LoggerInstance')
 
-const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`;
-const PARSER_CLI_PATH = '/Contents/Resources/sketchtool/bin/sketchtool';
-let sketchInstalledCache = null;
+const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`
+const PARSER_CLI_PATH = '/Contents/Resources/sketchtool/bin/sketchtool'
+let sketchInstalledCache = null
 
 module.exports = {
-  dumpToPaths (rawDump) {
-    logger.info('[sketch utils] about to parse Sketch paths', rawDump);
+  dumpToPaths(rawDump) {
+    logger.info('[sketch utils] about to parse Sketch paths', rawDump)
 
     return rawDump
-        .trim()
-        .split('\n')
-        .filter(Boolean);
+      .trim()
+      .split('\n')
+      .filter(Boolean)
   },
 
-  pathsToInstallationInfo (sketchPaths) {
+  pathsToInstallationInfo(sketchPaths) {
     const resolvingSketchPaths = sketchPaths.map((sketchPath) => {
       return new Promise((resolve, reject) => {
-        const sketchtoolPath = path.join(sketchPath, PARSER_CLI_PATH);
+        const sketchtoolPath = path.join(sketchPath, PARSER_CLI_PATH)
 
         exec(`${sketchtoolPath} --version`, (error, stdout, stderr) => {
           if (error || !stdout || stdout.trim().length === 0 || stderr) {
-            return resolve(null);
+            return resolve(null)
           }
 
-          const rawBuildNumber = stdout.match(/\((.*?)\)/)[1];
-          const sketchtoolBuildNumber = Number(rawBuildNumber);
-          return resolve({sketchPath, sketchtoolBuildNumber});
-        });
-      });
-    });
+          const rawBuildNumber = stdout.match(/\((.*?)\)/)[1]
+          const sketchtoolBuildNumber = Number(rawBuildNumber)
+          return resolve({ sketchPath, sketchtoolBuildNumber })
+        })
+      })
+    })
 
-    return Promise.all(resolvingSketchPaths);
+    return Promise.all(resolvingSketchPaths)
   },
 
-  getDumpInfo () {
+  getDumpInfo() {
     return new Promise((resolve, reject) => {
       exec(SKETCH_PATH_FINDER, (error, stdout, stderr) => {
         if (error || !stdout || stdout.trim().length === 0 || stderr) {
-          reject(error);
+          reject(error)
         }
 
-        return resolve(stdout, stderr);
-      });
-    });
+        return resolve(stdout, stderr)
+      })
+    })
   },
 
-  findBestPath (sketchPaths) {
+  findBestPath(sketchPaths) {
     const sortedPaths = sketchPaths
       .filter(Boolean)
-      .sort((a, b) => b.sketchtoolBuildNumber - a.sketchtoolBuildNumber);
+      .sort((a, b) => b.sketchtoolBuildNumber - a.sketchtoolBuildNumber)
 
-    return sortedPaths[0] && sortedPaths[0].sketchPath;
+    return sortedPaths[0] && sortedPaths[0].sketchPath
   },
 
-  unsetSketchInstalledCache () {
-    sketchInstalledCache = null;
+  unsetSketchInstalledCache() {
+    sketchInstalledCache = null
   },
 
-  checkIfInstalled () {
+  checkIfInstalled() {
     // Only Mac has sketch support
     if (isMac()) {
       return new Promise((resolve, reject) => {
         if (sketchInstalledCache !== null) {
-          return resolve(sketchInstalledCache);
+          return resolve(sketchInstalledCache)
         }
 
         this.getDumpInfo()
@@ -74,20 +74,20 @@ module.exports = {
           .then(this.pathsToInstallationInfo)
           .then(this.findBestPath)
           .then((path) => {
-            sketchInstalledCache = Boolean(path);
-            resolve(path);
+            sketchInstalledCache = Boolean(path)
+            resolve(path)
           })
           .catch((error) => {
-            logger.info('[sketch utils] error finding Sketch: ', error);
-            sketchInstalledCache = false;
-            resolve(false);
-          });
-      });
+            logger.info('[sketch utils] error finding Sketch: ', error)
+            sketchInstalledCache = false
+            resolve(false)
+          })
+      })
     }
 
-    logger.info('[sketch utils] Platform does not support Sketch');
+    logger.info('[sketch utils] Platform does not support Sketch')
     return new Promise((resolve, reject) => {
-      resolve(null);
-    });
+      resolve(null)
+    })
   },
-};
+}

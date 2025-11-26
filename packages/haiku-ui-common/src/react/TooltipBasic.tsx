@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Palette from '../Palette';
+import * as React from 'react'
+import Palette from '../Palette'
 
 /*
   This component is very rudimentary atm and needs to be fleshed out for
@@ -36,36 +36,36 @@ const STYLES = {
     height: 0,
     borderLeft: '5px solid transparent',
     borderRight: '5px solid transparent',
-    borderBottom: '5px solid ' + Palette.DARKEST_COAL,
+    borderBottom: `5px solid ${Palette.DARKEST_COAL}`,
   } as React.CSSProperties,
   light: {
     backgroundColor: Palette.BLUE,
   } as React.CSSProperties,
   tipLight: {
-    borderBottom: '5px solid ' + Palette.BLUE,
+    borderBottom: `5px solid ${Palette.BLUE}`,
   } as React.CSSProperties,
-};
+}
 
 export interface TooltipBasicProps {
-  light?: boolean;
-  top?: number;
-  width?: number;
+  light?: boolean
+  top?: number
+  width?: number
 }
 
 export class TooltipBasic extends React.PureComponent<TooltipBasicProps> {
-  render () {
+  render() {
     return (
       <div
         style={{
           ...STYLES.tooltip,
           ...(this.props.light && STYLES.light),
-          ...{top: this.props.top},
-          ...{width: this.props.width},
+          ...{ top: this.props.top },
+          ...{ width: this.props.width },
         }}
       >
-        <span style={{...STYLES.tip, ...(this.props.light && STYLES.tipLight)}} />
+        <span style={{ ...STYLES.tip, ...(this.props.light && STYLES.tipLight) }} />
         {this.props.children}
       </div>
-    );
+    )
   }
 }

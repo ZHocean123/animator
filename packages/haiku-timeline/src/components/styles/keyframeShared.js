@@ -1,15 +1,15 @@
-import {Palette } from 'haiku-ui-common';
-import * as Color from 'color';
+import * as Color from 'color'
+import { Palette } from 'haiku-ui-common'
 
 export const KEYFRAME_STYLES = {
   keyframeHolster: {
-    position: 'absolute',
-    height: '100%',
-    right: -4,
-    top: 0,
-    width: 7,
-    zIndex: 1,
-    backgroundColor: 'transparent',
+    'position': 'absolute',
+    'height': '100%',
+    'right': -4,
+    'top': 0,
+    'width': 7,
+    'zIndex': 1,
+    'backgroundColor': 'transparent',
     ':hover': {
       backgroundColor: Color(Palette.LIGHT_PINK).fade(0.77),
     },
@@ -33,4 +33,4 @@ export const KEYFRAME_STYLES = {
   keyframePoleActive: {
     backgroundColor: Palette.LIGHT_PINK,
   },
-};
+}

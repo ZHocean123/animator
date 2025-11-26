@@ -7,18 +7,18 @@ const UNIT_MAPPING = {
   'rotation.x': 'rad',
   'scale.x': '',
   'scale.y': '',
-  opacity: '',
-  shown: '',
-  backgroundColor: '',
-  color: '',
-  fill: '',
-  stroke: '',
-};
+  'opacity': '',
+  'shown': '',
+  'backgroundColor': '',
+  'color': '',
+  'fill': '',
+  'stroke': '',
+}
 
-export default function inferUnitOfValue (propertyName: string) {
-  const unit = UNIT_MAPPING[propertyName];
+export default function inferUnitOfValue(propertyName: string) {
+  const unit = UNIT_MAPPING[propertyName]
   if (unit) {
-    return unit;
+    return unit
   }
-  return '';
+  return ''
 }

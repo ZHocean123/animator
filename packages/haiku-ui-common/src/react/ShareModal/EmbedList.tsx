@@ -1,10 +1,10 @@
-import * as React from 'react';
-import Palette from '../../Palette';
-import {ExternalLink} from '../ExternalLink';
-import {Tooltip} from '../Tooltip';
-import {EmbedCategory} from './EmbedCategory';
-import {SelectedEntry} from './index';
-import {getShareOptions} from './ShareModalOptions';
+import type { SelectedEntry } from './index'
+import * as React from 'react'
+import Palette from '../../Palette'
+import { ExternalLink } from '../ExternalLink'
+import { Tooltip } from '../Tooltip'
+import { EmbedCategory } from './EmbedCategory'
+import { getShareOptions } from './ShareModalOptions'
 
 const STYLES = {
   categories: {
@@ -32,30 +32,30 @@ const STYLES = {
     lineHeight: '1.2em',
     marginTop: '-2px',
   } as React.CSSProperties,
-};
+}
 
 export interface EmbedListProps {
-  onOptionClicked: (option: {entry: SelectedEntry, template: string}) => void;
-  isSnapshotSaveInProgress: boolean;
-  snapshotSyndicated: boolean;
-  mixpanel: any;
-  supportOfflineExport: boolean;
-  hasError: boolean;
+  onOptionClicked: (option: { entry: SelectedEntry, template: string }) => void
+  isSnapshotSaveInProgress: boolean
+  snapshotSyndicated: boolean
+  mixpanel: any
+  supportOfflineExport: boolean
+  hasError: boolean
 }
 
 export interface EmbedListStates {
-  shareOptions: [string, any][];
+  shareOptions: [string, any][]
 }
 
 export class EmbedList extends React.PureComponent<EmbedListProps, EmbedListStates> {
-  constructor (props: EmbedListProps) {
-    super(props);
+  constructor(props: EmbedListProps) {
+    super(props)
     this.state = {
       shareOptions: Object.entries(getShareOptions(props.supportOfflineExport)),
-    };
+    }
   }
 
-  renderShareOptions () {
+  renderShareOptions() {
     return this.state.shareOptions.map(([category, options]) => (
       <EmbedCategory
         key={category}
@@ -66,43 +66,43 @@ export class EmbedList extends React.PureComponent<EmbedListProps, EmbedListStat
         snapshotSyndicated={this.props.snapshotSyndicated}
         hasError={this.props.hasError}
       />
-    ));
+    ))
   }
 
-  componentWillReceiveProps (nextProps: EmbedListProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: EmbedListProps) {
     this.setState({
       shareOptions: Object.entries(getShareOptions(nextProps.supportOfflineExport)),
-    });
+    })
   }
 
   private onClick = () => {
     this.props.mixpanel.haikuTrack('install-options', {
       from: 'app',
       event: 'open-help-embedding',
-    });
-  };
+    })
+  }
 
-  render () {
+  render() {
     return (
       <div>
         <h4 style={STYLES.subtitle}>
           Install Options
 
-        <Tooltip content="Docs" place="right">
-          <ExternalLink
-            style={STYLES.circle}
-            href="https://docs.haiku.ai/embedding-and-using-haiku/publishing-and-embedding.html"
-            onClick={this.onClick}
-          >
-            ?
-          </ExternalLink>
-        </Tooltip>
+          <Tooltip content="Docs" place="right">
+            <ExternalLink
+              style={STYLES.circle}
+              href="https://docs.haiku.ai/embedding-and-using-haiku/publishing-and-embedding.html"
+              onClick={this.onClick}
+            >
+              ?
+            </ExternalLink>
+          </Tooltip>
         </h4>
 
         <div style={STYLES.categories}>
           {this.renderShareOptions()}
-         </div>
+        </div>
       </div>
-    );
+    )
   }
 }

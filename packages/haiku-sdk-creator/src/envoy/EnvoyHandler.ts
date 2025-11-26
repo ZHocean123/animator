@@ -1,62 +1,63 @@
-import {EnvoyEvent} from '.';
-import {Registry} from '../dal/Registry';
-import {obfuscate, Obfuscation, unobfuscate} from '../utils/crypto';
-import {EnvoyClientEventHandler} from './EnvoyClient';
-import EnvoyServer from './EnvoyServer';
+import type { EnvoyEvent } from '.'
+import type { Registry } from '../dal/Registry'
+import type { Obfuscation } from '../utils/crypto'
+import type { EnvoyClientEventHandler } from './EnvoyClient'
+import type EnvoyServer from './EnvoyServer'
+import { obfuscate, unobfuscate } from '../utils/crypto'
 
 export default class EnvoyHandler {
-  constructor (protected readonly server: EnvoyServer) {}
+  constructor(protected readonly server: EnvoyServer) {}
 
-  protected registry?: Registry;
+  protected registry?: Registry
 
-  private eventHandlers = new Map<string, EnvoyClientEventHandler[]>();
+  private eventHandlers = new Map<string, EnvoyClientEventHandler[]>()
 
-  handleEventDirectly (event: EnvoyEvent) {
-    const handlers = this.eventHandlers.get(event.name);
+  handleEventDirectly(event: EnvoyEvent) {
+    const handlers = this.eventHandlers.get(event.name)
     if (handlers) {
       for (const handler of handlers) {
-        handler(event.payload);
+        handler(event.payload)
       }
     }
   }
 
-  on (eventName: string, handler: EnvoyClientEventHandler) {
-    const handlers = this.eventHandlers.get(eventName as string) || [];
-    handlers.push(handler);
-    this.eventHandlers.set(eventName, handlers);
+  on(eventName: string, handler: EnvoyClientEventHandler) {
+    const handlers = this.eventHandlers.get(eventName as string) || []
+    handlers.push(handler)
+    this.eventHandlers.set(eventName, handlers)
   }
 
-  off (eventName: string, handler: EnvoyClientEventHandler) {
-    const handlers = this.eventHandlers.get(eventName as string) || [];
-    const idx = handlers.indexOf(handler);
+  off(eventName: string, handler: EnvoyClientEventHandler) {
+    const handlers = this.eventHandlers.get(eventName as string) || []
+    const idx = handlers.indexOf(handler)
     if (idx !== -1) {
-      handlers.splice(idx, 1);
+      handlers.splice(idx, 1)
     }
   }
 
-  setConfig<T> (key: string, value: T) {
+  setConfig<T>(key: string, value: T) {
     if (this.registry) {
-      this.registry.setConfig<T>(key, value);
+      this.registry.setConfig<T>(key, value)
     }
   }
 
-  getConfig<T> (key: string): T {
+  getConfig<T>(key: string): T {
     if (this.registry) {
-      return this.registry.getConfig<T>(key);
+      return this.registry.getConfig<T>(key)
     }
   }
 
-  deleteConfig (key: string) {
+  deleteConfig(key: string) {
     if (this.registry) {
-      this.registry.deleteConfig(key);
+      this.registry.deleteConfig(key)
     }
   }
 
-  setConfigObfuscated<T> (key: string, value: T) {
-    this.setConfig<Obfuscation>(key, obfuscate(value));
+  setConfigObfuscated<T>(key: string, value: T) {
+    this.setConfig<Obfuscation>(key, obfuscate(value))
   }
 
-  getConfigObfuscated<T> (key: string): T {
-    return unobfuscate(this.getConfig<Obfuscation>(key));
+  getConfigObfuscated<T>(key: string): T {
+    return unobfuscate(this.getConfig<Obfuscation>(key))
   }
 }

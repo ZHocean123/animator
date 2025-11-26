@@ -1,92 +1,89 @@
-import {shell} from 'electron';
-import * as path from 'path';
-import * as Radium from 'radium';
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
-import ProjectPreview from './ProjectPreview';
-import {StackMenuSVG} from 'haiku-ui-common';
-import {DASH_STYLES} from '../styles/dashShared';
-import {isMac, isWindows} from 'haiku-common';
+import * as path from 'node:path'
+import { shell } from 'electron'
+import { isWindows } from 'haiku-common'
+import { Palette, StackMenuSVG } from 'haiku-ui-common'
+
+import * as Radium from 'radium'
+import * as React from 'react'
+import { DASH_STYLES } from '../styles/dashShared'
+import ProjectPreview from './ProjectPreview'
 
 class ProjectThumbnail extends React.Component {
-  constructor (props) {
-    super(props);
-    this.bytecodePath = path.join(this.props.projectPath, 'code', 'main', 'code.js');
+  constructor(props) {
+    super(props)
+    this.bytecodePath = path.join(this.props.projectPath, 'code', 'main', 'code.js')
     this.state = {
       isMenuActive: false,
       isHovered: false,
-    };
+    }
   }
 
   launchProjectIfAllowed = () => {
     if (this.props.allowInteractions && !this.props.expiredTrialNonPro) {
-      this.props.launchProject();
+      this.props.launchProject()
     }
-  };
+  }
 
-  openBrowserToProjectSharePage () {
-    shell.openExternal(this.props.projectShareUrl);
+  openBrowserToProjectSharePage() {
+    shell.openExternal(this.props.projectShareUrl)
   }
 
   showDeleteModal = (e) => {
-    e.stopPropagation();
-    this.props.showDeleteModal();
-  };
+    e.stopPropagation()
+    this.props.showDeleteModal()
+  }
 
   showItemInFolder = (e) => {
-    e.stopPropagation();
-    shell.showItemInFolder(this.props.projectPath);
-  };
+    e.stopPropagation()
+    shell.showItemInFolder(this.props.projectPath)
+  }
 
   onClick = () => {
     if (!this.props.allowInteractions) {
-      return;
+      return
     }
 
     if (this.props.expiredTrialNonPro) {
-      return this.openBrowserToProjectSharePage();
+      return this.openBrowserToProjectSharePage()
     }
 
     if (!this.state.isMenuActive) {
-      return this.launchProjectIfAllowed();
+      return this.launchProjectIfAllowed()
     }
-  };
+  }
 
   onMouseOver = () => {
     if (this.props.allowInteractions) {
-      this.setState({isHovered: true});
+      this.setState({ isHovered: true })
     }
-  };
+  }
 
   onMouseLeave = () => {
     if (this.props.allowInteractions) {
-      this.setState({isHovered: false});
+      this.setState({ isHovered: false })
     }
-  };
+  }
 
-  render () {
+  render() {
     return (
       <div
-        style={[DASH_STYLES.card,
-          this.props.isDeleted && DASH_STYLES.deleted,
-          this.props.cardHeight && {height: this.props.cardHeight},
-          !this.props.allowInteractions && DASH_STYLES.deadCard,
-        ]}
+        style={[DASH_STYLES.card, this.props.isDeleted && DASH_STYLES.deleted, this.props.cardHeight && { height: this.props.cardHeight }, !this.props.allowInteractions && DASH_STYLES.deadCard]}
         id={`js-utility-${this.props.projectName}`}
         key="wrap"
         onMouseLeave={() => {
           this.setState({
             isMenuActive: false,
-          });
+          })
         }}
       >
         <div
           key="thumb"
           style={[
             DASH_STYLES.thumb,
-            this.props.cardHeight && {height: this.props.cardHeight - 30},
+            this.props.cardHeight && { height: this.props.cardHeight - 30 },
             this.state.isMenuActive && DASH_STYLES.blurred,
-          ]}>
+          ]}
+        >
           <ProjectPreview
             bytecodePath={this.bytecodePath}
             projectName={this.props.projectName}
@@ -99,8 +96,8 @@ class ProjectThumbnail extends React.Component {
           className="js-utility-project-launcher"
           style={[
             DASH_STYLES.scrim,
-            this.props.cardHeight && {height: this.props.cardHeight - 30},
-            (this.state.isMenuActive || this.state.isHovered) && {opacity: 1},
+            this.props.cardHeight && { height: this.props.cardHeight - 30 },
+            (this.state.isMenuActive || this.state.isHovered) && { opacity: 1 },
           ]}
           onClick={this.onClick}
           onMouseOver={this.onMouseOver}
@@ -115,80 +112,90 @@ class ProjectThumbnail extends React.Component {
               !this.state.isHovered && DASH_STYLES.gone2,
             ]}
           >
-          {this.props.expiredTrialNonPro ? 'View Online' : 'Open'}
+            {this.props.expiredTrialNonPro ? 'View Online' : 'Open'}
           </span>
 
-          {(!this.props.expiredTrialNonPro) && <span
-            key="view-online-alt"
-            onClick={this.openBrowserToProjectSharePage.bind(this)}
-            style={[
-              DASH_STYLES.menuOption,
-              DASH_STYLES.opt2,
-              !this.state.isMenuActive && DASH_STYLES.gone,
-            ]}
-          >
-            View Online
-          </span>}
-          {(this.props.projectExistsLocally && !this.props.expiredTrialNonPro) && <span
-            key="duplicate"
-            onClick={this.props.showDuplicateProjectModal}
-            style={[
-              DASH_STYLES.menuOption,
-              DASH_STYLES.opt2,
-              !this.state.isMenuActive && DASH_STYLES.gone,
-            ]}
-          >
-            DUPLICATE
-          </span>}
-          {this.props.projectExistsLocally && <span
-            key="reveal"
-            onClick={this.showItemInFolder}
-            style={[
-              DASH_STYLES.menuOption,
-              DASH_STYLES.opt2,
-              !this.state.isMenuActive && DASH_STYLES.gone,
-            ]}
-          >
-            {isWindows() ? 'REVEAL IN FILE EXPLORER' : 'REVEAL IN FINDER'}
-          </span>}
-          {this.props.allowDelete && <span
-            key="delete"
-            onClick={this.showDeleteModal}
-            style={[
-              DASH_STYLES.menuOption,
-              DASH_STYLES.opt2,
-              !this.state.isMenuActive && DASH_STYLES.gone,
-            ]}
-          >
-            DELETE
-          </span>}
+          {(!this.props.expiredTrialNonPro) && (
+            <span
+              key="view-online-alt"
+              onClick={this.openBrowserToProjectSharePage.bind(this)}
+              style={[
+                DASH_STYLES.menuOption,
+                DASH_STYLES.opt2,
+                !this.state.isMenuActive && DASH_STYLES.gone,
+              ]}
+            >
+              View Online
+            </span>
+          )}
+          {(this.props.projectExistsLocally && !this.props.expiredTrialNonPro) && (
+            <span
+              key="duplicate"
+              onClick={this.props.showDuplicateProjectModal}
+              style={[
+                DASH_STYLES.menuOption,
+                DASH_STYLES.opt2,
+                !this.state.isMenuActive && DASH_STYLES.gone,
+              ]}
+            >
+              DUPLICATE
+            </span>
+          )}
+          {this.props.projectExistsLocally && (
+            <span
+              key="reveal"
+              onClick={this.showItemInFolder}
+              style={[
+                DASH_STYLES.menuOption,
+                DASH_STYLES.opt2,
+                !this.state.isMenuActive && DASH_STYLES.gone,
+              ]}
+            >
+              {isWindows() ? 'REVEAL IN FILE EXPLORER' : 'REVEAL IN FINDER'}
+            </span>
+          )}
+          {this.props.allowDelete && (
+            <span
+              key="delete"
+              onClick={this.showDeleteModal}
+              style={[
+                DASH_STYLES.menuOption,
+                DASH_STYLES.opt2,
+                !this.state.isMenuActive && DASH_STYLES.gone,
+              ]}
+            >
+              DELETE
+            </span>
+          )}
         </div>
         <div
-            onClick={this.launchProjectIfAllowed}
-            style={DASH_STYLES.titleStrip}
+          onClick={this.launchProjectIfAllowed}
+          style={DASH_STYLES.titleStrip}
         >
           <span style={DASH_STYLES.title}>
             {this.props.projectName}
           </span>
-          {(this.props.allowDelete || this.props.projectExistsLocally) && this.props.allowInteractions && <span
-            title="Show project options"
-            style={[DASH_STYLES.titleOptions, {transform: 'translateY(1px)'}]}
-            onClick={(e) => {
+          {(this.props.allowDelete || this.props.projectExistsLocally) && this.props.allowInteractions && (
+            <span
+              title="Show project options"
+              style={[DASH_STYLES.titleOptions, { transform: 'translateY(1px)' }]}
+              onClick={(e) => {
               // Prevent launching project, as parent div has onClick handler
-              e.stopPropagation();
-              if (this.props.allowInteractions) {
-                this.setState({
-                  isMenuActive: !this.state.isMenuActive,
-                });
-              }
-            }}
-          >
-            <StackMenuSVG color={Palette.SUNSTONE} width="5px" height="12px" />
-          </span>}
+                e.stopPropagation()
+                if (this.props.allowInteractions) {
+                  this.setState({
+                    isMenuActive: !this.state.isMenuActive,
+                  })
+                }
+              }}
+            >
+              <StackMenuSVG color={Palette.SUNSTONE} width="5px" height="12px" />
+            </span>
+          )}
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(ProjectThumbnail);
+export default Radium(ProjectThumbnail)

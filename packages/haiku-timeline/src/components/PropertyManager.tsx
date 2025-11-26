@@ -1,7 +1,7 @@
-import {PopoverMenu} from 'haiku-ui-common';
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
-import zIndex from './styles/zIndex';
+import { Palette, PopoverMenu } from 'haiku-ui-common'
+
+import * as React from 'react'
+import zIndex from './styles/zIndex'
 
 const STYLE = {
   button: {
@@ -22,21 +22,21 @@ const STYLE = {
     lineHeight: 0,
     verticalAlign: 'middle',
   },
-};
+}
 
 export interface PropertyManagerProps {
-  element: any;
-  timelinePropertiesWidth: number;
+  element: any
+  timelinePropertiesWidth: number
 }
 
 export default class PropertyManager extends React.Component<PropertyManagerProps> {
   launchMenu = (event: React.MouseEvent<any>) => {
     PopoverMenu.launch({
       items: this.props.element.getJITPropertyOptionsAsMenuItems(),
-    });
-  };
+    })
+  }
 
-  render () {
+  render() {
     return (
       <div
         className="property-manager"
@@ -56,9 +56,11 @@ export default class PropertyManager extends React.Component<PropertyManagerProp
           style={STYLE.button}
           className="menu-trigger"
         >
-          <span style={STYLE.plus}>+</span> ADD
+          <span style={STYLE.plus}>+</span>
+          {' '}
+          ADD
         </div>
       </div>
-    );
+    )
   }
 }

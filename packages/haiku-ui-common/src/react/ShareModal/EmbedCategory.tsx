@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {EmbedOption} from './EmbedOption';
-import {SelectedEntry} from './index';
+import type { SelectedEntry } from './index'
+import * as React from 'react'
+import { EmbedOption } from './EmbedOption'
 
 const STYLES = {
   categoryWrapper: {
@@ -19,20 +19,20 @@ const STYLES = {
     textTransform: 'uppercase',
     marginBottom: 6,
   },
-};
+}
 
 export interface EmbedCategoryProps {
-  category: string;
-  options: any;
-  onOptionClicked?: (option: {entry: SelectedEntry, template: string}) => void;
-  isSnapshotSaveInProgress?: boolean;
-  snapshotSyndicated?: boolean;
-  hasError: boolean;
+  category: string
+  options: any
+  onOptionClicked?: (option: { entry: SelectedEntry, template: string }) => void
+  isSnapshotSaveInProgress?: boolean
+  snapshotSyndicated?: boolean
+  hasError: boolean
 }
 
 export class EmbedCategory extends React.PureComponent<EmbedCategoryProps> {
-  renderCategoryOptions (options: any) {
-    return Object.entries(options).map(([entry, {disabled, template}]: any) => (
+  renderCategoryOptions(options: any) {
+    return Object.entries(options).map(([entry, { disabled, template }]: any) => (
       <EmbedOption
         key={entry}
         category={this.props.category}
@@ -44,10 +44,10 @@ export class EmbedCategory extends React.PureComponent<EmbedCategoryProps> {
         snapshotSyndicated={this.props.snapshotSyndicated}
         hasError={this.props.hasError}
       />
-    ));
+    ))
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.categoryWrapper}>
         <h3 style={STYLES.categoryTitle}>{this.props.category}</h3>
@@ -55,6 +55,6 @@ export class EmbedCategory extends React.PureComponent<EmbedCategoryProps> {
           {this.renderCategoryOptions(this.props.options)}
         </ul>
       </div>
-    );
+    )
   }
 }

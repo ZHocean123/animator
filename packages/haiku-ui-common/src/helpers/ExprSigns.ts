@@ -1,2 +1,2 @@
-export const EQ = '=';
-export const RET = 'return';
+export const EQ = '='
+export const RET = 'return'

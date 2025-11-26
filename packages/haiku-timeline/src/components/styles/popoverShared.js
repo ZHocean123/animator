@@ -1,18 +1,18 @@
-import {Palette } from 'haiku-ui-common';
+import { Palette } from 'haiku-ui-common'
 
-const popoverWidth = 170;
-const pageTransDur = 170;
+const popoverWidth = 170
+const pageTransDur = 170
 
 export const POPOVER_STYLES = {
   container: {
     borderRadius: '4px',
     minHeight: 80,
     maxHeight: '200px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     display: 'relative',
     backgroundColor: Palette.FATHER_COAL,
     color: Palette.ROCK,
-    boxShadow: '0 6px 25px 0 ' + Palette.FATHER_COAL,
+    boxShadow: `0 6px 25px 0 ${Palette.FATHER_COAL}`,
     overflowX: 'hidden',
     overflowY: 'auto',
   },
@@ -44,7 +44,7 @@ export const POPOVER_STYLES = {
     color: 'white',
     width: popoverWidth + 1,
     height: 142,
-    borderLeft: '1px solid ' + Palette.COAL,
+    borderLeft: `1px solid ${Palette.COAL}`,
     marginLeft: '-1px',
   },
   pageThree: {
@@ -54,7 +54,7 @@ export const POPOVER_STYLES = {
     color: 'white',
     width: popoverWidth + 1,
     height: 200,
-    borderLeft: '1px solid ' + Palette.COAL,
+    borderLeft: `1px solid ${Palette.COAL}`,
     marginLeft: '-1px',
   },
   onPage: {
@@ -72,7 +72,7 @@ export const POPOVER_STYLES = {
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: '1.3px',
-    borderBottom: '1px solid ' + Palette.COAL,
+    borderBottom: `1px solid ${Palette.COAL}`,
   },
   title: {
     paddingTop: 3,
@@ -90,11 +90,11 @@ export const POPOVER_STYLES = {
     fontWeight: 700,
   },
   btn: {
-    backgroundColor: Palette.COAL,
-    color: Palette.ROCK,
-    fontSize: 12,
-    padding: '4px 12px',
-    borderRadius: 3,
+    'backgroundColor': Palette.COAL,
+    'color': Palette.ROCK,
+    'fontSize': 12,
+    'padding': '4px 12px',
+    'borderRadius': 3,
     ':hover': {
       backgroundColor: Palette.GRAY,
     },
@@ -108,7 +108,7 @@ export const POPOVER_STYLES = {
     padding: '8px !important',
   },
   bottomRow: {
-    borderTop: '1px solid ' + Palette.COAL,
+    borderTop: `1px solid ${Palette.COAL}`,
     padding: 6,
     position: 'absolute',
     bottom: 0,
@@ -116,9 +116,9 @@ export const POPOVER_STYLES = {
     right: 0,
   },
   btnMini: {
-    padding: 4,
-    opacity: 0.7,
-    float: 'right',
+    'padding': 4,
+    'opacity': 0.7,
+    'float': 'right',
     ':hover': {
       opacity: 1,
     },
@@ -127,7 +127,7 @@ export const POPOVER_STYLES = {
     marginTop: '3px',
   },
   btnTrans: {
-    backgroundColor: 'transparent',
+    'backgroundColor': 'transparent',
     ':hover': {
       backgroundColor: 'transparent',
     },
@@ -138,10 +138,10 @@ export const POPOVER_STYLES = {
     top: '6px',
   },
   row: {
-    position: 'relative',
-    width: '100%',
-    padding: '3px 10px',
-    cursor: 'pointer',
+    'position': 'relative',
+    'width': '100%',
+    'padding': '3px 10px',
+    'cursor': 'pointer',
     ':hover': {
       backgroundColor: Palette.DARK_GRAY,
     },
@@ -166,4 +166,4 @@ export const POPOVER_STYLES = {
   activeIndicator: {
     backgroundColor: Palette.LIGHT_PINK,
   },
-};
+}

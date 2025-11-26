@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
-import {ModalWrapper, ModalHeader} from 'haiku-ui-common';
+import { ModalHeader, ModalWrapper, Palette } from 'haiku-ui-common'
+
+import * as React from 'react'
 
 const STYLES = {
   wrapper: {
@@ -21,7 +21,7 @@ const STYLES = {
   listItem: {
     marginBottom: '8px',
   },
-};
+}
 
 const HELP_STEPS = [
   `Whitelist (allow) *.haiku.ai`,
@@ -31,10 +31,10 @@ const HELP_STEPS = [
   `If you’re running Haiku on a Mac, head to your computer’s System
   Preferences, then Network, Advanced, and under Proxies, check that
   Auto Proxy Discovery is disabled.`,
-];
+]
 
 class ProxyHelpScreen extends React.PureComponent {
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -42,25 +42,25 @@ class ProxyHelpScreen extends React.PureComponent {
             <h2>Please adjust your proxy or firewall settings</h2>
           </ModalHeader>
           <div style={STYLES.modalBody}>
-          Proxies and firewalls can sometimes interfere with your connection to
-          Animator. If you’re struggling to connect, here are a few steps that can resolve the problem:
-          <ul>
-            {HELP_STEPS.map((step, idx) => {
-              return (
-                <li key={idx} style={STYLES.listItem}>
-                  {step}
-                </li>
-              );
-            })}
-          </ul>
-          If you did not configure your network security, this might sound a bit
-          confusing: please contact your trusted IT professional for additional
-          assistance.
-        </div>
+            Proxies and firewalls can sometimes interfere with your connection to
+            Animator. If you’re struggling to connect, here are a few steps that can resolve the problem:
+            <ul>
+              {HELP_STEPS.map((step, idx) => {
+                return (
+                  <li key={idx} style={STYLES.listItem}>
+                    {step}
+                  </li>
+                )
+              })}
+            </ul>
+            If you did not configure your network security, this might sound a bit
+            confusing: please contact your trusted IT professional for additional
+            assistance.
+          </div>
         </ModalWrapper>
       </div>
-    );
+    )
   }
 }
 
-export default ProxyHelpScreen;
+export default ProxyHelpScreen

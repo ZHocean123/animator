@@ -1,4 +1,3 @@
-
 export enum ExporterFormat {
   Unknown = 'Unknown',
   Bodymovin = 'Lottie',
@@ -9,11 +8,11 @@ export enum ExporterFormat {
 }
 
 export interface ExporterRequest {
-  format: ExporterFormat;
-  filename: string|Buffer;
-  framerate: number;
-  outlet?: string;
-  progress?: number;
+  format: ExporterFormat
+  filename: string | Buffer
+  framerate: number
+  outlet?: string
+  progress?: number
 }
 
-export * from './ExporterHandler';
+export * from './ExporterHandler'

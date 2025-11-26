@@ -1,7 +1,7 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
-import ActiveComponentIndicator from './ActiveComponentIndicator';
-import PlaybackButtons from './PlaybackButtons';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import ActiveComponentIndicator from './ActiveComponentIndicator'
+import PlaybackButtons from './PlaybackButtons'
 
 const STYLES = {
   wrapper: {
@@ -23,15 +23,16 @@ const STYLES = {
     display: 'flex',
     alignItems: 'center',
   },
-};
+}
 
 export default class ControlsArea extends React.Component {
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <span style={STYLES.leftWrapper}>
           <ActiveComponentIndicator
-            displayName={this.props.activeComponentDisplayName} />
+            displayName={this.props.activeComponentDisplayName}
+          />
         </span>
         <span style={STYLES.centerWrapper}>
           <PlaybackButtons
@@ -40,17 +41,19 @@ export default class ControlsArea extends React.Component {
             playbackSkipForward={this.props.playbackSkipForward}
             playbackPlayPause={this.props.playbackPlayPause}
             toggleRepeat={this.props.toggleRepeat}
-            isRepeat={this.props.isRepeat} />
+            isRepeat={this.props.isRepeat}
+          />
           <div style={{
             position: 'absolute',
             top: -63,
-          }} />
+          }}
+          />
         </span>
       </div>
-    );
+    )
   }
 }
 
 ControlsArea.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}

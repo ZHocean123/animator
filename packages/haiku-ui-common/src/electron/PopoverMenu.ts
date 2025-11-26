@@ -1,78 +1,79 @@
-import {BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, remote} from 'electron';
-import {EventEmitter} from 'events';
+import type { BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from 'electron'
+import { EventEmitter } from 'node:events'
+import { remote } from 'electron'
 
-let remoteMenu: typeof Menu;
-let remoteMenuItem: typeof MenuItem;
+let remoteMenu: typeof Menu
+let remoteMenuItem: typeof MenuItem
 if (remote) {
-  remoteMenu = remote.Menu;
-  remoteMenuItem = remote.MenuItem;
+  remoteMenu = remote.Menu
+  remoteMenuItem = remote.MenuItem
 }
 
-const DISPLAY_HACK_TIMEOUT = 100;
+const DISPLAY_HACK_TIMEOUT = 100
 
 export interface MenuSpec {
-  type: ('normal' | 'separator' | 'submenu' | 'checkbox' | 'radio');
-  label: string;
-  enabled: boolean;
-  submenu: MenuSpec[];
-  onClick: (menuItem: MenuItem, browserWindow: BrowserWindow, event: Event) => void;
+  type: ('normal' | 'separator' | 'submenu' | 'checkbox' | 'radio')
+  label: string
+  enabled: boolean
+  submenu: MenuSpec[]
+  onClick: (menuItem: MenuItem, browserWindow: BrowserWindow, event: Event) => void
 }
 
 export interface MenuItemLaunchConfig {
-  items: MenuSpec[];
+  items: MenuSpec[]
 }
 
-const buildMenuItem = (menu: Menu, {type, label, enabled, submenu, onClick}: MenuSpec) => {
+function buildMenuItem(menu: Menu, { type, label, enabled, submenu, onClick }: MenuSpec) {
   const menuSpec: MenuItemConstructorOptions = {
     type,
     label,
     enabled,
     click: onClick,
-  };
+  }
 
   if (submenu && submenu.length > 0) {
-    menuSpec.submenu = new remoteMenu();
+    menuSpec.submenu = new remoteMenu()
     submenu.forEach((subitem) => {
-      buildMenuItem(menuSpec.submenu as Menu, subitem);
-    });
+      buildMenuItem(menuSpec.submenu as Menu, subitem)
+    })
   }
 
-  const item = new remoteMenuItem(menuSpec);
+  const item = new remoteMenuItem(menuSpec)
 
-  menu.append(item);
-};
+  menu.append(item)
+}
 
 export class PopoverMenu extends EventEmitter {
-  menu: Menu = null;
+  menu: Menu = null
 
-  launch ({items}: MenuItemLaunchConfig) {
+  launch({ items }: MenuItemLaunchConfig) {
     if (!remoteMenu) {
-      return;
+      return
     }
 
-    this.menu = new remoteMenu();
+    this.menu = new remoteMenu()
 
     items.forEach((item) => {
-      buildMenuItem(this.menu as Menu, item);
-    });
+      buildMenuItem(this.menu as Menu, item)
+    })
 
-    this.show();
+    this.show()
   }
 
-  show () {
+  show() {
     if (!this.menu) {
-      return;
+      return
     }
 
     setTimeout(
       () => {
-        this.menu.popup({window: remote.getCurrentWindow()});
+        this.menu.popup({ window: remote.getCurrentWindow() })
       },
       DISPLAY_HACK_TIMEOUT,
-    );
+    )
   }
 }
 
-const singleton = new PopoverMenu();
+const singleton = new PopoverMenu()
 
-export default singleton;
+export default singleton

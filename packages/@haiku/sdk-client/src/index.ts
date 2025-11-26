@@ -1,131 +1,130 @@
+import { execSync } from 'node:child_process'
+import * as fs from 'node:fs'
+import * as os from 'node:os'
+import * as path from 'node:path'
 // tslint:disable:no-namespace class-name
-import {inkstone} from '@haiku/sdk-inkstone';
-import {execSync} from 'child_process';
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as _ from 'lodash';
-import * as mkdirp from 'mkdirp';
-import * as os from 'os';
-import * as path from 'path';
+import { inkstone } from '@haiku/sdk-inkstone'
+import * as dotenv from 'dotenv'
+import * as _ from 'lodash'
+import * as mkdirp from 'mkdirp'
 
+export { bootstrapSceneFilesSync } from './bootstrapSceneFilesSync'
+export { createProjectFiles } from './createProjectFiles'
 // Export ProjectDefinitions functionality
-export * from './ProjectDefinitions';
-export { bootstrapSceneFilesSync } from './bootstrapSceneFilesSync';
-export { createProjectFiles } from './createProjectFiles';
+export * from './ProjectDefinitions'
 
-const HAIKU_HOME = path.join(os.homedir(), '.haiku');
+const HAIKU_HOME = path.join(os.homedir(), '.haiku')
 
 export const FILE_PATHS = {
   HAIKU_HOME,
   AUTH_TOKEN: path.join(HAIKU_HOME, 'auth'),
   DOTENV: path.join(HAIKU_HOME, '.env'),
-};
+}
 
-export const ensureFolder = (folder: string) => {
-  mkdirp.sync(folder);
-};
+export function ensureFolder(folder: string) {
+  mkdirp.sync(folder)
+}
 
-export const ensureHomeFolder = () => {
-  ensureFolder(HAIKU_HOME);
-};
+export function ensureHomeFolder() {
+  ensureFolder(HAIKU_HOME)
+}
 
 export type HaikuDotEnv = {
   [key in string]: string;
-};
+}
 
-const applyEnv = (env: HaikuDotEnv) => {
-  Object.assign(global.process.env, env);
+function applyEnv(env: HaikuDotEnv) {
+  Object.assign(global.process.env, env)
   if (env.HAIKU_API) {
-    inkstone.setConfig({baseUrl: env.HAIKU_API});
+    inkstone.setConfig({ baseUrl: env.HAIKU_API })
   }
-};
+}
 
 export namespace client {
 
-  export const verboselyLog =  (message: string, ...args: any[]) => {
+  export function verboselyLog(message: string, ...args: any[]) {
     if (clientConfig.verbose) {
-      console.log(message, ...args);
+      console.log(message, ...args)
     }
-  };
+  }
 
-  export const error = (err: any) => {
+  export function error(err: any) {
     // TODO: elegantly handle errors
-  };
+  }
 
   export class npm {
-    static readPackageJson (pathIn: string = global.process.cwd() + '/package.json'): any {
-      return JSON.parse(fs.readFileSync(pathIn, 'utf8'));
+    static readPackageJson(pathIn: string = `${global.process.cwd()}/package.json`): any {
+      return JSON.parse(fs.readFileSync(pathIn, 'utf8'))
     }
 
-    static writePackageJson (jsonObject: any, pathIn: string = global.process.cwd() + '/package.json') {
-      fs.writeFileSync(pathIn, JSON.stringify(jsonObject, undefined, 2));
+    static writePackageJson(jsonObject: any, pathIn: string = `${global.process.cwd()}/package.json`) {
+      fs.writeFileSync(pathIn, JSON.stringify(jsonObject, undefined, 2))
     }
   }
 
   export class git {
-    static cloneRepo (remote: string, pathIn: string, cb: (error?: any) => any) {
-      let err;
+    static cloneRepo(remote: string, pathIn: string, cb: (error?: any) => any) {
+      let err
       try {
-        execSync(`git clone ${remote} ${pathIn}`);
-      } catch (e) {
-        err = e;
-        client.verboselyLog('error cloning repository', e);
+        execSync(`git clone ${remote} ${pathIn}`)
       }
-      cb(err);
+      catch (e) {
+        err = e
+        client.verboselyLog('error cloning repository', e)
+      }
+      cb(err)
     }
-
   }
 
   export interface ClientConfig {
-    verbose?: boolean;
+    verbose?: boolean
   }
 
   const clientConfig: ClientConfig = {
     verbose: false,
-  };
+  }
 
-  export function setConfig (newVals: ClientConfig) {
-    _.extend(clientConfig, newVals);
+  export function setConfig(newVals: ClientConfig) {
+    _.extend(clientConfig, newVals)
   }
 
   export class config {
-
-    static getenv (): HaikuDotEnv {
+    static getenv(): HaikuDotEnv {
       if (!fs.existsSync(FILE_PATHS.DOTENV)) {
-        return {};
+        return {}
       }
 
-      const env = dotenv.parse(fs.readFileSync(FILE_PATHS.DOTENV));
-      applyEnv(env);
-      return env;
+      const env = dotenv.parse(fs.readFileSync(FILE_PATHS.DOTENV))
+      applyEnv(env)
+      return env
     }
 
-    static setenv (environmentVariables: HaikuDotEnv): HaikuDotEnv {
-      const newenv = Object.assign(client.config.getenv(), environmentVariables);
-      applyEnv(newenv);
+    static setenv(environmentVariables: HaikuDotEnv): HaikuDotEnv {
+      const newenv = Object.assign(client.config.getenv(), environmentVariables)
+      applyEnv(newenv)
       fs.writeFileSync(
         FILE_PATHS.DOTENV,
         Object.entries(newenv)
           .reduce(
-            (accumulator, [key, value]) => accumulator + `${key}="${value}"\n`,
+            (accumulator, [key, value]) => `${accumulator}${key}="${value}"\n`,
             '',
           ),
-      );
+      )
 
-      return newenv;
+      return newenv
     }
 
-    static getAuthToken (): string {
+    static getAuthToken(): string {
       if (fs.existsSync(FILE_PATHS.AUTH_TOKEN)) {
-        const token = fs.readFileSync(FILE_PATHS.AUTH_TOKEN).toString();
-        return token;
+        const token = fs.readFileSync(FILE_PATHS.AUTH_TOKEN).toString()
+        return token
       }
-      return undefined;
+      return undefined
     }
 
-    static setAuthToken (newToken: string) {
-      ensureHomeFolder();
-      fs.writeFileSync(FILE_PATHS.AUTH_TOKEN, newToken);
+    static setAuthToken(newToken: string) {
+      ensureHomeFolder()
+      fs.writeFileSync(FILE_PATHS.AUTH_TOKEN, newToken)
     }
   }
 }

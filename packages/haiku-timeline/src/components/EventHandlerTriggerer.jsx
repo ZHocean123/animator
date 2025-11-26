@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {Bolt} from 'haiku-ui-common';
+import { Bolt } from 'haiku-ui-common'
+import * as React from 'react'
 
 const STYLES = {
   wrapper: {
@@ -8,24 +8,24 @@ const STYLES = {
     height: '100%',
     display: 'inline-block',
   },
-};
+}
 
 class EventHandlerTriggerer extends React.PureComponent {
-  constructor (props) {
-    super(props);
-    this.triggerEventHandlers = this.triggerEventHandlers.bind(this);
+  constructor(props) {
+    super(props)
+    this.triggerEventHandlers = this.triggerEventHandlers.bind(this)
   }
 
-  triggerEventHandlers () {
-    this.props.onEventHandlerTriggered(this.props.element.getPrimaryKey());
+  triggerEventHandlers() {
+    this.props.onEventHandlerTriggered(this.props.element.getPrimaryKey())
   }
 
-  render () {
+  render() {
     return (
       <span onClick={this.triggerEventHandlers} style={STYLES.wrapper}>
         <Bolt color={this.props.boltColor} />
       </span>
-    );
+    )
   }
 }
 
@@ -33,6 +33,6 @@ EventHandlerTriggerer.propTypes = {
   element: React.PropTypes.object.isRequired,
   onEventHandlerTriggered: React.PropTypes.func.isRequired,
   boltColor: React.PropTypes.string.isRequired,
-};
+}
 
-export default EventHandlerTriggerer;
+export default EventHandlerTriggerer

@@ -1,21 +1,21 @@
-import {BytecodeNode, BytecodeNodeAttributes, BytecodeNodeStyle} from '@haiku/core/lib/api';
-import toStyle from 'haiku-vendor-legacy/lib/to-style';
-import xmlParser from 'haiku-vendor-legacy/lib/xml-parser';
+import type { BytecodeNode, BytecodeNodeAttributes, BytecodeNodeStyle } from '@haiku/core/lib/api'
+import toStyle from 'haiku-vendor-legacy/lib/to-style'
+import xmlParser from 'haiku-vendor-legacy/lib/xml-parser'
 
-const styleStringToObject = toStyle.object;
+const styleStringToObject = toStyle.object
 
-const COLON = ':';
-const SEMI = ';';
-const CLASS = 'class';
-const CLASS_NAME = 'className';
-const CLOSE_TAG = '>';
-const DQUOTE = '"';
-const EMPTY = '';
-const EQ = '=';
-const OPEN_TAG = '<';
-const SLASH = '/';
-const SPACE = ' ';
-const STYLE = 'style';
+const COLON = ':'
+const SEMI = ';'
+const CLASS = 'class'
+const CLASS_NAME = 'className'
+const CLOSE_TAG = '>'
+const DQUOTE = '"'
+const EMPTY = ''
+const EQ = '='
+const OPEN_TAG = '<'
+const SLASH = '/'
+const SPACE = ' '
+const STYLE = 'style'
 
 const SELF_CLOSING_TAG_NAMES = [
   'area',
@@ -34,173 +34,174 @@ const SELF_CLOSING_TAG_NAMES = [
   'source',
   'track',
   'wbr',
-];
+]
 
-const isNumeric = (n: any) => !isNaN(parseFloat(n)) && isFinite(n);
+const isNumeric = (n: any) => !isNaN(Number.parseFloat(n)) && isFinite(n)
 
-const isEmptyObject = (object: any): boolean => object === null || object === undefined;
+const isEmptyObject = (object: any): boolean => object === null || object === undefined
 
-const styleToString = (style: BytecodeNodeStyle): string => {
-  let out = '';
+function styleToString(style: BytecodeNodeStyle): string {
+  let out = ''
 
   if (!style) {
-    return out;
+    return out
   }
 
   if (typeof style === 'string') {
-    return style;
+    return style
   }
 
   if (typeof style !== 'object') {
-    return out;
+    return out
   }
 
   for (const styleKey in style) {
-    const styleValue = style[styleKey];
+    const styleValue = style[styleKey]
 
     if (
-      typeof styleValue === 'string' ||
-      typeof styleValue === 'boolean' ||
-      isNumeric(styleValue)
+      typeof styleValue === 'string'
+      || typeof styleValue === 'boolean'
+      || isNumeric(styleValue)
     ) {
       // TODO: Add correct spacing instead of this compact format?
-      out += styleKey + COLON + styleValue + SEMI;
+      out += styleKey + COLON + styleValue + SEMI
     }
   }
 
-  return out;
-};
-
-interface ParsedXmlNode {
-  name: string;
-  content?: string;
-  attributes?: BytecodeNodeAttributes;
-  children: ParsedXmlNode[]|ParsedXmlNode;
+  return out
 }
 
-const fixChildren = (kids: ParsedXmlNode[]|ParsedXmlNode): BytecodeNode[] => {
+interface ParsedXmlNode {
+  name: string
+  content?: string
+  attributes?: BytecodeNodeAttributes
+  children: ParsedXmlNode[] | ParsedXmlNode
+}
+
+function fixChildren(kids: ParsedXmlNode[] | ParsedXmlNode): BytecodeNode[] {
   if (Array.isArray(kids)) {
-    return kids.map(fixNode);
+    return kids.map(fixNode)
   }
 
-  return [fixNode(kids)];
-};
+  return [fixNode(kids)]
+}
 
-const fixAttributes = (attributes: BytecodeNodeAttributes) => {
+function fixAttributes(attributes: BytecodeNodeAttributes) {
   if (attributes.style) {
     if (typeof attributes.style === 'string') {
-      attributes.style = styleStringToObject(attributes.style, null, null, null);
+      attributes.style = styleStringToObject(attributes.style, null, null, null)
     }
   }
-  return attributes;
-};
+  return attributes
+}
 
-const fixNode = (obj?: ParsedXmlNode): BytecodeNode|undefined => {
+function fixNode(obj?: ParsedXmlNode): BytecodeNode | undefined {
   if (!obj) {
-    return undefined;
+    return undefined
   }
 
   if (typeof obj === 'string') {
-    return obj;
+    return obj
   }
 
-  let children = obj.children;
+  let children = obj.children
 
   // @ts-ignore
   if (obj.content) {
     // @ts-ignore
-    children = [obj.content];
+    children = [obj.content]
   }
 
   return {
     elementName: obj.name,
     attributes: fixAttributes(obj.attributes || {}),
     children: fixChildren(children),
-  };
-};
+  }
+}
 
-const cannotUse = (object: any) => {
-  return object === false || object === null || object === undefined || typeof object === 'function';
-};
+function cannotUse(object: any) {
+  return object === false || object === null || object === undefined || typeof object === 'function'
+}
 
-const alreadySerial = (object: any): object is string => {
-  return typeof object === 'string' || typeof object === 'number';
-};
+function alreadySerial(object: any): object is string {
+  return typeof object === 'string' || typeof object === 'number'
+}
 
-const manaChildToHtml = (child: BytecodeNode|string) => {
+function manaChildToHtml(child: BytecodeNode | string) {
   if (cannotUse(child)) {
-    return EMPTY;
+    return EMPTY
   }
 
   if (alreadySerial(child)) {
-    return child;
+    return child
   }
 
-  return manaToXml(EMPTY, child);
-};
+  return manaToXml(EMPTY, child)
+}
 
-export const xmlToMana = (xml: string) => {
-  const obj = xmlParser(xml).root;
-  return fixNode(obj);
-};
+export function xmlToMana(xml: string) {
+  const obj = xmlParser(xml).root
+  return fixNode(obj)
+}
 
-export const manaToXml = (accumulator: string, object: BytecodeNode): string => {
-  let out = accumulator;
+export function manaToXml(accumulator: string, object: BytecodeNode): string {
+  let out = accumulator
 
   if (alreadySerial(object)) {
     // @ts-ignore
-    return object;
+    return object
   }
 
   if (cannotUse(object)) {
-    return EMPTY;
+    return EMPTY
   }
 
-  const name = object.elementName;
+  const name = object.elementName
 
-  const attributes = object.attributes;
+  const attributes = object.attributes
 
-  const children = object.children;
+  const children = object.children
 
   if (name) {
-    out += OPEN_TAG + name;
+    out += OPEN_TAG + name
 
     if (attributes && !isEmptyObject(attributes)) {
       for (let attributeName in attributes) {
-        let attrVal = attributes[attributeName];
+        let attrVal = attributes[attributeName]
 
         if (attributeName === STYLE) {
           if (attrVal === EMPTY || isEmptyObject(attrVal)) {
-            continue;
+            continue
           }
 
-          attrVal = styleToString(attrVal);
+          attrVal = styleToString(attrVal)
         }
 
         if (attributeName === CLASS_NAME) {
-          attributeName = CLASS;
+          attributeName = CLASS
         }
 
-        out += SPACE + attributeName + EQ + DQUOTE + attrVal + DQUOTE;
+        out += SPACE + attributeName + EQ + DQUOTE + attrVal + DQUOTE
       }
     }
 
-    out += CLOSE_TAG;
+    out += CLOSE_TAG
 
     if (Array.isArray(children)) {
       if (children && children.length > 0) {
         for (const child of children) {
-          out += manaChildToHtml(child);
+          out += manaChildToHtml(child)
         }
       }
-    } else {
-      out += manaChildToHtml(children);
+    }
+    else {
+      out += manaChildToHtml(children)
     }
 
-    if (SELF_CLOSING_TAG_NAMES.indexOf(name as string) === -1) {
-      out += OPEN_TAG + SLASH + name + CLOSE_TAG;
+    if (!SELF_CLOSING_TAG_NAMES.includes(name as string)) {
+      out += OPEN_TAG + SLASH + name + CLOSE_TAG
     }
   }
 
-  return out;
-};
+  return out
+}

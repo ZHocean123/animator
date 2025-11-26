@@ -1,6 +1,6 @@
-module.exports = function serializeError (err) {
+module.exports = function serializeError(err) {
   if (!err) {
-    return null;
+    return null
   }
   return {
     name: err.name,
@@ -8,5 +8,5 @@ module.exports = function serializeError (err) {
     stack: err.stack,
     code: err.code,
     type: err.type,
-  };
-};
+  }
+}

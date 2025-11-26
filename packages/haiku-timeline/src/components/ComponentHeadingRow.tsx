@@ -1,17 +1,14 @@
 // @ts-ignore
-import * as Element from 'haiku-serialization/src/bll/Element';
+import * as Element from 'haiku-serialization/src/bll/Element'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {Palette} from 'haiku-ui-common';
-import {DownCarrotSVG} from 'haiku-ui-common';
-import {DragGrip} from 'haiku-ui-common';
-import {RightCarrotSVG} from 'haiku-ui-common';
-import {LockIconSVG, UnlockIconSVG} from 'haiku-ui-common';
-import * as React from 'react';
-import CollapsedPropertyTimelineSegments from './CollapsedPropertyTimelineSegments';
-import ComponentHeadingRowHeading from './ComponentHeadingRowHeading';
-import EventHandlerTriggerer from './EventHandlerTriggerer';
-import zIndex from './styles/zIndex';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import { DownCarrotSVG, DragGrip, LockIconSVG, Palette, RightCarrotSVG, UnlockIconSVG } from 'haiku-ui-common'
+
+import * as React from 'react'
+import CollapsedPropertyTimelineSegments from './CollapsedPropertyTimelineSegments'
+import ComponentHeadingRowHeading from './ComponentHeadingRowHeading'
+import EventHandlerTriggerer from './EventHandlerTriggerer'
+import zIndex from './styles/zIndex'
 
 const STYLES = {
   actionButton: {
@@ -20,172 +17,173 @@ const STYLES = {
     height: 15,
     textAlign: 'center',
   },
-};
+}
 
 export interface ComponentHeadingRowProps {
-  row: any;
-  component: any;
-  timeline: any;
-  rowHeight: number;
-  onEventHandlerTriggered (): void;
-  isExpanded: boolean;
-  isHidden: boolean;
-  isSelected: boolean;
-  hasAttachedActions: boolean;
-  timelinePropertiesWidth: number;
-  setEditingRowTitleStatus (): void;
-  onDragStart (componentId: string): void;
+  row: any
+  component: any
+  timeline: any
+  rowHeight: number
+  onEventHandlerTriggered: () => void
+  isExpanded: boolean
+  isHidden: boolean
+  isSelected: boolean
+  hasAttachedActions: boolean
+  timelinePropertiesWidth: number
+  setEditingRowTitleStatus: () => void
+  onDragStart: (componentId: string) => void
 }
 
 export default class ComponentHeadingRow extends React.Component<ComponentHeadingRowProps> {
-  mounted = false;
+  mounted = false
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.row.element.removeListener('update', this.handleUpdate);
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.row.element.removeListener('update', this.handleUpdate)
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.row.element.on('update', this.handleUpdate);
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.row.element.on('update', this.handleUpdate)
+    this.props.row.on('update', this.handleUpdate)
   }
 
   handleUpdate = (what: string): void => {
     if (!this.mounted) {
-      return null;
+      return null
     }
 
     if (
-      what === 'drag-group-start' ||
-      what === 'drag-group-end' ||
-      what === 'row-rehydrated' ||
-      what === 'element-locked-toggle' ||
-      what === 'row-expanded'
+      what === 'drag-group-start'
+      || what === 'drag-group-end'
+      || what === 'row-rehydrated'
+      || what === 'element-locked-toggle'
+      || what === 'row-expanded'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
-  };
+  }
 
-  shouldComponentUpdate (nextProps: ComponentHeadingRowProps) {
+  shouldComponentUpdate(nextProps: ComponentHeadingRowProps) {
     return Boolean(
-      (this.props.isExpanded !== nextProps.isExpanded) ||
-      (this.props.isHidden !== nextProps.isHidden) ||
-      (this.props.isSelected !== nextProps.isSelected) ||
-      (this.props.hasAttachedActions !== nextProps.hasAttachedActions) ||
-      (this.props.timelinePropertiesWidth !== nextProps.timelinePropertiesWidth),
-    );
+      (this.props.isExpanded !== nextProps.isExpanded)
+      || (this.props.isHidden !== nextProps.isHidden)
+      || (this.props.isSelected !== nextProps.isSelected)
+      || (this.props.hasAttachedActions !== nextProps.hasAttachedActions)
+      || (this.props.timelinePropertiesWidth !== nextProps.timelinePropertiesWidth),
+    )
   }
 
   hoverRow = () => {
-    this.handleRowHoverUnhover(true);
-  };
+    this.handleRowHoverUnhover(true)
+  }
 
   unhoverRow = () => {
-    this.handleRowHoverUnhover(false);
-  };
+    this.handleRowHoverUnhover(false)
+  }
 
   toggleExpandAndSelect = (clickEvent: React.MouseEvent<any>) => {
     if (clickEvent) {
-      clickEvent.stopPropagation();
+      clickEvent.stopPropagation()
     }
 
     if (this.props.isExpanded) {
-      this.collapseAndDeselect();
-    } else {
-      this.expandAndSelect(clickEvent);
+      this.collapseAndDeselect()
     }
-  };
-
-  expandAndSelect = (clickEvent: React.MouseEvent<any>) => {
-    if (clickEvent) {
-      clickEvent.stopPropagation();
-    }
-
-    Element.deselectAllOtherElements({
-      component: this.props.row.component},
-      this.props.row.element,
-      {from: 'timeline'},
-    );
-
-    this.props.row.expandAndSelect({from: 'timeline'});
-  };
-
-  collapseAndDeselect () {
-    if (this.props.row.isRootRow()) {
-      this.props.row.visit((row: any) => {
-        row.collapse({from: 'timeline'});
-      });
-    } else {
-      this.props.row.collapseAndDeselect({from: 'timeline'});
+    else {
+      this.expandAndSelect(clickEvent)
     }
   }
 
-  handleRowHoverUnhover (shouldHover: boolean) {
+  expandAndSelect = (clickEvent: React.MouseEvent<any>) => {
+    if (clickEvent) {
+      clickEvent.stopPropagation()
+    }
+
+    Element.deselectAllOtherElements({
+      component: this.props.row.component,
+    }, this.props.row.element, { from: 'timeline' })
+
+    this.props.row.expandAndSelect({ from: 'timeline' })
+  }
+
+  collapseAndDeselect() {
+    if (this.props.row.isRootRow()) {
+      this.props.row.visit((row: any) => {
+        row.collapse({ from: 'timeline' })
+      })
+    }
+    else {
+      this.props.row.collapseAndDeselect({ from: 'timeline' })
+    }
+  }
+
+  handleRowHoverUnhover(shouldHover: boolean) {
     if (shouldHover) {
-      this.props.row.hoverAndUnhoverOthers({from: 'timeline'});
-    } else {
-      this.props.row.unhover({from: 'timeline'});
+      this.props.row.hoverAndUnhoverOthers({ from: 'timeline' })
+    }
+    else {
+      this.props.row.unhover({ from: 'timeline' })
     }
   }
 
   toggleSync = () => {
-    const locked = !this.props.row.element.isSyncLocked();
+    const locked = !this.props.row.element.isSyncLocked()
     this.props.component.updateKeyframes(
       {},
-      {setElementLockStatus: {[this.props.row.element.getComponentId()]: locked}},
-      {from: 'timeline'},
+      { setElementLockStatus: { [this.props.row.element.getComponentId()]: locked } },
+      { from: 'timeline' },
       () => {
-        this.forceUpdate();
+        this.forceUpdate()
       },
-    );
-  };
+    )
+  }
 
   toggleLock = () => {
-    this.props.row.element.toggleLocked({from: 'timeline'}, () => {
-      mixpanel.haikuTrack('creator:timeline:layer:lock-toggled');
-    });
-  };
+    this.props.row.element.toggleLocked({ from: 'timeline' }, () => {
+      mixpanel.haikuTrack('creator:timeline:layer:lock-toggled')
+    })
+  }
 
   onDragStart = (event: React.DragEvent<any>) => {
     if (this.props.row.isRootRow()) {
-      return false;
+      return false
     }
 
-    const headingHTML = event.currentTarget.querySelector('.component-heading-row-heading-child-box');
-    const ghostImage = headingHTML.cloneNode(true);
-    const componentId = this.props.row.element.getComponentId();
+    const headingHTML = event.currentTarget.querySelector('.component-heading-row-heading-child-box')
+    const ghostImage = headingHTML.cloneNode(true)
+    const componentId = this.props.row.element.getComponentId()
 
-    ghostImage.style.fontFamily = 'Fira Sans';
-    ghostImage.style.position = 'fixed';
-    ghostImage.style.fontSize = '12px';
-    ghostImage.style.paddingLeft = '20px';
-    ghostImage.style.background = Palette.LIGHT_GRAY;
-    ghostImage.style.width = `${this.props.timelinePropertiesWidth}px`;
-    ghostImage.style.top = 10000;
-    document.body.appendChild(ghostImage);
-    event.dataTransfer.setDragImage(ghostImage, 0, 0);
-    event.dataTransfer.effectAllowed = 'move';
+    ghostImage.style.fontFamily = 'Fira Sans'
+    ghostImage.style.position = 'fixed'
+    ghostImage.style.fontSize = '12px'
+    ghostImage.style.paddingLeft = '20px'
+    ghostImage.style.background = Palette.LIGHT_GRAY
+    ghostImage.style.width = `${this.props.timelinePropertiesWidth}px`
+    ghostImage.style.top = 10000
+    document.body.appendChild(ghostImage)
+    event.dataTransfer.setDragImage(ghostImage, 0, 0)
+    event.dataTransfer.effectAllowed = 'move'
 
     setImmediate(() => {
-      ghostImage.remove();
-      document.body.classList.add('dragging');
-      this.props.onDragStart(componentId);
-    });
-  };
+      ghostImage.remove()
+      document.body.classList.add('dragging')
+      this.props.onDragStart(componentId)
+    })
+  }
 
   onDragEnd = () => {
-    document.body.classList.remove('dragging');
-  };
+    document.body.classList.remove('dragging')
+  }
 
-  render () {
-    const componentId = this.props.row.element.getComponentId();
-    const boltColor = this.props.hasAttachedActions ? Palette.LIGHT_BLUE : Palette.DARK_ROCK;
-    const propertiesPixelWidth = this.props.timeline.getPropertiesPixelWidth();
-    const depth = this.props.row.getDepthAmongRows();
-    const backgroundColor = this.props.isExpanded ? 'transparent' : Palette.LIGHT_GRAY;
-    const isRootRow = this.props.row.isRootRow();
+  render() {
+    const componentId = this.props.row.element.getComponentId()
+    const boltColor = this.props.hasAttachedActions ? Palette.LIGHT_BLUE : Palette.DARK_ROCK
+    const propertiesPixelWidth = this.props.timeline.getPropertiesPixelWidth()
+    const depth = this.props.row.getDepthAmongRows()
+    const backgroundColor = this.props.isExpanded ? 'transparent' : Palette.LIGHT_GRAY
+    const isRootRow = this.props.row.isRootRow()
 
     return (
       <div
@@ -234,7 +232,7 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
           >
             <span
               className="opacity-on-hover js-avoid-marquee-init"
-              style={{display: 'block'}}
+              style={{ display: 'block' }}
             >
               <DragGrip />
             </span>
@@ -275,10 +273,10 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
                 }}
                 onClick={this.toggleExpandAndSelect}
               >
-                <span style={{pointerEvents: 'none'}}>
+                <span style={{ pointerEvents: 'none' }}>
                   {this.props.isExpanded
-                      ? <DownCarrotSVG color={Palette.ROCK} />
-                      : <RightCarrotSVG />}
+                    ? <DownCarrotSVG color={Palette.ROCK} />
+                    : <RightCarrotSVG />}
                 </span>
               </span>
               <ComponentHeadingRowHeading
@@ -309,8 +307,8 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
               >
                 {
                   this.props.row.element.isLocked()
-                    ? LockIconSVG({color: Palette.LIGHT_BLUE})
-                    : UnlockIconSVG({color: Palette.DARK_ROCK})
+                    ? LockIconSVG({ color: Palette.LIGHT_BLUE })
+                    : UnlockIconSVG({ color: Palette.DARK_ROCK })
                 }
               </div>
               <div
@@ -321,36 +319,41 @@ export default class ComponentHeadingRow extends React.Component<ComponentHeadin
                 }}
               >
                 {(this.props.isExpanded || this.props.hasAttachedActions)
-                  ? <EventHandlerTriggerer
-                    element={this.props.row.element}
-                    row={this.props.row}
-                    boltColor={boltColor}
-                    onEventHandlerTriggered={this.props.onEventHandlerTriggered}
-                  />
+                  ? (
+                      <EventHandlerTriggerer
+                        element={this.props.row.element}
+                        row={this.props.row}
+                        boltColor={boltColor}
+                        onEventHandlerTriggered={this.props.onEventHandlerTriggered}
+                      />
+                    )
                   : ''}
               </div>
             </div>
           </div>
         </div>
-        {!this.props.isExpanded &&
-        <div
-          onClick={this.expandAndSelect}
-          className="component-collapsed-segments-box"
-          style={{
-            height: 'inherit',
-          }}
-        >
-          {(!this.props.isExpanded)
-            ? <CollapsedPropertyTimelineSegments
-              component={this.props.component}
-              timeline={this.props.timeline}
-              rowHeight={this.props.rowHeight}
-              row={this.props.row}
-            />
-          : ''}
-        </div>
-      }
+        {!this.props.isExpanded
+          && (
+            <div
+              onClick={this.expandAndSelect}
+              className="component-collapsed-segments-box"
+              style={{
+                height: 'inherit',
+              }}
+            >
+              {(!this.props.isExpanded)
+                ? (
+                    <CollapsedPropertyTimelineSegments
+                      component={this.props.component}
+                      timeline={this.props.timeline}
+                      rowHeight={this.props.rowHeight}
+                      row={this.props.row}
+                    />
+                  )
+                : ''}
+            </div>
+          )}
       </div>
-    );
+    )
   }
 }

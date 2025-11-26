@@ -1,64 +1,68 @@
-import * as React from 'react';
-import * as lodash from 'lodash';
-import * as Color from 'color';
-import {Palette } from 'haiku-ui-common';
+import * as Color from 'color'
+import { Palette } from 'haiku-ui-common'
+import * as lodash from 'lodash'
+import * as React from 'react'
 
-const CELL_WIDTH = 82;
+const CELL_WIDTH = 82
 
 export default class PropertyInputField extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleDoubleClick = this.handleDoubleClick.bind(this)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.row.on('update', this.handleUpdate)
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'row-selected') {
-      this.forceUpdate();
-    } else if (what === 'row-deselected') {
-      this.forceUpdate();
-    } else if (what === 'keyframe-delete') {
-      this.forceUpdate();
-    } else if (what === 'keyframe-create') {
-      this.forceUpdate();
-    } else if (what === 'row-set-locked') {
-      this.forceUpdate();
+      this.forceUpdate()
+    }
+    else if (what === 'row-deselected') {
+      this.forceUpdate()
+    }
+    else if (what === 'keyframe-delete') {
+      this.forceUpdate()
+    }
+    else if (what === 'keyframe-create') {
+      this.forceUpdate()
+    }
+    else if (what === 'row-set-locked') {
+      this.forceUpdate()
     }
   }
 
-  handleClick (clickEvent) {
-    this.props.row.blurOthers({from: 'timeline'}); // Otherwise previously blurred remains open
-    this.props.row.select({from: 'timeline'});
-    clickEvent.stopPropagation();
+  handleClick(clickEvent) {
+    this.props.row.blurOthers({ from: 'timeline' }) // Otherwise previously blurred remains open
+    this.props.row.select({ from: 'timeline' })
+    clickEvent.stopPropagation()
   }
 
-  handleDoubleClick (clickEvent) {
-    clickEvent.stopPropagation();
-    this.props.row.blurOthers({from: 'timeline'}); // Otherwise previously blurred remains open
+  handleDoubleClick(clickEvent) {
+    clickEvent.stopPropagation()
+    this.props.row.blurOthers({ from: 'timeline' }) // Otherwise previously blurred remains open
     if (this.props.disabled) {
-      return;
+      return
     }
 
-    this.props.row.focus({from: 'timeline'});
-    this.props.row.select({from: 'timeline'});
+    this.props.row.focus({ from: 'timeline' })
+    this.props.row.select({ from: 'timeline' })
   }
 
-  render () {
-    const propertyId = this.props.row.getInputPropertyId();
+  render() {
+    const propertyId = this.props.row.getInputPropertyId()
     return (
       <div
         id={propertyId}
@@ -70,14 +74,15 @@ export default class PropertyInputField extends React.Component {
           outline: 'none',
         }}
         onClick={this.handleClick}
-        onDoubleClick={this.handleDoubleClick}>
+        onDoubleClick={this.handleDoubleClick}
+      >
         <div
           className="property-input-field no-select"
           style={{
             position: 'absolute',
             outline: 'none',
             color: 'transparent',
-            textShadow: '0 0 0 ' + Color(Palette.ROCK).fade(0.3), // darkmagic
+            textShadow: `0 0 0 ${Color(Palette.ROCK).fade(0.3)}`, // darkmagic
             width: CELL_WIDTH,
             height: this.props.rowHeight + 1,
             paddingLeft: 7,
@@ -88,86 +93,89 @@ export default class PropertyInputField extends React.Component {
             borderTopLeftRadius: 4,
             borderBottomLeftRadius: 4,
             fontSize: 13,
-            border: '1px solid ' + Palette.DARKER_GRAY,
+            border: `1px solid ${Palette.DARKER_GRAY}`,
             backgroundColor: Palette.LIGHT_GRAY,
             overflow: 'hidden',
             fontFamily: 'inherit',
             cursor: 'default',
             ...(this.props.row === this.props.row.component.getSelectedRow() && {
-              border: '1px solid ' + Color(Palette.LIGHTEST_PINK).fade(0.2),
+              border: `1px solid ${Color(Palette.LIGHTEST_PINK).fade(0.2)}`,
               zIndex: 2005,
             }),
-          }}>
+          }}
+        >
           <PropertyInputFieldValueDisplay
             timeline={this.props.timeline}
             row={this.props.row}
-            />
+          />
         </div>
       </div>
-    );
+    )
   }
 }
 
 class PropertyInputFieldValueDisplay extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.valueDescriptor = props.row.getPropertyValueDescriptor();
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.valueDescriptor = props.row.getPropertyValueDescriptor()
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.throttledForceUpdate.cancel();
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.throttledForceUpdate.cancel()
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64)
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'timeline-frame') {
-      const valueDescriptor = this.props.row.getPropertyValueDescriptor();
+      const valueDescriptor = this.props.row.getPropertyValueDescriptor()
       if (valueDescriptor.prettyValue && valueDescriptor.prettyValue.text !== this.valueDescriptor.prettyValue.text) {
-        this.valueDescriptor = valueDescriptor;
-        this.throttledForceUpdate();
-        this.forceUpdate();
+        this.valueDescriptor = valueDescriptor
+        this.throttledForceUpdate()
+        this.forceUpdate()
       }
     }
   }
 
-  render () {
+  render() {
     return (
-      <span style={{whiteSpace: 'nowrap'}}>
-        {remapPrettyValue(this.valueDescriptor.prettyValue)}{' '}
-        <span style={{opacity: 0.5}}>{this.valueDescriptor.valueUnit}</span>
+      <span style={{ whiteSpace: 'nowrap' }}>
+        {remapPrettyValue(this.valueDescriptor.prettyValue)}
+        {' '}
+        <span style={{ opacity: 0.5 }}>{this.valueDescriptor.valueUnit}</span>
       </span>
-    );
+    )
   }
 }
 
-function safeText (textOrObj) {
+function safeText(textOrObj) {
   if (typeof textOrObj === 'string') {
-    return textOrObj;
+    return textOrObj
   }
 
   try {
-    return JSON.stringify(textOrObj);
-  } catch (exception) {
-    return '?';
+    return JSON.stringify(textOrObj)
+  }
+  catch (exception) {
+    return '?'
   }
 }
 
-function remapPrettyValue (prettyValue) {
+function remapPrettyValue(prettyValue) {
   if (prettyValue && prettyValue.render === 'react') {
-    return <span style={prettyValue.style}>{safeText(prettyValue.text)}</span>;
+    return <span style={prettyValue.style}>{safeText(prettyValue.text)}</span>
   }
-  return safeText(prettyValue.text);
+  return safeText(prettyValue.text)
 }
 
 PropertyInputField.propTypes = {
@@ -175,9 +183,9 @@ PropertyInputField.propTypes = {
   timeline: React.PropTypes.object.isRequired,
   rowHeight: React.PropTypes.number.isRequired,
   disabled: React.PropTypes.bool,
-};
+}
 
 PropertyInputFieldValueDisplay.propTypes = {
   row: React.PropTypes.object.isRequired,
   timeline: React.PropTypes.object.isRequired,
-};
+}

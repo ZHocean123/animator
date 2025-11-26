@@ -1,10 +1,10 @@
-import eqToRet from './eqToRet';
-import {RET} from './ExprSigns';
+import eqToRet from './eqToRet'
+import { RET } from './ExprSigns'
 
-export default function ensureRet (str: string) {
-  let fixed = eqToRet(str);
+export default function ensureRet(str: string) {
+  let fixed = eqToRet(str)
   if (fixed.slice(0, 6) !== RET) {
-    fixed = (RET + ' ') + fixed;
+    fixed = `${RET} ${fixed}`
   }
-  return fixed;
+  return fixed
 }

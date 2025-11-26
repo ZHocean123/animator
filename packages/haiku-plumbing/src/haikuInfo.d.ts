@@ -1,5 +1,5 @@
 declare const haikuInfo: {
-  [key: string]: any;
-};
+  [key: string]: any
+}
 
-export default haikuInfo;
+export default haikuInfo

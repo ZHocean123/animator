@@ -1,17 +1,13 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import * as lodash from 'lodash';
-import {Palette} from 'haiku-ui-common';
-import {SkipBackIconSVG} from 'haiku-ui-common';
-import {SkipForwardIconSVG} from 'haiku-ui-common';
-import {PlayIconSVG} from 'haiku-ui-common';
-import {PauseIconSVG} from 'haiku-ui-common';
-import {RepeatIconSVG} from 'haiku-ui-common';
+import { Palette, PauseIconSVG, PlayIconSVG, RepeatIconSVG, SkipBackIconSVG, SkipForwardIconSVG } from 'haiku-ui-common'
+
+import * as lodash from 'lodash'
+import * as Radium from 'radium'
+import * as React from 'react'
 
 const STYLES = {
   btn: {
-    transform: 'scale(1)',
-    transition: 'transform 167ms ease',
+    'transform': 'scale(1)',
+    'transition': 'transform 167ms ease',
     ':active': {
       transform: 'scale(.8)',
     },
@@ -23,7 +19,7 @@ const STYLES = {
     backgroundColor: Palette.FATHER_COAL,
   },
   btnRepeat: {
-    transform: 'scale(0.8)',
+    'transform': 'scale(0.8)',
     ':active': {
       transform: 'scale(0.7)',
     },
@@ -32,54 +28,54 @@ const STYLES = {
     opacity: 0.5,
     cursor: 'not-allowed',
   },
-};
+}
 
 class PlaybackButtons extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64 * 2);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64 * 2)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'timeline-frame') {
-      this.throttledForceUpdate();
+      this.throttledForceUpdate()
     }
   }
 
-  render () {
-    const frameInfo = this.props.timeline.getFrameInfo();
-    const lastFrame = frameInfo.maxf;
-    const currentFrame = this.props.timeline.getCurrentFrame();
-    const isPlaying = this.props.timeline.isPlaying();
+  render() {
+    const frameInfo = this.props.timeline.getFrameInfo()
+    const lastFrame = frameInfo.maxf
+    const currentFrame = this.props.timeline.getCurrentFrame()
+    const isPlaying = this.props.timeline.isPlaying()
     const {
       playbackSkipBack,
       playbackSkipForward,
       playbackPlayPause,
       toggleRepeat,
       isRepeat,
-    } = this.props;
+    } = this.props
 
     return (
       <span>
@@ -101,13 +97,15 @@ class PlaybackButtons extends React.Component {
             STYLES.btnPlayPause,
           ]}
         >
-          {(isPlaying) ? (
-            <span style={{marginLeft: 2}}>
-              <PauseIconSVG />
-            </span>
-          ) : (
-            <PlayIconSVG />
-          )}
+          {(isPlaying)
+            ? (
+                <span style={{ marginLeft: 2 }}>
+                  <PauseIconSVG />
+                </span>
+              )
+            : (
+                <PlayIconSVG />
+              )}
         </button>
         <button
           disabled={currentFrame >= lastFrame}
@@ -122,7 +120,7 @@ class PlaybackButtons extends React.Component {
         <button
           key="repeat"
           title="Repeat timeline during playback"
-          style={[STYLES.btn, STYLES.btnRepeat, !isRepeat && {opacity: 0.5}]}
+          style={[STYLES.btn, STYLES.btnRepeat, !isRepeat && { opacity: 0.5 }]}
           onClick={toggleRepeat}
         >
           <RepeatIconSVG
@@ -130,12 +128,12 @@ class PlaybackButtons extends React.Component {
           />
         </button>
       </span>
-    );
+    )
   }
 }
 
 PlaybackButtons.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}
 
-export default Radium(PlaybackButtons);
+export default Radium(PlaybackButtons)

@@ -1,9 +1,9 @@
 /** @file Generic handling for injectables through export. */
-import {
+import type {
   BytecodeStateType,
   BytecodeSummonable,
   HaikuBytecode,
-} from '@haiku/core/lib/api';
+} from '@haiku/core/lib/api'
 
 /**
  * A class we can instantiate to act as a stub for injectables that can't be evaluated sensibly during export.
@@ -18,23 +18,23 @@ class DefaultStub {
    * The constructor returns a Proxy, which activates the generic getter for property access mutation.
    * @returns {Proxy}
    */
-  constructor () {
-    return new Proxy(this, this);
+  constructor() {
+    return new Proxy(this, this)
   }
 
   /**
    * Returns the Proxy through regular access, and return a 0-getter when a primitive value is requested.
    */
-  get (_: any, property: any) {
+  get(_: any, property: any) {
     if (property === Symbol.toPrimitive) {
-      return () => 1;
+      return () => 1
     }
 
-    return new DefaultStub();
+    return new DefaultStub()
   }
 
-  apply () {
-    return new DefaultStub();
+  apply() {
+    return new DefaultStub()
   }
 }
 
@@ -47,26 +47,24 @@ class DefaultStub {
  *   The state tree we should evaluate parameters against.
  * @returns {any}
  */
-export const evaluateInjectedFunctionInExportContext = (
-  bytecodeSummonable: BytecodeSummonable,
-  bytecode: HaikuBytecode,
-): BytecodeStateType => {
-  const states = bytecode.states || {};
-  const helpers = bytecode.helpers || {};
-  const defaultStub = new DefaultStub();
+export function evaluateInjectedFunctionInExportContext(bytecodeSummonable: BytecodeSummonable, bytecode: HaikuBytecode): BytecodeStateType {
+  const states = bytecode.states || {}
+  const helpers = bytecode.helpers || {}
+  const defaultStub = new DefaultStub()
   const params = bytecodeSummonable.specification.params.map(
     (param: string) => {
       if (param === '$helpers') {
-        return helpers;
+        return helpers
       }
       return (global[param] || states.hasOwnProperty(param))
         ? (global[param] || states[param].value)
-        : defaultStub;
+        : defaultStub
     },
-  );
+  )
   try {
-    return bytecodeSummonable.apply(undefined, params) || 0;
-  } catch (e) {
-    return 0;
+    return bytecodeSummonable.apply(undefined, params) || 0
   }
-};
+  catch (e) {
+    return 0
+  }
+}

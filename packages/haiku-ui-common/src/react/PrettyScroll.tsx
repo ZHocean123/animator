@@ -1,8 +1,8 @@
-import * as React from 'react';
-import Palette from '../Palette';
+import * as React from 'react'
+import Palette from '../Palette'
 
 export class PrettyScroll extends React.PureComponent {
-  render () {
+  render() {
     return (
       <div>
         <style>
@@ -25,13 +25,13 @@ export class PrettyScroll extends React.PureComponent {
           `}
         </style>
 
-    {
-      React.Children.map(this.props.children, (child: React.ReactElement<any>) => (
-        React.cloneElement(child, {className: child.props.className + ' haiku-scroll'})
-      ))
-    }
+        {
+          React.Children.map(this.props.children, (child: React.ReactElement<any>) => (
+            React.cloneElement(child, { className: `${child.props.className} haiku-scroll` })
+          ))
+        }
 
       </div>
-    );
+    )
   }
 }

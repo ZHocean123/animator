@@ -1,17 +1,17 @@
-import * as React from 'react';
-import * as marked from 'marked';
-import {shell} from 'electron';
+import { shell } from 'electron'
+import * as Changelog from 'haiku-serialization/src/bll/Changelog'
 import {
-  ModalWrapper,
   ModalHeader,
-} from 'haiku-ui-common';
-import AnimatorSVG from 'haiku-ui-common';
-import ExternalLinkIconSVG from 'haiku-ui-common';
-import {BTN_STYLES} from '../styles/btnShared';
-import {DASH_STYLES} from '../styles/dashShared';
-import {Palette } from 'haiku-ui-common';
-import {PrettyScroll} from 'haiku-ui-common';
-import * as Changelog from 'haiku-serialization/src/bll/Changelog';
+  ModalWrapper,
+} from 'haiku-ui-common'
+import AnimatorSVG from 'haiku-ui-common'
+import ExternalLinkIconSVG from 'haiku-ui-common'
+import { Palette } from 'haiku-ui-common'
+import { PrettyScroll } from 'haiku-ui-common'
+import * as marked from 'marked'
+import * as React from 'react'
+import { BTN_STYLES } from '../styles/btnShared'
+import { DASH_STYLES } from '../styles/dashShared'
 
 const STYLES = {
   modalWrapper: {
@@ -56,25 +56,25 @@ const STYLES = {
     color: Palette.LIGHT_BLUE,
     cursor: 'pointer',
   },
-};
+}
 
 class ChangelogModal extends React.PureComponent {
-  constructor (props) {
-    super();
-    this.changelogManager = new Changelog(props.lastViewedChangelog);
+  constructor(props) {
+    super()
+    this.changelogManager = new Changelog(props.lastViewedChangelog)
     this.state = {
       changelog: null,
-    };
+    }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.changelogManager.getChangelog().then((changelog) => {
-      this.setState({changelog});
-    });
+      this.setState({ changelog })
+    })
   }
 
-  renderSections (changelog) {
-    const result = [];
+  renderSections(changelog) {
+    const result = []
     for (const section in changelog.sections) {
       result.push(
         <div key={section}>
@@ -84,21 +84,21 @@ class ChangelogModal extends React.PureComponent {
               return (
                 <li
                   key={idx}
-                  dangerouslySetInnerHTML={{__html: marked(entry)}}
+                  dangerouslySetInnerHTML={{ __html: marked(entry) }}
                 />
-              );
+              )
             })}
           </ul>
         </div>,
-      );
+      )
     }
-    return result;
+    return result
   }
 
-  render () {
-    const changelog = this.state.changelog;
+  render() {
+    const changelog = this.state.changelog
     if (!changelog) {
-      return null;
+      return null
     }
     return (
       <div style={DASH_STYLES.overlay} onClick={this.props.onClose}>
@@ -108,11 +108,11 @@ class ChangelogModal extends React.PureComponent {
             <span
               style={STYLES.link}
               onClick={() => {
-                shell.openExternal('https://docs.haiku.ai/release-notes/');
+                shell.openExternal('https://docs.haiku.ai/release-notes/')
               }}
             >
               Full Changelog
-              <span style={{marginLeft: 6, width: 11, height: 11, display: 'inline-block'}}>
+              <span style={{ marginLeft: 6, width: 11, height: 11, display: 'inline-block' }}>
                 <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
               </span>
             </span>
@@ -150,8 +150,8 @@ class ChangelogModal extends React.PureComponent {
                 className="changelog"
                 onClick={(e) => {
                   if (e.target.href) {
-                    e.preventDefault();
-                    shell.openExternal(e.target.href);
+                    e.preventDefault()
+                    shell.openExternal(e.target.href)
                   }
                 }}
               >
@@ -159,14 +159,16 @@ class ChangelogModal extends React.PureComponent {
               </div>
             </PrettyScroll>
           </div>
-        </ModalWrapper>;
-    </div>);
+        </ModalWrapper>
+        ;
+      </div>
+    )
   }
 }
 
 ChangelogModal.propTypes = {
   onClose: React.PropTypes.func.isRequired,
   lastViewedChangelog: React.PropTypes.string,
-};
+}
 
-export default ChangelogModal;
+export default ChangelogModal

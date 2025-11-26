@@ -1,7 +1,7 @@
-import {shell} from 'electron';
-import {ExporterRequest} from 'haiku-sdk-creator';
-import {LoadingButton} from 'haiku-ui-common';
-import * as React from 'react';
+import type { ExporterRequest } from 'haiku-sdk-creator'
+import { shell } from 'electron'
+import { LoadingButton } from 'haiku-ui-common'
+import * as React from 'react'
 
 const STYLES = {
   listItem: {
@@ -9,22 +9,21 @@ const STYLES = {
     marginRight: 5,
     display: 'block',
   },
-};
-
-export interface TrackedExporterRequestsProps {
-  trackedExporterRequests: ExporterRequest[];
 }
 
-const showItemLocation = (request: ExporterRequest) => {
+export interface TrackedExporterRequestsProps {
+  trackedExporterRequests: ExporterRequest[]
+}
+
+function showItemLocation(request: ExporterRequest) {
   if (request.progress === 1 && typeof request.filename === 'string') {
-    shell.showItemInFolder(request.filename);
+    shell.showItemInFolder(request.filename)
   }
-};
+}
 
 export class TrackedExporterRequests
   extends React.PureComponent<TrackedExporterRequestsProps> {
-
-  render () {
+  render() {
     return (
       <ul
         style={{
@@ -33,7 +32,7 @@ export class TrackedExporterRequests
           listStyleType: 'none',
         }}
       >
-        {this.props.trackedExporterRequests.map((request) => (
+        {this.props.trackedExporterRequests.map(request => (
           <li style={STYLES.listItem} key={request.filename.toString()}>
             <LoadingButton
               disabled={false}
@@ -48,6 +47,6 @@ export class TrackedExporterRequests
           </li>
         ))}
       </ul>
-    );
+    )
   }
 }

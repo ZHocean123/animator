@@ -1,73 +1,73 @@
-import * as React from 'react';
-import * as lodash from 'lodash';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import TransitionBody from './TransitionBody';
-import ConstantBody from './ConstantBody';
-import SoloKeyframe from './SoloKeyframe';
-import InvisibleKeyframeDragger from './InvisibleKeyframeDragger';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as lodash from 'lodash'
+import * as React from 'react'
+import ConstantBody from './ConstantBody'
+import InvisibleKeyframeDragger from './InvisibleKeyframeDragger'
+import SoloKeyframe from './SoloKeyframe'
+import TransitionBody from './TransitionBody'
 
 export default class RowSegments extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
     this.debouncedForceUpdate = lodash.debounce(() => {
       if (this.mounted) {
-        this.forceUpdate();
+        this.forceUpdate()
       }
-    }, 64, {leading: false, trailing: true});
+    }, 64, { leading: false, trailing: true })
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
+    this.props.row.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return;
+      return
     }
 
     if (
-        what === 'timeline-frame-range' ||
-        what === 'timeline-timeline-pixel-width'
-      ) {
-      this.forceUpdate();
-      return;
-    }
-
-    if (
-      what === 'keyframe-create' ||
-      what === 'keyframe-delete' ||
-      what === 'keyframe-remove-curve' ||
-      what === 'keyframe-add-curve' ||
-      what === 'keyframe-change-curve' ||
-      what === 'row-rehydrated' ||
-      what === 'child-row-rehydrated'
+      what === 'timeline-frame-range'
+      || what === 'timeline-timeline-pixel-width'
     ) {
-      this.debouncedForceUpdate();
+      this.forceUpdate()
+      return
+    }
+
+    if (
+      what === 'keyframe-create'
+      || what === 'keyframe-delete'
+      || what === 'keyframe-remove-curve'
+      || what === 'keyframe-add-curve'
+      || what === 'keyframe-change-curve'
+      || what === 'row-rehydrated'
+      || what === 'child-row-rehydrated'
+    ) {
+      this.debouncedForceUpdate()
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
-        {this.props.row.mapVisibleKeyframes({maxDepth: 3}, (keyframe) => {
-          const segmentPieces = [];
+        {this.props.row.mapVisibleKeyframes({ maxDepth: 3 }, (keyframe) => {
+          const segmentPieces = []
 
           // The use of this.props.scope as part of the id/key is necessary so that
           // model updates are routed properly; if you remove it, things will break.
@@ -82,9 +82,11 @@ export default class RowSegments extends React.Component {
                 component={this.props.component}
                 timeline={this.props.timeline}
                 rowHeight={this.props.rowHeight}
-                keyframe={keyframe} />,
-            );
-          } else {
+                keyframe={keyframe}
+              />,
+            )
+          }
+          else {
             if (keyframe.isConstantSegment()) {
               segmentPieces.push(
                 <ConstantBody
@@ -93,8 +95,9 @@ export default class RowSegments extends React.Component {
                   preventDragging={this.props.preventDragging}
                   timeline={this.props.timeline}
                   rowHeight={this.props.rowHeight}
-                  keyframe={keyframe} />,
-              );
+                  keyframe={keyframe}
+                />,
+              )
             }
             if (keyframe.isSoloKeyframe() || !keyframe.hasNextKeyframe()) {
               segmentPieces.push(
@@ -104,8 +107,9 @@ export default class RowSegments extends React.Component {
                   preventDragging={this.props.preventDragging}
                   timeline={this.props.timeline}
                   rowHeight={this.props.rowHeight}
-                  keyframe={keyframe} />,
-              );
+                  keyframe={keyframe}
+                />,
+              )
             }
           }
 
@@ -120,8 +124,9 @@ export default class RowSegments extends React.Component {
                   timeline={this.props.timeline}
                   rowHeight={this.props.rowHeight}
                   keyframe={keyframe}
-                  preventDragging={this.props.preventDragging} />,
-              );
+                  preventDragging={this.props.preventDragging}
+                />,
+              )
             }
             segmentPieces.push(
               <InvisibleKeyframeDragger
@@ -132,8 +137,9 @@ export default class RowSegments extends React.Component {
                 timeline={this.props.timeline}
                 rowHeight={this.props.rowHeight}
                 keyframe={keyframe}
-                preventDragging={this.props.preventDragging} />,
-            );
+                preventDragging={this.props.preventDragging}
+              />,
+            )
             if (keyframe.hasNextKeyframe()) {
               segmentPieces.push(
                 <InvisibleKeyframeDragger
@@ -144,8 +150,9 @@ export default class RowSegments extends React.Component {
                   timeline={this.props.timeline}
                   rowHeight={this.props.rowHeight}
                   keyframe={keyframe}
-                  preventDragging={this.props.preventDragging} />,
-              );
+                  preventDragging={this.props.preventDragging}
+                />,
+              )
             }
           }
 
@@ -153,26 +160,27 @@ export default class RowSegments extends React.Component {
             <div
               id={`keyframe-container-${keyframe.getUniqueKey()}`}
               key={`keyframe-container-${keyframe.getUniqueKey()}`}
-              className={`keyframe-container no-select`}
+              className="keyframe-container no-select"
               onDoubleClick={(doubleClickEvent) => {
                 if (
-                  doubleClickEvent.target &&
-                  doubleClickEvent.target.id &&
-                  doubleClickEvent.target.id.includes('keyframe-dragger')
+                  doubleClickEvent.target
+                  && doubleClickEvent.target.id
+                  && doubleClickEvent.target.id.includes('keyframe-dragger')
                 ) {
-                  this.props.timeline.seekToTime(keyframe.origMs);
-                  this.props.row.blurOthers({from: 'timeline'});
-                  this.props.row.focus({from: 'timeline'});
-                  this.props.row.select({from: 'timeline'});
-                  mixpanel.haikuTrack('creator:timeline:keyframe:double-clicked');
+                  this.props.timeline.seekToTime(keyframe.origMs)
+                  this.props.row.blurOthers({ from: 'timeline' })
+                  this.props.row.focus({ from: 'timeline' })
+                  this.props.row.select({ from: 'timeline' })
+                  mixpanel.haikuTrack('creator:timeline:keyframe:double-clicked')
                 }
-              }}>
+              }}
+            >
               {segmentPieces}
             </div>
-          );
+          )
         })}
       </div>
-    );
+    )
   }
 }
 
@@ -185,4 +193,4 @@ RowSegments.propTypes = {
   includeDraggables: React.PropTypes.bool.isRequired,
   preventDragging: React.PropTypes.bool.isRequired,
   showBezierEditor: React.PropTypes.func,
-};
+}

@@ -1,6 +1,6 @@
-export * from './EnvoyClient';
-export * from './EnvoyLogger';
-export * from './EnvoyServer';
+export * from './EnvoyClient'
+export * from './EnvoyLogger'
+export * from './EnvoyServer'
 
 export enum DatagramIntent {
   REQUEST,
@@ -9,28 +9,28 @@ export enum DatagramIntent {
   EVENT,
 }
 
-export type EnvoySerializable = any;
+export type EnvoySerializable = any
 
-export type ClientRequestCallback = (data: EnvoySerializable) => void;
+export type ClientRequestCallback = (data: EnvoySerializable) => void
 
 export interface Datagram {
-  id: string;
-  intent: DatagramIntent;
-  channel: string;
-  method?: string;
-  params?: string[];
-  data?: EnvoySerializable;
+  id: string
+  intent: DatagramIntent
+  channel: string
+  method?: string
+  params?: string[]
+  data?: EnvoySerializable
 }
 
 export interface EnvoyOptions {
-  port?: number;
-  host?: string;
-  protocol?: string;
-  path?: string;
-  WebSocket?: any;
-  logger?: any;
-  mock?: boolean;
-  token?: string; // Access/authentication token
+  port?: number
+  host?: string
+  protocol?: string
+  path?: string
+  WebSocket?: any
+  logger?: any
+  mock?: boolean
+  token?: string // Access/authentication token
 }
 
 export const DEFAULT_ENVOY_OPTIONS: EnvoyOptions = {
@@ -40,19 +40,19 @@ export const DEFAULT_ENVOY_OPTIONS: EnvoyOptions = {
   path: '/',
   port: null, // We choose a port automatically if none passed explicitly
   protocol: 'ws',
-};
+}
 
 export interface EnvoyEvent {
-  name: string;
-  payload: any;
+  name: string
+  payload: any
 }
 
 export interface RequestOptions {
-  timeout: number;
+  timeout: number
 }
 
 export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
   timeout: 60000,
-};
+}
 
-export type MaybeAsync<T> = (T | Promise<T>);
+export type MaybeAsync<T> = (T | Promise<T>)

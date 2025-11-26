@@ -1,7 +1,7 @@
-import * as React from 'react';
-import Palette from './../../Palette';
+import * as React from 'react'
+import Palette from './../../Palette'
 
-export default ({color = Palette.ROCK}) => (
+export default ({ color = Palette.ROCK }) => (
   <svg width="16px" height="16px" viewBox="0 0 32 32">
     <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <rect id="Rectangle" stroke={color} strokeWidth="2" x="1" y="1" width="29" height="30" rx="2" />
@@ -10,4 +10,4 @@ export default ({color = Palette.ROCK}) => (
       <path d="M1.35058594,11.3994141 C4.9078776,13.7373047 7.72949219,14.5166016 9.81542969,13.7373047 C12.9443359,12.5683594 14.8916016,8.52734375 20.6865234,8.52734375" id="Path-4" stroke={color} />
     </g>
   </svg>
-);
+)

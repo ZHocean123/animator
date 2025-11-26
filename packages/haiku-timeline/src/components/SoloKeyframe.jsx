@@ -1,93 +1,93 @@
-import * as React from 'react';
-import {Palette} from 'haiku-ui-common';
-import {KeyframeSVG} from 'haiku-ui-common';
-import {Experiment, experimentIsEnabled} from 'haiku-common';
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import { KeyframeSVG, Palette } from 'haiku-ui-common'
+
+import * as React from 'react'
 
 export default class SoloKeyframe extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleProps(props);
+  constructor(props) {
+    super(props)
+    this.handleProps(props)
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.handleProps(nextProps);
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.handleProps(nextProps)
   }
 
-  handleProps ({keyframe}) {
+  handleProps({ keyframe }) {
     if (
-      keyframe !== this.props.keyframe ||
-      !this.teardownKeyframeUpdateReceiver
+      keyframe !== this.props.keyframe
+      || !this.teardownKeyframeUpdateReceiver
     ) {
       if (this.teardownKeyframeUpdateReceiver) {
-        this.teardownKeyframeUpdateReceiver();
+        this.teardownKeyframeUpdateReceiver()
       }
       this.teardownKeyframeUpdateReceiver = keyframe.registerUpdateReceiver(this.props.id, (what) => {
-        this.handleUpdate(what);
-      });
+        this.handleUpdate(what)
+      })
     }
   }
 
-  get domRef () {
-    return this[this.props.keyframe.getUniqueKey()];
+  get domRef() {
+    return this[this.props.keyframe.getUniqueKey()]
   }
 
-  set domRef (domRef) {
-    this[this.props.keyframe.getUniqueKey()] = domRef;
+  set domRef(domRef) {
+    this[this.props.keyframe.getUniqueKey()] = domRef
   }
 
-  componentDidMount () {
-    this.mounted = true;
+  componentDidMount() {
+    this.mounted = true
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.teardownKeyframeUpdateReceiver();
-    this.props.keyframe.clearViewPosition();
+  componentWillUnmount() {
+    this.mounted = false
+    this.teardownKeyframeUpdateReceiver()
+    this.props.keyframe.clearViewPosition()
   }
 
-  componentDidUpdate () {
-    const viewPosition = this.props.keyframe.getViewPosition();
+  componentDidUpdate() {
+    const viewPosition = this.props.keyframe.getViewPosition()
     if (!viewPosition || !viewPosition.left) {
-      this.storeViewPosition(this.domRef);
+      this.storeViewPosition(this.domRef)
     }
   }
 
-  handleUpdate (what, ...args) {
+  handleUpdate(what, ...args) {
     if (!this.mounted) {
-      return null;
+      return null
     }
 
     if (what === 'keyframe-ms-set' || what === 'keyframe-neighbor-move') {
       this.forceUpdate(() => {
-        this.storeViewPosition(this.domRef);
-      });
+        this.storeViewPosition(this.domRef)
+      })
     }
 
     if (
-      what === 'keyframe-activated' ||
-      what === 'keyframe-deactivated' ||
-      what === 'keyframe-selected' ||
-      what === 'keyframe-deselected'
+      what === 'keyframe-activated'
+      || what === 'keyframe-deactivated'
+      || what === 'keyframe-selected'
+      || what === 'keyframe-deselected'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
   }
 
   storeViewPosition = (domElement) => {
-    this.domRef = domElement;
+    this.domRef = domElement
     if (domElement && experimentIsEnabled(Experiment.TimelineMarqueeSelection)) {
       requestAnimationFrame(() => {
         this.props.keyframe.storeViewPosition({
           rect: domElement.getBoundingClientRect(),
           offset: this.props.timeline.getScrollLeft(),
-        });
-      });
+        })
+      })
     }
-  };
+  }
 
-  render () {
-    const frameInfo = this.props.timeline.getFrameInfo();
-    const leftPx = this.props.keyframe.getPixelOffsetLeft(0, frameInfo.pxpf, frameInfo.mspf);
+  render() {
+    const frameInfo = this.props.timeline.getFrameInfo()
+    const leftPx = this.props.keyframe.getPixelOffsetLeft(0, frameInfo.pxpf, frameInfo.mspf)
 
     return (
       <span
@@ -110,7 +110,8 @@ export default class SoloKeyframe extends React.Component {
           transform: 'scale(1.7)',
           transition: 'opacity 130ms linear',
           zIndex: 1002,
-        }}>
+        }}
+      >
         <span
           className="keyframe-diamond"
           style={experimentIsEnabled(Experiment.TimelineMarqueeSelection) ? {
@@ -121,11 +122,12 @@ export default class SoloKeyframe extends React.Component {
             top: 5,
             // left: 1,
             cursor: (this.props.keyframe.isWithinCollapsedRow()) ? 'pointer' : 'move',
-          }}>
+          }}
+        >
           <KeyframeSVG color={Palette[this.props.keyframe.getLeftKeyframeColorState()]} />
         </span>
       </span>
-    );
+    )
   }
 }
 
@@ -133,4 +135,4 @@ SoloKeyframe.propTypes = {
   id: React.PropTypes.string.isRequired,
   keyframe: React.PropTypes.object.isRequired,
   preventDragging: React.PropTypes.bool.isRequired,
-};
+}

@@ -1,6 +1,6 @@
-const isElectron = () => {
-  const userAgent = navigator.userAgent.toLowerCase();
-  return userAgent.indexOf(' electron/') > -1;
-};
+function isElectron() {
+  const userAgent = navigator.userAgent.toLowerCase()
+  return userAgent.includes(' electron/')
+}
 
-export default isElectron;
+export default isElectron

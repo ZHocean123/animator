@@ -1,9 +1,8 @@
-import * as Color from 'color';
-import * as Radium from 'radium';
-import * as React from 'react';
+import * as Color from 'color'
+import { ModalHeader, ModalWrapper, Palette } from 'haiku-ui-common'
+import * as Radium from 'radium'
 
-import {Palette } from 'haiku-ui-common';
-import {ModalHeader, ModalWrapper} from 'haiku-ui-common';
+import * as React from 'react'
 
 const STYLES = {
   wrapper: {
@@ -28,61 +27,61 @@ const STYLES = {
     position: 'relative',
   },
   input: {
-    backgroundColor: Color(Palette.COAL).darken(0.2),
-    width: '100%',
-    height: 55,
-    borderRadius: 5,
-    marginBottom: 15,
-    border: '1px solid ' + Palette.FATHER_COAL,
-    fontSize: 18,
-    padding: '27px',
-    color: Palette.ROCK,
+    'backgroundColor': Color(Palette.COAL).darken(0.2),
+    'width': '100%',
+    'height': 55,
+    'borderRadius': 5,
+    'marginBottom': 15,
+    'border': `1px solid ${Palette.FATHER_COAL}`,
+    'fontSize': 18,
+    'padding': '27px',
+    'color': Palette.ROCK,
     ':focus': {
-      border: '1px solid ' + Palette.DARK_GRAY,
+      border: `1px solid ${Palette.DARK_GRAY}`,
     },
   },
   btn: {
-    backgroundColor: Palette.LIGHTEST_PINK,
-    borderRadius: 5,
-    width: '100%',
-    height: 55,
-    display: 'flex',
-    justifyContent: 'center',
-    fontSize: 22,
-    letterSpacing: 1.5,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    color: Palette.SUNSTONE,
+    'backgroundColor': Palette.LIGHTEST_PINK,
+    'borderRadius': 5,
+    'width': '100%',
+    'height': 55,
+    'display': 'flex',
+    'justifyContent': 'center',
+    'fontSize': 22,
+    'letterSpacing': 1.5,
+    'textAlign': 'center',
+    'textTransform': 'uppercase',
+    'color': Palette.SUNSTONE,
     ':focus': {
-      border: '1px solid ' + Palette.LIGHT_BLUE,
+      border: `1px solid ${Palette.LIGHT_BLUE}`,
     },
   },
-};
+}
 
 class ProxySettingsScreen extends React.Component {
-  componentDidMount () {
-    this.refs.host.value = this.props.proxyDescriptor.host || '';
-    this.refs.port.value = this.props.proxyDescriptor.port || '';
-    this.refs.username.value = this.props.proxyDescriptor.username || '';
-    this.refs.password.value = this.props.proxyDescriptor.password || '';
+  componentDidMount() {
+    this.refs.host.value = this.props.proxyDescriptor.host || ''
+    this.refs.port.value = this.props.proxyDescriptor.port || ''
+    this.refs.username.value = this.props.proxyDescriptor.username || ''
+    this.refs.password.value = this.props.proxyDescriptor.password || ''
   }
 
-  doSave () {
+  doSave() {
     this.props.onSave({
       host: this.refs.host.value,
       port: this.refs.port.value,
       username: this.refs.username.value,
       password: this.refs.password.value,
-    });
+    })
   }
 
-  doSaveOnKeypress (nativeClickEvent) {
+  doSaveOnKeypress(nativeClickEvent) {
     if (nativeClickEvent.charCode === 13) {
-      this.doSave();
+      this.doSave()
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -94,10 +93,10 @@ class ProxySettingsScreen extends React.Component {
               <input
                 type="text"
                 placeholder="Host (e.g. vpn.mycompany.net)"
-                ref="host"
+                ref={(ref) => { this.refs.host = ref }}
                 style={STYLES.input}
                 onKeyPress={(e) => {
-                  this.doSaveOnKeypress(e);
+                  this.doSaveOnKeypress(e)
                 }}
               />
             </div>
@@ -105,12 +104,12 @@ class ProxySettingsScreen extends React.Component {
               <input
                 type="number"
                 placeholder="Port (e.g. 3128)"
-                ref="port"
+                ref={(ref) => { this.refs.port = ref }}
                 min={1}
                 max={65535}
                 style={STYLES.input}
                 onKeyPress={(e) => {
-                  this.doSaveOnKeypress(e);
+                  this.doSaveOnKeypress(e)
                 }}
               />
             </div>
@@ -118,10 +117,10 @@ class ProxySettingsScreen extends React.Component {
               <input
                 type="text"
                 placeholder="Username (if proxy requires authentication)"
-                ref="username"
+                ref={(ref) => { this.refs.username = ref }}
                 style={STYLES.input}
                 onKeyPress={(e) => {
-                  this.doSaveOnKeypress(e);
+                  this.doSaveOnKeypress(e)
                 }}
               />
             </div>
@@ -129,10 +128,10 @@ class ProxySettingsScreen extends React.Component {
               <input
                 type="password"
                 placeholder="Password (if proxy requires authentication)"
-                ref="password"
+                ref={(ref) => { this.refs.password = ref }}
                 style={STYLES.input}
                 onKeyPress={(e) => {
-                  this.doSaveOnKeypress(e);
+                  this.doSaveOnKeypress(e)
                 }}
               />
             </div>
@@ -147,8 +146,8 @@ class ProxySettingsScreen extends React.Component {
           </div>
         </ModalWrapper>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(ProxySettingsScreen);
+export default Radium(ProxySettingsScreen)

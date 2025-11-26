@@ -1,24 +1,23 @@
-import {VueCliFlavor} from './flavors/VueCli';
-import {CodebaseFlavor} from './Types';
+import type { CodebaseFlavor } from './Types'
+import { VueCliFlavor } from './flavors/VueCli'
 
 export default class CodebaseManager {
-  flavor: CodebaseFlavor;
-  constructor (private directory: string) {
+  flavor: CodebaseFlavor
+  constructor(private directory: string) {
     // TODO:  parameterize and/or auto-discover between multiple flavors.
 
     // TODO:
     // - Support multiple/specifiable Flavors (e.g. create-react-app and vue-cli and custom-flavor)
     //   Ideally could even auto-discover matched Flavors.  MVP is to "support one."
     // - Match supported codebases on a priority queue, e.g. preferring vue-cli before defaulting to vue
-    this.flavor = new VueCliFlavor(this.directory);
+    this.flavor = new VueCliFlavor(this.directory)
     if (this.flavor.testCompatibility()) {
-      this.flavor.initCodebase();
-      this.flavor.findComponents();
+      this.flavor.initCodebase()
+      this.flavor.findComponents()
     }
   }
 
-  writeHaikuToCodebase () {
-    this.flavor.writeHaikuToCodebase();
+  writeHaikuToCodebase() {
+    this.flavor.writeHaikuToCodebase()
   }
-
 }

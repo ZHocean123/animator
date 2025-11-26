@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from 'react'
 
-export default ({color = '#636E71'}) => (
+export default ({ color = '#636E71' }) => (
   <svg width="9px" height="7px" viewBox="0 0 9 7">
     <g id="Timeline" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g id="Artboard-3-Copy-12" transform="translate(-60.000000, -155.000000)" fill={color} fillRule="nonzero">
@@ -15,4 +15,4 @@ export default ({color = '#636E71'}) => (
       </g>
     </g>
   </svg>
-);
+)

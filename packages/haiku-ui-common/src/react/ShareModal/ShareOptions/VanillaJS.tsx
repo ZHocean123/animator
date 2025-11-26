@@ -1,16 +1,16 @@
-import * as dedent from 'dedent';
-import * as React from 'react';
-import {CodeBox} from '../../CodeBox';
-import {NpmInstallable} from './NpmInstallable';
+import * as dedent from 'dedent'
+import * as React from 'react'
+import { CodeBox } from '../../CodeBox'
+import { NpmInstallable } from './NpmInstallable'
 
 export interface VanillaJSProps {
-  projectName: string;
-  organizationName: string;
+  projectName: string
+  organizationName: string
 }
 
 export default class VanillaJS extends React.PureComponent<VanillaJSProps> {
-  render () {
-    const {projectName, organizationName} = this.props;
+  render() {
+    const { projectName, organizationName } = this.props
 
     return (
       <NpmInstallable projectName={projectName} organizationName={organizationName}>
@@ -23,6 +23,6 @@ export default class VanillaJS extends React.PureComponent<VanillaJSProps> {
           `}
         </CodeBox>
       </NpmInstallable>
-    );
+    )
   }
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
 
 const STYLES = {
   button: {
@@ -15,10 +15,10 @@ const STYLES = {
   doneButton: {
     backgroundColor: Palette.BLACK,
   },
-};
+}
 
 class EditorActions extends React.PureComponent {
-  render () {
+  render() {
     return (
       <div style={STYLES.buttonsWrapper}>
         <button
@@ -30,22 +30,22 @@ class EditorActions extends React.PureComponent {
         <button
           onClick={(event) => {
             if (!this.props.isSaveDisabled) {
-              this.props.onSave();
+              this.props.onSave()
             }
           }}
-          style={{...STYLES.button, ...STYLES.doneButton, opacity: this.props.isSaveDisabled ? 0.5 : 1}}
+          style={{ ...STYLES.button, ...STYLES.doneButton, opacity: this.props.isSaveDisabled ? 0.5 : 1 }}
           title={this.props.title}
         >
           Done
         </button>
       </div>
-    );
+    )
   }
 }
 
 EditorActions.propTypes = {
   onCancel: React.PropTypes.func.isRequired,
   onSave: React.PropTypes.func.isRequired,
-};
+}
 
-export default EditorActions;
+export default EditorActions

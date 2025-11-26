@@ -1,17 +1,17 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
 
-const MAX_AUTOCOMPLETE_HEIGHT = 195;
+const MAX_AUTOCOMPLETE_HEIGHT = 195
 
 export default class AutoCompleter extends React.Component {
-  getContextStyle () {
-    const num = this.props.autoCompletions.length;
-    let height = num * this.props.lineHeight;
+  getContextStyle() {
+    const num = this.props.autoCompletions.length
+    let height = num * this.props.lineHeight
     if (num > 0) {
-      height += 1;
+      height += 1
     }
     if (height > MAX_AUTOCOMPLETE_HEIGHT) {
-      height = MAX_AUTOCOMPLETE_HEIGHT;
+      height = MAX_AUTOCOMPLETE_HEIGHT
     }
     const style = {
       position: 'absolute',
@@ -24,44 +24,46 @@ export default class AutoCompleter extends React.Component {
       backgroundColor: Palette.COAL,
       borderBottomLeftRadius: 4,
       borderBottomRightRadius: 4,
-    };
-    return style;
+    }
+    return style
   }
 
-  renderAutoCompletions () {
+  renderAutoCompletions() {
     if (this.props.autoCompletions.length < 1) {
-      return '';
+      return ''
     }
 
-    return this.props.autoCompletions.map(({name, highlighted}, index) => {
+    return this.props.autoCompletions.map(({ name, highlighted }, index) => {
       return (
         <div
           key={index}
           onClick={(clickEvent) => {
-            clickEvent.stopPropagation();
-            this.props.onClick({name, highlighted});
+            clickEvent.stopPropagation()
+            this.props.onClick({ name, highlighted })
           }}
           style={{
             color: (highlighted) ? Palette.SUNSTONE : Palette.DARKER_ROCK,
             backgroundColor: (highlighted) ? Palette.LIGHTEST_GRAY : 'inherit',
             height: this.props.lineHeight,
-            lineHeight: this.props.lineHeight + 'px',
+            lineHeight: `${this.props.lineHeight}px`,
             paddingLeft: 7,
             paddingTop: 2,
-          }}>
+          }}
+        >
           {name}
         </div>
-      );
-    });
+      )
+    })
   }
 
-  render () {
+  render() {
     return (
       <div
         id="expression-input-autocomplete-context"
-        style={this.getContextStyle()}>
+        style={this.getContextStyle()}
+      >
         {this.renderAutoCompletions()}
       </div>
-    );
+    )
   }
 }

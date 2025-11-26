@@ -1,8 +1,8 @@
+import { shell } from 'electron'
+import { Palette, PopoverMenu } from 'haiku-ui-common'
+
 /* global monaco */
-import * as React from 'react';
-import {shell} from 'electron';
-import {Palette } from 'haiku-ui-common';
-import {PopoverMenu} from 'haiku-ui-common';
+import * as React from 'react'
 
 const STYLES = {
   wrapper: {
@@ -33,118 +33,118 @@ const STYLES = {
     right: '0px',
     background: `linear-gradient(to right, transparent, ${Palette.DARKEST_COAL} 40%)`,
   },
-};
+}
 
 class Snippets extends React.PureComponent {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
     this.snippetOptions = [
       {
         label: 'Change State',
         onClick: () => {
-          this.insertSnippet('this.setState({stateName: value})');
+          this.insertSnippet('this.setState({stateName: value})')
         },
       },
       {
         label: 'Change State (Transition)',
         onClick: () => {
-          this.insertSnippet('this.setState({stateName: value}, {duration: 1000, curve: "linear", queued: false, onComplete: () => {}})');
+          this.insertSnippet('this.setState({stateName: value}, {duration: 1000, curve: "linear", queued: false, onComplete: () => {}})')
         },
       },
       {
         label: 'Go To And Play',
         onClick: () => {
-          this.insertSnippet('this.gotoAndPlay(frame)');
+          this.insertSnippet('this.gotoAndPlay(frame)')
         },
       },
       {
         label: 'Go To And Stop',
         onClick: () => {
-          this.insertSnippet('this.gotoAndStop(frame)');
+          this.insertSnippet('this.gotoAndStop(frame)')
         },
       },
       {
         label: 'Pause',
         onClick: () => {
-          this.insertSnippet('this.pause()');
+          this.insertSnippet('this.pause()')
         },
       },
       {
         label: 'Stop',
         onClick: () => {
-          this.insertSnippet('this.stop()');
+          this.insertSnippet('this.stop()')
         },
       },
       {
         label: 'Open Link',
         onClick: () => {
-          this.insertSnippet('window.open("https://www.haiku.ai", "_self", "location=yes")');
+          this.insertSnippet('window.open("https://www.haiku.ai", "_self", "location=yes")')
         },
       },
       {
         label: 'Docs ↗',
         onClick: () => {
-          shell.openExternal('https://docs.haiku.ai/using-haiku/summonables.html');
+          shell.openExternal('https://docs.haiku.ai/using-haiku/summonables.html')
         },
       },
-    ];
+    ]
   }
 
-  componentWillReceiveProps (newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.editor && !this.props.editor) {
-
-      newProps.editor.getDomNode().appendChild(this._rightGradientDiv);
+      newProps.editor.getDomNode().appendChild(this._rightGradientDiv)
 
       // Start snippet button position at line 0
-      const newEditorOffsetTop = newProps.editor.getDomNode().offsetTop;
-      this._plus.style.top = `${newEditorOffsetTop}px`;
+      const newEditorOffsetTop = newProps.editor.getDomNode().offsetTop
+      this._plus.style.top = `${newEditorOffsetTop}px`
 
       const updateSippetButtonPosition = () => {
-
-        const editorPosition = this.props.editor.getPosition();
-        const visibleRanges = this.props.editor.getVisibleRanges();
-        const cursorIsVisible = visibleRanges.some((range) => range.containsPosition(editorPosition));
+        const editorPosition = this.props.editor.getPosition()
+        const visibleRanges = this.props.editor.getVisibleRanges()
+        const cursorIsVisible = visibleRanges.some(range => range.containsPosition(editorPosition))
 
         if (cursorIsVisible && Boolean(this._plus)) {
-          this._plus.style.visibility = 'visible';
+          this._plus.style.visibility = 'visible'
 
           // Snippet button position is monaco editor position + relative cursor scroll position
-          const editorOffsetTop = this.props.editor.getDomNode().offsetTop;
-          const top = this.props.editor.getScrolledVisiblePosition(editorPosition).top;
-          this._plus.style.top = `${top + editorOffsetTop}px`;
-        } else {
-          this._plus.style.visibility = 'hidden';
+          const editorOffsetTop = this.props.editor.getDomNode().offsetTop
+          const top = this.props.editor.getScrolledVisiblePosition(editorPosition).top
+          this._plus.style.top = `${top + editorOffsetTop}px`
         }
-      };
+        else {
+          this._plus.style.visibility = 'hidden'
+        }
+      }
 
       // On monaco scroll or cursor change, update snippet button position
-      newProps.editor.onDidScrollChange(updateSippetButtonPosition);
-      newProps.editor.onDidChangeCursorPosition(updateSippetButtonPosition);
+      newProps.editor.onDidScrollChange(updateSippetButtonPosition)
+      newProps.editor.onDidChangeCursorPosition(updateSippetButtonPosition)
     }
   }
 
-  hasCursorPosition () {
-    const {lineNumber, column} = this.props.editor.getPosition();
-    return lineNumber !== 1 && column !== 1;
+  hasCursorPosition() {
+    const { lineNumber, column } = this.props.editor.getPosition()
+    return lineNumber !== 1 && column !== 1
   }
 
-  insertSnippet (injectable) {
+  insertSnippet(injectable) {
     if (typeof injectable === 'function') {
-      return injectable();
+      return injectable()
     }
 
-    let range;
+    let range
 
-    const {lineNumber, column} = this.props.editor.getPosition();
+    const { lineNumber, column } = this.props.editor.getPosition()
 
     if (this.hasCursorPosition()) {
-      range = new monaco.Range(lineNumber, column, lineNumber, column);
-    } else {
-      const allLines = this.props.editor._modelData.viewModel.lines.lines.length + 1;
-      range = new monaco.Range(allLines, 100, allLines, 100);
+      range = new monaco.Range(lineNumber, column, lineNumber, column)
+    }
+    else {
+      const allLines = this.props.editor._modelData.viewModel.lines.lines.length + 1
+      range = new monaco.Range(allLines, 100, allLines, 100)
       // tslint:disable-next-line:no-parameter-reassignment
-      injectable = `${injectable}`;
+      injectable = `${injectable}`
     }
 
     this.props.editor.executeEdits('snippet-injector', [
@@ -153,41 +153,44 @@ class Snippets extends React.PureComponent {
         range,
         text: injectable,
       },
-    ]);
+    ])
 
-    this.props.editor.focus();
-    this.props.editor.pushUndoStop();
+    this.props.editor.focus()
+    this.props.editor.pushUndoStop()
   }
 
   setPlusRef = (element) => {
-    this._plus = element;
-  };
+    this._plus = element
+  }
 
   setRightGradientDivRef = (element) => {
-    this._rightGradientDiv = element;
-  };
+    this._rightGradientDiv = element
+  }
 
   launchPopoverMenu = (event) => {
-    PopoverMenu.launch({event, items: this.snippetOptions});
-  };
+    PopoverMenu.launch({ event, items: this.snippetOptions })
+  }
 
-  render () {
+  render() {
     return (
       <div>
-        <div style={STYLES.wrapper} ref={this.setPlusRef}
-          onClick={this.launchPopoverMenu}>
+        <div
+          style={STYLES.wrapper}
+          ref={this.setPlusRef}
+          onClick={this.launchPopoverMenu}
+        >
           <div style={STYLES.button}>
             +
           </div>
         </div>
         <div style={STYLES.rightGradientDiv} ref={this.setRightGradientDivRef} />
       </div>
-    );
+    )
   }
 }
 
 Snippets.propTypes = {
   editor: React.PropTypes.object,
-};
+}
 
-export default Snippets;
+export default Snippets

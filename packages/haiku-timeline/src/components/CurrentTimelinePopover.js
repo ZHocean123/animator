@@ -1,25 +1,21 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import {DuplicateIconSVG} from 'haiku-ui-common';
-import {EditsIconSVG} from 'haiku-ui-common';
-import {DeleteIconSVG} from 'haiku-ui-common';
-import {CheckmarkIconSVG} from 'haiku-ui-common';
-import {ChevronLeftIconSVG} from 'haiku-ui-common';
-import {Palette} from 'haiku-ui-common';
+import { CheckmarkIconSVG, ChevronLeftIconSVG, DeleteIconSVG, DuplicateIconSVG, EditsIconSVG, Palette } from 'haiku-ui-common'
 
-const popoverWidth = 170;
-const popoverHeight = '200px';
-const pageTransDur = 170;
+import * as Radium from 'radium'
+import * as React from 'react'
+
+const popoverWidth = 170
+const popoverHeight = '200px'
+const pageTransDur = 170
 
 const STYLES = {
   container: {
     minHeight: '155px',
     maxHeight: '200px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     display: 'relative',
     backgroundColor: Palette.FATHER_COAL,
     color: 'white',
-    boxShadow: '0 6px 25px 0 ' + Palette.FATHER_COAL,
+    boxShadow: `0 6px 25px 0 ${Palette.FATHER_COAL}`,
     borderRadius: '4px',
     overflowX: 'hidden',
     overflowY: 'auto',
@@ -27,7 +23,7 @@ const STYLES = {
   pagesWrapper: {
     overflow: 'hidden',
     position: 'relative',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     height: popoverHeight,
   },
   pages: {
@@ -35,7 +31,7 @@ const STYLES = {
     top: 0,
     left: 0,
     borderRadius: '4px',
-    width: popoverWidth + 'px',
+    width: `${popoverWidth}px`,
     height: popoverHeight,
     // paddingTop: '5px'
   },
@@ -48,8 +44,8 @@ const STYLES = {
     transform: 'translate3d(100%, 0, 0)',
     transition: `transform ${pageTransDur}ms ease-out`,
     color: 'white',
-    width: popoverWidth + 1 + 'px',
-    borderLeft: '1px solid ' + Palette.COAL,
+    width: `${popoverWidth + 1}px`,
+    borderLeft: `1px solid ${Palette.COAL}`,
     marginLeft: '-1px',
   },
   onPage: {
@@ -68,13 +64,13 @@ const STYLES = {
     textTransform: 'uppercase',
     fontSize: '13px',
     letterSpacing: '2px',
-    borderBottom: '1px solid ' + Palette.COAL,
+    borderBottom: `1px solid ${Palette.COAL}`,
   },
   btn: {
-    backgroundColor: Palette.COAL,
-    color: Palette.ROCK,
-    padding: '4px 12px',
-    borderRadius: '3px',
+    'backgroundColor': Palette.COAL,
+    'color': Palette.ROCK,
+    'padding': '4px 12px',
+    'borderRadius': '3px',
     ':hover': {
       backgroundColor: Palette.GRAY,
     },
@@ -84,9 +80,9 @@ const STYLES = {
     margin: '0 0 0 17px',
   },
   btnMini: {
-    padding: '4px 4px',
-    opacity: 0.7,
-    float: 'right',
+    'padding': '4px 4px',
+    'opacity': 0.7,
+    'float': 'right',
     ':hover': {
       opacity: 1,
     },
@@ -95,7 +91,7 @@ const STYLES = {
     marginTop: '3px',
   },
   btnTrans: {
-    backgroundColor: 'transparent',
+    'backgroundColor': 'transparent',
     ':hover': {
       backgroundColor: 'transparent',
     },
@@ -106,9 +102,9 @@ const STYLES = {
     top: '6px',
   },
   timelineRow: {
-    width: '100%',
-    padding: '3px 10px',
-    cursor: 'pointer',
+    'width': '100%',
+    'padding': '3px 10px',
+    'cursor': 'pointer',
     ':hover': {
       backgroundColor: Palette.DARK_GRAY,
     },
@@ -119,14 +115,14 @@ const STYLES = {
     },
   },
   input: {
-    borderRadius: '2px',
-    color: Palette.ROCK,
-    padding: '5px 10px',
-    border: '1px solid transparent',
-    width: '80%',
-    pointerEvents: 'auto',
+    'borderRadius': '2px',
+    'color': Palette.ROCK,
+    'padding': '5px 10px',
+    'border': '1px solid transparent',
+    'width': '80%',
+    'pointerEvents': 'auto',
     ':focus': {
-      border: '1px solid ' + Palette.PINK,
+      border: `1px solid ${Palette.PINK}`,
       backgroundColor: Palette.MEDIUM_COAL,
     },
   },
@@ -135,8 +131,8 @@ const STYLES = {
     pointerEvents: 'none',
   },
   inputSolo: {
-    margin: '7px 0 4px 17px',
-    backgroundColor: Palette.MEDIUM_COAL,
+    'margin': '7px 0 4px 17px',
+    'backgroundColor': Palette.MEDIUM_COAL,
     ':hover': {
       backgroundColor: Palette.COAL,
     },
@@ -144,66 +140,66 @@ const STYLES = {
       backgroundColor: Palette.COAL,
     },
   },
-};
+}
 
 class CurrentTimelinePopover extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {onPageTwo: false};
+  constructor(props) {
+    super(props)
+    this.state = { onPageTwo: false }
   }
 
-  goToPageOne () {
-    this.setState({onPageTwo: false});
+  goToPageOne() {
+    this.setState({ onPageTwo: false })
   }
 
-  goToPageTwo () {
-    this.setState({onPageTwo: true});
+  goToPageTwo() {
+    this.setState({ onPageTwo: true })
     setTimeout(() => {
-      this.creationInput.focus();
-    }, pageTransDur);
+      this.creationInput.focus()
+    }, pageTransDur)
   }
 
-  handleRename (event, timelineName) {
-    event.preventDefault();
-    const originalName = this.state.focusedTimeline;
-    const newName = this[timelineName].value;
-    this.props.changeTimelineName({originalName, newName});
-    this[timelineName].blur();
+  handleRename(event, timelineName) {
+    event.preventDefault()
+    const originalName = this.state.focusedTimeline
+    const newName = this[timelineName].value
+    this.props.changeTimelineName({ originalName, newName })
+    this[timelineName].blur()
   }
 
-  handleCreateTimeline (event, form) {
-    event.preventDefault();
-    const name = this.creationInput.value;
-    this.props.createTimeline(name);
-    this.creationInput.blur();
-    this.creationInput.value = '';
-    this.setState({onPageTwo: false});
+  handleCreateTimeline(event, form) {
+    event.preventDefault()
+    const name = this.creationInput.value
+    this.props.createTimeline(name)
+    this.creationInput.blur()
+    this.creationInput.value = ''
+    this.setState({ onPageTwo: false })
   }
 
-  handleDuplicateTimeline (event, timelineName) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.props.duplicateTimeline(timelineName);
+  handleDuplicateTimeline(event, timelineName) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.props.duplicateTimeline(timelineName)
   }
 
-  showRenameField (event, timelineName) {
-    event.preventDefault();
-    event.stopPropagation();
+  showRenameField(event, timelineName) {
+    event.preventDefault()
+    event.stopPropagation()
     // this[timelineName].focus() // ?
   }
 
-  handleDeleteTimeline (event, timelineName) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.props.deleteTimeline(timelineName);
+  handleDeleteTimeline(event, timelineName) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.props.deleteTimeline(timelineName)
   }
 
-  handleSelectTimeline (event, timelineName) {
-    this.props.selectTimeline(timelineName);
-    this.props.closePopover();
+  handleSelectTimeline(event, timelineName) {
+    this.props.selectTimeline(timelineName)
+    this.props.closePopover()
   }
 
-  timelineElementsList () {
+  timelineElementsList() {
     return (
       <div>
         {this.props.timelineNames.map((timelineName) => {
@@ -212,19 +208,21 @@ class CurrentTimelinePopover extends React.Component {
               key={`main-${timelineName}`}
               onClick={(e) => {
                 if (!Radium.getState(this.state, `t-${timelineName}`, ':focus')) {
-                  this.handleSelectTimeline(e, timelineName);
+                  this.handleSelectTimeline(e, timelineName)
                 }
               }}
-              style={{position: 'relative'}}>
+              style={{ position: 'relative' }}
+            >
               <form
                 onSubmit={(e) => {
-                  this.handleRename(e, timelineName);
+                  this.handleRename(e, timelineName)
                 }}
                 onFocus={(e) => {
-                  this.setState({focusedTimeline: timelineName});
+                  this.setState({ focusedTimeline: timelineName })
                 }}
                 key={`timelineName-${timelineName}`}
-                style={[STYLES.timelineNameRow, Radium.getState(this.state, `t-${timelineName}`, ':focus') && STYLES.rowNoBg]}>
+                style={[STYLES.timelineNameRow, Radium.getState(this.state, `t-${timelineName}`, ':focus') && STYLES.rowNoBg]}
+              >
                 <div>
                   <input
                     placeholder="Enter name"
@@ -233,49 +231,57 @@ class CurrentTimelinePopover extends React.Component {
                     className="popover-input"
                     style={[STYLES.input, !Radium.getState(this.state, `t-${timelineName}`, ':focus') && STYLES.shorty]}
                     ref={(input) => {
-                      this[timelineName] = input;
-                    }} />
+                      this[timelineName] = input
+                    }}
+                  />
                   {Radium.getState(this.state, `t-${timelineName}`, ':focus')
-                      ? (<button
-                        key={`b-${timelineName}`}
-                        style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini, STYLES.rogueLayout]}
-                        type="submit">
-                        <CheckmarkIconSVG color={Palette.ROCK} />
-                      </button>)
-                      : null}
+                    ? (
+                        <button
+                          key={`b-${timelineName}`}
+                          style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini, STYLES.rogueLayout]}
+                          type="submit"
+                        >
+                          <CheckmarkIconSVG color={Palette.ROCK} />
+                        </button>
+                      )
+                    : null}
                 </div>
               </form>
               {!Radium.getState(this.state, `t-${timelineName}`, ':focus')
-                ? (<span style={{position: 'absolute', right: '4px', top: '5px'}}>
-                  <button
-                    onClick={this.handleDeleteTimeline.bind(this)}
-                    key={`d-${timelineName}`}
-                    style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
-                    <DeleteIconSVG color={Palette.ROCK} />
-                  </button>
-                  <button
-                    onClick={this.showRenameField.bind(this)}
-                    key={`e-${timelineName}`}
-                    style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
-                    <EditsIconSVG color={Palette.ROCK} />
-                  </button>
-                  <button
-                    onClick={this.handleDuplicateTimeline.bind(this)}
-                    key={`v-${timelineName}`}
-                    style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}>
-                    <DuplicateIconSVG color={Palette.ROCK} />
-                  </button>
-                </span>)
+                ? (
+                    <span style={{ position: 'absolute', right: '4px', top: '5px' }}>
+                      <button
+                        onClick={this.handleDeleteTimeline.bind(this)}
+                        key={`d-${timelineName}`}
+                        style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}
+                      >
+                        <DeleteIconSVG color={Palette.ROCK} />
+                      </button>
+                      <button
+                        onClick={this.showRenameField.bind(this)}
+                        key={`e-${timelineName}`}
+                        style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}
+                      >
+                        <EditsIconSVG color={Palette.ROCK} />
+                      </button>
+                      <button
+                        onClick={this.handleDuplicateTimeline.bind(this)}
+                        key={`v-${timelineName}`}
+                        style={[STYLES.btn, STYLES.btnTrans, STYLES.btnMini]}
+                      >
+                        <DuplicateIconSVG color={Palette.ROCK} />
+                      </button>
+                    </span>
+                  )
                 : null}
             </div>
-          );
-        })
-        }
+          )
+        })}
       </div>
-    );
+    )
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container}>
         <div style={STYLES.pagesWrapper}>
@@ -290,31 +296,34 @@ class CurrentTimelinePopover extends React.Component {
               <button
                 key="btn2"
                 style={[STYLES.btn, STYLES.btnTrans, STYLES.btnPrev]}
-                onClick={this.goToPageOne.bind(this)}>
+                onClick={this.goToPageOne.bind(this)}
+              >
                 <ChevronLeftIconSVG color={Palette.ROCK} />
               </button>
-              <div style={{paddingTop: '5px', width: '100%'}}>NEW TIMELINE</div>
+              <div style={{ paddingTop: '5px', width: '100%' }}>NEW TIMELINE</div>
             </div>
             <form
               onSubmit={this.handleCreateTimeline.bind(this)}
-              key={`timeline-new`}>
+              key="timeline-new"
+            >
               <div>
                 <input
                   placeholder="Name timeline"
-                  key={`t-new`}
+                  key="t-new"
                   className="normal-input"
                   style={[STYLES.input, STYLES.inputSolo]}
                   ref={(input) => {
-                    this.creationInput = input;
-                  }} />
+                    this.creationInput = input
+                  }}
+                />
                 <button style={[STYLES.btn, STYLES.btnFull]} type="submit">Create</button>
               </div>
             </form>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(CurrentTimelinePopover);
+export default Radium(CurrentTimelinePopover)

@@ -1,19 +1,19 @@
-import {Position} from './types';
+import type { Position } from './types'
 
-function isPositionOutside (p1: Position, box: ClientRect) {
+function isPositionOutside(p1: Position, box: ClientRect) {
   if (!p1) {
-    return true;
+    return true
   }
   if (!box) {
-    return true;
+    return true
   }
   const answer = (
-    p1.x < box.left ||
-    p1.x > box.right ||
-    p1.y < box.top ||
-    p1.y > box.bottom
-  );
-  return answer;
+    p1.x < box.left
+    || p1.x > box.right
+    || p1.y < box.top
+    || p1.y > box.bottom
+  )
+  return answer
 }
 
-export default isPositionOutside;
+export default isPositionOutside

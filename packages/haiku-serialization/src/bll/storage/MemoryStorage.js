@@ -1,14 +1,14 @@
 class MemoryStorage {
-  store (key, pojo) {
-    MemoryStorage.data[key] = pojo;
-    return pojo;
+  store(key, pojo) {
+    MemoryStorage.data[key] = pojo
+    return pojo
   }
 
-  unstore (key) {
-    return MemoryStorage.data[key];
+  unstore(key) {
+    return MemoryStorage.data[key]
   }
 }
 
-MemoryStorage.data = {};
+MemoryStorage.data = {}
 
-module.exports = MemoryStorage;
+module.exports = MemoryStorage

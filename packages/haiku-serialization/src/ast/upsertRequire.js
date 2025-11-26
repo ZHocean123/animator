@@ -1,5 +1,5 @@
-let _ = require('lodash');
-let matchesRequire = require('./matchesRequire');
+const _ = require('lodash')
+const matchesRequire = require('./matchesRequire')
 
 /**
  * @function upsertRequire
@@ -8,14 +8,14 @@ let matchesRequire = require('./matchesRequire');
  * var {identifierName} = require({modulePath}).
  * This should mutate the AST in place.
  */
-module.exports = function upsertRequire (ast, identifierName, modulePath) {
+module.exports = function upsertRequire(ast, identifierName, modulePath) {
   // TODO: Mutate line numbers so we don't end up with a bunch of nodes on the same line
 
   // we don't need a full traversal, since we know our require stmts are at the root
-  const match = _.find(ast.program.body, (stmt) => matchesRequire(stmt, identifierName, modulePath));
+  const match = _.find(ast.program.body, stmt => matchesRequire(stmt, identifierName, modulePath))
 
   if (match) {
-    return null;
+    return null
   }
 
   ast.program.body.unshift({
@@ -44,5 +44,5 @@ module.exports = function upsertRequire (ast, identifierName, modulePath) {
         ],
       },
     }],
-  });
-};
+  })
+}

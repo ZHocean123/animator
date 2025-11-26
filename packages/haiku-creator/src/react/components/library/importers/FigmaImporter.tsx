@@ -1,5 +1,5 @@
-import * as React from 'react';
-import FigmaForm from './FigmaForm';
+import * as React from 'react'
+import FigmaForm from './FigmaForm'
 
 const STYLES: React.CSSProperties = {
   button: {
@@ -10,26 +10,26 @@ const STYLES: React.CSSProperties = {
     textAlign: 'left',
     fontFamily: 'inherit',
   },
-};
+}
 
 export interface FigmaImporterProps {
-  onPopoverHide (): void;
-  onImportFigmaAsset (url: string, warnOnComplexFile?: boolean): void;
-  onAskForFigmaAuth (): void;
-  figma: any;
-  style: React.CSSProperties;
+  onPopoverHide: () => void
+  onImportFigmaAsset: (url: string, warnOnComplexFile?: boolean) => void
+  onAskForFigmaAuth: () => void
+  figma: any
+  style: React.CSSProperties
 }
 
 class FigmaImporter extends React.PureComponent<FigmaImporterProps> {
   state = {
     isFormVisible: false,
-  };
+  }
 
   renderForm = () => {
-    this.setState({isFormVisible: true});
-  };
+    this.setState({ isFormVisible: true })
+  }
 
-  render () {
+  render() {
     return (
       <div style={this.props.style}>
         <button
@@ -48,8 +48,8 @@ class FigmaImporter extends React.PureComponent<FigmaImporterProps> {
           />
         )}
       </div>
-    );
+    )
   }
 }
 
-export default FigmaImporter;
+export default FigmaImporter

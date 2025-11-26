@@ -1,15 +1,15 @@
-
-export * from '@haiku/sdk-client';
-import * as moment from 'moment';
-
 import {
   getProjectNameSafeShort,
-} from '@haiku/sdk-client';
+} from '@haiku/sdk-client'
 
-export const getEmbedName = (organizationName: string, projectName: string) => {
-  return `HaikuComponentEmbed_${organizationName}_${getProjectNameSafeShort(projectName)}`;
-};
+import * as moment from 'moment'
 
-export const getCurrentHumanTimestamp = () => {
-  return moment().format('YYYYMMDDHHmmss');
-};
+export * from '@haiku/sdk-client'
+
+export function getEmbedName(organizationName: string, projectName: string) {
+  return `HaikuComponentEmbed_${organizationName}_${getProjectNameSafeShort(projectName)}`
+}
+
+export function getCurrentHumanTimestamp() {
+  return moment().format('YYYYMMDDHHmmss')
+}

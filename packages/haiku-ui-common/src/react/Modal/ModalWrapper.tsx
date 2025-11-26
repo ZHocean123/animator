@@ -1,6 +1,6 @@
-import * as React from 'react';
-import Globals from './../../Globals';
-import Palette from './../../Palette';
+import * as React from 'react'
+import Globals from './../../Globals'
+import Palette from './../../Palette'
 
 const STYLES = {
   backgroundColor: Palette.COAL,
@@ -13,62 +13,61 @@ const STYLES = {
   top: '40px',
   left: '0',
   right: '0',
-} as React.CSSProperties;
+} as React.CSSProperties
 
 export interface ModalWrapperProps {
-  style: React.CSSProperties;
-  onEsc?: () => void;
-  onCmdEnter?: () => void;
-  onCmdS?: () => void;
+  style: React.CSSProperties
+  onEsc?: () => void
+  onCmdEnter?: () => void
+  onCmdS?: () => void
 }
 
-const stopPropagation: React.MouseEventHandler<HTMLDivElement> = (event) => event.stopPropagation();
+const stopPropagation: React.MouseEventHandler<HTMLDivElement> = event => event.stopPropagation()
 
 export class ModalWrapper extends React.PureComponent<ModalWrapperProps> {
-  constructor () {
-    super();
+  constructor() {
+    super()
 
     // FIXME: I don't belong here, move me to the global scope once we centralize
     // the key handlers
-    document.addEventListener('keydown', this.handleKeyEvents);
+    document.addEventListener('keydown', this.handleKeyEvents)
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('keydown', this.handleKeyEvents);
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyEvents)
   }
 
   handleKeyEvents = (keyEvent: KeyboardEvent) => {
     // Esc on any platform
-    if (keyEvent.keyCode === 27 && this.props.onEsc instanceof Function) {
-      this.props.onEsc();
+    if (keyEvent.keyCode === 27 && typeof this.props.onEsc === 'function') {
+      this.props.onEsc()
     }
 
     // Command+Enter on MAC
     // Ctrl+Enter on Windows/Linux
-    if (Globals.isSpecialKeyDown() &&
-        keyEvent.keyCode === 13 &&
-        this.props.onCmdEnter instanceof Function) {
-      this.props.onCmdEnter();
+    if (Globals.isSpecialKeyDown()
+      && keyEvent.keyCode === 13
+      && typeof this.props.onCmdEnter === 'function') {
+      this.props.onCmdEnter()
     }
 
     // Command+s on MAC
     // Ctrl+s on Windows/Linux
-    if (Globals.isSpecialKeyDown() &&
-        keyEvent.keyCode === 83 &&
-        this.props.onCmdS instanceof Function) {
-      this.props.onCmdS();
+    if (Globals.isSpecialKeyDown()
+      && keyEvent.keyCode === 83
+      && typeof this.props.onCmdS === 'function') {
+      this.props.onCmdS()
     }
+  }
 
-  };
-
-  render () {
+  render() {
     return (
       <div
-        style={{...STYLES, ...this.props.style}}
+        style={{ ...STYLES, ...this.props.style }}
         onClick={stopPropagation}
       >
         {this.props.children}
       </div>
-    );
+    )
   }
 }

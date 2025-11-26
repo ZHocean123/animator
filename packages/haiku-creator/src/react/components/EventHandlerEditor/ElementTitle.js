@@ -1,8 +1,6 @@
-import * as React from 'react';
-import {isNumeric} from 'haiku-ui-common';
-import {TrashIconSVG} from 'haiku-ui-common';
-import {Palette } from 'haiku-ui-common';
-import {truncate} from 'haiku-ui-common';
+import { isNumeric, Palette, TrashIconSVG, truncate } from 'haiku-ui-common'
+
+import * as React from 'react'
 
 const STYLES = {
   wrapper: {
@@ -23,36 +21,37 @@ const STYLES = {
     borderRadius: '4px',
   },
   trashIconColor: Palette.ROCK,
-};
+}
 
 class ElementTitle extends React.PureComponent {
-  get elementTitle () {
-    return this.props.element ? truncate(this.props.element.getTitle(), 16) : '(unknown)';
+  get elementTitle() {
+    return this.props.element ? truncate(this.props.element.getTitle(), 16) : '(unknown)'
   }
 
-  get title () {
-    return isNumeric(this.props.currentFrame) ? `Frame ${this.props.currentFrame}` : this.elementTitle;
+  get title() {
+    return isNumeric(this.props.currentFrame) ? `Frame ${this.props.currentFrame}` : this.elementTitle
   }
 
-  get breadcrumb () {
+  get breadcrumb() {
     if (!isNumeric(this.props.currentFrame) && this.props.currentEvent) {
-      return '> ' + this.props.currentEvent;
+      return `> ${this.props.currentEvent}`
     }
 
-    return '';
+    return ''
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <h3 style={STYLES.title}>{`${this.title} Actions ${this.breadcrumb}`}</h3>
-        {(isNumeric(this.props.currentFrame) || this.props.currentEvent) &&
-          <button onClick={this.props.onEditorRemoved} style={STYLES.trashIcon}>
-            <TrashIconSVG color={STYLES.trashIconColor} />
-          </button>
-        }
+        {(isNumeric(this.props.currentFrame) || this.props.currentEvent)
+          && (
+            <button onClick={this.props.onEditorRemoved} style={STYLES.trashIcon}>
+              <TrashIconSVG color={STYLES.trashIconColor} />
+            </button>
+          )}
       </div>
-    );
+    )
   }
 }
 
@@ -61,6 +60,6 @@ ElementTitle.propTypes = {
   onEditorRemoved: React.PropTypes.func.isRequired,
   currentFrame: React.PropTypes.number,
   currentEvent: React.PropTypes.string,
-};
+}
 
-export default ElementTitle;
+export default ElementTitle

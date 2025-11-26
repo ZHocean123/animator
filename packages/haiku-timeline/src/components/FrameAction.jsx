@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {Bolt} from 'haiku-ui-common';
-import {Palette } from 'haiku-ui-common';
+import { Bolt, Palette } from 'haiku-ui-common'
+
+import * as React from 'react'
 
 const STYLE = {
   base: {
@@ -33,59 +33,59 @@ const STYLE = {
     border: '1px solid rgba(255,255,255,.2)',
     fontSize: '20px',
   },
-};
+}
 
-const HOVER_INTENT_TIME = 190;
+const HOVER_INTENT_TIME = 190
 
 class FrameAction extends React.Component {
-  constructor () {
-    super();
-    this.timeout = null;
+  constructor() {
+    super()
+    this.timeout = null
     this.state = {
       achievedHover: false,
-    };
+    }
   }
 
   setHover = () => {
     if (!this.timeout) {
       this.timeout = setTimeout(() => {
-        this.timeout = null;
-        this.setState({achievedHover: true});
-      }, HOVER_INTENT_TIME);
+        this.timeout = null
+        this.setState({ achievedHover: true })
+      }, HOVER_INTENT_TIME)
     }
-  };
+  }
 
   unsetTimeout = () => {
-    this.setState({achievedHover: false});
+    this.setState({ achievedHover: false })
 
     if (this.timeout) {
-      clearTimeout(this.timeout);
-      this.timeout = null;
+      clearTimeout(this.timeout)
+      this.timeout = null
     }
-  };
+  }
 
-  componentWillUnmount () {
-    this.unsetTimeout();
+  componentWillUnmount() {
+    this.unsetTimeout()
   }
 
   openFrameActionsEditor = (clickEvent) => {
-    clickEvent.stopPropagation();
-    this.props.onShowFrameActionsEditor(this.props.frame);
-  };
+    clickEvent.stopPropagation()
+    this.props.onShowFrameActionsEditor(this.props.frame)
+  }
 
   openFrameActionsEditorIfAchievedHover = (event) => {
     if (this.state.achievedHover) {
-      this.openFrameActionsEditor(event);
+      this.openFrameActionsEditor(event)
     }
-  };
+  }
 
-  render () {
+  render() {
     if (this.props.hasActions) {
       return (
         <div onMouseDown={this.openFrameActionsEditor} style={STYLE.base}>
           <Bolt color={Palette.LIGHT_BLUE} />
         </div>
-      );
+      )
     }
 
     return (
@@ -94,18 +94,19 @@ class FrameAction extends React.Component {
         onMouseOver={this.setHover}
         onMouseLeave={this.unsetTimeout}
         onMouseDown={this.openFrameActionsEditorIfAchievedHover}
-        style={{...STYLE.base, ...STYLE.addAction, ...(this.state.achievedHover && STYLE.show)}}>
+        style={{ ...STYLE.base, ...STYLE.addAction, ...(this.state.achievedHover && STYLE.show) }}
+      >
         <div style={STYLE.plus}>
           +
         </div>
       </div>
-    );
+    )
   }
 }
 
 FrameAction.propTypes = {
   hasActions: React.PropTypes.bool,
   onShowFrameActionsEditor: React.PropTypes.func.isRequired,
-};
+}
 
-export default FrameAction;
+export default FrameAction

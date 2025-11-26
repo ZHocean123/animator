@@ -1,8 +1,7 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import {Palette } from 'haiku-ui-common';
-import toTitleCase from '../../helpers/toTitleCase';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import { Palette } from 'haiku-ui-common'
+import * as Radium from 'radium'
+import * as React from 'react'
+import toTitleCase from '../../helpers/toTitleCase'
 
 const STYLES = {
   container: {
@@ -15,27 +14,27 @@ const STYLES = {
     verticalAlign: 'top',
   },
   tab: {
-    position: 'relative',
-    display: 'inline-block',
-    backgroundColor: 'transparent',
-    borderTopLeftRadius: '5px',
-    borderTopRightRadius: '5px',
-    color: Palette.LIGHTEST_GRAY,
-    paddingTop: '4px',
-    paddingBottom: '4px',
-    paddingLeft: '15px',
-    paddingRight: '15px',
-    height: '100%',
-    width: '100%',
-    cursor: 'pointer',
+    'position': 'relative',
+    'display': 'inline-block',
+    'backgroundColor': 'transparent',
+    'borderTopLeftRadius': '5px',
+    'borderTopRightRadius': '5px',
+    'color': Palette.LIGHTEST_GRAY,
+    'paddingTop': '4px',
+    'paddingBottom': '4px',
+    'paddingLeft': '15px',
+    'paddingRight': '15px',
+    'height': '100%',
+    'width': '100%',
+    'cursor': 'pointer',
     ':hover': {
       color: Palette.GRAY,
     },
-    active: {
+    'active': {
       backgroundColor: Palette.STAGE_GRAY,
       color: Palette.FATHER_COAL,
     },
-    activeDark: {
+    'activeDark': {
       backgroundColor: Palette.COAL,
       color: Palette.ROCK,
     },
@@ -47,61 +46,67 @@ const STYLES = {
     textAlign: 'center',
     whiteSpace: 'no-wrap',
   },
-};
+}
 
 class ComponentTab extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {};
-    this.changeComponent = this.changeComponent.bind(this);
+  constructor(props) {
+    super(props)
+    this.state = {}
+    this.changeComponent = this.changeComponent.bind(this)
   }
 
-  changeComponent () {
+  changeComponent() {
     // If we're already the active component, do nothing
     if (
-      this.props.tab.active ||
-      this.props.projectModel.getCurrentActiveComponentSceneName() === this.props.tab.scenename
+      this.props.tab.active
+      || this.props.projectModel.getCurrentActiveComponentSceneName() === this.props.tab.scenename
     ) {
-      return;
+      return
     }
 
     // Stop preview mode if it happens to be active when we switch contexts
-    this.props.tryToChangeCurrentActiveComponent(this.props.tab.scenename);
+    this.props.tryToChangeCurrentActiveComponent(this.props.tab.scenename)
   }
 
-  render () {
-    const activeTabStyle = this.props.showGlass ? STYLES.tab.active : STYLES.tab.activeDark;
+  render() {
+    const activeTabStyle = this.props.showGlass ? STYLES.tab.active : STYLES.tab.activeDark
 
     return (
       <div
-        style={STYLES.container}>
-        {this.props.tab && <div
-          onClick={this.changeComponent}
-          style={[
-            STYLES.tab,
-            !this.props.showGlass && {color: Palette.ROCK, ':hover': {color: Palette.SUNSTONE}},
-            (this.props.forceActive || this.props.tab.active) && activeTabStyle,
-          ]}>
-          <div style={{display: 'inline-block', width: '100%'}}>
-            <span style={STYLES.label} className="no-select">
-              {toTitleCase(this.props.tab.scenename)}
-            </span>
+        style={STYLES.container}
+      >
+        {this.props.tab && (
+          <div
+            onClick={this.changeComponent}
+            style={[
+              STYLES.tab,
+              !this.props.showGlass && { 'color': Palette.ROCK, ':hover': { color: Palette.SUNSTONE } },
+              (this.props.forceActive || this.props.tab.active) && activeTabStyle,
+            ]}
+          >
+            <div style={{ display: 'inline-block', width: '100%' }}>
+              <span style={STYLES.label} className="no-select">
+                {toTitleCase(this.props.tab.scenename)}
+              </span>
+            </div>
+            {(this.props.forceActive || this.props.tab.active) && this.props.nonSavedContentOnCodeEditor
+              && (
+                <div style={{ position: 'absolute', display: 'inline-block', width: '30%', height: '12px' }}>
+                  <svg height="12" width="12">
+                    <circle cx="6" cy="6" r="4" fill="#f24082" />
+                  </svg>
+                </div>
+              )}
           </div>
-          {(this.props.forceActive || this.props.tab.active) && this.props.nonSavedContentOnCodeEditor &&
-          <div style={{position: 'absolute', display: 'inline-block', width: '30%', height: '12px'}}>
-            <svg height="12" width="12">
-              <circle cx="6" cy="6" r="4" fill="#f24082" />
-            </svg>
-          </div>}
-        </div>}
+        )}
       </div>
-    );
+    )
   }
 }
 
 ComponentTab.propTypes = {
   projectModel: React.PropTypes.object.isRequired,
   tab: React.PropTypes.object.isRequired,
-};
+}
 
-export default Radium(ComponentTab);
+export default Radium(ComponentTab)

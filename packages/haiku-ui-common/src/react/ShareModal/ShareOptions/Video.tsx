@@ -1,9 +1,9 @@
-import {existsSync} from 'fs-extra';
-import {HaikuShareUrls} from 'haiku-sdk-creator';
-import {join} from 'path';
-import * as React from 'react';
-import Palette from '../../../Palette';
-import {LinkHolster} from '../LinkHolster';
+import type { HaikuShareUrls } from 'haiku-sdk-creator'
+import { join } from 'node:path'
+import { existsSync } from 'fs-extra'
+import * as React from 'react'
+import Palette from '../../../Palette'
+import { LinkHolster } from '../LinkHolster'
 
 const STYLES = {
   videoWrapper: {
@@ -16,32 +16,32 @@ const STYLES = {
     maxWidth: '100%',
     maxHeight: 440,
   },
-};
+}
 
 export interface VideoProps {
-  entry: string;
-  userName: string;
-  organizationName: string;
-  urls: HaikuShareUrls;
-  folder: string;
+  entry: string
+  userName: string
+  organizationName: string
+  urls: HaikuShareUrls
+  folder: string
 }
 
 export default class Video extends React.PureComponent<VideoProps> {
-  get videoUrl () {
+  get videoUrl() {
     // Hack until we are simply subscribing to Envoy ExporterHandler.
-    const maybeLocalFile = join(this.props.folder, 'animation.mp4');
-    return existsSync(maybeLocalFile) ? `${maybeLocalFile}?${Date.now()}` : this.props.urls.video;
+    const maybeLocalFile = join(this.props.folder, 'animation.mp4')
+    return existsSync(maybeLocalFile) ? `${maybeLocalFile}?${Date.now()}` : this.props.urls.video
   }
 
-  render () {
+  render() {
     return (
-      <div style={{textAlign: 'center'}}>
+      <div style={{ textAlign: 'center' }}>
         <div style={STYLES.videoWrapper}>
           <video controls={true} style={STYLES.video}>
             <source src={this.videoUrl} type="video/mp4" />
           </video>
         </div>
-        <div style={{width: 'calc(100% + 20px)'}}>
+        <div style={{ width: 'calc(100% + 20px)' }}>
           <LinkHolster
             linkAddress={this.props.urls.video}
             showLoadingBar={false}
@@ -49,6 +49,6 @@ export default class Video extends React.PureComponent<VideoProps> {
           />
         </div>
       </div>
-    );
+    )
   }
 }

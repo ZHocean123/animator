@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Palette from '../Palette';
+import * as React from 'react'
+import Palette from '../Palette'
 
 const STYLES = {
   bar: {
@@ -9,29 +9,29 @@ const STYLES = {
     height: '3px',
     backgroundColor: Palette.LIGHT_PINK,
   } as React.CSSProperties,
-};
+}
 
 export interface LoadingTopBarProps {
-  progress?: number;
-  speed: number|string;
-  done: boolean;
+  progress?: number
+  speed: number | string
+  done: boolean
 }
 
 export class LoadingTopBar extends React.PureComponent<LoadingTopBarProps> {
-  shouldComponentUpdate (nextProps: LoadingTopBarProps) {
+  shouldComponentUpdate(nextProps: LoadingTopBarProps) {
     return (
-      nextProps.progress !== this.props.progress ||
-      nextProps.done !== this.props.done
-    );
+      nextProps.progress !== this.props.progress
+      || nextProps.done !== this.props.done
+    )
   }
 
   static defaultProps = {
     progress: 0,
     speed: '15s',
     done: false,
-  };
+  }
 
-  render () {
+  render() {
     return (
       <span
         style={{
@@ -41,6 +41,6 @@ export class LoadingTopBar extends React.PureComponent<LoadingTopBarProps> {
           ...STYLES.bar,
         }}
       />
-    );
+    )
   }
 }

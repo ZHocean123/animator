@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import {ModalWrapper, ModalFooter} from 'haiku-ui-common';
-import {BTN_STYLES} from '../../styles/btnShared';
-import {Palette } from 'haiku-ui-common';
+import { ModalFooter, ModalWrapper, Palette } from 'haiku-ui-common'
+
+import * as Radium from 'radium'
+import * as React from 'react'
+import { BTN_STYLES } from '../../styles/btnShared'
 
 const STYLES = {
   wrapper: {
@@ -28,34 +28,34 @@ const STYLES = {
     textAlign: 'left',
     marginBottom: 7,
   },
-};
+}
 
 class SaveContentsPopup extends React.Component {
-  constructor (props) {
-    super(props);
-    this.saveEditorContentsToFile = this.saveEditorContentsToFile.bind(this);
-    this.discardEditorContents = this.discardEditorContents.bind(this);
+  constructor(props) {
+    super(props)
+    this.saveEditorContentsToFile = this.saveEditorContentsToFile.bind(this)
+    this.discardEditorContents = this.discardEditorContents.bind(this)
   }
 
-  saveEditorContentsToFile () {
+  saveEditorContentsToFile() {
     // We only exit code editor if file can be saved
     this.props.saveCodeFromEditorToDisk((err) => {
       // If any error happens when trying to save contents from code editor,
       // we close the popup but don't take any action
       if (err) {
-        this.props.closeCodeEditorSavePopup();
-        return;
+        this.props.closeCodeEditorSavePopup()
+        return
       }
-      this.props.executeActionAfterCodeEditorSavePopup();
-    });
+      this.props.executeActionAfterCodeEditorSavePopup()
+    })
   }
 
-  discardEditorContents () {
-    this.props.discardFromCodeEditor();
-    this.props.executeActionAfterCodeEditorSavePopup();
+  discardEditorContents() {
+    this.props.discardFromCodeEditor()
+    this.props.executeActionAfterCodeEditorSavePopup()
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.wrapper}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -64,7 +64,7 @@ class SaveContentsPopup extends React.Component {
             Current opened file has unsaved changes. Do you want to save or discard changes?
           </div>
           <ModalFooter>
-            <div style={[{display: 'inline-block'}]} >
+            <div style={[{ display: 'inline-block' }]}>
               <button
                 key="discard-code"
                 id="discard-code"
@@ -102,8 +102,8 @@ class SaveContentsPopup extends React.Component {
           </ModalFooter>
         </ModalWrapper>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(SaveContentsPopup);
+export default Radium(SaveContentsPopup)

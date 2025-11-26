@@ -1,5 +1,5 @@
-function propMap (obj) {
-  const properties = [];
+function propMap(obj) {
+  const properties = []
 
   for (const key in obj) {
     properties.push({
@@ -18,37 +18,37 @@ function propMap (obj) {
       // shorthand: true, ?
       // computed: false, ?
       // extra: {} ?
-    });
+    })
   }
 
-  return properties;
+  return properties
 }
 
-function paramToFunctionASTParam (param) {
+function paramToFunctionASTParam(param) {
   if (typeof param === 'string') {
-    return {type: 'Identifier', name: param};
+    return { type: 'Identifier', name: param }
   }
 
   if (Array.isArray(param)) {
     return {
       type: 'ArrayPattern',
       elements: param.map(paramToFunctionASTParam),
-    };
+    }
   }
 
   if (param && typeof param === 'object') {
     return {
       type: 'ObjectPattern',
       properties: propMap(param),
-    };
+    }
   }
 }
 
-function paramsToFunctionASTParams (params) {
+function paramsToFunctionASTParams(params) {
   if (!params || params.length < 1) {
-    return [];
+    return []
   }
-  return params.map(paramToFunctionASTParam);
+  return params.map(paramToFunctionASTParam)
 }
 
-module.exports = paramsToFunctionASTParams;
+module.exports = paramsToFunctionASTParams

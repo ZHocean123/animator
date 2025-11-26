@@ -1,37 +1,37 @@
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
 
 export interface ClusterRowHeadingProps {
-  row: any;
-  clusterName: string;
+  row: any
+  clusterName: string
 }
 
 export default class ClusterRowHeading extends React.Component<ClusterRowHeadingProps> {
-  private mounted = false;
+  private mounted = false
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.row.on('update', this.handleUpdate)
   }
 
   handleUpdate = (what: string): void => {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (
-      what === 'row-hovered' ||
-      what === 'row-unhovered'
+      what === 'row-hovered'
+      || what === 'row-unhovered'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
-  };
+  }
 
-  render () {
+  render() {
     return (
       <span
         draggable={false}
@@ -45,6 +45,6 @@ export default class ClusterRowHeading extends React.Component<ClusterRowHeading
       >
         {this.props.clusterName}
       </span>
-    );
+    )
   }
 }

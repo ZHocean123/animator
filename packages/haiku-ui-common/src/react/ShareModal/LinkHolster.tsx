@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from 'react'
 // @ts-ignore
-import * as CopyToClipboard from 'react-copy-to-clipboard';
-import Palette from '../../Palette';
-import {LoadingTopBar} from '../LoadingTopBar';
-import {CliboardIconSVG} from '../OtherIcons';
+import * as CopyToClipboard from 'react-copy-to-clipboard'
+import Palette from '../../Palette'
+import { LoadingTopBar } from '../LoadingTopBar'
+import { CliboardIconSVG } from '../OtherIcons'
 
 const STYLES: React.CSSProperties = {
   linkHolster: {
@@ -37,108 +37,108 @@ const STYLES: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
   },
-};
+}
 
 export interface LinkHolsterProps {
-  isSnapshotSaveInProgress?: boolean;
-  linkAddress?: string;
-  showLoadingBar?: boolean;
-  dark?: boolean;
-  onCopy?: () => void;
-  onLinkOpen?: () => void;
-  hasError?: boolean;
+  isSnapshotSaveInProgress?: boolean
+  linkAddress?: string
+  showLoadingBar?: boolean
+  dark?: boolean
+  onCopy?: () => void
+  onLinkOpen?: () => void
+  hasError?: boolean
 }
 
 export interface LinkHolsterStates {
-  copied: boolean;
-  didStart: boolean;
+  copied: boolean
+  didStart: boolean
 }
 
 export class LinkHolster extends React.PureComponent<LinkHolsterProps, LinkHolsterStates> {
   static defaultProps = {
     showLoadingBar: true,
     dark: false,
-  };
+  }
 
   state = {
     copied: false,
     didStart: false,
-  };
-
-  componentDidMount () {
-    setTimeout(() => {
-      this.setState({didStart: true});
-    }, 100);
   }
 
-  setCopyText () {
-    this.setState({copied: true}, () => {
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ didStart: true })
+    }, 100)
+  }
+
+  setCopyText() {
+    this.setState({ copied: true }, () => {
       setTimeout(
         () => {
-          this.setState({copied: false});
+          this.setState({ copied: false })
         },
         1900,
-      );
-    });
+      )
+    })
   }
 
-  get text () {
+  get text() {
     if (this.props.isSnapshotSaveInProgress) {
-      return <span style={{...STYLES.link, ...STYLES.linkDisabled}}>New share link being generated</span>;
+      return <span style={{ ...STYLES.link, ...STYLES.linkDisabled }}>New share link being generated</span>
     }
 
     if (this.state.copied) {
-      return <span style={STYLES.link}>Copied!</span>;
+      return <span style={STYLES.link}>Copied!</span>
     }
 
     if (this.props.linkAddress) {
       return (
-          <span
-            style={STYLES.link}
-            onClick={this.onClick}
-          >
-            {this.props.linkAddress}
-          </span>
-      );
+        <span
+          style={STYLES.link}
+          onClick={this.onClick}
+        >
+          {this.props.linkAddress}
+        </span>
+      )
     }
 
-    return '';
+    return ''
   }
 
   private onCopy = () => {
-    this.setCopyText();
+    this.setCopyText()
 
     if (this.props.onCopy) {
-      this.props.onCopy();
+      this.props.onCopy()
     }
-  };
+  }
 
   private onClick = () => {
-    const {shell} = require('electron');
-    shell.openExternal(this.props.linkAddress);
+    const { shell } = require('electron')
+    shell.openExternal(this.props.linkAddress)
 
     if (this.props.onLinkOpen) {
-      this.props.onLinkOpen();
+      this.props.onLinkOpen()
     }
-  };
-
-  get isDone () {
-    return !this.props.isSnapshotSaveInProgress;
   }
 
-  get speed () {
-    return (this.props.isSnapshotSaveInProgress || !this.state.didStart) ? '5s' : '1ms';
+  get isDone() {
+    return !this.props.isSnapshotSaveInProgress
   }
 
-  get progress () {
-    return (this.props.isSnapshotSaveInProgress && !this.state.didStart) ? 0 : 80;
+  get speed() {
+    return (this.props.isSnapshotSaveInProgress || !this.state.didStart) ? '5s' : '1ms'
   }
 
-  render () {
+  get progress() {
+    return (this.props.isSnapshotSaveInProgress && !this.state.didStart) ? 0 : 80
+  }
+
+  render() {
     const {
       showLoadingBar,
       dark,
-    } = this.props;
+    } = this.props
 
     if (this.props.hasError) {
       return (
@@ -149,17 +149,19 @@ export class LinkHolster extends React.PureComponent<LinkHolsterProps, LinkHolst
             {this.props.linkAddress}
           </span>
         </div>
-      );
+      )
     }
 
     return (
       <div style={STYLES.linkHolster}>
-        {showLoadingBar && <LoadingTopBar
-          progress={this.progress}
-          speed={this.speed}
-          done={this.isDone}
-        />}
-          {this.text}
+        {showLoadingBar && (
+          <LoadingTopBar
+            progress={this.progress}
+            speed={this.speed}
+            done={this.isDone}
+          />
+        )}
+        {this.text}
         <CopyToClipboard
           text={this.props.linkAddress}
           onCopy={this.onCopy}
@@ -175,6 +177,6 @@ export class LinkHolster extends React.PureComponent<LinkHolsterProps, LinkHolst
           </span>
         </CopyToClipboard>
       </div>
-    );
+    )
   }
 }

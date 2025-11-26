@@ -1,3 +1,3 @@
-import {crashReportCreate} from '../Carbonite';
+import { crashReportCreate } from '../Carbonite'
 
-crashReportCreate(() => process.exit(0));
+crashReportCreate(() => process.exit(0))

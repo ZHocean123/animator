@@ -1,13 +1,13 @@
-import * as React from 'react';
-import Palette from '../../Palette';
+import * as React from 'react'
+import Palette from '../../Palette'
 
 export interface ModalNoticeProps {
-  color?: string;
-  message: string;
+  color?: string
+  message: string
 }
 
 export class ModalNotice extends React.PureComponent<ModalNoticeProps> {
-  render () {
+  render() {
     return (
       <div
         style={{
@@ -22,6 +22,6 @@ export class ModalNotice extends React.PureComponent<ModalNoticeProps> {
       >
         {this.props.message}
       </div>
-    );
+    )
   }
 }

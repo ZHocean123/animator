@@ -1,34 +1,30 @@
-import * as dedent from 'dedent';
-import * as fse from 'fs-extra';
-import * as path from 'path';
-import {getAngularSelectorName, getHaikuCoreVersion} from './ProjectDefinitions';
+import * as path from 'node:path'
+import * as dedent from 'dedent'
+import * as fse from 'fs-extra'
+import { getAngularSelectorName, getHaikuCoreVersion } from './ProjectDefinitions'
 
-export const bootstrapSceneFilesSync = (componentFolder: string, scenename: string, userconfig: any) => {
-  const rootComponentId = getCodeJs(scenename, userconfig);
+export function bootstrapSceneFilesSync(componentFolder: string, scenename: string, userconfig: any) {
+  const rootComponentId = getCodeJs(scenename, userconfig)
 
-    // Only write these files if they don't exist yet; don't overwrite the user's own content
+  // Only write these files if they don't exist yet; don't overwrite the user's own content
   if (!fse.existsSync(path.join(componentFolder, `code/${scenename}/code.js`))) {
-    fse.outputFileSync(path.join(componentFolder, `code/${scenename}/code.js`), rootComponentId);
+    fse.outputFileSync(path.join(componentFolder, `code/${scenename}/code.js`), rootComponentId)
   }
 
-  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom.js`), DOM_JS);
-  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom-embed.js`),
-    DOM_EMBED_JS(getHaikuCoreVersion()),
-  );
-  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/react-dom.js`), REACT_DOM_JS);
-  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/angular-dom.js`),
-    ANGULAR_DOM_JS(getAngularSelectorName(path.basename(componentFolder)), scenename),
-  );
-  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/vue-dom.js`), VUE_DOM_JS);
+  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom.js`), DOM_JS)
+  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom-embed.js`), DOM_EMBED_JS(getHaikuCoreVersion()))
+  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/react-dom.js`), REACT_DOM_JS)
+  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/angular-dom.js`), ANGULAR_DOM_JS(getAngularSelectorName(path.basename(componentFolder)), scenename))
+  fse.outputFileSync(path.join(componentFolder, `code/${scenename}/vue-dom.js`), VUE_DOM_JS)
 
   if (!fse.existsSync(path.join(componentFolder, `code/${scenename}/dom-standalone.js`))) {
-    fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom-standalone.js`), DOM_STANDALONE_JS);
+    fse.outputFileSync(path.join(componentFolder, `code/${scenename}/dom-standalone.js`), DOM_STANDALONE_JS)
   }
 
-  return rootComponentId;
-};
+  return rootComponentId
+}
 
-const getCodeJs = (haikuComponentName: string, metadata = {}) => {
+function getCodeJs(haikuComponentName: string, metadata = {}) {
   return dedent`
     var Haiku = require("@haiku/core");
     module.exports = {
@@ -47,15 +43,16 @@ const getCodeJs = (haikuComponentName: string, metadata = {}) => {
         children: []
       }
     };
-  `.trim();
-};
+  `.trim()
+}
 
 const DOM_JS = dedent`
   var HaikuDOMAdapter = require('@haiku/core/dom')
   module.exports = HaikuDOMAdapter(require('./code'))
-`.trim();
+`.trim()
 
-const DOM_EMBED_JS = (coreVersion: string) => dedent`
+function DOM_EMBED_JS(coreVersion: string) {
+  return dedent`
   var code = require('./code')
   var adapter = window.HaikuResolve && window.HaikuResolve('${coreVersion}')
   if (adapter) {
@@ -74,11 +71,12 @@ const DOM_EMBED_JS = (coreVersion: string) => dedent`
     }
     module.exports = safety
   }
-`.trim();
+`.trim()
+}
 
 const DOM_STANDALONE_JS = dedent`
   module.exports = require('./dom')
-`.trim();
+`.trim()
 
 const REACT_DOM_JS = dedent`
   var React = require('react') // Installed as a peer dependency of '@haiku/core'
@@ -87,17 +85,19 @@ const REACT_DOM_JS = dedent`
   var HaikuReactComponent = HaikuReactAdapter(require('./dom'))
   if (HaikuReactComponent.default) HaikuReactComponent = HaikuReactComponent.default
   module.exports = HaikuReactComponent
-`.trim();
+`.trim()
 
-const ANGULAR_DOM_JS = (selector: string, scene: string) => dedent`
+function ANGULAR_DOM_JS(selector: string, scene: string) {
+  return dedent`
   var HaikuAngularAdapter = require('@haiku/core/dom/angular')
   var HaikuAngularModule = HaikuAngularAdapter('${selector}${scene !== 'main' ? `-${scene}` : ''}', require('./dom'))
   module.exports = HaikuAngularModule
-`.trim();
+`.trim()
+}
 
 const VUE_DOM_JS = dedent`
   var HaikuVueAdapter = require('@haiku/core/dom/vue')
   var HaikuVueComponent = HaikuVueAdapter(require('./dom'))
   if (HaikuVueComponent.default) HaikuVueComponent = HaikuVueComponent.default
   module.exports = HaikuVueComponent
-`.trim();
+`.trim()

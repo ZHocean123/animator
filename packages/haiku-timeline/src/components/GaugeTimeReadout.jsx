@@ -1,51 +1,51 @@
-import * as React from 'react';
-import * as lodash from 'lodash';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {Palette } from 'haiku-ui-common';
-import formatSeconds from 'haiku-ui-common';
-import * as Timeline from 'haiku-serialization/src/bll/Timeline';
+import * as Timeline from 'haiku-serialization/src/bll/Timeline'
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import formatSeconds, { Palette } from 'haiku-ui-common'
+
+import * as lodash from 'lodash'
+import * as React from 'react'
 
 export default class GaugeTimeReadout extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleUpdate = this.handleUpdate.bind(this)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'time-display-mode-change') {
-      this.forceUpdate();
+      this.forceUpdate()
     }
   }
 
-  handleClick () {
-    this.props.timeline.toggleTimeDisplayMode();
-    this.props.saveTimeDisplayModeSetting();
-    mixpanel.haikuTrack(`creator:timeline:display-mode-set:${this.props.timeline.getTimeDisplayMode()}`);
+  handleClick() {
+    this.props.timeline.toggleTimeDisplayMode()
+    this.props.saveTimeDisplayModeSetting()
+    mixpanel.haikuTrack(`creator:timeline:display-mode-set:${this.props.timeline.getTimeDisplayMode()}`)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div
@@ -59,9 +59,11 @@ export default class GaugeTimeReadout extends React.Component {
             textAlign: 'right',
             paddingTop: 2,
             paddingRight: 10,
-          }}>
+          }}
+        >
           <TimeReadout
-            timeline={this.props.timeline} />
+            timeline={this.props.timeline}
+          />
         </div>
         <div
           className="gauge-fps-readout"
@@ -77,10 +79,15 @@ export default class GaugeTimeReadout extends React.Component {
             paddingTop: 5,
             paddingRight: 5,
             cursor: 'default',
-          }}>
+          }}
+        >
           <FpsReadout
-            timeline={this.props.timeline} />
-          <div style={{marginTop: '-4px'}}>{this.props.timeline.getFPS()}fps</div>
+            timeline={this.props.timeline}
+          />
+          <div style={{ marginTop: '-4px' }}>
+            {this.props.timeline.getFPS()}
+            fps
+          </div>
         </div>
         <div
           className="gauge-toggle"
@@ -98,127 +105,151 @@ export default class GaugeTimeReadout extends React.Component {
             paddingTop: 7,
             paddingRight: 12,
             cursor: 'pointer',
-          }}>
+          }}
+        >
           {this.props.timeline.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES
-            ? (<span>
-              <div style={{color: Palette.SUNSTONE, position: 'relative'}}>FRAMES
-                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2}} />
-              </div>
-              <div style={{marginTop: '-2px'}}>SECONDS</div>
-            </span>)
-            : (<span>
-              <div>FRAMES</div>
-              <div style={{marginTop: '-2px', color: Palette.SUNSTONE, position: 'relative'}}>SECONDS
-                  <span style={{width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2}} />
-              </div>
-            </span>)
-          }
+            ? (
+                <span>
+                  <div style={{ color: Palette.SUNSTONE, position: 'relative' }}>
+                    FRAMES
+                    <span style={{ width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2 }} />
+                  </div>
+                  <div style={{ marginTop: '-2px' }}>SECONDS</div>
+                </span>
+              )
+            : (
+                <span>
+                  <div>FRAMES</div>
+                  <div style={{ marginTop: '-2px', color: Palette.SUNSTONE, position: 'relative' }}>
+                    SECONDS
+                    <span style={{ width: 6, height: 6, backgroundColor: Palette.BLUE, borderRadius: '50%', position: 'absolute', right: -11, top: 2 }} />
+                  </div>
+                </span>
+              )}
         </div>
       </div>
-    );
+    )
   }
 }
 
 class FpsReadout extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'timeline-frame') {
-      this.throttledForceUpdate();
+      this.throttledForceUpdate()
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         {(this.props.timeline.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES)
-          ? <span>{formatSeconds(this.props.timeline.getCurrentFrame() * 1000 / this.props.timeline.getFPS() / 1000)}s</span>
-          : <span>{~~this.props.timeline.getCurrentFrame()}f</span>
-        }
+          ? (
+              <span>
+                {formatSeconds(this.props.timeline.getCurrentFrame() * 1000 / this.props.timeline.getFPS() / 1000)}
+                s
+              </span>
+            )
+          : (
+              <span>
+                {~~this.props.timeline.getCurrentFrame()}
+                f
+              </span>
+            )}
       </div>
-    );
+    )
   }
 }
 
 class TimeReadout extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'timeline-frame') {
-      this.throttledForceUpdate();
+      this.throttledForceUpdate()
     }
   }
 
-  render () {
+  render() {
     return (
-      <span style={{display: 'inline-block', height: 24, padding: 4, fontWeight: 'lighter', fontSize: 19}}>
+      <span style={{ display: 'inline-block', height: 24, padding: 4, fontWeight: 'lighter', fontSize: 19 }}>
         {(this.props.timeline.getTimeDisplayMode() === Timeline.TIME_DISPLAY_MODE.FRAMES)
-          ? <span>{~~this.props.timeline.getCurrentFrame()}f</span>
-          : <span>{formatSeconds(this.props.timeline.getCurrentFrame() * 1000 / this.props.timeline.getFPS() / 1000)}s</span>
-        }
+          ? (
+              <span>
+                {~~this.props.timeline.getCurrentFrame()}
+                f
+              </span>
+            )
+          : (
+              <span>
+                {formatSeconds(this.props.timeline.getCurrentFrame() * 1000 / this.props.timeline.getFPS() / 1000)}
+                s
+              </span>
+            )}
       </span>
-    );
+    )
   }
 }
 
 GaugeTimeReadout.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}
 
 FpsReadout.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}
 
 TimeReadout.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}

@@ -1,25 +1,27 @@
-import * as React from 'react';
-import {createSketchDialogFile} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
-import {ExternalLink} from 'haiku-ui-common';
+import { createSketchDialogFile } from 'haiku-serialization/src/utils/HaikuHomeDir'
+import { ExternalLink } from 'haiku-ui-common'
+import * as React from 'react'
+import { DOWNLOAD_STYLES as STYLES } from '../styles/downloadShared'
 
-const DOWNLOAD_URL = 'https://download.sketchapp.com/sketch.zip';
+const DOWNLOAD_URL = 'https://download.sketchapp.com/sketch.zip'
 
 class SketchDownloader extends React.PureComponent {
   dismiss = () => {
     if (this.checkInput.checked) {
-      createSketchDialogFile();
+      createSketchDialogFile()
     }
 
-    this.props.onDismiss(!this.checkInput.checked);
-  };
+    this.props.onDismiss(!this.checkInput.checked)
+  }
 
-  render () {
+  render() {
     return (
       <div>
         <div style={STYLES.container}>
           <p>
-            Sketch is required to edit this file. <br />
+            Sketch is required to edit this file.
+            {' '}
+            <br />
             You can install a 30-day trial for free.
           </p>
           <p>Would you like to download it?</p>
@@ -31,8 +33,9 @@ class SketchDownloader extends React.PureComponent {
               id="not-show-again"
               style={STYLES.checkInput}
               ref={(input) => {
-                this.checkInput = input;
-              }} />
+                this.checkInput = input
+              }}
+            />
             <label htmlFor="not-show-again">Don't show this again.</label>
           </form>
 
@@ -46,8 +49,8 @@ class SketchDownloader extends React.PureComponent {
         </div>
         <div style={STYLES.overlay} />
       </div>
-    );
+    )
   }
 }
 
-export default SketchDownloader;
+export default SketchDownloader

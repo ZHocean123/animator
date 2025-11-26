@@ -1,19 +1,15 @@
-import {shell} from 'electron';
-import {isMac} from 'haiku-common';
+import * as path from 'node:path'
+import { shell } from 'electron'
+import { isMac } from 'haiku-common'
 // @ts-ignore
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
 // @ts-ignore
-import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils';
-import {Palette } from 'haiku-ui-common';
-import {
-  FigmaIconSVG,
-  IllustratorIconSVG,
-  SketchIconSVG,
-} from 'haiku-ui-common';
-import * as path from 'path';
-import * as React from 'react';
+import * as sketchUtils from 'haiku-serialization/src/utils/sketchUtils'
+import { FigmaIconSVG, IllustratorIconSVG, Palette, SketchIconSVG } from 'haiku-ui-common'
+
+import * as React from 'react'
 // @ts-ignore
-import FigmaPopover from './importers/FigmaPopover';
+import FigmaPopover from './importers/FigmaPopover'
 
 const STYLES: React.CSSProperties = {
   container: {
@@ -33,47 +29,47 @@ const STYLES: React.CSSProperties = {
   btnText: {
     marginLeft: 5,
   },
-};
+}
 
 class DesignFileCreator extends React.PureComponent<any, any> {
   sketchImport = () => {
-    const {primaryAssetPath} = this.props.projectModel.getNameVariations();
-    const projectPath = this.props.projectModel.getFolder();
-    mixpanel.haikuTrack('creator:library:import:sketch');
-    this.props.onStart();
+    const { primaryAssetPath } = this.props.projectModel.getNameVariations()
+    const projectPath = this.props.projectModel.getFolder()
+    mixpanel.haikuTrack('creator:library:import:sketch')
+    this.props.onStart()
 
     return this.props.websocket.request(
-      {method: 'copyDefaultSketchFile', params: [projectPath, primaryAssetPath]},
+      { method: 'copyDefaultSketchFile', params: [projectPath, primaryAssetPath] },
       (err: any) => {
         if (!isMac()) {
-          return;
+          return
         }
 
         sketchUtils.checkIfInstalled().then((isSketchInstalled: boolean) => {
           if (isSketchInstalled) {
-            shell.openItem(path.join(projectPath, primaryAssetPath));
+            shell.openItem(path.join(projectPath, primaryAssetPath))
           }
-        });
+        })
       },
-    );
-  };
+    )
+  }
 
   illustratorImport = () => {
-    const {defaultIllustratorAssetPath} = this.props.projectModel.getNameVariations();
-    const projectPath = this.props.projectModel.getFolder();
-    mixpanel.haikuTrack('creator:library:import:illustrator');
-    this.props.onStart();
+    const { defaultIllustratorAssetPath } = this.props.projectModel.getNameVariations()
+    const projectPath = this.props.projectModel.getFolder()
+    mixpanel.haikuTrack('creator:library:import:illustrator')
+    this.props.onStart()
 
     return this.props.websocket.request(
-      {method: 'copyDefaultIllustratorFile', params: [projectPath, defaultIllustratorAssetPath]},
+      { method: 'copyDefaultIllustratorFile', params: [projectPath, defaultIllustratorAssetPath] },
       // Please note that Illustrator files are opened by default during the first import
       // because we need to run a jsx script inside Illustrator, thus we don't need to do anything
       // here. If you want to disable auto open, check Illustrator#importSVG
       (err: any) => {},
-    );
-  };
+    )
+  }
 
-  get sketchButton () {
+  get sketchButton() {
     return (
       <button
         style={STYLES.btn}
@@ -85,10 +81,10 @@ class DesignFileCreator extends React.PureComponent<any, any> {
           Sketch
         </span>
       </button>
-    );
+    )
   }
 
-  get illustratorButton () {
+  get illustratorButton() {
     return (
       <button
         style={STYLES.btn}
@@ -100,10 +96,10 @@ class DesignFileCreator extends React.PureComponent<any, any> {
           Illustrator
         </span>
       </button>
-    );
+    )
   }
 
-  get figmaButton () {
+  get figmaButton() {
     return (
       <FigmaPopover
         onImportFigmaAsset={this.props.onImportFigmaAsset}
@@ -121,21 +117,21 @@ class DesignFileCreator extends React.PureComponent<any, any> {
           </span>
         </button>
       </FigmaPopover>
-    );
+    )
   }
 
-  render () {
+  render() {
     return (
-        <div style={STYLES.container}>
-          <p><i>Create a design file to start:</i></p>
-          <div>
-            {isMac() && this.sketchButton}
-            {this.figmaButton}
-            {this.illustratorButton}
-          </div>
+      <div style={STYLES.container}>
+        <p><i>Create a design file to start:</i></p>
+        <div>
+          {isMac() && this.sketchButton}
+          {this.figmaButton}
+          {this.illustratorButton}
         </div>
-    );
+      </div>
+    )
   }
 }
 
-export default DesignFileCreator;
+export default DesignFileCreator

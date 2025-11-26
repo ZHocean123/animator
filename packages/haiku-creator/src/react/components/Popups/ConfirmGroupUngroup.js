@@ -1,7 +1,7 @@
-import * as React from 'react';
-import {ModalWrapper, ModalFooter, ModalHeader} from 'haiku-ui-common';
-import {BTN_STYLES} from '../../styles/btnShared';
-import {UserSettings} from 'haiku-sdk-creator';
+import { UserSettings } from 'haiku-sdk-creator'
+import { ModalFooter, ModalHeader, ModalWrapper } from 'haiku-ui-common'
+import * as React from 'react'
+import { BTN_STYLES } from '../../styles/btnShared'
 
 const STYLES = {
   modalWrapper: {
@@ -47,92 +47,102 @@ const STYLES = {
     display: 'inline-block',
     marginRight: 40,
   },
-};
+}
 
 class ConfirmGroupUngroup extends React.Component {
-  constructor (props) {
-    super(props);
-    this.cancelGroup = this.cancelGroup.bind(this);
-    this.confirmGroup = this.confirmGroup.bind(this);
-    this.saveDoNotShowSetting = this.saveDoNotShowSetting.bind(this);
+  constructor(props) {
+    super(props)
+    this.cancelGroup = this.cancelGroup.bind(this)
+    this.confirmGroup = this.confirmGroup.bind(this)
+    this.saveDoNotShowSetting = this.saveDoNotShowSetting.bind(this)
 
     this.state = {
       // This state is necessary to avoid any rendering before getConfig promise solves
       showPopup: false,
-    };
+    }
 
     // Dismiss dialog. Technically this check could be done on glass, but it would leak implementation and
     // would have a diferent codepath when this config is set. (e.g. won't emit show-confirm-group-popup)
     this.props.user.getConfig(UserSettings.DoNotDisplayConfirmGroupPopoup).then((doNotDisplayConfirmGroupPopoup) => {
       if (doNotDisplayConfirmGroupPopoup) {
-        this.confirmGroup();
-      } else {
-        this.setState({showPopup: true});
+        this.confirmGroup()
       }
-    });
+      else {
+        this.setState({ showPopup: true })
+      }
+    })
   }
 
-  saveDoNotShowSetting () {
+  saveDoNotShowSetting() {
     if (this.checkInput && this.checkInput.checked) {
-      this.props.user.setConfig(UserSettings.DoNotDisplayConfirmGroupPopoup, true);
+      this.props.user.setConfig(UserSettings.DoNotDisplayConfirmGroupPopoup, true)
     }
   }
 
-  cancelGroup () {
-    this.saveDoNotShowSetting();
-    this.props.setGroupUngroupAnswerAndClose(false, this.props.groupOrUngroup);
+  cancelGroup() {
+    this.saveDoNotShowSetting()
+    this.props.setGroupUngroupAnswerAndClose(false, this.props.groupOrUngroup)
   }
 
-  confirmGroup () {
-    this.saveDoNotShowSetting();
-    this.props.setGroupUngroupAnswerAndClose(true, this.props.groupOrUngroup);
+  confirmGroup() {
+    this.saveDoNotShowSetting()
+    this.props.setGroupUngroupAnswerAndClose(true, this.props.groupOrUngroup)
   }
 
-  render () {
+  render() {
     return this.state.showPopup && (
       <ModalWrapper style={STYLES.modalWrapper}>
         <ModalHeader>
-          <div style={STYLES.title}>Confirm {this.props.groupOrUngroup}</div>
+          <div style={STYLES.title}>
+            Confirm
+            {this.props.groupOrUngroup}
+          </div>
         </ModalHeader>
         <div style={STYLES.modalBody}>
-          Transitions or expressions may be lost when you {this.props.groupOrUngroup} these elements. Proceed anyway?
+          Transitions or expressions may be lost when you
+          {' '}
+          {this.props.groupOrUngroup}
+          {' '}
+          these elements. Proceed anyway?
         </div>
-        <ModalFooter style={STYLES.modalFooter} >
-          <div style={{display: 'inline-block', width: '100%'}} >
-            <input style={{marginTop: 5}}
+        <ModalFooter style={STYLES.modalFooter}>
+          <div style={{ display: 'inline-block', width: '100%' }}>
+            <input
+              style={{ marginTop: 5 }}
               type="checkbox"
               name="not-show-again"
               id="not-show-again"
               style={STYLES.checkInput}
               ref={(input) => {
-                this.checkInput = input;
-              }} />
-            <label style={{marginTop: 5}} htmlFor="not-show-again">Don't show this again.</label>
+                this.checkInput = input
+              }}
+            />
+            <label style={{ marginTop: 5 }} htmlFor="not-show-again">Don't show this again.</label>
 
-            <div style={{float: 'right'}}>
-            <button
-              key="group-no"
-              id="group-no"
-              onClick={this.cancelGroup}
-              style={STYLES.no}
-            >
-              <span>No</span>
-            </button>
+            <div style={{ float: 'right' }}>
+              <button
+                key="group-no"
+                id="group-no"
+                onClick={this.cancelGroup}
+                style={STYLES.no}
+              >
+                <span>No</span>
+              </button>
 
-            <button
-              key="group-yes"
-              id="group-yes"
-              onClick={this.confirmGroup}
-              style={STYLES.yes}
-            >
-              <span>Yes</span>
-            </button>
+              <button
+                key="group-yes"
+                id="group-yes"
+                onClick={this.confirmGroup}
+                style={STYLES.yes}
+              >
+                <span>Yes</span>
+              </button>
             </div>
           </div>
         </ModalFooter>
       </ModalWrapper>
-    );
+    )
   }
 }
 
-export default ConfirmGroupUngroup;
+export default ConfirmGroupUngroup

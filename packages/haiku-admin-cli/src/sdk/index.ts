@@ -1,1 +1,1 @@
-export * from './admin-sdk';
+export * from './admin-sdk'

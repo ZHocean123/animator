@@ -1,8 +1,7 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import {Palette } from 'haiku-ui-common';
-import {ChevronLeftMenuIconSVG, StateInspectorIconSVG, LibraryIconSVG} from 'haiku-ui-common';
-import {BTN_STYLES} from '../styles/btnShared';
+import { LibraryIconSVG, Palette, StateInspectorIconSVG } from 'haiku-ui-common'
+
+import * as Radium from 'radium'
+import * as React from 'react'
 
 const STYLES = {
   container: {
@@ -30,12 +29,12 @@ const STYLES = {
     backgroundColor: Palette.COAL,
   },
   btnNav: {
-    opacity: 0.66,
-    height: 40,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    'opacity': 0.66,
+    'height': 40,
+    'cursor': 'pointer',
+    'display': 'flex',
+    'alignItems': 'center',
+    'justifyContent': 'center',
     ':hover': {
       opacity: 1,
     },
@@ -77,73 +76,89 @@ const STYLES = {
     width: 19,
     marginTop: 6,
   },
-};
+}
 
 class SideBar extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       isFullscreen: null,
-    };
+    }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.windowResizeHandler = () => {
       // note: using 'resize' because 'fullscreenchange' doesn't seem to work in Electron
-      const isFullscreen = !window.screenTop && !window.screenY;
-      this.setState({isFullscreen});
-    };
-    window.addEventListener('resize', this.windowResizeHandler);
+      const isFullscreen = !window.screenTop && !window.screenY
+      this.setState({ isFullscreen })
+    }
+    window.addEventListener('resize', this.windowResizeHandler)
   }
 
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.windowResizeHandler);
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.windowResizeHandler)
   }
 
-  render () {
+  render() {
     // The State Inspector UI only makes sense in the context of a component,
     // hence the conditional presence-check before rendering it
-    const activeComponent = this.props.projectModel && this.props.projectModel.getCurrentActiveComponent();
-    const {trialDaysRemaining} = this.props;
+    const activeComponent = this.props.projectModel && this.props.projectModel.getCurrentActiveComponent()
+    const { trialDaysRemaining } = this.props
 
     return (
       <div style={STYLES.container} className="layout-box" id="sidebar">
-        <div style={[STYLES.bar, {paddingLeft: this.state.isFullscreen ? 9 : 74}]} className="frame">
-          {trialDaysRemaining > 0 &&
-            <div
-              style={[STYLES.proBadge, this.state.isFullscreen && {left: 34}]}
-              aria-label={trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''} in your free trial`}
-              data-tooltip={true}
-              data-tooltip-bottom={true}>
-              {trialDaysRemaining + ` day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''}`}
-            </div>
-          }
+        <div style={[STYLES.bar, { paddingLeft: this.state.isFullscreen ? 9 : 74 }]} className="frame">
+          {trialDaysRemaining > 0
+            && (
+              <div
+                style={[STYLES.proBadge, this.state.isFullscreen && { left: 34 }]}
+                aria-label={`${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''} in your free trial`}
+                data-tooltip={true}
+                data-tooltip-bottom={true}
+              >
+                {`${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'} remain${trialDaysRemaining === 1 ? 's' : ''}`}
+              </div>
+            )}
 
         </div>
         <div style={STYLES.nav}>
           <div style={[
             STYLES.activeIndicator,
             this.props.activeNav === 'state_inspector' && STYLES.activeSecond,
-          ]} />
-          <div key="library" aria-label="Show Library panel" data-tooltip={true} data-tooltip-right={true}
+          ]}
+          />
+          <div
+            key="library"
+            aria-label="Show Library panel"
+            data-tooltip={true}
+            data-tooltip-right={true}
             style={[STYLES.btnNav, this.props.activeNav === 'library' && STYLES.activeBtnNav]}
-            onClick={() => this.props.switchActiveNav('library')}>
+            onClick={() => this.props.switchActiveNav('library')}
+          >
             <LibraryIconSVG color={Palette.ROCK} />
           </div>
           {(activeComponent)
-            ? <div id="state-inspector" key="state_inspector" aria-label="Show State Inspector panel"  data-tooltip={true} data-tooltip-right={true}
-              style={[STYLES.btnNav, this.props.activeNav === 'state_inspector' && STYLES.activeBtnNav]}
-              onClick={() => this.props.switchActiveNav('state_inspector')}>
-              <StateInspectorIconSVG color={Palette.ROCK} />
-            </div>
+            ? (
+                <div
+                  id="state-inspector"
+                  key="state_inspector"
+                  aria-label="Show State Inspector panel"
+                  data-tooltip={true}
+                  data-tooltip-right={true}
+                  style={[STYLES.btnNav, this.props.activeNav === 'state_inspector' && STYLES.activeBtnNav]}
+                  onClick={() => this.props.switchActiveNav('state_inspector')}
+                >
+                  <StateInspectorIconSVG color={Palette.ROCK} />
+                </div>
+              )
             : ''}
         </div>
         <div style={STYLES.panelWrapper}>
           {this.props.children}
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Radium(SideBar);
+export default Radium(SideBar)

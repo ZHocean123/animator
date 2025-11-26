@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Palette from './../../Palette';
+import * as React from 'react'
+import Palette from './../../Palette'
 
 const STYLES: React.CSSProperties = {
   width: '100%',
@@ -8,18 +8,18 @@ const STYLES: React.CSSProperties = {
   borderTopLeftRadius: '7px',
   padding: '5px 20px',
   zIndex: 999999,
-};
+}
 
 export interface ModalHeaderProps {
-  style?: React.CSSProperties;
+  style?: React.CSSProperties
 }
 
 export class ModalHeader extends React.PureComponent<ModalHeaderProps> {
-  render () {
+  render() {
     return (
-      <div style={{...STYLES, ...this.props.style}}>
+      <div style={{ ...STYLES, ...this.props.style }}>
         {this.props.children}
       </div>
-    );
+    )
   }
 }

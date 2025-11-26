@@ -1,93 +1,93 @@
-import * as React from 'react';
-import Palette from '../../Palette';
+import * as React from 'react'
+import Palette from '../../Palette'
 
 export interface BezierOnionPreviewProps {
-  animationDuration?: number;
-  numberOnionSlices?: number;
-  value?: number[];
-  update?: boolean;
+  animationDuration?: number
+  numberOnionSlices?: number
+  value?: number[]
+  update?: boolean
 }
 
 export default class BezierOnionPreview extends React.Component<BezierOnionPreviewProps> {
-
-  animation: Animation;
-  previewElement: HTMLElement;
-  previewOnion: HTMLElement;
-  lastRenderedValue: number[];
+  animation: Animation
+  previewElement: HTMLElement
+  previewOnion: HTMLElement
+  lastRenderedValue: number[]
 
   static defaultProps = {
     animationDuration: 1600,
     numberOnionSlices: 20,
     value: [0.2, 0.2, 0.8, 0.8],
     update: true,
-  };
+  }
 
-  clearOnions () {
+  clearOnions() {
     while (this.previewOnion.firstChild) {
-      this.previewOnion.removeChild(this.previewOnion.firstChild);
+      this.previewOnion.removeChild(this.previewOnion.firstChild)
     }
   }
 
-  componentDidMount () {
-    this.animate();
+  componentDidMount() {
+    this.animate()
   }
 
-  shouldComponentUpdate (nextProps: BezierOnionPreviewProps) {
+  shouldComponentUpdate(nextProps: BezierOnionPreviewProps) {
     return (
-      nextProps.update &&
-      nextProps.value &&
-      Boolean(nextProps.value.find((val, idx) => val !== this.lastRenderedValue[idx]))
-    );
+      nextProps.update
+      && nextProps.value
+      && Boolean(nextProps.value.find((val, idx) => val !== this.lastRenderedValue[idx]))
+    )
   }
 
-  componentDidUpdate () {
-    this.animate();
+  componentDidUpdate() {
+    this.animate()
   }
 
   assignPreviewRef = (domElement: HTMLElement) => {
-    this.previewElement = domElement;
-  };
+    this.previewElement = domElement
+  }
 
   assignOnionRef = (domElement: HTMLElement) => {
-    this.previewOnion = domElement;
-  };
+    this.previewOnion = domElement
+  }
 
-  get CSSBezier () {
-    return `cubic-bezier(${this.props.value.join(',')})`;
+  get CSSBezier() {
+    return `cubic-bezier(${this.props.value.join(',')})`
   }
 
   animate = () => {
     if (this.animation) {
-      this.animation.cancel();
+      this.animation.cancel()
     }
 
     const keyframes = [
-      {offset: 0, transform: 'translateX(0px)', easing: this.CSSBezier, opacity: 1},
-      {offset: 0.9, transform: 'translateX(185px)', opacity: 1},
-      {offset: 1, transform: 'translateX(185px)', opacity: 0},
-    ];
+      { offset: 0, transform: 'translateX(0px)', easing: this.CSSBezier, opacity: 1 },
+      { offset: 0.9, transform: 'translateX(185px)', opacity: 1 },
+      { offset: 1, transform: 'translateX(185px)', opacity: 0 },
+    ]
     // FIXME when https://github.com/Microsoft/TypeScript/issues/26073 is released
     // @ts-ignore
-    this.animation = this.previewElement.animate(keyframes, this.props.animationDuration);
-    this.clearOnions();
+    this.animation = this.previewElement.animate(keyframes, this.props.animationDuration)
+    this.clearOnions()
 
     for (let i = 0; i <= this.props.numberOnionSlices; i++) {
-      const slice = document.createElement('div');
-      slice.classList.add('bezier-preview-animation');
-      this.previewOnion.appendChild(slice);
+      const slice = document.createElement('div')
+      slice.classList.add('bezier-preview-animation')
+      this.previewOnion.appendChild(slice)
 
       const player = slice.animate(
-            // FIXME when https://github.com/Microsoft/TypeScript/issues/26073 is released
-            // @ts-ignore
-            [{transform: 'translateX(0px)', easing: this.CSSBezier}, {transform: 'translateX(185px)'}],
-            {duration: this.props.animationDuration, fill: 'forwards'});
-      player.pause();
-      player.currentTime = this.props.animationDuration * i / this.props.numberOnionSlices;
+        // FIXME when https://github.com/Microsoft/TypeScript/issues/26073 is released
+        // @ts-ignore
+        [{ transform: 'translateX(0px)', easing: this.CSSBezier }, { transform: 'translateX(185px)' }],
+        { duration: this.props.animationDuration, fill: 'forwards' },
+      )
+      player.pause()
+      player.currentTime = this.props.animationDuration * i / this.props.numberOnionSlices
     }
-  };
+  }
 
-  render () {
-    this.lastRenderedValue = this.props.value;
+  render() {
+    this.lastRenderedValue = this.props.value
     return (
       <div
         style={{
@@ -134,6 +134,6 @@ export default class BezierOnionPreview extends React.Component<BezierOnionPrevi
           `}
         </style>
       </div>
-    );
+    )
   }
 }

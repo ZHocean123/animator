@@ -1,28 +1,32 @@
+const path = require('node:path')
 /* tslint:disable */
-var fse = require('haiku-fs-extra')
-var path = require('path')
-var lodash = require('lodash')
-var FILE_PATH = path.join('.haiku', 'comments.json')
+const fse = require('haiku-fs-extra')
+const lodash = require('lodash')
 
-function Comments (folder) {
-  if (!folder) throw new Error('Folder is required')
+const FILE_PATH = path.join('.haiku', 'comments.json')
+
+function Comments(folder) {
+  if (!folder)
+    throw new Error('Folder is required')
   this.datapath = path.join(folder, FILE_PATH)
   this.comments = []
 }
 
-Comments.prototype.load = function _load (cb) {
-  return fse.readJson(this.datapath, function (err, comments) {
-    if (err) return cb(err)
+Comments.prototype.load = function _load(cb) {
+  return fse.readJson(this.datapath, (err, comments) => {
+    if (err)
+      return cb(err)
     this.comments = comments || []
     this.comments.forEach((comment) => {
-      if (!comment.id) comment.id = Math.random() + ''
+      if (!comment.id)
+        comment.id = `${Math.random()}`
     })
     return cb()
-  }.bind(this))
+  })
 }
 
-Comments.prototype.save = function _save (cb) {
-  return fse.writeJson(this.datapath, cleanComments(this.comments), { spaces: 2 }, cb || function () {})
+Comments.prototype.save = function _save(cb) {
+  return fse.writeJson(this.datapath, cleanComments(this.comments), { spaces: 2 }, cb || (() => {}))
 }
 
 // @function add
@@ -42,44 +46,46 @@ Comments.prototype.save = function _save (cb) {
 //   content: "Lookout _belooooow_"
 // }
 // It's up to the UI to decide how to render these.
-Comments.prototype.add = function _add (content, options) {
-  var id = Date.now()
-  var comment = { content: content, id: id }
+Comments.prototype.add = function _add(content, options) {
+  const id = Date.now()
+  const comment = { content, id }
   lodash.merge(comment, options || {})
   this.comments.push(comment)
   this.comments = lodash.uniqWith(this.comments, lodash.isEqual)
   return id
 }
 
-Comments.prototype.build = function _build (options) {
+Comments.prototype.build = function _build(options) {
   this.add('', lodash.merge({
     created: Date.now(),
     author: null, // TODO
     isOpened: true,
-    isEditing: true
+    isEditing: true,
   }, options))
 }
 
 // @function remove
 // @param id {number} Id of the comment to remove
-Comments.prototype.remove = function _remove (id) {
-  lodash.pullAllWith(this.comments, [{ id: id }], lodash.matches)
+Comments.prototype.remove = function _remove(id) {
+  lodash.pullAllWith(this.comments, [{ id }], lodash.matches)
   return id
 }
 
-Comments.prototype.reply = function _reply (id, content, options) {
-  var comment = lodash.find(this.comments, { id: id })
-  if (!comment.replies) comment.replies = []
-  var reply = { id: Date.now(), content: content }
+Comments.prototype.reply = function _reply(id, content, options) {
+  const comment = lodash.find(this.comments, { id })
+  if (!comment.replies)
+    comment.replies = []
+  const reply = { id: Date.now(), content }
   lodash.merge(reply, options || {})
   comment.replies.push(reply)
   return reply.id
 }
 
-function cleanComments (dirty) {
-  var clean = []
+function cleanComments(dirty) {
+  const clean = []
   dirty.forEach((dirt) => {
-    if (dirt.isCancelled) return void (0)
+    if (dirt.isCancelled)
+      return void (0)
     clean.push(lodash.omit(dirt, ['isReplying', 'isOpened']))
   })
   return clean

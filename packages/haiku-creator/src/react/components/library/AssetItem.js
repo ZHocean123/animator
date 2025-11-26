@@ -1,48 +1,33 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import * as Color from 'color';
-import * as lodash from 'lodash';
-import * as Asset from 'haiku-serialization/src/bll/Asset';
-import {Figma} from 'haiku-serialization/src/bll/Figma';
-import {Draggable} from 'react-drag-and-drop';
-import AssetList from './AssetList';
-import {PopoverMenu} from 'haiku-ui-common';
-import {isMac, isWindows} from 'haiku-common';
-import {Palette} from 'haiku-ui-common';
-import * as Popover from 'react-popover';
-import {
-  CollapseChevronRightSVG,
-  CollapseChevronDownSVG,
-  SketchIconSVG,
-  FigmaIconSVG,
-  IllustratorIconSVG,
-  FolderIconSVG,
-  TrashIconSVG,
-  ComponentIconSVG,
-  SyncIconSVG,
-  FontIconSVG,
-} from 'haiku-ui-common';
+import * as Color from 'color'
+import { isMac, isWindows } from 'haiku-common'
 
-import {ControlImage} from 'haiku-ui-common';
-import {ControlText} from 'haiku-ui-common';
-import {ControlHTML} from 'haiku-ui-common';
-import FigmaPopover from './importers/FigmaPopover';
-import {experimentIsEnabled, Experiment} from 'haiku-common';
+import * as Asset from 'haiku-serialization/src/bll/Asset'
+import { Figma } from 'haiku-serialization/src/bll/Figma'
+import { CollapseChevronDownSVG, CollapseChevronRightSVG, ComponentIconSVG, ControlHTML, ControlImage, ControlText, FigmaIconSVG, FolderIconSVG, FontIconSVG, IllustratorIconSVG, Palette, PopoverMenu, SketchIconSVG, SyncIconSVG, TrashIconSVG } from 'haiku-ui-common'
+
+import * as lodash from 'lodash'
+import * as Radium from 'radium'
+
+import * as React from 'react'
+import { Draggable } from 'react-drag-and-drop'
+import * as Popover from 'react-popover'
+import AssetList from './AssetList'
+import FigmaPopover from './importers/FigmaPopover'
 
 const ASSET_ICONS = {
   ControlImage: () => {
-    return <ControlImage />;
+    return <ControlImage />
   },
   ControlText: () => {
-    return <ControlText />;
+    return <ControlText />
   },
   ControlHTML: () => {
-    return <ControlHTML />;
+    return <ControlHTML />
   },
   // ControlInput
-};
+}
 
-const {shell} = require('electron');
+const { shell } = require('electron')
 
 const STYLES = {
   container: {
@@ -52,15 +37,15 @@ const STYLES = {
     position: 'relative',
   },
   row: {
-    position: 'relative',
-    paddingLeft: 13,
-    userSelect: 'none',
-    cursor: 'default',
-    paddingTop: 2,
-    paddingBottom: 2,
-    marginTop: 2,
-    marginBottom: 2,
-    fontSize: 13,
+    'position': 'relative',
+    'paddingLeft': 13,
+    'userSelect': 'none',
+    'cursor': 'default',
+    'paddingTop': 2,
+    'paddingBottom': 2,
+    'marginTop': 2,
+    'marginBottom': 2,
+    'fontSize': 13,
     ':hover': {
       backgroundColor: Palette.DARKER_GRAY,
     },
@@ -127,109 +112,111 @@ const STYLES = {
     },
   },
   threeDotMenu: {
-    position: 'absolute',
-    cursor: 'pointer',
-    right: 10,
-    transform: 'translateY(-50%) rotate(90deg)',
-    top: '50%',
+    'position': 'absolute',
+    'cursor': 'pointer',
+    'right': 10,
+    'transform': 'translateY(-50%) rotate(90deg)',
+    'top': '50%',
     ':hover': {
       opacity: 1,
     },
   },
-};
+}
 
 class AssetItem extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       isThumbnailOpen: false,
       isOpened: true,
-    };
+    }
 
-    this.handleCollapseToggle = this.handleCollapseToggle.bind(this);
-    this.handleAssetDoubleClick = lodash.debounce(this.handleAssetDoubleClick.bind(this), 500, {leading: true, trailing: false});
-    this.launchPopoverMenu = this.launchPopoverMenu.bind(this);
+    this.handleCollapseToggle = this.handleCollapseToggle.bind(this)
+    this.handleAssetDoubleClick = lodash.debounce(this.handleAssetDoubleClick.bind(this), 500, { leading: true, trailing: false })
+    this.launchPopoverMenu = this.launchPopoverMenu.bind(this)
   }
 
-  endDragInCaseItWasStartedInadvertently () {
-    this.props.onDragEnd();
+  endDragInCaseItWasStartedInadvertently() {
+    this.props.onDragEnd()
   }
 
-  handleDeleteAsset () {
-    this.props.deleteAsset(this.props.asset);
-    this.endDragInCaseItWasStartedInadvertently();
+  handleDeleteAsset() {
+    this.props.deleteAsset(this.props.asset)
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  handleAssetDoubleClick () {
-    this.props.onAssetDoubleClick(this.props.asset);
-    this.endDragInCaseItWasStartedInadvertently();
+  handleAssetDoubleClick() {
+    this.props.onAssetDoubleClick(this.props.asset)
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  handleCollapseToggle () {
-    this.setState({isOpened: !this.state.isOpened});
-    this.endDragInCaseItWasStartedInadvertently();
+  handleCollapseToggle() {
+    this.setState({ isOpened: !this.state.isOpened })
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  handleOpenAsset () {
-    shell.openItem(this.props.asset.getAbspath());
-    this.endDragInCaseItWasStartedInadvertently();
+  handleOpenAsset() {
+    shell.openItem(this.props.asset.getAbspath())
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  handleOpenOnlineAsset (link) {
-    shell.openExternal(link);
-    this.endDragInCaseItWasStartedInadvertently();
+  handleOpenOnlineAsset(link) {
+    shell.openExternal(link)
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  considerSketch () {
-    return isMac() && this.props.asset.isSketchFile();
+  considerSketch() {
+    return isMac() && this.props.asset.isSketchFile()
   }
 
-  handleShowAsset () {
-    shell.showItemInFolder(this.props.asset.getAbspath());
-    this.endDragInCaseItWasStartedInadvertently();
+  handleShowAsset() {
+    shell.showItemInFolder(this.props.asset.getAbspath())
+    this.endDragInCaseItWasStartedInadvertently()
   }
 
-  isLeafAsset () {
-    return this.props.asset.getChildAssets().length < 1;
+  isLeafAsset() {
+    return this.props.asset.getChildAssets().length < 1
   }
 
-  get indent () {
-    return this.isLeafAsset() ? this.props.indent + 1 : this.props.indent;
+  get indent() {
+    return this.isLeafAsset() ? this.props.indent + 1 : this.props.indent
   }
 
-  renderChevy () {
+  renderChevy() {
     if (this.isLeafAsset()) {
-      return null;
+      return null
     }
 
     if (this.state.isOpened) {
       return (
         <span
           onClick={this.handleCollapseToggle}
-          style={STYLES.chevy}>
+          style={STYLES.chevy}
+        >
           <CollapseChevronDownSVG />
         </span>
-      );
+      )
     }
 
     return (
       <span
         onClick={this.handleCollapseToggle}
-        style={STYLES.chevy}>
+        style={STYLES.chevy}
+      >
         <CollapseChevronRightSVG />
       </span>
-    );
+    )
   }
 
-  launchPopoverMenu (event) {
+  launchPopoverMenu(event) {
     PopoverMenu.launch({
       event,
       items: this.getAssetMenuItems(),
-    });
+    })
   }
 
-  getAssetMenuItems () {
-    const items = [];
+  getAssetMenuItems() {
+    const items = []
 
     if (this.props.asset.isComponentsHostFolder()) {
       items.push({
@@ -239,9 +226,9 @@ class AssetItem extends React.Component {
           this.props.conglomerateComponent({
             isBlankComponent: true,
             skipInstantiateInHost: true,
-          });
+          })
         },
-      });
+      })
     }
 
     // Only display Open In Sketch on mac
@@ -250,7 +237,7 @@ class AssetItem extends React.Component {
         label: 'Open In Sketch',
         icon: SketchIconSVG,
         onClick: this.handleOpenAsset.bind(this),
-      });
+      })
     }
 
     if (this.isFigmaAndCanBeOpened()) {
@@ -258,9 +245,9 @@ class AssetItem extends React.Component {
         label: 'Open In Figma',
         icon: FigmaIconSVG,
         onClick: () => {
-          this.handleOpenOnlineAsset(Figma.buildFigmaLink(this.props.asset.figmaID));
+          this.handleOpenOnlineAsset(Figma.buildFigmaLink(this.props.asset.figmaID))
         },
-      });
+      })
     }
 
     if (this.props.asset.isIllustratorFile()) {
@@ -268,7 +255,7 @@ class AssetItem extends React.Component {
         label: 'Open In Illustrator',
         icon: IllustratorIconSVG,
         onClick: this.handleOpenAsset.bind(this),
-      });
+      })
     }
 
     // Things like built-in components can't be deleted or shown in finder
@@ -277,37 +264,37 @@ class AssetItem extends React.Component {
         label: isWindows() ? 'Show in File Explorer' : 'Show In Finder',
         icon: FolderIconSVG,
         onClick: this.handleShowAsset.bind(this),
-      });
+      })
     }
 
     if (
-      !this.props.asset.isRemoteAsset() &&
-      !this.props.asset.isComponent()
+      !this.props.asset.isRemoteAsset()
+      && !this.props.asset.isComponent()
     ) {
       items.push({
         label: 'Delete',
         icon: TrashIconSVG,
         onClick: this.handleDeleteAsset.bind(this),
-      });
+      })
     }
 
-    return items;
+    return items
   }
 
-  isFigmaAndCanBeOpened () {
-    return this.props.asset.isFigmaFile();
+  isFigmaAndCanBeOpened() {
+    return this.props.asset.isFigmaFile()
   }
 
   refreshFigmaAsset = () => {
-    const url = Figma.buildFigmaLink(this.props.asset.figmaID, this.props.asset.displayName);
-    this.props.onRefreshFigmaAsset(url);
-  };
+    const url = Figma.buildFigmaLink(this.props.asset.figmaID, this.props.asset.displayName)
+    this.props.onRefreshFigmaAsset(url)
+  }
 
-  renderSyncMenu () {
+  renderSyncMenu() {
     if (this.isFigmaAndCanBeOpened()) {
       return (
         <span
-          style={{...STYLES.threeDotMenu, right: '30px', transform: 'none'}}
+          style={{ ...STYLES.threeDotMenu, right: '30px', transform: 'none' }}
         >
           <button
             onClick={this.refreshFigmaAsset}
@@ -315,28 +302,29 @@ class AssetItem extends React.Component {
               padding: '3px',
               backgroundColor: Palette.DARK_GRAY,
               color: Palette.ROCK,
-            }}>
+            }}
+          >
             <SyncIconSVG />
           </button>
         </span>
-      );
+      )
     }
 
-    return null;
+    return null
   }
 
-  renderThreeDotMenu () {
+  renderThreeDotMenu() {
     // For now, don't show any menu for built-in components
     if (this.props.asset.isRemoteAsset()) {
-      return '';
+      return ''
     }
 
     if (
-      this.considerSketch() ||
-      this.isFigmaAndCanBeOpened() ||
-      this.props.asset.isIllustratorFile() ||
-      this.props.asset.isOrphanSvg() ||
-      this.props.asset.isComponentOtherThanMain()
+      this.considerSketch()
+      || this.isFigmaAndCanBeOpened()
+      || this.props.asset.isIllustratorFile()
+      || this.props.asset.isOrphanSvg()
+      || this.props.asset.isComponentOtherThanMain()
     ) {
       return (
         <span
@@ -353,17 +341,18 @@ class AssetItem extends React.Component {
               padding: '0 5px',
               backgroundColor: Palette.DARK_GRAY,
               color: Palette.ROCK,
-            }}>
+            }}
+          >
             &#5867;&#5867;&#5867;
           </button>
         </span>
-      );
+      )
     }
 
-    return '';
+    return ''
   }
 
-  renderIcon () {
+  renderIcon() {
     if (this.props.asset.kind === Asset.KINDS.COMPONENT) {
       return (
         <span
@@ -375,18 +364,22 @@ class AssetItem extends React.Component {
               STYLES.cardIcon,
               (this.props.asset.isControl)
                 ? null
-                : {transform: 'scale(1.35)', left: 2, display: 'inline-block'},
-            )}>
+                : { transform: 'scale(1.35)', left: 2, display: 'inline-block' },
+            )
+          }
+        >
 
           {(this.props.asset.icon)
             ? ASSET_ICONS[this.props.asset.icon]()
-            : <ComponentIconSVG
-              color={(this.isAssetOfActiveComponent())
-                ? Palette.BLUE
-                : void (0)}
-              />}
+            : (
+                <ComponentIconSVG
+                  color={(this.isAssetOfActiveComponent())
+                    ? Palette.BLUE
+                    : void (0)}
+                />
+              )}
         </span>
-      );
+      )
     }
 
     if (this.considerSketch()) {
@@ -394,10 +387,11 @@ class AssetItem extends React.Component {
         <span
           className="sketch-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <SketchIconSVG />
         </span>
-      );
+      )
     }
 
     if (this.props.asset.isFigmaFile()) {
@@ -405,10 +399,11 @@ class AssetItem extends React.Component {
         <span
           className="figma-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <FigmaIconSVG />
         </span>
-      );
+      )
     }
 
     if (this.props.asset.isIllustratorFile()) {
@@ -416,120 +411,125 @@ class AssetItem extends React.Component {
         <span
           className="illustrator-icon-container"
           onDoubleClick={this.handleAssetDoubleClick}
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <IllustratorIconSVG />
         </span>
-      );
+      )
     }
 
     if (this.props.asset.kind === Asset.KINDS.FOLDER) {
       return (
         <span
           className="folder-icon-container"
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <FolderIconSVG />
         </span>
-      );
+      )
     }
 
     if (this.props.asset.kind === Asset.KINDS.FONT) {
       return (
         <span
           className="font-icon-container"
-          style={STYLES.cardIcon}>
+          style={STYLES.cardIcon}
+        >
           <FontIconSVG />
         </span>
-      );
+      )
     }
 
     if (
-      this.props.asset.kind === Asset.KINDS.VECTOR ||
-      this.props.asset.kind === Asset.KINDS.IMAGE
+      this.props.asset.kind === Asset.KINDS.VECTOR
+      || this.props.asset.kind === Asset.KINDS.IMAGE
     ) {
-      let imageSrc;
+      let imageSrc
       // Windows platform paths needs transformation to display correct icon and preview
       // eg. C:\test\a.svg -> /C:/test/a.svg
       if (isWindows()) {
-        imageSrc = `/${escape(this.props.asset.getAbspath().replace(/\\/g, '/'))}?t=${this.props.asset.dtModified}`;
-      } else {
-        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${this.props.asset.dtModified}`;
+        imageSrc = `/${escape(this.props.asset.getAbspath().replace(/\\/g, '/'))}?t=${this.props.asset.dtModified}`
+      }
+      else {
+        imageSrc = `${escape(this.props.asset.getAbspath())}?t=${this.props.asset.dtModified}`
       }
       return (
         <span
-        key={`wrap:${imageSrc}`}
+          key={`wrap:${imageSrc}`}
           className="thumbnail-icon-container"
           style={STYLES.cardIcon}
           onDoubleClick={this.handleAssetDoubleClick}
           onMouseOver={this.showThumbnailPreview}
           onMouseOut={this.hideThumbnailPreview}
-          onMouseDown={this.hideThumbnailPreview}>
+          onMouseDown={this.hideThumbnailPreview}
+        >
           <Popover
             isOpen={this.state.isThumbnailOpen}
             style={STYLES.cardPreview}
-            preferPlace={'right'}
-            body={<embed key={`popover:${imageSrc}`} src={`file://${imageSrc}`} style={{width: '170px', height: '170px'}} />}
+            preferPlace="right"
+            body={<embed key={`popover:${imageSrc}`} src={`file://${imageSrc}`} style={{ width: '170px', height: '170px' }} />}
             tipSize={0.01}
           >
             <embed key={imageSrc} style={STYLES.cardImage} src={`file://${imageSrc}`} />
           </Popover>
         </span>
-      );
+      )
     }
 
-    return '';
+    return ''
   }
 
   showThumbnailPreview = () => {
-    this.setState({isThumbnailOpen: true});
-  };
-
-  hideThumbnailPreview = () => {
-    this.setState({isThumbnailOpen: false});
-  };
-
-  isAssetOfActiveComponent () {
-    return this.props.asset.getRelpath() === this.props.projectModel.getCurrentActiveComponentRelpath();
+    this.setState({ isThumbnailOpen: true })
   }
 
-  getAssetHoverTitleText () {
+  hideThumbnailPreview = () => {
+    this.setState({ isThumbnailOpen: false })
+  }
+
+  isAssetOfActiveComponent() {
+    return this.props.asset.getRelpath() === this.props.projectModel.getCurrentActiveComponentRelpath()
+  }
+
+  getAssetHoverTitleText() {
     if (this.props.asset.isIllustratorFile()) {
-      return 'Double click to open in Illustrator';
+      return 'Double click to open in Illustrator'
     }
 
     if (this.considerSketch()) {
-      return 'Double click to open in Sketch';
+      return 'Double click to open in Sketch'
     }
 
     if (this.props.asset.isComponentsHostFolder()) {
-      return 'Your components — create using the + button above the Stage';
+      return 'Your components — create using the + button above the Stage'
     }
 
     if (this.props.asset.isDesignsHostFolder()) {
       if (isMac()) {
-        return 'Your design assets — import from Sketch, Figma, or Illustrator';
+        return 'Your design assets — import from Sketch, Figma, or Illustrator'
       }
-        return 'Your design assets — import from Figma or Illustrator';
-
+      return 'Your design assets — import from Figma or Illustrator'
     }
 
     if (this.props.asset.isDraggable()) {
-      return 'Drag and drop to place on Stage';
+      return 'Drag and drop to place on Stage'
     }
 
-    return null;
+    return null
   }
 
-  renderDisplayName () {
+  renderDisplayName() {
     const displayName = (
       <span
         className="display-name-container"
         title={this.getAssetHoverTitleText()}
         onDoubleClick={this.handleAssetDoubleClick}
         onContextMenu={this.launchPopoverMenu}
-        style={[STYLES.displayName, this.isAssetOfActiveComponent() && STYLES.displayName.active]}>
+        style={[STYLES.displayName, this.isAssetOfActiveComponent() && STYLES.displayName.active]}
+      >
         {this.props.asset.displayName}
       </span>
-    );
+    )
 
     if (this.props.asset.isFigmaFile() && !this.isFigmaAndCanBeOpened()) {
       return (
@@ -541,55 +541,57 @@ class AssetItem extends React.Component {
         >
           {displayName}
         </FigmaPopover>
-      );
+      )
     }
 
-    return displayName;
+    return displayName
   }
 
-  get messageForAsset () {
+  get messageForAsset() {
     if (this.props.asset.isIllustratorFile()) {
       return `
         ⇧ Double click to open this file in Illustrator.
         Artboards will sync when you save.
-      `;
+      `
     }
 
     if (this.considerSketch()) {
       return `
         ⇧ Double click to open this file in Sketch.
         Slices and artboards will sync when you save.
-      `;
+      `
     }
 
     if (this.props.asset.isComponentsHostFolder()) {
       return `
         To create a component, select some elements on stage,
         then click the + button above the stage.
-      `;
+      `
     }
 
-    return null;
+    return null
   }
 
-  renderSubLevel () {
+  renderSubLevel() {
     if (!this.state.isOpened) {
-      return <div />;
+      return <div />
     }
 
     if (this.props.asset.getChildAssets().length === 0) {
-      const message = this.messageForAsset;
+      const message = this.messageForAsset
 
       return message && (
         <div
           className="asset-item-container"
-          style={[STYLES.container, STYLES.message]}>
+          style={[STYLES.container, STYLES.message]}
+        >
           <span
-            className="asset-message-container">
+            className="asset-message-container"
+          >
             {message}
           </span>
         </div>
-      );
+      )
     }
 
     return (
@@ -608,60 +610,66 @@ class AssetItem extends React.Component {
           indent={this.props.indent + 1}
         />
       </div>
-    );
+    )
   }
 
   onDragStart = () => {
-    this.props.onDragStart(this.props.asset);
-  };
+    this.props.onDragStart(this.props.asset)
+  }
 
   onDragEnd = () => {
-    this.props.onDragEnd(this.props.asset);
-  };
+    this.props.onDragEnd(this.props.asset)
+  }
 
-  render () {
+  render() {
     if (
-      this.props.asset.isPhonyOrOnlyHasPhonyChildrens() ||
-      this.props.asset.isDesignsHostFolder() && this.props.asset.getChildAssets().length === 0
+      this.props.asset.isPhonyOrOnlyHasPhonyChildrens()
+      || this.props.asset.isDesignsHostFolder() && this.props.asset.getChildAssets().length === 0
     ) {
-      return null;
+      return null
     }
 
     let draggablePart = (
       <span
-        className="draggable-interior">
+        className="draggable-interior"
+      >
         {this.renderIcon()}
         {this.renderDisplayName()}
       </span>
-    );
+    )
 
     if (this.props.asset.isDraggable()) {
       draggablePart = (
         <Draggable
           className="library-draggable" /* <~ do not remove this */
           onDragEnd={this.onDragEnd}
-          onDragStart={this.onDragStart}>
+          onDragStart={this.onDragStart}
+        >
           <span
             className="draggable-interior-wrap"
             style={STYLES.draggableCardWrapper}
-            onDoubleClick={this.handleAssetDoubleClick}>
+            onDoubleClick={this.handleAssetDoubleClick}
+          >
             {draggablePart}
           </span>
         </Draggable>
-      );
+      )
     }
 
     return (
       <div
         className="asset-item-container"
-        style={[STYLES.container]}>
+        style={[STYLES.container]}
+      >
         <div
           key="asset-item-row"
           className="asset-item-row"
-          style={[STYLES.row]}>
+          style={[STYLES.row]}
+        >
           <div
             className="asset-item-header"
-            style={[STYLES.header, {paddingLeft: this.indent * 23}]}>
+            style={[STYLES.header, { paddingLeft: this.indent * 23 }]}
+          >
             {this.renderChevy()}
             {draggablePart}
             {this.renderSyncMenu()}
@@ -670,11 +678,12 @@ class AssetItem extends React.Component {
         </div>
         <div
           className="asset-item-sublevel-container"
-          style={[STYLES.sublevel]}>
+          style={[STYLES.sublevel]}
+        >
           {this.renderSubLevel()}
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -687,6 +696,6 @@ AssetItem.propTypes = {
   deleteAsset: React.PropTypes.func.isRequired,
   projectModel: React.PropTypes.object.isRequired,
   onRefreshFigmaAsset: React.PropTypes.func.isRequired,
-};
+}
 
-export default Radium(AssetItem);
+export default Radium(AssetItem)

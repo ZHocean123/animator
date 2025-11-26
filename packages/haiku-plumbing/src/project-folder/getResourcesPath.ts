@@ -1,5 +1,5 @@
-import {isMac} from 'haiku-common';
-import {join} from 'path';
+import { join } from 'node:path'
+import { isMac } from 'haiku-common'
 
 /**
  * Returns the path to the resources directory. You can define resources in the
@@ -9,14 +9,14 @@ import {join} from 'path';
  * (`process.resourcesPath`) with this value, but it's `null` in
  * `haiku-plumbing` for some reason I couldn't figure out.
  */
-export const getResourcesPath = () => {
-  if(process.env.NODE_ENV !== 'production') {
-    return null;
+export function getResourcesPath() {
+  if (process.env.NODE_ENV !== 'production') {
+    return null
   }
 
-  if(isMac()) {
-    return join(process.execPath, '..', '..', '..', '..', '..', 'Resources');
+  if (isMac()) {
+    return join(process.execPath, '..', '..', '..', '..', '..', 'Resources')
   }
 
-  return join(process.execPath, '..', 'resources');
-};
+  return join(process.execPath, '..', 'resources')
+}

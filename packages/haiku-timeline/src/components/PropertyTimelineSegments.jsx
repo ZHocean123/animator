@@ -1,11 +1,12 @@
-import * as React from 'react';
-import RowSegments from './RowSegments';
+import * as React from 'react'
+import RowSegments from './RowSegments'
 
 export default class PropertyTimelineSegments extends React.Component {
-  render () {
+  render() {
     return (
       <div
-        className="property-timeline-segments">
+        className="property-timeline-segments"
+      >
         <RowSegments
           scope="PropertyTimelineSegments"
           includeDraggables={true}
@@ -14,9 +15,10 @@ export default class PropertyTimelineSegments extends React.Component {
           component={this.props.component}
           timeline={this.props.timeline}
           rowHeight={this.props.rowHeight}
-          preventDragging={this.props.preventDragging} />
+          preventDragging={this.props.preventDragging}
+        />
       </div>
-    );
+    )
   }
 }
 
@@ -27,4 +29,4 @@ PropertyTimelineSegments.propTypes = {
   rowHeight: React.PropTypes.number.isRequired,
   preventDragging: React.PropTypes.bool.isRequired,
   showBezierEditor: React.PropTypes.func,
-};
+}

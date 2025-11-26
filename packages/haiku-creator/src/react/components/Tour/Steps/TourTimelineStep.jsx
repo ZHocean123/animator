@@ -1,6 +1,4 @@
-import * as React from 'react';
-
-export default function ({styles}) {
+export default function ({ styles }) {
   return (
     <div>
       <h2 style={styles.heading}>Timeline</h2>
@@ -18,5 +16,5 @@ export default function ({styles}) {
         you can enter precise numeric values (or even write code!) in the Properties editors to the left of the timeline.
       </p>
     </div>
-  );
+  )
 }

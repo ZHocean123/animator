@@ -1,17 +1,16 @@
-import {TourUtils} from 'haiku-common';
+import type { ClientBoundingRect, Tour, TourState } from '.'
+import type { EnvoyEvent } from '../envoy'
+import type EnvoyServer from '../envoy/EnvoyServer'
+import { TourUtils } from 'haiku-common'
 // @ts-ignore
-import {createTourFile, didTakeTour} from 'haiku-serialization/src/utils/HaikuHomeDir';
-import {ClientBoundingRect, Tour, TourState} from '.';
-import {EnvoyEvent} from '../envoy';
-import EnvoyServer from '../envoy/EnvoyServer';
+import { createTourFile, didTakeTour } from 'haiku-serialization/src/utils/HaikuHomeDir'
 
-export const TOUR_CHANNEL = 'tour';
+export const TOUR_CHANNEL = 'tour'
 
 export class TourHandler implements Tour {
+  private currentStep: number = 0
 
-  private currentStep: number = 0;
-
-  private isActive: boolean = false;
+  private isActive: boolean = false
 
   private states: TourState[] = [
     {
@@ -19,243 +18,245 @@ export class TourHandler implements Tour {
       webview: 'creator',
       component: 'Welcome',
       display: 'none',
-      offset: {top: 50, left: 0},
+      offset: { top: 50, left: 0 },
       spotlightRadius: 'default',
       size: 'small',
       isOverlayHideable: false,
       showPreviousButton: false,
-      modalOffset: {x: 0, y: 0},
+      modalOffset: { x: 0, y: 0 },
     },
     {
       selector: `#js-utility-${TourUtils.ProjectName}`,
       webview: 'creator',
       component: 'OpenProject',
       display: 'left',
-      offset: {top: 50, left: 0},
+      offset: { top: 50, left: 0 },
       spotlightRadius: 400,
       size: 'small',
       isOverlayHideable: false,
       showPreviousButton: false,
-      modalOffset: {x: 0, y: 0},
+      modalOffset: { x: 0, y: 0 },
     },
     {
       selector: '#sidebar',
       webview: 'creator',
       component: 'TourLibraryStep',
       display: 'right',
-      offset: {top: 0, left: 0},
+      offset: { top: 0, left: 0 },
       spotlightRadius: 1000,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: false,
-      modalOffset: {x: 0, y: 0},
+      modalOffset: { x: 0, y: 0 },
     },
     {
       selector: '#stage-mount',
       webview: 'creator',
       component: 'TourStageStep',
       display: 'bottom',
-      offset: {top: 0, left: 0},
+      offset: { top: 0, left: 0 },
       spotlightRadius: 1300,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: true,
-      modalOffset: {x: 0, y: -150},
+      modalOffset: { x: 0, y: -150 },
     },
     {
       selector: '#timeline-wrapper',
       webview: 'creator',
       component: 'TourTimelineStep',
       display: 'top',
-      offset: {top: 0, left: 50},
+      offset: { top: 0, left: 50 },
       spotlightRadius: 8000,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: true,
-      modalOffset: {x: 0, y: 0},
+      modalOffset: { x: 0, y: 0 },
     },
     {
       selector: '#publish',
       webview: 'creator',
       component: 'TourPreviewModeStep',
       display: 'left',
-      offset: {top: 0, left: -100},
+      offset: { top: 0, left: -100 },
       spotlightRadius: 500,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: true,
-      modalOffset: {x: 55, y: 170},
+      modalOffset: { x: 55, y: 170 },
     },
     {
       selector: '#publish',
       webview: 'creator',
       component: 'TourPublishStep',
       display: 'left',
-      offset: {top: 0, left: -100},
+      offset: { top: 0, left: -100 },
       spotlightRadius: 500,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: true,
-      modalOffset: {x: 55, y: 200},
+      modalOffset: { x: 55, y: 200 },
     },
     {
       selector: '#go-to-dashboard',
       webview: 'creator',
       component: 'TourFinishStep',
       display: 'none',
-      offset: {top: 0, left: 0},
+      offset: { top: 0, left: 0 },
       spotlightRadius: 800,
       size: 'default',
       isOverlayHideable: true,
       showPreviousButton: true,
-      modalOffset: {x: 0, y: 0},
+      modalOffset: { x: 0, y: 0 },
     },
-  ];
+  ]
 
-  private server: EnvoyServer;
+  private server: EnvoyServer
 
-  private shouldRenderAgain: boolean;
+  private shouldRenderAgain: boolean
 
-  private webviewData: object = {};
+  private webviewData: object = {}
 
   // platformStates maps currentStep to platformState and it is set on
   // constructor according to current platform (atm, mac or window/linux)
-  private platformStates: number[];
+  private platformStates: number[]
 
-  constructor (server: EnvoyServer) {
-    this.server = server;
+  constructor(server: EnvoyServer) {
+    this.server = server
 
     // Set state sequence array according to platform
     if (process.env.HAIKU_RELEASE_PLATFORM === 'mac') {
       // Mac state sequence
-      this.platformStates = [0, 1, 2, 3, 4, 5, 6, 7];
-    } else {
+      this.platformStates = [0, 1, 2, 3, 4, 5, 6, 7]
+    }
+    else {
       // Windows and Linux state sequence
-      this.platformStates = [0, 1, 2, 3, 4, 5, 6, 7];
+      this.platformStates = [0, 1, 2, 3, 4, 5, 6, 7]
     }
   }
 
-  private renderCurrentStepAgain () {
+  private renderCurrentStepAgain() {
     if (this.shouldRenderAgain) {
-      this.currentStep--;
-      this.next();
-      this.shouldRenderAgain = false;
+      this.currentStep--
+      this.next()
+      this.shouldRenderAgain = false
     }
   }
 
-  private requestWebviewCoordinates () {
+  private requestWebviewCoordinates() {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:requestWebviewCoordinates',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
-  private requestElementCoordinates (state: TourState): void {
+  private requestElementCoordinates(state: TourState): void {
     this.server.emit(TOUR_CHANNEL, {
       payload: state,
       name: 'tour:requestElementCoordinates',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
-  private requestShowStep (state: TourState, position: ClientBoundingRect) {
+  private requestShowStep(state: TourState, position: ClientBoundingRect) {
     this.server.emit(TOUR_CHANNEL, {
       payload: {
         ...state,
         coordinates: position,
-        stepData: {current: this.currentStep, total: this.platformStates.length - 1},
+        stepData: { current: this.currentStep, total: this.platformStates.length - 1 },
       },
       name: 'tour:requestShowStep',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
-  private requestFinish () {
+  private requestFinish() {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:requestFinish',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
-  private requestHide () {
+  private requestHide() {
     this.server.emit(TOUR_CHANNEL, {
       payload: {},
       name: 'tour:hide',
-    } as EnvoyEvent);
+    } as EnvoyEvent)
   }
 
   // It maps sequential currentStep to platform state
-  private getPlatformState () {
-    return this.states[this.platformStates[this.currentStep]];
+  private getPlatformState() {
+    return this.states[this.platformStates[this.currentStep]]
   }
 
-  receiveElementCoordinates (webview: string, position: ClientBoundingRect) {
-    const state = this.getPlatformState();
-    const fallbackPosition = {top: 0, left: 0};
-    const origin = this.webviewData[webview] || fallbackPosition;
-    const top = origin.top + position.top;
-    const left =  origin.left + position.left;
-    const {width, height} = position;
+  receiveElementCoordinates(webview: string, position: ClientBoundingRect) {
+    const state = this.getPlatformState()
+    const fallbackPosition = { top: 0, left: 0 }
+    const origin = this.webviewData[webview] || fallbackPosition
+    const top = origin.top + position.top
+    const left = origin.left + position.left
+    const { width, height } = position
 
-    this.requestShowStep(state, {top, left, width, height});
+    this.requestShowStep(state, { top, left, width, height })
   }
 
-  receiveWebviewCoordinates (webview: string, coordinates: ClientBoundingRect) {
-    this.webviewData[webview] = coordinates;
-    this.renderCurrentStepAgain();
+  receiveWebviewCoordinates(webview: string, coordinates: ClientBoundingRect) {
+    this.webviewData[webview] = coordinates
+    this.renderCurrentStepAgain()
   }
 
-  updateLayout () {
+  updateLayout() {
     if (this.currentStep > 0) {
-      this.shouldRenderAgain = true;
+      this.shouldRenderAgain = true
     }
 
-    this.requestWebviewCoordinates();
+    this.requestWebviewCoordinates()
   }
 
-  hide () {
-    this.requestHide();
+  hide() {
+    this.requestHide()
   }
 
-  start (force?: boolean) {
+  start(force?: boolean) {
     if ((!didTakeTour() && !this.isActive) || force) {
-      this.currentStep = 0;
-      this.isActive = true;
-      this.requestShowStep({...this.states[this.currentStep]}, {top: '40%', left: '50%', width: 0, height: 0});
+      this.currentStep = 0
+      this.isActive = true
+      this.requestShowStep({ ...this.states[this.currentStep] }, { top: '40%', left: '50%', width: 0, height: 0 })
     }
   }
 
-  finish (createFile?: boolean) {
+  finish(createFile?: boolean) {
     if (!this.isActive) {
-      return;
+      return
     }
 
     if (createFile) {
-      createTourFile();
+      createTourFile()
     }
 
-    this.isActive = false;
-    this.requestFinish();
+    this.isActive = false
+    this.requestFinish()
   }
 
-  next () {
+  next() {
     if (!this.isActive) {
-      return;
+      return
     }
 
-    this.currentStep++;
+    this.currentStep++
 
-    const nextState = this.getPlatformState();
+    const nextState = this.getPlatformState()
 
     if (nextState) {
-      this.requestElementCoordinates(nextState);
-    } else {
-      this.finish();
+      this.requestElementCoordinates(nextState)
+    }
+    else {
+      this.finish()
     }
   }
 
-  prev () {
+  prev() {
     if (this.isActive && this.currentStep-- > 0) {
-      const nextState = this.getPlatformState();
-      this.requestElementCoordinates(nextState);
+      const nextState = this.getPlatformState()
+      this.requestElementCoordinates(nextState)
     }
   }
 }

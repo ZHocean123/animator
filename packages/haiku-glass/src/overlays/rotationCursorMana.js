@@ -4,7 +4,7 @@
  * @param mousePosition
  * @param originPosition
  */
-export default (scale, {x, y}, {x: originX, y: originY}) => ({
+export default (scale, { x, y }, { x: originX, y: originY }) => ({
   elementName: 'g',
   attributes: {
     transform: `scale(${scale})`,
@@ -21,8 +21,8 @@ export default (scale, {x, y}, {x: originX, y: originY}) => ({
       {
         elementName: 'g',
         attributes: {
-          transform: 'rotate(-45 13.77 695.552)',
-          fill: 'none',
+          'transform': 'rotate(-45 13.77 695.552)',
+          'fill': 'none',
           'fill-rule': 'evenodd',
         },
         children: [
@@ -46,4 +46,4 @@ export default (scale, {x, y}, {x: originX, y: originY}) => ({
       },
     ],
   }],
-});
+})

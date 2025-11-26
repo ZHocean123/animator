@@ -11,7 +11,7 @@
     "test-report": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" > test-result.tap",
     "lint": "eslint --ext .ts",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
-    "fix": "pnpm lint --fix"
+    "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix"
   },
   "author": "Matthew Trost <matthew@haiku.ai>",
   "license": "UNLICENSED",

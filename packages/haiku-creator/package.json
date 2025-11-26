@@ -21,7 +21,7 @@
   "author": "Matthew Trost <matthew@haiku.ai>",
   "license": "PROPRIETARY",
   "scripts": {
-    "lint": "eslint --ext .ts",
+    "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",

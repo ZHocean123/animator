@@ -1,6 +1,6 @@
-import * as Color from 'color';
-import {Palette } from 'haiku-ui-common';
-import * as React from 'react';
+import type * as React from 'react'
+import * as Color from 'color'
+import { Palette } from 'haiku-ui-common'
 
 export const DASH_STYLES: React.CSSProperties = {
   upcase: {
@@ -35,7 +35,7 @@ export const DASH_STYLES: React.CSSProperties = {
     justifyContent: 'flex-end',
     color: Palette.ROCK,
   },
-  heading:  {
+  heading: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
@@ -45,7 +45,7 @@ export const DASH_STYLES: React.CSSProperties = {
   bannerNotice: {
     fontWeight: 'bold',
     margin: '0 7px 0 0px',
-    border: '1px solid' + Palette.BLUE,
+    border: `1px solid${Palette.BLUE}`,
     borderRadius: 3,
     padding: '0 8px',
     textTransform: 'uppercase',
@@ -68,7 +68,7 @@ export const DASH_STYLES: React.CSSProperties = {
     left: -10,
     borderTop: '10px solid transparent',
     borderBottom: '10px solid transparent',
-    borderRight: '10px solid ' + Palette.LIGHT_PINK,
+    borderRight: `10px solid ${Palette.LIGHT_PINK}`,
   },
   projectsWrapper: {
     overflow: 'hidden',
@@ -87,27 +87,27 @@ export const DASH_STYLES: React.CSSProperties = {
     height: 0,
   },
   card: {
-    position: 'relative',
-    flex: '1 1 240px',
-    minWidth: 200,
-    height: 220,
-    marginLeft: 25,
-    marginRight: 25,
-    marginTop: 50,
-    cursor: 'pointer',
-    overflow: 'hidden',
-    WebkitUserSelect: 'none',
-    filter: 'blur(0px)',
-    backgroundColor: Palette.COAL,
-    backgroundImage: `linear-gradient(45deg, ${Palette.FATHER_COAL} 25%, transparent 25%, transparent 75%, ` +
-      `${Palette.FATHER_COAL} 75%, ${Palette.FATHER_COAL}), linear-gradient(45deg, ${Palette.FATHER_COAL} 25%, ` +
-      `transparent 25%, transparent 75%, ${Palette.FATHER_COAL} 75%, ${Palette.FATHER_COAL})`,
-    backgroundSize: '10px 10px',
-    backgroundPosition: '0 0, 5px 5px',
-    boxShadow: '0 10px 40px 0 rgba(21,32,34,0.39)',
-    borderRadius: 5,
-    transform: 'scale(1)',
-    transition: 'all 200ms ease',
+    'position': 'relative',
+    'flex': '1 1 240px',
+    'minWidth': 200,
+    'height': 220,
+    'marginLeft': 25,
+    'marginRight': 25,
+    'marginTop': 50,
+    'cursor': 'pointer',
+    'overflow': 'hidden',
+    'WebkitUserSelect': 'none',
+    'filter': 'blur(0px)',
+    'backgroundColor': Palette.COAL,
+    'backgroundImage': `linear-gradient(45deg, ${Palette.FATHER_COAL} 25%, transparent 25%, transparent 75%, `
+      + `${Palette.FATHER_COAL} 75%, ${Palette.FATHER_COAL}), linear-gradient(45deg, ${Palette.FATHER_COAL} 25%, `
+      + `transparent 25%, transparent 75%, ${Palette.FATHER_COAL} 75%, ${Palette.FATHER_COAL})`,
+    'backgroundSize': '10px 10px',
+    'backgroundPosition': '0 0, 5px 5px',
+    'boxShadow': '0 10px 40px 0 rgba(21,32,34,0.39)',
+    'borderRadius': 5,
+    'transform': 'scale(1)',
+    'transition': 'all 200ms ease',
     ':hover': {
       boxShadow: '0 10px 40px 0 rgba(21,32,34,0.69)',
     },
@@ -116,28 +116,28 @@ export const DASH_STYLES: React.CSSProperties = {
     cursor: 'not-allowed',
   },
   cardAsButton: {
-    position: 'relative',
-    flex: '1 1 240px',
-    minWidth: 200,
-    height: 220,
-    marginLeft: 25,
-    marginRight: 25,
-    marginTop: 50,
-    cursor: 'pointer',
-    overflow: 'hidden',
-    WebkitUserSelect: 'none',
-    filter: 'blur(0px)',
-    border: 'dashed 3px ' + Palette.COAL,
-    backgroundColor: Palette.GRAY,
-    backgroundSize: '10px 10px',
-    backgroundPosition: '0 0, 5px 5px',
-    boxShadow: '0 10px 40px 0 rgba(21,32,34,0)',
-    borderRadius: 5,
-    transform: 'scale(1)',
-    transition: 'transform 200ms ease, background-color 400ms ease, box-shadow 200ms ease',
+    'position': 'relative',
+    'flex': '1 1 240px',
+    'minWidth': 200,
+    'height': 220,
+    'marginLeft': 25,
+    'marginRight': 25,
+    'marginTop': 50,
+    'cursor': 'pointer',
+    'overflow': 'hidden',
+    'WebkitUserSelect': 'none',
+    'filter': 'blur(0px)',
+    'border': `dashed 3px ${Palette.COAL}`,
+    'backgroundColor': Palette.GRAY,
+    'backgroundSize': '10px 10px',
+    'backgroundPosition': '0 0, 5px 5px',
+    'boxShadow': '0 10px 40px 0 rgba(21,32,34,0)',
+    'borderRadius': 5,
+    'transform': 'scale(1)',
+    'transition': 'transform 200ms ease, background-color 400ms ease, box-shadow 200ms ease',
     ':hover': {
       boxShadow: '0 10px 40px 0 rgba(21,32,34,0.69)',
-      border: 'solid 3px ' + Palette.COAL,
+      border: `solid 3px ${Palette.COAL}`,
       backgroundColor: Palette.COAL,
     },
   },
@@ -196,12 +196,12 @@ export const DASH_STYLES: React.CSSProperties = {
     borderTopRightRadius: 5,
   },
   menuOption: {
-    opacity: 0.84,
-    display: 'block',
-    textTransform: 'uppercase',
-    transform: 'translateY(0px)',
-    transition: 'opacity 120ms ease, transform 390ms cubic-bezier(.35,.44,0,1.3)',
-    pointerEvents: 'auto',
+    'opacity': 0.84,
+    'display': 'block',
+    'textTransform': 'uppercase',
+    'transform': 'translateY(0px)',
+    'transition': 'opacity 120ms ease, transform 390ms cubic-bezier(.35,.44,0,1.3)',
+    'pointerEvents': 'auto',
     ':hover': {
       opacity: 1,
     },
@@ -245,13 +245,13 @@ export const DASH_STYLES: React.CSSProperties = {
     marginRight: 'auto',
   },
   titleOptions: {
-    backgroundColor: Palette.COAL,
-    paddingLeft: 8,
-    paddingRight: 12,
-    opacity: 0.84,
-    position: 'absolute',
-    right: 0,
-    transition: 'opacity 120ms ease',
+    'backgroundColor': Palette.COAL,
+    'paddingLeft': 8,
+    'paddingRight': 12,
+    'opacity': 0.84,
+    'position': 'absolute',
+    'right': 0,
+    'transition': 'opacity 120ms ease',
     ':hover': {
       opacity: 1,
     },
@@ -434,4 +434,4 @@ export const DASH_STYLES: React.CSSProperties = {
     height: 39,
     justifyContent: 'center',
   },
-};
+}

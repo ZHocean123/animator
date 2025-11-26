@@ -1,8 +1,8 @@
 const {
   toText,
-} = require('@haiku/core/lib/reflection/JavaScriptIdentifier');
+} = require('@haiku/core/lib/reflection/JavaScriptIdentifier')
 
-module.exports = function wrapInHaikuInject (node) {
+module.exports = function wrapInHaikuInject(node) {
   return {
     type: 'CallExpression',
     callee: {
@@ -18,7 +18,7 @@ module.exports = function wrapInHaikuInject (node) {
     },
     // The first argument is the function, and remainders are the injectables
     arguments: [node].concat(node.params.map((param) => {
-      const value = toText(param.name);
+      const value = toText(param.name)
       return {
         type: 'StringLiteral',
         // If the parameter was a referenced state value like 'foo.bar.baz',
@@ -28,7 +28,7 @@ module.exports = function wrapInHaikuInject (node) {
         extra: {
           raw: JSON.stringify(value),
         },
-      };
+      }
     })),
-  };
-};
+  }
+}

@@ -1,26 +1,26 @@
-import {parse} from '@babel/parser';
-import * as prettier from 'prettier';
-import functionToRFO from '@haiku/core/lib/reflection/functionToRFO';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
+import { parse } from '@babel/parser'
+import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+import * as prettier from 'prettier'
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
-const isHandlerEmpty = (handler) => {
+function isHandlerEmpty(handler) {
   return (
-    !handler.body ||
-    /^\s*$/.test(handler.body)
-  );
-};
+    !handler.body
+    || /^\s*$/.test(handler.body)
+  )
+}
 
 /*
  * The purpose of this clas is to abstract all the logic related to
  * event manipulation in an element.
  */
 class HandlerManager {
-  constructor (element) {
-    this.element = element;
-    this.applicableEventHandlers = element.getApplicableEventHandlerOptionsList();
-    this.appliedEventHandlers = this._getParsedAppliedHandlers(element);
+  constructor(element) {
+    this.element = element
+    this.applicableEventHandlers = element.getApplicableEventHandlerOptionsList()
+    this.appliedEventHandlers = this._getParsedAppliedHandlers(element)
   }
 
   /**
@@ -30,8 +30,8 @@ class HandlerManager {
    * @returns {string}
    */
 
-  static frameToEvent (frame) {
-    return `timeline:Default:${frame}`;
+  static frameToEvent(frame) {
+    return `timeline:Default:${frame}`
   }
 
   /*
@@ -41,134 +41,135 @@ class HandlerManager {
    *
    * @returns {Object} { [event]: serializedHandler }
    */
-  serialize () {
-    const result = {};
+  serialize() {
+    const result = {}
 
-    this.appliedEventHandlers.forEach(({handler}, event) => {
+    this.appliedEventHandlers.forEach(({ handler }, event) => {
       // Only save events with a handler length, in this way we support
       // deletion of events by empty body functions.
       if (handler.body.length) {
-        result[event] = {handler: {__function: handler}};
+        result[event] = { handler: { __function: handler } }
       }
 
-      this.element.setEventHandlerSaveStatus(event, true);
-    });
+      this.element.setEventHandlerSaveStatus(event, true)
+    })
 
-    return result;
+    return result
   }
 
   /**
    *  Tries to find an event handler in memory for `event`, if it doesn't exist
    * creates a default handler and stores it in memory
    *
-   * @param {String} event
+   * @param {string} event
    */
-  getOrGenerateEventHandler (event) {
+  getOrGenerateEventHandler(event) {
     return this.appliedEventHandlers.has(event)
       ? this.appliedEventHandlers.get(event)
-      : this._addEventHandler(event).get(event);
+      : this._addEventHandler(event).get(event)
   }
 
   /**
    * Replace the handlers of an event
    *
-   * @param {Object} serializedEvent
-   * @param {String} oldEventName
+   * @param {object} serializedEvent
+   * @param {string} oldEventName
    */
-  replaceEvent ({id, event, handler, evaluator}, oldEventName) {
+  replaceEvent({ id, event, handler, evaluator }, oldEventName) {
     if (isHandlerEmpty(handler)) {
-      this.delete(event);
-    } else {
-      this.appliedEventHandlers.set(event, {id, handler, evaluator});
+      this.delete(event)
+    }
+    else {
+      this.appliedEventHandlers.set(event, { id, handler, evaluator })
     }
   }
 
   /**
    * Delete the given event
    *
-   * @param {String} event
+   * @param {string} event
    */
-  delete (event) {
-    this.appliedEventHandlers.delete(event);
+  delete(event) {
+    this.appliedEventHandlers.delete(event)
   }
 
   /**
    * Returns an Array of all the events that should be displayed for an element, this means
    * all events that are not frame listeners.
    *
-   * @returns {String[]}
+   * @returns {string[]}
    */
-  userVisibleEvents () {
-    const result = [];
+  userVisibleEvents() {
+    const result = []
 
-    this.appliedEventHandlers.forEach(({id, handler}, event) => {
+    this.appliedEventHandlers.forEach(({ id, handler }, event) => {
       if (!this._isTimelineEvent(event)) {
-        result.push({id, event, handler});
+        result.push({ id, event, handler })
       }
-    });
+    })
 
-    return result;
+    return result
   }
 
-  _isNewCustomEvent (eventName) {
+  _isNewCustomEvent(eventName) {
     return !this.applicableEventHandlers
-    .reduce((acc, element) => acc.concat(element.options.map(o => o.value)), [])
-    .includes(eventName);
+      .reduce((acc, element) => acc.concat(element.options.map(o => o.value)), [])
+      .includes(eventName)
   }
 
   /**
-   * @returns {Boolean} indicating where the element has DOM events attached
+   * @returns {boolean} indicating where the element has DOM events attached
    */
-  hasUserVisibleEvents () {
-    return Boolean(this.userVisibleEvents().length);
+  hasUserVisibleEvents() {
+    return Boolean(this.userVisibleEvents().length)
   }
 
   /**
-   * @returns {Number} how many events the element has attached
+   * @returns {number} how many events the element has attached
    */
-  size () {
-    return this.appliedEventHandlers.size;
+  size() {
+    return this.appliedEventHandlers.size
   }
 
   /**
    * Checks if an event is attached to the element
    *
-   * @param {String} event
-   * @returns {Boolean}
+   * @param {string} event
+   * @returns {boolean}
    */
-  has (event) {
-    return this.appliedEventHandlers.has(event);
+  has(event) {
+    return this.appliedEventHandlers.has(event)
   }
 
   /**
    * Simple getter for the in-memory applicableEventHandlers list
    */
-  getApplicableEventHandlers () {
-    return this.applicableEventHandlers;
+  getApplicableEventHandlers() {
+    return this.applicableEventHandlers
   }
 
   /**
    * Adds an event with a default handler to an element
    *
-   * @param {String} event
+   * @param {string} event
    */
-  _addEventHandler (event) {
-    const {handler} = this._buildEventHandler(event);
+  _addEventHandler(event) {
+    const { handler } = this._buildEventHandler(event)
 
     return this.appliedEventHandlers.set(event, {
       id: this._generateID(),
       handler,
-    });
+    })
   }
 
   /**
    * Checks if an event is a timeline event
    *
-   * @param {String} event
-   * @returns {Boolean}
+   * @param {string} event
+   * @returns {boolean}
    */
-  _isTimelineEvent (event) {
-    return this.element.isTimelineEvent(event);
+  _isTimelineEvent(event) {
+    return this.element.isTimelineEvent(event)
   }
 
   /**
@@ -178,22 +179,22 @@ class HandlerManager {
    * The map stores the event name as a key (for convenience) and an object
    * containing the handler and a unique ID as the value.
    *
-   * @param {Object} element
+   * @param {object} element
    * @returns {Map}
    */
-  _getParsedAppliedHandlers (element) {
-    const result = new Map();
-    const appliedEventHandlers = element.getReifiedEventHandlers();
+  _getParsedAppliedHandlers(element) {
+    const result = new Map()
+    const appliedEventHandlers = element.getReifiedEventHandlers()
 
     for (const [event, rawHandler] of Object.entries(appliedEventHandlers)) {
-      const wrappedHandler = rawHandler.handler;
-      const handler = functionToRFO(wrappedHandler).__function;
-      const id = this._generateID();
+      const wrappedHandler = rawHandler.handler
+      const handler = functionToRFO(wrappedHandler).__function
+      const id = this._generateID()
 
       // #FIXME: our pipeline to save and retrieve bytecode modifies the code
       // wrote by the user causing two issues:
       // 1. The format is not respected.
-      let prettierHandlerBody = null;
+      let prettierHandlerBody = null
       if (handler.body) {
         try {
           // We need to evaluate the handler body as a function body. If we wrap the contents of the function in
@@ -207,42 +208,43 @@ class HandlerManager {
           const prettierHandlerBodyLines = prettier.format(
             `()=>{${handler.body}\n}`,
             {
-              parser: (text) => parse(text),
+              parser: text => parse(text),
             },
-          ).trim().split('\n');
+          ).trim().split('\n')
           // Strip terminal lines. Bail if we somehow encounter an unexpected format.
           if (prettierHandlerBodyLines.shift() === '() => {' && prettierHandlerBodyLines.pop() === '};') {
             // Outdent by two spaces.
-            prettierHandlerBody = `${prettierHandlerBodyLines.map((s) => s.slice(2)).join('\n')}\n`;
+            prettierHandlerBody = `${prettierHandlerBodyLines.map(s => s.slice(2)).join('\n')}\n`
             // If we somehow got nothing back, just restore the original body (e.g. for only comments).
             if (prettierHandlerBody.length === 0) {
-              prettierHandlerBody = handler.body;
+              prettierHandlerBody = handler.body
             }
           }
-        } catch (e) {
+        }
+        catch (e) {
           // noop. User likely was permitted to save invalid JS.
-          logger.warn(`[glass] caught exception prettying handler body: ${e.toString()}`);
+          logger.warn(`[glass] caught exception prettying handler body: ${e.toString()}`)
         }
       }
-      handler.body = prettierHandlerBody || this._buildEventHandler().handler.body;
+      handler.body = prettierHandlerBody || this._buildEventHandler().handler.body
 
       result.set(event, {
         id,
         handler,
-      });
+      })
     }
 
-    return result;
+    return result
   }
 
   /**
    * Builds a default event handler
    *
-   * @param {String} event
-   * @returns {Object}
+   * @param {string} event
+   * @returns {object}
    */
-  _buildEventHandler (event) {
-    const params = this._isNewCustomEvent(event) ? ['component', 'data'] : ['component', 'element', 'target', 'event'];
+  _buildEventHandler(event) {
+    const params = this._isNewCustomEvent(event) ? ['component', 'data'] : ['component', 'element', 'target', 'event']
 
     return {
       event,
@@ -250,7 +252,7 @@ class HandlerManager {
         body: ``,
         params,
       },
-    };
+    }
   }
 
   /**
@@ -259,17 +261,17 @@ class HandlerManager {
    * #FIXME: this logic is repeated all over Haiku, we should do a proper
    * abstraction
    *
-   * @param {Number} len
-   * @returns {String}
+   * @param {number} len
+   * @returns {string}
    */
 
-  _generateID (len = 3) {
-    let str = '';
+  _generateID(len = 3) {
+    let str = ''
     while (str.length < len) {
-      str += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+      str += ALPHABET[Math.floor(Math.random() * ALPHABET.length)]
     }
-    return str;
+    return str
   }
 }
 
-export default HandlerManager;
+export default HandlerManager

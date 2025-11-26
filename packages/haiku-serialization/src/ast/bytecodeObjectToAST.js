@@ -1,6 +1,6 @@
-const objectToOAST = require('./objectToOAST');
+const objectToOAST = require('./objectToOAST')
 
-function buildRequireStatement (identifier, modpath) {
+function buildRequireStatement(identifier, modpath) {
   return {
     type: 'VariableDeclaration',
     kind: 'var',
@@ -25,25 +25,25 @@ function buildRequireStatement (identifier, modpath) {
         }],
       },
     }],
-  };
-}
-
-function buildRequireStatementsFromImports (imports) {
-  const statements = [buildRequireStatement('Haiku', '@haiku/core')];
-  for (const modpath in imports) {
-    const identifier = imports[modpath];
-    statements.push(buildRequireStatement(identifier, modpath));
   }
-  return statements;
 }
 
-module.exports = function bytecodeObjectToAST (
+function buildRequireStatementsFromImports(imports) {
+  const statements = [buildRequireStatement('Haiku', '@haiku/core')]
+  for (const modpath in imports) {
+    const identifier = imports[modpath]
+    statements.push(buildRequireStatement(identifier, modpath))
+  }
+  return statements
+}
+
+module.exports = function bytecodeObjectToAST(
   bytecode,
   imports = {},
   frontMatterNodes = [],
   backMatterNodes = [],
 ) {
-  const oast = objectToOAST(bytecode);
+  const oast = objectToOAST(bytecode)
 
   const ast = {
     type: 'File',
@@ -78,7 +78,7 @@ module.exports = function bytecodeObjectToAST (
         ])
         .concat(backMatterNodes),
     },
-  };
+  }
 
-  return ast;
-};
+  return ast
+}

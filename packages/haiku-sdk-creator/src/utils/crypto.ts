@@ -1,6 +1,6 @@
-import {randomString} from '@haiku/core/lib/helpers/StringUtils';
+import { randomString } from '@haiku/core/lib/helpers/StringUtils'
 
-export type Obfuscation = [string, string];
+export type Obfuscation = [string, string]
 
 /**
  * General purpose obfuscator for any JSON-serializable object.
@@ -20,42 +20,45 @@ export type Obfuscation = [string, string];
  * It is expected that stealing Haiku is always going to be relatively easy by decompilation, inspection, and general
  * hackery.
  */
-export const obfuscate = (target: any): Obfuscation => {
-  const buffer = Buffer.from(JSON.stringify(target));
-  const encoded = buffer.toString('base64');
-  let value = '';
-  let key = '';
-  const randomness = randomString(encoded.length / 2);
+export function obfuscate(target: any): Obfuscation {
+  const buffer = Buffer.from(JSON.stringify(target))
+  const encoded = buffer.toString('base64')
+  let value = ''
+  let key = ''
+  const randomness = randomString(encoded.length / 2)
   for (let cursor = 0; cursor < encoded.length; cursor++) {
-    const charCode = encoded.charCodeAt(cursor);
+    const charCode = encoded.charCodeAt(cursor)
     if (cursor % 2 === 0) {
-      key += String.fromCharCode(charCode + 1);
-      value += randomness[cursor / 2];
-    } else {
-      value += String.fromCharCode(charCode - 1);
+      key += String.fromCharCode(charCode + 1)
+      value += randomness[cursor / 2]
+    }
+    else {
+      value += String.fromCharCode(charCode - 1)
     }
   }
 
-  return [key, value];
-};
+  return [key, value]
+}
 
 /**
  * Undoes the work of obfuscate() above.
  */
-export const unobfuscate = (obfuscation: Obfuscation): any => {
+export function unobfuscate(obfuscation: Obfuscation): any {
   try {
-    let encoded = '';
-    const [key, value] = obfuscation;
+    let encoded = ''
+    const [key, value] = obfuscation
     for (let cursor = 0; cursor < value.length; cursor++) {
       if (cursor % 2 === 0) {
-        encoded += String.fromCharCode(key.charCodeAt(cursor / 2) - 1);
-      } else {
-        encoded += String.fromCharCode(value.charCodeAt(cursor) + 1);
+        encoded += String.fromCharCode(key.charCodeAt(cursor / 2) - 1)
+      }
+      else {
+        encoded += String.fromCharCode(value.charCodeAt(cursor) + 1)
       }
     }
-    return JSON.parse((new Buffer(encoded, 'base64')).toString());
-  } catch (error) {
-    // Deliberately repress the error here so it doesn't bubble up on any logs or consoles.
-    return {};
+    return JSON.parse((Buffer.from(encoded, 'base64')).toString())
   }
-};
+  catch (error) {
+    // Deliberately repress the error here so it doesn't bubble up on any logs or consoles.
+    return {}
+  }
+}

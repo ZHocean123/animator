@@ -1,12 +1,12 @@
-import {remote} from 'electron';
-import {isMac} from 'haiku-common';
-import {Experiment, experimentIsEnabled} from 'haiku-common';
-import * as React from 'react';
+import { remote } from 'electron'
+import { Experiment, experimentIsEnabled, isMac } from 'haiku-common'
+
+import * as React from 'react'
 
 export interface FileSystemImporterProps {
-  onFileDrop (files: string[]): void;
-  style?: React.CSSProperties;
-  text?: string;
+  onFileDrop: (files: string[]) => void
+  style?: React.CSSProperties
+  text?: string
 }
 
 class FileSystemImporter extends React.PureComponent<FileSystemImporterProps> {
@@ -14,7 +14,7 @@ class FileSystemImporter extends React.PureComponent<FileSystemImporterProps> {
     const validExtensions = [
       'svg',
       'ai',
-    ];
+    ]
 
     if (experimentIsEnabled(Experiment.AllowBitmapImages)) {
       validExtensions.push(
@@ -22,26 +22,26 @@ class FileSystemImporter extends React.PureComponent<FileSystemImporterProps> {
         'jpeg',
         'png',
         'gif',
-      );
+      )
     }
 
     // Only mac offers support for Sketch
     if (isMac()) {
-      validExtensions.push('sketch');
+      validExtensions.push('sketch')
     }
 
     remote.dialog.showOpenDialog(
       null,
       {
         title: 'Import to Library',
-        filters: [{name: 'Valid Files', extensions: validExtensions}],
+        filters: [{ name: 'Valid Files', extensions: validExtensions }],
         properties: ['multiSelections', 'openFile'],
       },
       this.props.onFileDrop,
-    );
-  };
+    )
+  }
 
-  render () {
+  render() {
     return (
       <div
         style={this.props.style}
@@ -49,8 +49,8 @@ class FileSystemImporter extends React.PureComponent<FileSystemImporterProps> {
       >
         {this.props.text || 'Import From File'}
       </div>
-    );
+    )
   }
 }
 
-export default FileSystemImporter;
+export default FileSystemImporter

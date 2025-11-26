@@ -1,35 +1,36 @@
-import * as React from 'react';
-import {CustomPicker, CustomPickerProps} from 'react-color';
-import {Alpha, Checkboard, EditableInput, Hue, Saturation} from 'react-color/lib/components/common';
-import {EditableInputStyles} from 'react-color/lib/components/common/EditableInput';
-import {DisplayValues} from '../../helpers/uiColorHelpers';
-import Palette from '../../Palette';
+import type { CustomPickerProps } from 'react-color'
+import type { EditableInputStyles } from 'react-color/lib/components/common/EditableInput'
+import * as React from 'react'
+import { CustomPicker } from 'react-color'
+import { Alpha, Checkboard, EditableInput, Hue, Saturation } from 'react-color/lib/components/common'
+import { DisplayValues } from '../../helpers/uiColorHelpers'
+import Palette from '../../Palette'
 
 declare module 'react-color' {
   interface HSVColor {
-    a: number;
-    h: number;
-    s: number;
-    v: number;
+    a: number
+    h: number
+    s: number
+    v: number
   }
 
   interface CustomPickerProps<A> {
-    hex?: string;
-    hsl?: HSLColor;
-    hsv?: HSVColor;
-    rgb?: RGBColor;
-    oldHue?: string;
-    label?: string;
-    picker?: any;
+    hex?: string
+    hsl?: HSLColor
+    hsv?: HSVColor
+    rgb?: RGBColor
+    oldHue?: string
+    label?: string
+    picker?: any
   }
 
   interface EditableInputProps {
-    arrowOffset?: number;
-    style?: React.CSSProperties;
+    arrowOffset?: number
+    style?: React.CSSProperties
   }
 
   interface ColorResult {
-    source: string;
+    source: string
   }
 }
 
@@ -48,7 +49,7 @@ const INPUT_STYLES: EditableInputStyles = {
   wrap: {
     width: '100%',
   },
-};
+}
 
 const STYLES: React.CSSProperties = {
   picker: {
@@ -111,53 +112,54 @@ const STYLES: React.CSSProperties = {
     fontWeight: 'bold',
     marginBottom: '-6px',
   },
-};
+}
 
 export interface HaikuColorPickerProps extends CustomPickerProps<any> {
-  displayValue: DisplayValues;
+  displayValue: DisplayValues
 }
 
 class SliderPointer extends React.PureComponent {
-  render () {
-    return <div style={STYLES.picker} />;
+  render() {
+    return <div style={STYLES.picker} />
   }
 }
 
 class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
   state = {
     valueDisplay: this.props.displayValue,
-  };
+  }
 
   onValueDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({valueDisplay: Number(event.currentTarget.value)});
+    this.setState({ valueDisplay: Number(event.currentTarget.value) })
 
     this.props.onChange({
       hex: this.props.hex,
       hsl: this.props.hsl,
       rgb: this.props.rgb,
       source: event.currentTarget.value,
-    });
-  };
+    })
+  }
 
   onChange = (data: any) => {
-    let source: DisplayValues;
+    let source: DisplayValues
 
     if (data.a !== 1 && this.state.valueDisplay === DisplayValues.HEX) {
-      source = DisplayValues.RGB;
-      this.setState({valueDisplay: source});
-    } else {
-      source = this.state.valueDisplay;
+      source = DisplayValues.RGB
+      this.setState({ valueDisplay: source })
+    }
+    else {
+      source = this.state.valueDisplay
     }
 
     this.props.onChange({
       ...data,
       source,
-    });
-  };
+    })
+  }
 
-  render () {
+  render() {
     if (this.state.valueDisplay === null) {
-      return null;
+      return null
     }
 
     return (
@@ -178,13 +180,13 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
             <div style={STYLES.sliderContainer}>
               <Hue hsl={this.props.hsl} onChange={this.onChange} pointer={SliderPointer} />
             </div>
-            <div style={{...STYLES.sliderContainer, background: 'white', opacity: 1}}>
+            <div style={{ ...STYLES.sliderContainer, background: 'white', opacity: 1 }}>
               <Alpha rgb={this.props.rgb} hsl={this.props.hsl} onChange={this.onChange} pointer={SliderPointer} />
-              <div style={{pointerEvents: 'none', background: 'white', opacity: 1}}>
+              <div style={{ pointerEvents: 'none', background: 'white', opacity: 1 }}>
                 <Checkboard />
               </div>
             </div>
-            <div style={{width: '57%', display: 'inline-block', marginTop: 2}}>
+            <div style={{ width: '57%', display: 'inline-block', marginTop: 2 }}>
               <EditableInput
                 style={STYLES.smallInput}
                 value={`${this.props.hsl.a * 100}%`}
@@ -205,8 +207,8 @@ class HaikuColorPicker extends React.PureComponent<HaikuColorPickerProps> {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default CustomPicker(HaikuColorPicker);
+export default CustomPicker(HaikuColorPicker)

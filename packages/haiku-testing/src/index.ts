@@ -1,2 +1,2 @@
-export * from './assertions';
-export * from './mock';
+export * from './assertions'
+export * from './mock'

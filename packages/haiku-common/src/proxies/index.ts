@@ -1,4 +1,4 @@
-import {parse} from 'url';
+import { parse } from 'node:url'
 
 /**
  * Proxy Type.
@@ -12,16 +12,16 @@ export enum ProxyType {
 /**
  * Canonical method to detect if a proxy string provided by electron
  */
-export const isProxied = (proxyString: string) => {
-  return proxyString !== ProxyType.Direct;
-};
+export function isProxied(proxyString: string) {
+  return proxyString !== ProxyType.Direct
+}
 
 export interface ProxyDescriptor {
-  host: string;
-  port?: number;
-  username?: string;
-  password?: string;
-  disableEncryption?: boolean;
+  host: string
+  port?: number
+  username?: string
+  password?: string
+  disableEncryption?: boolean
 }
 
 /**
@@ -30,40 +30,40 @@ export interface ProxyDescriptor {
  * @returns {string}
  * TODO: Do we ever need to support secure proxy URLs?
  */
-export const buildProxyUrl = (descriptor: ProxyDescriptor): string => {
+export function buildProxyUrl(descriptor: ProxyDescriptor): string {
   if (!descriptor.host) {
-    return '';
+    return ''
   }
 
-  const portSuffix = descriptor.port ? `:${descriptor.port}` : '';
+  const portSuffix = descriptor.port ? `:${descriptor.port}` : ''
 
   if (descriptor.username && descriptor.password) {
-    return `http://${encodeURIComponent(descriptor.username)}:${encodeURIComponent(descriptor.password)}@` +
-      `${descriptor.host}${portSuffix}`;
+    return `http://${encodeURIComponent(descriptor.username)}:${encodeURIComponent(descriptor.password)}@`
+      + `${descriptor.host}${portSuffix}`
   }
 
-  return `http://${descriptor.host}${portSuffix}`;
-};
+  return `http://${descriptor.host}${portSuffix}`
+}
 
 /**
  * Given a PAC-sourced URL like 'secure.megacorp.com:3128', return a ProxyDescriptor object.
  * @param {string} url
  * @returns {ProxyDescriptor}
  */
-export const describeProxyFromUrl = (url?: string): ProxyDescriptor => {
+export function describeProxyFromUrl(url?: string): ProxyDescriptor {
   if (!url || !isProxied(url)) {
-    return {host: ''};
+    return { host: '' }
   }
 
-  const parsedUrl = parse(url.startsWith('http') ? url : `http://${url}`);
-  const proxyDescriptor = {host: parsedUrl.hostname} as ProxyDescriptor;
+  const parsedUrl = parse(url.startsWith('http') ? url : `http://${url}`)
+  const proxyDescriptor = { host: parsedUrl.hostname } as ProxyDescriptor
   if (parsedUrl.port) {
-    proxyDescriptor.port = Number(parsedUrl.port);
+    proxyDescriptor.port = Number(parsedUrl.port)
   }
 
   if (parsedUrl.auth) {
-    [proxyDescriptor.username, proxyDescriptor.password] = parsedUrl.auth.split(':');
+    [proxyDescriptor.username, proxyDescriptor.password] = parsedUrl.auth.split(':')
   }
 
-  return proxyDescriptor;
-};
+  return proxyDescriptor
+}

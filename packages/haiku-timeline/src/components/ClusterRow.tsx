@@ -1,37 +1,37 @@
-import {PopoverMenu,Globals,Palette,RightCarrotSVG} from 'haiku-ui-common';
-import * as React from 'react';
-import ClusterInputField from './ClusterInputField';
-import ClusterRowHeading from './ClusterRowHeading';
-import RowSegments from './RowSegments';
-import zIndex from './styles/zIndex';
+import { Globals, Palette, PopoverMenu, RightCarrotSVG } from 'haiku-ui-common'
+import * as React from 'react'
+import ClusterInputField from './ClusterInputField'
+import ClusterRowHeading from './ClusterRowHeading'
+import RowSegments from './RowSegments'
+import zIndex from './styles/zIndex'
 
 export interface ClusterRowProps {
-  row: any;
-  timeline: any;
-  showBezierEditor (): void;
-  component: any;
-  rowHeight: number;
+  row: any
+  timeline: any
+  showBezierEditor: () => void
+  component: any
+  rowHeight: number
 }
 
 export default class ClusterRow extends React.Component<ClusterRowProps> {
   expandAndSelect = () => {
-    this.props.row.expandAndSelect({from: 'timeline'});
-  };
+    this.props.row.expandAndSelect({ from: 'timeline' })
+  }
 
   onContextMenu = (ctxMenuEvent: React.MouseEvent<any>) => {
-    ctxMenuEvent.stopPropagation();
+    ctxMenuEvent.stopPropagation()
 
     PopoverMenu.emit('show', {
       type: 'cluster-row',
-      event: {offsetX: 0},
+      event: { offsetX: 0 },
       model: this.props.row,
       offset: Globals.mouse.x - this.props.timeline.getPropertiesPixelWidth(),
-    });
-  };
+    })
+  }
 
-  render () {
-    const componentId = this.props.row.element.getComponentId();
-    const clusterName = this.props.row.getClusterNameString();
+  render() {
+    const componentId = this.props.row.element.getComponentId()
+    const clusterName = this.props.row.getClusterNameString()
 
     return (
       <div
@@ -67,7 +67,7 @@ export default class ClusterRow extends React.Component<ClusterRowProps> {
                 zIndex: 1005,
               }}
             >
-              <span className="utf-icon" style={{top: -2, left: -3}}>
+              <span className="utf-icon" style={{ top: -2, left: -3 }}>
                 <RightCarrotSVG />
               </span>
             </div>
@@ -131,6 +131,6 @@ export default class ClusterRow extends React.Component<ClusterRowProps> {
           />
         </div>
       </div>
-    );
+    )
   }
 }

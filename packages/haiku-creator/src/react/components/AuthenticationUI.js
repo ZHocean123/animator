@@ -1,13 +1,12 @@
-import * as React from 'react';
-import * as Radium from 'radium';
-import * as Color from 'color';
-import {shell} from 'electron';
-import {shake} from 'react-animations';
-import {FadingCircle} from 'better-react-spinkit';
-import {Palette } from 'haiku-ui-common';
-import {UserIconSVG, PasswordIconSVG} from 'haiku-ui-common';
-import {AnimatorSVG} from 'haiku-ui-common';
-import {getAccountUrl, getUrl} from 'haiku-common';
+import { FadingCircle } from 'better-react-spinkit'
+import * as Color from 'color'
+import { shell } from 'electron'
+import { getAccountUrl, getUrl } from 'haiku-common'
+import { AnimatorSVG, Palette, PasswordIconSVG, UserIconSVG } from 'haiku-ui-common'
+
+import * as Radium from 'radium'
+import * as React from 'react'
+import { shake } from 'react-animations'
 
 const STYLES = {
   container: {
@@ -67,7 +66,7 @@ const STYLES = {
     left: -8,
     borderTop: '10px solid transparent',
     borderBottom: '10px solid transparent',
-    borderRight: '10px solid ' + Color(Palette.RED).fade(0.1),
+    borderRight: `10px solid ${Color(Palette.RED).fade(0.1)}`,
   },
   inputIcon: {
     position: 'absolute',
@@ -79,37 +78,37 @@ const STYLES = {
     right: 25,
   },
   input: {
-    backgroundColor: Color(Palette.COAL).darken(0.2),
-    width: '100%',
-    height: 55,
-    borderRadius: 5,
-    marginBottom: 15,
-    border: '1px solid ' + Palette.FATHER_COAL,
-    fontSize: 18,
-    padding: '27px',
-    color: Palette.ROCK,
-    fontFamily: 'inherit',
+    'backgroundColor': Color(Palette.COAL).darken(0.2),
+    'width': '100%',
+    'height': 55,
+    'borderRadius': 5,
+    'marginBottom': 15,
+    'border': `1px solid ${Palette.FATHER_COAL}`,
+    'fontSize': 18,
+    'padding': '27px',
+    'color': Palette.ROCK,
+    'fontFamily': 'inherit',
     ':focus': {
-      border: '1px solid ' + Palette.DARK_GRAY,
+      border: `1px solid ${Palette.DARK_GRAY}`,
     },
   },
   errorInput: {
-    border: '1px solid ' + Color(Palette.RED).fade(0.1),
+    border: `1px solid ${Color(Palette.RED).fade(0.1)}`,
   },
   btn: {
-    backgroundColor: Palette.LIGHTEST_PINK,
-    borderRadius: 5,
-    width: '100%',
-    height: 55,
-    display: 'flex',
-    justifyContent: 'center',
-    fontSize: 22,
-    letterSpacing: 1.5,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    color: Palette.SUNSTONE,
+    'backgroundColor': Palette.LIGHTEST_PINK,
+    'borderRadius': 5,
+    'width': '100%',
+    'height': 55,
+    'display': 'flex',
+    'justifyContent': 'center',
+    'fontSize': 22,
+    'letterSpacing': 1.5,
+    'textAlign': 'center',
+    'textTransform': 'uppercase',
+    'color': Palette.SUNSTONE,
     ':focus': {
-      border: '1px solid ' + Palette.LIGHT_BLUE,
+      border: `1px solid ${Palette.LIGHT_BLUE}`,
     },
   },
   btnDisabled: {
@@ -131,15 +130,15 @@ const STYLES = {
     cursor: 'pointer',
     display: 'inline-block',
   },
-};
+}
 
 class AuthenticationUI extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.checkSubmit = this.checkSubmit.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleUsernameChange = this.handleUsernameChange.bind(this)
+    this.handlePasswordChange = this.handlePasswordChange.bind(this)
+    this.checkSubmit = this.checkSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
     this.state = {
       error: null,
       isSubmitting: false,
@@ -148,84 +147,91 @@ class AuthenticationUI extends React.Component {
       password: '',
       emailValid: true,
       lastSentUsername: null,
-    };
+    }
   }
 
-  componentDidMount () {
-    this.refs.email.focus();
+  componentDidMount() {
+    this.refs.email.focus()
   }
 
-  handleUsernameChange (changeEvent) {
-    return this.setState({username: changeEvent.target.value});
+  handleUsernameChange(changeEvent) {
+    return this.setState({ username: changeEvent.target.value })
   }
 
-  handlePasswordChange (changeEvent) {
-    return this.setState({password: changeEvent.target.value});
+  handlePasswordChange(changeEvent) {
+    return this.setState({ password: changeEvent.target.value })
   }
 
-  handleSubmit (submitEvent) {
-    this.setState({isSubmitting: true, error: null, lastSentUsername: this.state.username});
+  handleSubmit(submitEvent) {
+    this.setState({ isSubmitting: true, error: null, lastSentUsername: this.state.username })
     return this.props.onSubmit(this.state.username, this.state.password, (error) => {
       if (error) {
-        this.refs.email.focus();
-        return this.setState({error, isSubmitting: false});
+        this.refs.email.focus()
+        return this.setState({ error, isSubmitting: false })
       }
 
-      this.setState({isSubmitting: false, isSuccess: true}, this.props.onSubmitSuccess);
-    });
+      this.setState({ isSubmitting: false, isSuccess: true }, this.props.onSubmitSuccess)
+    })
   }
 
-  checkSubmit (e) {
+  checkSubmit(e) {
     if (e.charCode === 13) {
       if (validUsername(this.state.username)) {
-        this.handleSubmit();
-      } else {
-        this.setState({emailValid: false});
+        this.handleSubmit()
+      }
+      else {
+        this.setState({ emailValid: false })
       }
     }
   }
 
-  validateIsEmailAddress () {
-    let isEmail = validUsername(this.refs.email.value);
+  validateIsEmailAddress() {
+    let isEmail = validUsername(this.refs.email.value)
     if (this.refs.email.value === '') {
-      isEmail = true;
+      isEmail = true
     } // to avoid showing error state if blank
 
     isEmail
-      ? this.setState({emailValid: true})
-      : this.setState({emailValid: false});
+      ? this.setState({ emailValid: true })
+      : this.setState({ emailValid: false })
   }
 
-  usernameElement () {
+  usernameElement() {
     return (
       <div style={STYLES.inputHolster}>
         <input
           type="text"
           placeholder="Username or Email"
           key="username"
-          ref="email"
+          ref={(ref) => { this.refs.email = ref }}
           value={this.state.username}
           onChange={this.handleUsernameChange}
           onFocus={() => {
-            this.setState({emailValid: true});
+            this.setState({ emailValid: true })
           }}
           onBlur={(e) => {
-            this.validateIsEmailAddress(e);
+            this.validateIsEmailAddress(e)
           }}
           disabled={this.state.isSubmitting || this.state.isSuccess}
           onKeyPress={this.checkSubmit}
-          style={[STYLES.input, !this.state.emailValid && STYLES.errorInput]} />
+          style={[STYLES.input, !this.state.emailValid && STYLES.errorInput]}
+        />
         <span style={STYLES.inputIcon}>
           <UserIconSVG color={Palette.LIGHT_GRAY} width="15px" height="20px" />
         </span>
         { this.state.emailValid
-            ? ''
-            : <span style={STYLES.tooltip}><span style={STYLES.arrowLeft} />No special characters</span> }
+          ? ''
+          : (
+              <span style={STYLES.tooltip}>
+                <span style={STYLES.arrowLeft} />
+                No special characters
+              </span>
+            ) }
       </div>
-    );
+    )
   }
 
-  passwordElement () {
+  passwordElement() {
     return (
       <div style={STYLES.inputHolster}>
         <input
@@ -236,16 +242,17 @@ class AuthenticationUI extends React.Component {
           onChange={this.handlePasswordChange}
           disabled={this.state.isSubmitting || this.state.isSuccess}
           onKeyPress={this.checkSubmit}
-          style={STYLES.input} />
+          style={STYLES.input}
+        />
         <span style={[STYLES.inputIcon, STYLES.iconAdjust]}>
           <PasswordIconSVG />
         </span>
       </div>
-    );
+    )
   }
 
-  generateErrorSpec () {
-    const {message, code} = this.state.error;
+  generateErrorSpec() {
+    const { message, code } = this.state.error
 
     switch (code) {
       case 403:
@@ -253,16 +260,18 @@ class AuthenticationUI extends React.Component {
           backgroundColor: Color(Palette.ORANGE).fade(0.5),
           message: (
             <p>
-              {message} <br />
+              {message}
+              {' '}
+              <br />
               <span
-                style={{...STYLES.link, color: Palette.COAL}}
+                style={{ ...STYLES.link, color: Palette.COAL }}
                 ref={(span) => {
-                  this.verificationText = span;
+                  this.verificationText = span
                 }}
                 onClick={() => {
                   if (this.state.lastSentUsername) {
-                    this.props.resendEmailConfirmation(this.state.lastSentUsername);
-                    this.verificationText.innerHTML = 'Sent!';
+                    this.props.resendEmailConfirmation(this.state.lastSentUsername)
+                    this.verificationText.innerHTML = 'Sent!'
                   }
                 }}
               >
@@ -270,7 +279,7 @@ class AuthenticationUI extends React.Component {
               </span>
             </p>
           ),
-        };
+        }
       case 407:
         // (we think) proxy authentication might be required.
         return {
@@ -278,54 +287,57 @@ class AuthenticationUI extends React.Component {
           message,
           action: this.props.onShowProxySettings,
           actionText: 'Change proxy settings.',
-        };
+        }
       default:
         return {
           backgroundColor: Color(Palette.RED).fade(0.5),
           message,
-        };
+        }
     }
   }
 
-  errorElement () {
+  errorElement() {
     if (this.state.error) {
-      const {message, backgroundColor, action, actionText} = this.generateErrorSpec();
+      const { message, backgroundColor, action, actionText } = this.generateErrorSpec()
 
       if (action && actionText) {
         return (
-          <div style={{...STYLES.error, backgroundColor}}>
+          <div style={{ ...STYLES.error, backgroundColor }}>
             <span>{message}</span>
             {' '}
-            <span style={{...STYLES.link, color: Palette.SUNSTONE}} onClick={action}>{actionText}</span>
+            <span style={{ ...STYLES.link, color: Palette.SUNSTONE }} onClick={action}>{actionText}</span>
           </div>
-        );
+        )
       }
 
-      return <div style={{...STYLES.error, backgroundColor}}>{message}</div>;
+      return <div style={{ ...STYLES.error, backgroundColor }}>{message}</div>
     }
   }
 
-  submitButtonElement () {
-    let submitButtonMessage;
+  submitButtonElement() {
+    let submitButtonMessage
     if (this.state.isSubmitting) {
-      submitButtonMessage = <FadingCircle size={22} color={Palette.ROCK} />;
-    } else if (this.state.isSuccess) {
-      submitButtonMessage = 'Success!';
-    } else {
-      submitButtonMessage = 'Log In';
+      submitButtonMessage = <FadingCircle size={22} color={Palette.ROCK} />
+    }
+    else if (this.state.isSuccess) {
+      submitButtonMessage = 'Success!'
+    }
+    else {
+      submitButtonMessage = 'Log In'
     }
     return (
       <button
         id="haiku-button-login"
         style={[STYLES.btn, !this.state.emailValid && STYLES.btnDisabled]}
         onClick={this.handleSubmit}
-        disabled={this.state.isSubmitting || this.state.isSuccess || !this.state.emailValid}>
+        disabled={this.state.isSubmitting || this.state.isSuccess || !this.state.emailValid}
+      >
         {submitButtonMessage}
       </button>
-    );
+    )
   }
 
-  render () {
+  render() {
     return (
       <div style={STYLES.container}>
         <div style={[STYLES.formWrap, STYLES.center, this.state.error && STYLES.errorShake]}>
@@ -335,23 +347,26 @@ class AuthenticationUI extends React.Component {
           {this.usernameElement()}
           {this.passwordElement()}
           {this.submitButtonElement()}
-          <p style={{marginTop: '22px', marginBottom: '6px'}}>
-            Don't have an account?{' '}
+          <p style={{ marginTop: '22px', marginBottom: '6px' }}>
+            Don't have an account?
+            {' '}
             <span
               style={STYLES.link}
               onClick={() => {
-                shell.openExternal(getAccountUrl('new'));
+                shell.openExternal(getAccountUrl('new'))
               }}
             >
               Sign up
             </span>
           </p>
-          <p style={{margin: 0}}>
-            Or {' '}
+          <p style={{ margin: 0 }}>
+            Or
+            {' '}
+            {' '}
             <span
               style={STYLES.link}
               onClick={() => {
-                shell.openExternal(getAccountUrl('reset-password'));
+                shell.openExternal(getAccountUrl('reset-password'))
               }}
             >
               forgot your password?
@@ -363,20 +378,28 @@ class AuthenticationUI extends React.Component {
           position: 'absolute',
           bottom: 50,
           color: Palette.ROCK,
-        }}>
-          By logging into Haiku you agree to our <span style={{...STYLES.link, marginTop: '30px'}} onClick={() => {
-            shell.openExternal(getUrl('terms-of-service.html'));
-          }}>terms and conditions</span>
+        }}
+        >
+          By logging into Haiku you agree to our
+          {' '}
+          <span
+            style={{ ...STYLES.link, marginTop: '30px' }}
+            onClick={() => {
+              shell.openExternal(getUrl('terms-of-service.html'))
+            }}
+          >
+            terms and conditions
+          </span>
         </div>
       </div>
-    );
+    )
   }
 }
 
-function validUsername (name) {
-  const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const regAlphaNumeric = /^[A-Za-z0-9]+$/;
-  return regEmail.test(name) || regAlphaNumeric.test(name);
+function validUsername(name) {
+  const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i
+  const regAlphaNumeric = /^[A-Z0-9]+$/i
+  return regEmail.test(name) || regAlphaNumeric.test(name)
 }
 
-export default Radium(AuthenticationUI);
+export default Radium(AuthenticationUI)

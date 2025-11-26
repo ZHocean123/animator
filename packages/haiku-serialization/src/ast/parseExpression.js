@@ -1,72 +1,72 @@
-const Parser = require('cst').Parser;
-const walk = require('estree-walker').walk;
-const fsm = require('fuzzy-string-matching');
-const uniq = require('lodash').uniq;
-const FORBIDDEN_EXPRESSION_TOKENS = require('@haiku/core/lib/HaikuComponent').default.FORBIDDEN_EXPRESSION_TOKENS;
-const logger = require('./../utils/LoggerInstance');
+const Parser = require('cst').Parser
+const walk = require('estree-walker').walk
+const fsm = require('fuzzy-string-matching')
+const uniq = require('lodash').uniq
+const FORBIDDEN_EXPRESSION_TOKENS = require('@haiku/core/lib/HaikuComponent').default.FORBIDDEN_EXPRESSION_TOKENS
+const logger = require('./../utils/LoggerInstance')
 
 const PARSER = new Parser({
   sourceType: 'script',
   strictMode: true,
-});
+})
 
 // Thresholds for fuzzy string matches when detecting any of these types of tokens
 const MATCH_WEIGHTS = {
   INJECTABLES: 0.5,
   KEYWORDS: 0.5,
   DECLARATIONS: 0.5,
-};
-
-function wrap (exprWithourWrap) {
-  return '(function(){"use strict";\n' + exprWithourWrap + '\n})';
 }
 
-function unwrap (exprWithWrap) {
-  return exprWithWrap.slice(26, exprWithWrap.length - 3);
+function wrap(exprWithourWrap) {
+  return `(function(){"use strict";\n${exprWithourWrap}\n})`
 }
 
-function getSegsList (list, node) {
+function unwrap(exprWithWrap) {
+  return exprWithWrap.slice(26, exprWithWrap.length - 3)
+}
+
+function getSegsList(list, node) {
   if (node.type === 'Identifier') {
-    list.push(node);
-    return list;
+    list.push(node)
+    return list
   }
 
   if (node.type === 'MemberExpression') {
-    getSegsList(list, node.object);
-    list.push(node.property);
-    return list;
+    getSegsList(list, node.object)
+    list.push(node.property)
+    return list
   }
 }
 
-function isTokenStreamInvalid (tokens, options) {
+function isTokenStreamInvalid(tokens, options) {
   if (tokens.length < 1) {
     return {
       annotation: 'Expression is has no content',
-    };
+    }
   }
 
   if (tokens.length === 1 && tokens[0].type === 'Keyword' && tokens[0].value === 'return') {
     return {
       annotation: 'Expression is incomplete',
-    };
+    }
   }
 
   if (options.skipForbiddensCheck) {
-    return false;
+    return false
   }
 
-  let foundReturn = false;
-  let foundForbiddenToken = false;
-  let otherWarning = false;
+  let foundReturn = false
+  let foundForbiddenToken = false
+  let otherWarning = false
 
   for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    const parent = tokens[i - 1];
-    const grandparent = tokens[i - 2];
+    const token = tokens[i]
+    const parent = tokens[i - 1]
+    const grandparent = tokens[i - 2]
 
     if (token.type === 'Keyword') {
       if (token.value === 'return') {
-        foundReturn = true;
+        foundReturn = true
       }
     }
 
@@ -74,8 +74,8 @@ function isTokenStreamInvalid (tokens, options) {
       if (token.value === 'random') {
         if (parent && parent.value === '.') {
           if (grandparent && grandparent.value === 'Math') {
-            otherWarning = 'Instead of Math.random(), use $helpers.rand()';
-            break;
+            otherWarning = 'Instead of Math.random(), use $helpers.rand()'
+            break
           }
         }
       }
@@ -83,15 +83,15 @@ function isTokenStreamInvalid (tokens, options) {
       if (token.value === 'now') {
         if (parent && parent.value === '.') {
           if (grandparent && grandparent.value === 'Date') {
-            otherWarning = 'Instead of Date.now(), use $helpers.now()';
-            break;
+            otherWarning = 'Instead of Date.now(), use $helpers.now()'
+            break
           }
         }
       }
 
       if (FORBIDDEN_EXPRESSION_TOKENS[token.value]) {
-        foundForbiddenToken = token;
-        break;
+        foundForbiddenToken = token
+        break
       }
     }
   }
@@ -99,117 +99,117 @@ function isTokenStreamInvalid (tokens, options) {
   if (otherWarning) {
     return {
       annotation: otherWarning,
-    };
+    }
   }
 
   if (foundForbiddenToken) {
     return {
-      annotation: foundForbiddenToken.type + ' "' + foundForbiddenToken.value + '" is not allowed in expressions',
-    };
+      annotation: `${foundForbiddenToken.type} "${foundForbiddenToken.value}" is not allowed in expressions`,
+    }
   }
 
   if (!foundReturn) {
     return {
       annotation: 'Expression must have a return statement',
-    };
+    }
   }
 
-  return false;
+  return false
 }
 
-function smushKeys (out, base, obj, depth, minDepth, maxDepth) {
+function smushKeys(out, base, obj, depth, minDepth, maxDepth) {
   for (const key in obj) {
-    const sub = (base) ? (base + '.' + key) : key;
+    const sub = (base) ? (`${base}.${key}`) : key
 
     if (depth >= minDepth && depth <= maxDepth) {
-      out.push(sub);
+      out.push(sub)
     }
 
-    smushKeys(out, sub, obj[key], depth + 1, minDepth, maxDepth);
+    smushKeys(out, sub, obj[key], depth + 1, minDepth, maxDepth)
   }
 
-  return out;
+  return out
 }
 
-function populateCompletions (target, injectables, keywords, declarations) {
-  const segs = getSegsList([], target);
+function populateCompletions(target, injectables, keywords, declarations) {
+  const segs = getSegsList([], target)
 
   // Nothing to do if we have no segments
   if (segs.length < 1) {
-    return [];
+    return []
   }
 
-  const completions = new Set();
-  const chain = segs.map((identifierNode) => identifierNode.name).join('.');
+  const completions = new Set()
+  const chain = segs.map(identifierNode => identifierNode.name).join('.')
 
   // Only try to match declarations and keywords if we are only dealing with one segment
   if (segs.length === 1) {
     for (const declarationKey in declarations) {
       if (fsm(segs[0].name, declarationKey) > MATCH_WEIGHTS.DECLARATIONS) {
-        completions.add(declarationKey);
+        completions.add(declarationKey)
       }
     }
 
     for (const keywordKey in keywords) {
       if (!FORBIDDEN_EXPRESSION_TOKENS[keywordKey]) {
         if (fsm(segs[0].name, keywordKey) > MATCH_WEIGHTS.KEYWORDS) {
-          completions.add(keywordKey);
+          completions.add(keywordKey)
         }
       }
     }
   }
 
-  const found = {};
-  findMatches(found, segs, 0, injectables);
+  const found = {}
+  findMatches(found, segs, 0, injectables)
 
   smushKeys([], null, found, 0, segs.length - 1, segs.length).forEach((smushed) => {
-    completions.add(smushed);
-  });
+    completions.add(smushed)
+  })
 
   // If there is exactly one completion, and it's identical to our chain, we should not show completions.
   if (completions.size === 1 && completions.has(chain)) {
-    return [];
+    return []
   }
 
-  const nChain = chain.toLowerCase();
+  const nChain = chain.toLowerCase()
 
   // We impose a strict weak ordering, as follows:
   //  - exact matches are at the front
   //  - case-insensitive typeahead matches come next
   //  - the remainder is sorted lexographically
   return Array.from(completions).sort((a, b) => {
-    const na = a.toLowerCase();
-    const nb = b.toLowerCase();
+    const na = a.toLowerCase()
+    const nb = b.toLowerCase()
 
     // Ensures exact matches are always at the top.
     if (a === chain) {
-      return -1;
+      return -1
     }
 
     if (b === chain) {
-      return 1;
+      return 1
     }
 
     // Ensures typeahead matches come next after exact matches.
     if (na.startsWith(nChain)) {
-      return -1;
+      return -1
     }
 
     if (nb.startsWith(nChain)) {
-      return 1;
+      return 1
     }
 
     // The rest can be sorted lexographically.
     if (na < nb) {
-      return -1;
+      return -1
     }
 
     if (na > nb) {
-      return 1;
+      return 1
     }
 
-    return 0;
-  }).map(dataizeCompletion);
+    return 0
+  }).map(dataizeCompletion)
 
   // // Strip out any completions that are 'below' the current completion,
   // // but preserve those that are 'above' so we can reveal new possibilities
@@ -224,37 +224,37 @@ function populateCompletions (target, injectables, keywords, declarations) {
   //   return {}
   // }
 
-  return completions;
+  return completions
 }
 
-function findMatches (found, segs, idx, base) {
+function findMatches(found, segs, idx, base) {
   if (Array.isArray(base)) {
-    return found;
+    return found
   }
   if (!base || typeof base !== 'object') {
-    return found;
+    return found
   }
 
-  const name = segs[idx] && segs[idx].name;
-  const prev = segs[idx - 1] && segs[idx - 1].name;
+  const name = segs[idx] && segs[idx].name
+  const prev = segs[idx - 1] && segs[idx - 1].name
 
   if (!name && !prev) {
-    return found;
+    return found
   }
 
   // The user has probably typed a _full_ completion, but we need to check for sub-objects to recommend those
   if (!name && prev) {
     for (const k4 in base) {
       if (!found[k4]) {
-        found[k4] = {};
+        found[k4] = {}
       }
     }
 
-    return found;
+    return found
   }
 
   if (!name) {
-    return found;
+    return found
   }
 
   // Special case: Just display all injectable roots
@@ -262,64 +262,64 @@ function findMatches (found, segs, idx, base) {
     for (const k1 in base) {
       if (k1[0] === '$') {
         if (!found[k1]) {
-          found[k1] = {};
+          found[k1] = {}
         }
       }
     }
 
-    return found;
+    return found
   }
 
   // Special case: If under three characters, search on those chars
   if (name.length < 5) {
-    const lcname = name.toLowerCase();
+    const lcname = name.toLowerCase()
 
     for (const k2 in base) {
       if (k2.slice(0, lcname.length).toLowerCase() === lcname) {
         if (!found[k2]) {
-          found[k2] = {};
+          found[k2] = {}
         }
 
-        findMatches(found[k2], segs, idx + 1, base[k2]);
+        findMatches(found[k2], segs, idx + 1, base[k2])
       }
     }
 
-    return found;
+    return found
   }
 
   for (const k3 in base) {
     if (fsm(name, k3) < MATCH_WEIGHTS.INJECTABLES) {
-      continue;
+      continue
     }
 
     if (!found[k3]) {
-      found[k3] = {};
+      found[k3] = {}
     }
 
-    findMatches(found[k3], segs, idx + 1, base[k3]);
+    findMatches(found[k3], segs, idx + 1, base[k3])
   }
 
-  return found;
+  return found
 }
 
-function dataizeCompletion (completion) {
-  return {name: completion};
+function dataizeCompletion(completion) {
+  return { name: completion }
 }
 
-function chooseTarget (candidate, existing) {
+function chooseTarget(candidate, existing) {
   if (!existing) {
-    return candidate;
+    return candidate
   }
 
   if (existing.type === 'Identifier' && candidate.type === 'MemberExpression') {
-    return candidate;
+    return candidate
   }
 
   if (existing.type === 'MemberExpression' && candidate.type === 'Identifier') {
-    return existing;
+    return existing
   }
 
-  return candidate;
+  return candidate
 }
 
 /**
@@ -327,40 +327,40 @@ function chooseTarget (candidate, existing) {
  * @description Given an expression string, parse it and return a summary about it, including
  * tokens, params, as well as any warnings/errors that need to be displayed to the coder.
  */
-function parseExpression (expr, injectables, keywords, state, cursor, options) {
+function parseExpression(expr, injectables, keywords, state, cursor, options) {
   if (!options) {
-    options = {};
+    options = {}
   }
 
   try {
     // At any point in the process here we may want to populate a warning based on what happens
-    const warnings = [];
+    const warnings = []
 
-    const cst = PARSER._parseAst(expr);
+    const cst = PARSER._parseAst(expr)
 
-    let tokens = PARSER._processTokens(cst, expr);
-    tokens = tokens.slice(8); // Slice off the "(function(){"use strict";\n" tokens
-    tokens.splice(tokens.length - 4); // Slice off the "})\n\eof" tokens
+    let tokens = PARSER._processTokens(cst, expr)
+    tokens = tokens.slice(8) // Slice off the "(function(){"use strict";\n" tokens
+    tokens.splice(tokens.length - 4) // Slice off the "})\n\eof" tokens
 
-    const candidates = []; // Going to find possible targets and select the best fit
+    const candidates = [] // Going to find possible targets and select the best fit
 
     // 1. Get a list of all variables that were declared inside the scope of this expression
     // TODO: What other besides var, let, const, and const { a } = {...} is there?
-    const declarations = {};
+    const declarations = {}
 
     // 2. Create a list of identifiers that look like references to external things, i.e., anything
     // not defined inside our scope, possibly a keyword or an 'injectable' the user wants to summon.
-    const references = [];
+    const references = []
 
     walk(cst, {
-      enter: function enter (node) {
+      enter: function enter(node) {
         if (cursor) { // If no cursor, nothing to do
           if (!node.sourceCode && node.loc) { // If no node location, nothing to do; also skip 'Tokens' which have .sourceCode
             if (node.loc.start.line === node.loc.end.line) { // Only identifiers on the same line (not braces)
               if (node.loc.start.line === cursor.line) { // Only on the same line as the cursor
                 if (node.loc.start.column <= cursor.ch && node.loc.end.column >= cursor.ch) {
                   if (node.type === 'MemberExpression' || node.type === 'Identifier') {
-                    candidates.push(node);
+                    candidates.push(node)
                   }
                 }
               }
@@ -370,12 +370,13 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
 
         if (node.type === 'VariableDeclaration') {
           for (let i = 0; i < node.declarations.length; i++) {
-            const declarator = node.declarations[i];
+            const declarator = node.declarations[i]
             if (declarator.id.type === 'Identifier') {
-              declarations[declarator.id.name] = true;
-            } else if (declarator.id.type === 'ObjectPattern') {
+              declarations[declarator.id.name] = true
+            }
+            else if (declarator.id.type === 'ObjectPattern') {
               for (let j = 0; j < declarator.id.properties.length; j++) {
-                declarations[declarator.id.properties[j].key.name] = true;
+                declarations[declarator.id.properties[j].key.name] = true
               }
             }
           }
@@ -384,56 +385,57 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
         // We check for node.name since estree-walker provides duplicates from the token stream
         // as well as the tree, and we use only the tree nodes
         if (node.type === 'Identifier' && node.name) {
-          references.push(node);
+          references.push(node)
         }
       },
-    });
+    })
 
     // The node representing the current placement of the cursor, if any
-    let target = null;
+    let target = null
     // Loop through the candidates and find the one that is the best fit for a target
     for (let i = 0; i < candidates.length; i++) {
-      target = chooseTarget(candidates[i], target);
+      target = chooseTarget(candidates[i], target)
     }
 
     // Now strip away any references that refer to any declarations that were made in scope
     for (let j = references.length - 1; j > -1; j--) {
-      const reference = references[j];
+      const reference = references[j]
       if (declarations[reference.name]) {
-        references.splice(j, 1);
+        references.splice(j, 1)
       }
     }
 
-    let params = [];
+    let params = []
     if (references.length > 0) {
       references.forEach((reference) => {
         // If this seg was the first element, and if it matches a forbidden
         // token, then don't include this in the list of injectables
         if (FORBIDDEN_EXPRESSION_TOKENS[reference.name]) {
-          return null;
+          return null
         }
         // Don't include any reference in the final params if it doesn't match
         // a known injectable that core can provide
         if (!injectables[reference.name]) {
-          return null;
+          return null
         }
-        params.push(reference.name);
-      });
+        params.push(reference.name)
+      })
     }
-    params = uniq(params);
+    params = uniq(params)
 
     // Completions is initially populated as a dict so we avoid having double entries in the list
-    let completions;
+    let completions
     // If we got a target node that is an identifier, we can display autocompletions for it, if any match
     if (target && (target.type === 'Identifier' || target.type === 'MemberExpression')) {
-      completions = populateCompletions(target, injectables, keywords, declarations);
-    } else {
-      completions = [];
+      completions = populateCompletions(target, injectables, keywords, declarations)
+    }
+    else {
+      completions = []
     }
 
-    const tokenInvalidity = isTokenStreamInvalid(tokens, options);
+    const tokenInvalidity = isTokenStreamInvalid(tokens, options)
     if (tokenInvalidity) {
-      warnings.push(tokenInvalidity);
+      warnings.push(tokenInvalidity)
     }
 
     return {
@@ -446,17 +448,18 @@ function parseExpression (expr, injectables, keywords, state, cursor, options) {
       completions,
       target,
       source: expr,
-    };
-  } catch (error) {
-    logger.warn('[parse expression]', error.message);
+    }
+  }
+  catch (error) {
+    logger.warn('[parse expression]', error.message)
     return {
       error,
-    };
+    }
   }
 }
 
 // Must expose for Timeline <ExpressionInput> component
-parseExpression.wrap = wrap;
-parseExpression.unwrap = unwrap;
+parseExpression.wrap = wrap
+parseExpression.unwrap = unwrap
 
-module.exports = parseExpression;
+module.exports = parseExpression

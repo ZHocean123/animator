@@ -38,4 +38,4 @@ export default {
   COAL: '#1A2225',
   FATHER_COAL: '#090D0E',
   DARKEST_COAL: '#090D0E',
-};
+}

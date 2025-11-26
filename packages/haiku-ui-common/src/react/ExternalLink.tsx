@@ -1,27 +1,27 @@
-import * as React from 'react';
-import isElectron from '../helpers/isElectron';
+import * as React from 'react'
+import isElectron from '../helpers/isElectron'
 
 export interface ExternalLinkProps {
-  style?: React.CSSProperties;
-  title?: string;
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
-  href: string;
+  style?: React.CSSProperties
+  title?: string
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
+  href: string
 }
 
 export class ExternalLink extends React.PureComponent<ExternalLinkProps> {
   private boundOnClick: React.MouseEventHandler<HTMLAnchorElement> = (clickEvent) => {
     if (isElectron()) {
-      const {shell} = require('electron');
-      clickEvent.preventDefault();
-      shell.openExternal(this.props.href);
+      const { shell } = require('electron')
+      clickEvent.preventDefault()
+      shell.openExternal(this.props.href)
     }
 
     if (this.props.onClick) {
-      this.props.onClick(clickEvent);
+      this.props.onClick(clickEvent)
     }
-  };
+  }
 
-  render () {
+  render() {
     return (
       <a
         target="_blank"
@@ -32,6 +32,6 @@ export class ExternalLink extends React.PureComponent<ExternalLinkProps> {
       >
         {this.props.children}
       </a>
-    );
+    )
   }
 }

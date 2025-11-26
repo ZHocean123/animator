@@ -1,13 +1,10 @@
 // @ts-ignore
-import * as HaikuError from '@haiku/tina-haikuerror/react';
-import {Palette } from 'haiku-ui-common';
-import {
-  ModalHeader,
-  ModalWrapper,
-} from 'haiku-ui-common';
-import * as React from 'react';
-import {BTN_STYLES} from '../../styles/btnShared';
-import {DASH_STYLES} from '../../styles/dashShared';
+import * as HaikuError from '@haiku/tina-haikuerror/react'
+import { ModalHeader, ModalWrapper, Palette } from 'haiku-ui-common'
+
+import * as React from 'react'
+import { BTN_STYLES } from '../../styles/btnShared'
+import { DASH_STYLES } from '../../styles/dashShared'
 
 const STYLES: React.CSSProperties = {
   modalWrapper: {
@@ -48,15 +45,15 @@ const STYLES: React.CSSProperties = {
   link: {
     color: Palette.LIGHT_BLUE,
   },
-};
+}
 
 export interface FailWhaleProps {
-  restart: () => void;
-  uniqueId?: string;
+  restart: () => void
+  uniqueId?: string
 }
 
 export class FailWhale extends React.PureComponent<FailWhaleProps> {
-  render () {
+  render() {
     return (
       <div style={DASH_STYLES.overlay}>
         <ModalWrapper style={STYLES.modalWrapper}>
@@ -66,19 +63,28 @@ export class FailWhale extends React.PureComponent<FailWhaleProps> {
           <div style={STYLES.textContent}>
             <h2 style={STYLES.header}>Something went wrong</h2>
             <p>
-              Animator encountered an unexpected error and needs to restart. <strong>
-                Don't worry, your latest work is saved.</strong>
+              Animator encountered an unexpected error and needs to restart.
+              {' '}
+              <strong>
+                Don't worry, your latest work is saved.
+              </strong>
             </p>
             <p>
-              If you run into any issues after restarting, please contact us at <span
+              If you run into any issues after restarting, please contact us at
+              {' '}
+              <span
                 style={STYLES.link}
               >
                 contact@haiku.ai
               </span>
               {this.props.uniqueId && (
-                <span> and reference error ID <code>{this.props.uniqueId}</code></span>
+                <span>
+                  {' '}
+                  and reference error ID
+                  <code>{this.props.uniqueId}</code>
+                </span>
               )}
-            .
+              .
             </p>
             <div style={STYLES.buttonWrapper}>
               <button style={STYLES.button} onClick={this.props.restart}>
@@ -88,6 +94,6 @@ export class FailWhale extends React.PureComponent<FailWhaleProps> {
           </div>
         </ModalWrapper>
       </div>
-    );
+    )
   }
 }

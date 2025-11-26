@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 
 const STYLES: React.CSSProperties = {
   wrapper: {
@@ -20,17 +20,17 @@ const STYLES: React.CSSProperties = {
     pointerEvents: 'all',
     opacity: 1,
   },
-};
+}
 
 export interface RevealPanelProps {
-  showDetail: boolean;
-  leftPanel?: React.ReactNode;
-  rightPanel?: React.ReactNode;
-  wrapperStyles?: React.CSSProperties;
+  showDetail: boolean
+  leftPanel?: React.ReactNode
+  rightPanel?: React.ReactNode
+  wrapperStyles?: React.CSSProperties
 }
 
 export class RevealPanel extends React.PureComponent<RevealPanelProps> {
-  render () {
+  render() {
     return (
       <div
         style={{
@@ -39,9 +39,9 @@ export class RevealPanel extends React.PureComponent<RevealPanelProps> {
           transform: `translateX(${this.props.showDetail ? '-50%' : '0'})`,
         }}
       >
-        <div style={{...STYLES.item, ...(this.props.showDetail ? STYLES.hidden : STYLES.visible)}}>{this.props.leftPanel}</div>
-        <div style={{...STYLES.item, ...(this.props.showDetail ? STYLES.visible : STYLES.hidden)}}>{this.props.rightPanel}</div>
+        <div style={{ ...STYLES.item, ...(this.props.showDetail ? STYLES.hidden : STYLES.visible) }}>{this.props.leftPanel}</div>
+        <div style={{ ...STYLES.item, ...(this.props.showDetail ? STYLES.visible : STYLES.hidden) }}>{this.props.rightPanel}</div>
       </div>
-    );
+    )
   }
 }

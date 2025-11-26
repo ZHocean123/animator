@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
 
 export const MODAL_STYLES = {
   wrapper: {
@@ -18,7 +18,7 @@ export const MODAL_STYLES = {
     marginBottom: 7,
     marginLeft: 7,
   },
-  input: (valid) => ({
+  input: valid => ({
     width: '100%',
     padding: 10,
     backgroundColor: Palette.DARKEST_COAL,
@@ -27,14 +27,14 @@ export const MODAL_STYLES = {
     border: `1px solid ${valid ? Palette.MEDIUM_COAL : Palette.RED}`,
     fontFamily: 'inherit',
   }),
-  feedback: (valid) => ({
+  feedback: valid => ({
     minHeight: 18,
     textAlign: 'left',
     color: valid ? Palette.ROCK : Palette.RED,
     fontStyle: 'italic',
     marginLeft: 7,
   }),
-  submit: (enabled) => ({
+  submit: enabled => ({
     float: 'right',
     cursor: enabled ? 'pointer' : 'not-allowed',
     backgroundColor: enabled ? Palette.LIGHTEST_PINK : Palette.DARKER_GRAY,
@@ -49,12 +49,12 @@ export const MODAL_STYLES = {
     marginRight: 10,
     padding: '10px 15px 8px',
   },
-};
+}
 
 export default class Modal extends React.Component {
-  render () {
+  render() {
     if (!this.props.isOpen) {
-      return <span />;
+      return <span />
     }
 
     return (
@@ -68,17 +68,19 @@ export default class Modal extends React.Component {
           width: '100%',
           height: '100%',
           zIndex: 99999999,
-        }}>
+        }}
+      >
         <div
           className="glass-modal-inner"
           style={{
             display: 'table-cell',
             textAlign: 'center',
             verticalAlign: 'middle',
-          }}>
+          }}
+        >
           {this.props.children}
         </div>
       </div>
-    );
+    )
   }
 }

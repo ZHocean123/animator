@@ -1,7 +1,7 @@
-import * as React from 'react';
+import * as React from 'react'
 
 export class PopoverMenu extends React.Component {
-  render () {
-  	return <span>not yet implemented</span>;
+  render() {
+    return <span>not yet implemented</span>
   }
 }

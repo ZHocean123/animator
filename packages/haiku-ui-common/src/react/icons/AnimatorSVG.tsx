@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Palette from './../../Palette';
+import * as React from 'react'
+import Palette from './../../Palette'
 
 export default () => {
   return (
@@ -16,5 +16,5 @@ export default () => {
         </g>
       </g>
     </svg>
-  );
-};
+  )
+}

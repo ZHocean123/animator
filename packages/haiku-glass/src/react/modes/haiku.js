@@ -1,15 +1,15 @@
 /* tslint:disable */
 
-function kw (type) {
-  return {type: type, style: 'keyword'}
+function kw(type) {
+  return { type, style: 'keyword' }
 }
 
-let A = kw('keyword a')
-let B = kw('keyword b')
-let C = kw('keyword c')
+const A = kw('keyword a')
+const B = kw('keyword b')
+const C = kw('keyword c')
 
-let operator = kw('operator')
-let atom = {type: 'atom', style: 'atom'}
+const operator = kw('operator')
+const atom = { type: 'atom', style: 'atom' }
 
 const HaikuMode = {
   keywords: {
@@ -52,8 +52,8 @@ const HaikuMode = {
     export: kw('export'),
     import: kw('import'),
     extends: C,
-    await: C
-  }
+    await: C,
+  },
 }
 
 module.exports = HaikuMode

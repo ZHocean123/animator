@@ -1,67 +1,67 @@
-import * as React from 'react';
-import * as lodash from 'lodash';
-import TimelineDraggable from './TimelineDraggable';
-import {Globals } from 'haiku-ui-common';
-import {PopoverMenu} from 'haiku-ui-common';
-import * as Property from 'haiku-serialization/src/bll/Property';
+import * as Property from 'haiku-serialization/src/bll/Property'
+import { Globals, PopoverMenu } from 'haiku-ui-common'
 
-const THROTTLE_TIME = 17; // ms
+import * as lodash from 'lodash'
+import * as React from 'react'
+import TimelineDraggable from './TimelineDraggable'
+
+const THROTTLE_TIME = 17 // ms
 
 export default class InvisibleKeyframeDragger extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleProps(props);
-    this.canBeDragged = Property.canHaveKeyframes(props.keyframe.row.property.name, props.keyframe.element);
+  constructor(props) {
+    super(props)
+    this.handleProps(props)
+    this.canBeDragged = Property.canHaveKeyframes(props.keyframe.row.property.name, props.keyframe.element)
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.handleProps(nextProps);
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.handleProps(nextProps)
   }
 
-  handleProps ({keyframe}) {
+  handleProps({ keyframe }) {
     if (
-      keyframe !== this.props.keyframe ||
-      !this.teardownKeyframeUpdateReceiver
+      keyframe !== this.props.keyframe
+      || !this.teardownKeyframeUpdateReceiver
     ) {
       if (this.teardownKeyframeUpdateReceiver) {
-        this.teardownKeyframeUpdateReceiver();
+        this.teardownKeyframeUpdateReceiver()
       }
       this.teardownKeyframeUpdateReceiver = keyframe.registerUpdateReceiver(this.props.id, (what) => {
-        this.handleUpdate(what);
-      });
+        this.handleUpdate(what)
+      })
     }
   }
 
-  componentDidMount () {
-    this.mounted = true;
+  componentDidMount() {
+    this.mounted = true
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.teardownKeyframeUpdateReceiver();
+  componentWillUnmount() {
+    this.mounted = false
+    this.teardownKeyframeUpdateReceiver()
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (
-      what === 'keyframe-activated' ||
-      what === 'keyframe-deactivated' ||
-      what === 'keyframe-selected' ||
-      what === 'keyframe-deselected' ||
-      what === 'keyframe-ms-set' ||
-      what === 'keyframe-neighbor-move' ||
-      what === 'keyframe-body-selected' ||
-      what === 'keyframe-body-unselected'
+      what === 'keyframe-activated'
+      || what === 'keyframe-deactivated'
+      || what === 'keyframe-selected'
+      || what === 'keyframe-deselected'
+      || what === 'keyframe-ms-set'
+      || what === 'keyframe-neighbor-move'
+      || what === 'keyframe-body-selected'
+      || what === 'keyframe-body-unselected'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
   }
 
-  render () {
-    const frameInfo = this.props.timeline.getFrameInfo();
-    const pxOffsetLeft =  this.props.keyframe.getPixelOffsetLeft(0, frameInfo.pxpf, frameInfo.mspf);
+  render() {
+    const frameInfo = this.props.timeline.getFrameInfo()
+    const pxOffsetLeft = this.props.keyframe.getPixelOffsetLeft(0, frameInfo.pxpf, frameInfo.mspf)
 
     return (
       <TimelineDraggable
@@ -69,47 +69,48 @@ export default class InvisibleKeyframeDragger extends React.Component {
         disabled={!this.canBeDragged}
         onMouseDown={(mouseEvent) => {
           if (this.props.preventDragging) {
-            return;
+            return
           }
-          this.props.keyframe.handleMouseDown(mouseEvent, {...Globals}, {isViaKeyframeDraggerView: true});
+          this.props.keyframe.handleMouseDown(mouseEvent, { ...Globals }, { isViaKeyframeDraggerView: true })
         }}
         onStart={(dragEvent, dragData) => {
           if (this.props.preventDragging) {
-            return;
+            return
           }
-          this.props.component.dragStartSelectedKeyframes(dragData, this.props.keyframe);
+          this.props.component.dragStartSelectedKeyframes(dragData, this.props.keyframe)
         }}
         onStop={(dragEvent, dragData, wasDrag, lastMouseButtonPressed) => {
           if (this.props.preventDragging) {
-            return;
+            return
           }
-          this.props.keyframe.handleDragStop(dragData, {wasDrag, lastMouseButtonPressed, ...Globals}, {isViaKeyframeDraggerView: true});
+          this.props.keyframe.handleDragStop(dragData, { wasDrag, lastMouseButtonPressed, ...Globals }, { isViaKeyframeDraggerView: true })
         }}
         onDrag={lodash.throttle((dragEvent, dragData) => {
           if (this.props.preventDragging) {
-            return;
+            return
           }
-          this.props.component.dragSelectedKeyframes(frameInfo.pxpf, frameInfo.mspf, dragData, {alias: 'timeline'}, this.props.keyframe);
-        }, THROTTLE_TIME)}>
+          this.props.component.dragSelectedKeyframes(frameInfo.pxpf, frameInfo.mspf, dragData, { alias: 'timeline' }, this.props.keyframe)
+        }, THROTTLE_TIME)}
+      >
         <span
           id={`keyframe-dragger-${this.props.keyframe.getUniqueKey()}`}
           className="js-avoid-marquee-init"
           onContextMenu={(ctxMenuEvent) => {
-            ctxMenuEvent.stopPropagation();
-            this.props.keyframe.handleContextMenu({...Globals}, {isViaKeyframeDraggerView: true});
+            ctxMenuEvent.stopPropagation()
+            this.props.keyframe.handleContextMenu({ ...Globals }, { isViaKeyframeDraggerView: true })
             PopoverMenu.emit('show', {
               type: 'keyframe',
               event: ctxMenuEvent.nativeEvent,
               model: this.props.keyframe,
               offset: pxOffsetLeft,
-            });
+            })
           }}
           onMouseUp={(mouseEvent) => {
-            mouseEvent.stopPropagation();
+            mouseEvent.stopPropagation()
             if (this.props.preventDragging) {
-              return;
+              return
             }
-            this.props.keyframe.handleMouseUp(mouseEvent, {...Globals}, {isViaKeyframeDraggerView: true});
+            this.props.keyframe.handleMouseUp(mouseEvent, { ...Globals }, { isViaKeyframeDraggerView: true })
           }}
           style={{
             display: 'inline-block',
@@ -124,9 +125,10 @@ export default class InvisibleKeyframeDragger extends React.Component {
             height: 24,
             zIndex: 1003,
             cursor: this.props.preventDragging ? 'not-allowed' : 'col-resize',
-          }} />
+          }}
+        />
       </TimelineDraggable>
-    );
+    )
   }
 }
 
@@ -138,4 +140,4 @@ InvisibleKeyframeDragger.propTypes = {
   timeline: React.PropTypes.object.isRequired,
   component: React.PropTypes.object.isRequired,
   preventDragging: React.PropTypes.bool,
-};
+}

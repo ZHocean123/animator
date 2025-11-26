@@ -1,8 +1,7 @@
-import * as React from 'react';
-import * as Draggable from 'react-draggable';
-import {Palette } from 'haiku-ui-common';
-import {TOUR_STYLES} from '../../styles/tourShared';
-import Spotlight from './Spotlight';
+import { Palette } from 'haiku-ui-common'
+import * as Draggable from 'react-draggable'
+import { TOUR_STYLES } from '../../styles/tourShared'
+import Spotlight from './Spotlight'
 
 const STYLES = {
   container: {
@@ -28,7 +27,7 @@ const STYLES = {
     borderRadius: 3,
     padding: 20,
   },
-};
+}
 
 STYLES.TOP = {
   container: {
@@ -40,7 +39,7 @@ STYLES.TOP = {
   spotlight: {
     top: -40,
   },
-};
+}
 
 STYLES.BOTTOM = {
   container: {
@@ -52,7 +51,7 @@ STYLES.BOTTOM = {
   spotlight: {
     bottom: -40,
   },
-};
+}
 
 STYLES.LEFT = {
   container: {
@@ -64,7 +63,7 @@ STYLES.LEFT = {
   spotlight: {
     left: -40,
   },
-};
+}
 
 STYLES.RIGHT = {
   container: {
@@ -76,14 +75,14 @@ STYLES.RIGHT = {
   spotlight: {
     right: -40,
   },
-};
+}
 
 const TOOLTIP_SIZES = {
   small: 340,
   default: 505,
-};
+}
 
-function Tooltip (props) {
+function Tooltip(props) {
   const {
     coordinates,
     offset,
@@ -98,64 +97,65 @@ function Tooltip (props) {
     isOverlayHideable,
     showPreviousButton,
     modalOffset,
-  } = props;
-  let {top, left} = coordinates;
-  const positionStyles = STYLES[display.toUpperCase()] || {};
-  const spotlightExtraStyles = {};
-  let renderSpotlight = true;
+  } = props
+  let { top, left } = coordinates
+  const positionStyles = STYLES[display.toUpperCase()] || {}
+  const spotlightExtraStyles = {}
+  let renderSpotlight = true
 
   if (display === 'left') {
-    top = top + coordinates.height / 2;
-    left = coordinates.left;
+    top = top + coordinates.height / 2
+    left = coordinates.left
 
     if (left - 350 <= 10) {
-      return Tooltip({...props, display: 'top'});
+      return Tooltip({ ...props, display: 'top' })
     }
   }
 
   if (display === 'right') {
-    top = top + coordinates.height / 2;
-    left = coordinates.left + coordinates.width;
+    top = top + coordinates.height / 2
+    left = coordinates.left + coordinates.width
   }
 
   if (display === 'bottom') {
-    top = top + coordinates.height;
-    left = left + coordinates.width / 2;
+    top = top + coordinates.height
+    left = left + coordinates.width / 2
   }
 
   if (display === 'top') {
-    top = coordinates.top;
-    left = left + coordinates.width / 2;
+    top = coordinates.top
+    left = left + coordinates.width / 2
 
     if (top - 350 <= 10) {
-      return Tooltip({...props, display: 'bottom'});
+      return Tooltip({ ...props, display: 'bottom' })
     }
   }
 
   if (display === 'none') {
-    top = '50%';
-    left = '50%';
-  } else {
-    top = top + offset.top;
-    left = left + offset.left;
+    top = '50%'
+    left = '50%'
+  }
+  else {
+    top = top + offset.top
+    left = left + offset.left
   }
 
   switch (spotlightRadius) {
     case 'default':
-      break;
+      break
     case 'hidden':
-      renderSpotlight = false;
-      break;
+      renderSpotlight = false
+      break
     default:
-      spotlightExtraStyles.width = spotlightRadius;
-      spotlightExtraStyles.height = spotlightRadius;
-      break;
+      spotlightExtraStyles.width = spotlightRadius
+      spotlightExtraStyles.height = spotlightRadius
+      break
   }
 
   return (
     <div
       onMouseUp={(mouseUpEvent) => {
-        mouseUpEvent.nativeEvent.stopImmediatePropagation();
+        mouseUpEvent.nativeEvent.stopImmediatePropagation()
       }}
       style={{
         top,
@@ -168,7 +168,7 @@ function Tooltip (props) {
       {renderSpotlight && (
         <Spotlight
           offset={positionStyles.spotlight}
-          position={{top, left}}
+          position={{ top, left }}
           containerStyles={STYLES.container}
           holeStyles={spotlightExtraStyles}
           display={display}
@@ -196,7 +196,10 @@ function Tooltip (props) {
                   right: 20,
                 }}
               >
-                {stepData.current} of {stepData.total}
+                {stepData.current}
+                {' '}
+                of
+                {stepData.total}
               </span>
             )}
 
@@ -211,15 +214,15 @@ function Tooltip (props) {
                 <button
                   style={TOUR_STYLES.btnSecondary}
                   onClick={() => finish(true, true)}
-                  >
+                >
                   {stepData.current < stepData.total && (
-                      'Finish'
-                    )}
+                    'Finish'
+                  )}
                 </button>
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {showPreviousButton && (
                     <button
-                      style={{...TOUR_STYLES.btnSecondary, marginRight: 10}}
+                      style={{ ...TOUR_STYLES.btnSecondary, marginRight: 10 }}
                       onClick={() => prev(true, true)}
                     >
                       Back
@@ -227,10 +230,10 @@ function Tooltip (props) {
                   )}
 
                   {stepData.current < stepData.total && (
-                  <button style={TOUR_STYLES.btn} onClick={() => next()}>
-                        Next
-                      </button>
-                    )}
+                    <button style={TOUR_STYLES.btn} onClick={() => next()}>
+                      Next
+                    </button>
+                  )}
 
                   {stepData.current === stepData.total && (
                     <button
@@ -248,7 +251,7 @@ function Tooltip (props) {
         </div>
       </Draggable>
     </div>
-  );
+  )
 }
 
-export default Tooltip;
+export default Tooltip

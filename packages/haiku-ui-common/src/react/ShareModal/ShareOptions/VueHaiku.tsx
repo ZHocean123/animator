@@ -1,16 +1,16 @@
-import * as dedent from 'dedent';
-import * as React from 'react';
-import {CodeBox} from '../../CodeBox';
-import {NpmInstallable} from './NpmInstallable';
+import * as dedent from 'dedent'
+import * as React from 'react'
+import { CodeBox } from '../../CodeBox'
+import { NpmInstallable } from './NpmInstallable'
 
 export interface VueHaikuProps {
-  projectName: string;
-  organizationName: string;
+  projectName: string
+  organizationName: string
 }
 
 export default class VueHaiku extends React.PureComponent<VueHaikuProps> {
-  render () {
-    const {projectName, organizationName} = this.props;
+  render() {
+    const { projectName, organizationName } = this.props
     return (
       <NpmInstallable projectName={projectName} organizationName={organizationName}>
         <CodeBox>
@@ -48,6 +48,6 @@ export default class VueHaiku extends React.PureComponent<VueHaikuProps> {
         </CodeBox>
 
       </NpmInstallable>
-    );
+    )
   }
 }

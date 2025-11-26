@@ -102,6 +102,6 @@ const zIndex = {
   areaPostMaxKeyframe: {
     base: 3,
   },
-};
+}
 
-export default zIndex;
+export default zIndex

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Palette from './../Palette';
+import * as React from 'react'
+import Palette from './../Palette'
 
 const STYLES = {
   pagerWrap: {
@@ -29,22 +29,22 @@ const STYLES = {
     display: 'inline-block',
     marginBottom: -2,
   },
-};
+}
 
 export interface PaginatorProps {
-  numItemsPerPage: number;
-  firstItemToDisplay: number;
-  numTotalItems: number;
-  blur: boolean;
-  fadeOut: boolean;
-  onChangeFirstItemToDisplay: (firstItemToDisplay: number) => void;
+  numItemsPerPage: number
+  firstItemToDisplay: number
+  numTotalItems: number
+  blur: boolean
+  fadeOut: boolean
+  onChangeFirstItemToDisplay: (firstItemToDisplay: number) => void
 }
 
 export interface PaginatorState {
-  numPages: number;
-  currentPage: number;
-  currentHoveredPage: number;
-  currentHoveredArrow: string;
+  numPages: number
+  currentPage: number
+  currentHoveredPage: number
+  currentHoveredArrow: string
 }
 
 export class Paginator extends React.PureComponent<PaginatorProps, PaginatorState> {
@@ -53,72 +53,72 @@ export class Paginator extends React.PureComponent<PaginatorProps, PaginatorStat
     currentPage: 0,
     currentHoveredPage: -1,
     currentHoveredArrow: '',
-  };
+  }
 
-  componentWillReceiveProps (nextPros: PaginatorProps) {
+  UNSAFE_componentWillReceiveProps(nextPros: PaginatorProps) {
     if (nextPros.numItemsPerPage === 0) {
-      return;
+      return
     }
-    const numPages = Math.ceil(nextPros.numTotalItems / nextPros.numItemsPerPage);
-    const currentPage = Math.floor(nextPros.firstItemToDisplay / nextPros.numItemsPerPage);
-    this.setState({numPages, currentPage});
+    const numPages = Math.ceil(nextPros.numTotalItems / nextPros.numItemsPerPage)
+    const currentPage = Math.floor(nextPros.firstItemToDisplay / nextPros.numItemsPerPage)
+    this.setState({ numPages, currentPage })
   }
 
-  componentWillMount () {
-    this.componentWillReceiveProps(this.props);
+  UNSAFE_componentWillMount() {
+    this.componentWillReceiveProps(this.props)
   }
 
-  renderPaginationDots () {
-    const pages = [];
+  renderPaginationDots() {
+    const pages = []
 
     for (let page = 0; page < this.state.numPages; page++) {
       pages.push(
         <a
           key={`pagination-${page}`}
           onClick={() => {
-            this.changeFirstItemToDisplay(page * this.props.numItemsPerPage);
+            this.changeFirstItemToDisplay(page * this.props.numItemsPerPage)
           }}
           onMouseEnter={() => {
-            this.hoverPageOn(page);
+            this.hoverPageOn(page)
           }}
           onMouseLeave={this.hoverPageOff}
-          style={{color: page === this.state.currentPage ? Palette.LIGHTEST_PINK : Palette.ROCK}}
+          style={{ color: page === this.state.currentPage ? Palette.LIGHTEST_PINK : Palette.ROCK }}
         >
           <span
             key={`pagination-${page}-span`}
-            style={{...STYLES.pageNumber, color: page === this.state.currentHoveredPage && Palette.SUNSTONE}}
+            style={{ ...STYLES.pageNumber, color: page === this.state.currentHoveredPage && Palette.SUNSTONE }}
           >
-          •
+            •
           </span>
         </a>,
-      );
+      )
     }
-    return pages;
+    return pages
   }
 
   changeFirstItemToDisplay = (itemNum: number) => {
-    this.props.onChangeFirstItemToDisplay(itemNum);
-  };
+    this.props.onChangeFirstItemToDisplay(itemNum)
+  }
 
   hoverPageOn = (page: number) => {
-    this.setState({currentHoveredPage: page});
-  };
+    this.setState({ currentHoveredPage: page })
+  }
 
   hoverPageOff = () => {
-    this.setState({currentHoveredPage: -1});
-  };
+    this.setState({ currentHoveredPage: -1 })
+  }
 
   hoverArrowOn = (arrow: string) => {
-    this.setState({currentHoveredArrow: arrow});
-  };
+    this.setState({ currentHoveredArrow: arrow })
+  }
 
   hoverArrowOff = () => {
-    this.setState({currentHoveredArrow: ''});
-  };
+    this.setState({ currentHoveredArrow: '' })
+  }
 
-  render () {
+  render() {
     if (this.props.numTotalItems <= this.props.numItemsPerPage) {
-      return null;
+      return null
     }
 
     return (
@@ -131,39 +131,41 @@ export class Paginator extends React.PureComponent<PaginatorProps, PaginatorStat
         id="paginatorDiv"
       >
         <div style={STYLES.pagerHolster}>
-          {(this.props.firstItemToDisplay > 0) &&
-            <span
-              style={{...STYLES.arrow, color: 'prev' === this.state.currentHoveredArrow && Palette.SUNSTONE}}
-              key="prev"
-              onClick={() => {
-                this.changeFirstItemToDisplay(Math.max(this.props.firstItemToDisplay - this.props.numItemsPerPage, 0));
-              }}
-              onMouseEnter={() => {
-                this.hoverArrowOn('prev');
-              }}
-              onMouseLeave={this.hoverArrowOff}
-            >
-              ←
-            </span>
-          }
+          {(this.props.firstItemToDisplay > 0)
+            && (
+              <span
+                style={{ ...STYLES.arrow, color: this.state.currentHoveredArrow === 'prev' && Palette.SUNSTONE }}
+                key="prev"
+                onClick={() => {
+                  this.changeFirstItemToDisplay(Math.max(this.props.firstItemToDisplay - this.props.numItemsPerPage, 0))
+                }}
+                onMouseEnter={() => {
+                  this.hoverArrowOn('prev')
+                }}
+                onMouseLeave={this.hoverArrowOff}
+              >
+                ←
+              </span>
+            )}
           {this.renderPaginationDots()}
-          {(this.props.firstItemToDisplay < this.props.numTotalItems - this.props.numItemsPerPage) &&
-            <span
-              style={{...STYLES.arrow, color: 'next' === this.state.currentHoveredArrow && Palette.SUNSTONE}}
-              key="next"
-              onClick={() => {
-                this.changeFirstItemToDisplay(Math.min(this.props.firstItemToDisplay + this.props.numItemsPerPage, this.props.numTotalItems));
-              }}
-              onMouseEnter={() => {
-                this.hoverArrowOn('next');
-              }}
-              onMouseLeave={this.hoverArrowOff}
-            >
-            →
-            </span>
-          }
+          {(this.props.firstItemToDisplay < this.props.numTotalItems - this.props.numItemsPerPage)
+            && (
+              <span
+                style={{ ...STYLES.arrow, color: this.state.currentHoveredArrow === 'next' && Palette.SUNSTONE }}
+                key="next"
+                onClick={() => {
+                  this.changeFirstItemToDisplay(Math.min(this.props.firstItemToDisplay + this.props.numItemsPerPage, this.props.numTotalItems))
+                }}
+                onMouseEnter={() => {
+                  this.hoverArrowOn('next')
+                }}
+                onMouseLeave={this.hoverArrowOff}
+              >
+                →
+              </span>
+            )}
         </div>
       </div>
-    );
+    )
   }
 }

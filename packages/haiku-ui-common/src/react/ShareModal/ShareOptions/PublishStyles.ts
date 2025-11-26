@@ -1,6 +1,6 @@
-import * as Color from 'color';
-import * as React from 'react';
-import Palette from '../../../Palette';
+import type * as React from 'react'
+import * as Color from 'color'
+import Palette from '../../../Palette'
 
 export const PUBLISH_SHARED: React.CSSProperties = {
   codebox: {
@@ -39,19 +39,19 @@ export const PUBLISH_SHARED: React.CSSProperties = {
     marginBottom: 12,
   },
   link: {
-    padding: '2px 16px',
-    cursor: 'pointer',
-    color: Color(Palette.ROCK).fade(0.5),
+    'padding': '2px 16px',
+    'cursor': 'pointer',
+    'color': Color(Palette.ROCK).fade(0.5),
     ':hover': {
       color: Color(Palette.ROCK).fade(0.2),
       backgroundColor: Color(Palette.LIGHTER_GRAY).fade(0.39),
     },
   },
   inlineLink: {
-    color: Color(Palette.ROCK).fade(0.2),
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    textDecoration: 'underline',
+    'color': Color(Palette.ROCK).fade(0.2),
+    'fontWeight': 'bold',
+    'cursor': 'pointer',
+    'textDecoration': 'underline',
     ':hover': {
       color: Color(Palette.ROCK).fade(0.3),
     },
@@ -85,4 +85,4 @@ export const PUBLISH_SHARED: React.CSSProperties = {
     display: 'inline-block',
     userSelect: 'none',
   },
-};
+}

@@ -4,9 +4,9 @@ export const EVALUATOR_STATES = {
   INFO: 3,
   WARN: 4,
   ERROR: 5,
-};
+}
 
-export const EDITOR_WIDTH = 610;
+export const EDITOR_WIDTH = 610
 
 export const AUTOCOMPLETION_ITEMS = [
   {
@@ -69,4 +69,4 @@ export const AUTOCOMPLETION_ITEMS = [
     label: 'getDefaultTimeline',
     insertText: 'this.getDefaultTimeline()',
   },
-];
+]

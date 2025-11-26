@@ -1,2 +1,3 @@
-import {cli} from './admin-cli';
-cli.run();
+import { cli } from './admin-cli'
+
+cli.run()

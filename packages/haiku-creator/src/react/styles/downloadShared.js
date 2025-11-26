@@ -1,6 +1,6 @@
-import * as Color from 'color';
-import {Palette } from 'haiku-ui-common';
-import {BTN_STYLES} from './btnShared.js';
+import * as Color from 'color'
+import { Palette } from 'haiku-ui-common'
+import { BTN_STYLES } from './btnShared.js'
 
 export const DOWNLOAD_STYLES = {
   container: {
@@ -51,4 +51,4 @@ export const DOWNLOAD_STYLES = {
   checkInput: {
     marginRight: 10,
   },
-};
+}

@@ -1,36 +1,36 @@
-import * as React from 'react';
-import {Palette} from 'haiku-ui-common';
-import {StatesSVG} from 'haiku-ui-common';
+import { Palette, StatesSVG } from 'haiku-ui-common'
+
+import * as React from 'react'
 
 export default class PropertyRowHeading extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.row.on('update', this.handleUpdate)
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (
-      what === 'row-hovered' ||
-      what === 'row-unhovered'
+      what === 'row-hovered'
+      || what === 'row-unhovered'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
   }
 
-  renderIcon () {
+  renderIcon() {
     if (this.props.row.isState()) {
       return (
         <span
@@ -39,21 +39,22 @@ export default class PropertyRowHeading extends React.Component {
             position: 'absolute',
             top: -7,
             left: 100,
-          }}>
+          }}
+        >
           <StatesSVG color={Palette.BLUE} />
         </span>
-      );
+      )
     }
 
-    return '';
+    return ''
   }
 
-  render () {
-    let fontSize = 10;
-    let marginTop = 0;
+  render() {
+    let fontSize = 10
+    let marginTop = 0
     if (this.props.humanName.length > 8) {
-      fontSize = 8;
-      marginTop = -7;
+      fontSize = 8
+      marginTop = -7
     }
 
     return (
@@ -67,12 +68,13 @@ export default class PropertyRowHeading extends React.Component {
           lineHeight: 1,
           right: 0,
           color: (this.props.row.isHovered())
-          ? Palette.SUNSTONE
-          : Palette.ROCK,
+            ? Palette.SUNSTONE
+            : Palette.ROCK,
           transform: this.props.humanName === 'background color'
-          ? 'translateY(-2px)'
-          : 'translateY(3px)',
-        }}>
+            ? 'translateY(-2px)'
+            : 'translateY(3px)',
+        }}
+      >
         {this.renderIcon()}
         <span
           draggable="false"
@@ -81,15 +83,16 @@ export default class PropertyRowHeading extends React.Component {
             display: 'inline-block',
             textAlign: 'right',
             marginTop,
-          }}>
+          }}
+        >
           {this.props.humanName}
         </span>
       </div>
-    );
+    )
   }
 }
 
 PropertyRowHeading.propTypes = {
   row: React.PropTypes.object.isRequired,
   humanName: React.PropTypes.string.isRequired,
-};
+}

@@ -1,43 +1,43 @@
-import * as React from 'react';
-import {parse} from '@babel/parser';
-import {EVALUATOR_STATES} from './constants';
-import {Palette } from 'haiku-ui-common';
+import { parse } from '@babel/parser'
+import { Palette } from 'haiku-ui-common'
+import * as React from 'react'
+import { EVALUATOR_STATES } from './constants'
 
 class SyntaxEvaluator extends React.PureComponent {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.evaluator = this.getDefaultEvaluator();
+    this.evaluator = this.getDefaultEvaluator()
   }
 
-  getEvalutatorStateColor (state) {
+  getEvalutatorStateColor(state) {
     switch (state) {
       case EVALUATOR_STATES.WARN:
-        return Palette.ORANGE;
+        return Palette.ORANGE
       case EVALUATOR_STATES.ERROR:
-        return Palette.RED;
+        return Palette.RED
       default:
-        return Palette.PALE_GRAY;
+        return Palette.PALE_GRAY
     }
   }
 
-  getDefaultEvaluator () {
+  getDefaultEvaluator() {
     return {
       text: null,
       state: EVALUATOR_STATES.OPEN,
-    };
+    }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    return nextProps.evaluate !== this.props.evaluate;
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.evaluate !== this.props.evaluate
   }
 
-  componentWillUpdate ({evaluate}) {
-    const evaluator = this.getDefaultEvaluator();
+  UNSAFE_componentWillUpdate({ evaluate }) {
+    const evaluator = this.getDefaultEvaluator()
 
     try {
       // Force strict mode on the block of code to be evaluated
-      const strictEvaluate = '"use strict";' + evaluate;
+      const strictEvaluate = `"use strict";${evaluate}`
       parse(
         strictEvaluate,
         {
@@ -45,17 +45,18 @@ class SyntaxEvaluator extends React.PureComponent {
           strictMode: true,
           allowReturnOutsideFunction: true,
         },
-      );
-    } catch (exception) {
-      evaluator.text = exception.message;
-      evaluator.state = EVALUATOR_STATES.ERROR;
+      )
+    }
+    catch (exception) {
+      evaluator.text = exception.message
+      evaluator.state = EVALUATOR_STATES.ERROR
     }
 
-    this.evaluator = evaluator;
-    this.props.onChange(evaluator);
+    this.evaluator = evaluator
+    this.props.onChange(evaluator)
   }
 
-  render () {
+  render() {
     return (
       <span
         style={{
@@ -65,13 +66,13 @@ class SyntaxEvaluator extends React.PureComponent {
       >
         {this.evaluator.text || 'No Errors'}
       </span>
-    );
+    )
   }
 }
 
 SyntaxEvaluator.propTypes = {
   style: React.PropTypes.object,
   evaluate: React.PropTypes.string.isRequired,
-};
+}
 
-export default SyntaxEvaluator;
+export default SyntaxEvaluator

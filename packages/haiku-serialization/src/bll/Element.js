@@ -1,19 +1,19 @@
-const lodash = require('lodash');
-const HaikuElement = require('@haiku/core/lib/HaikuElement').default;
-const Layout3D = require('@haiku/core/lib/Layout3D').default;
-const {cssQueryTree} = require('@haiku/core/lib/HaikuNode');
-const {default: composedTransformsToTimelineProperties} = require('haiku-common');
-const functionToRFO = require('@haiku/core/lib/reflection/functionToRFO').default;
-const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
-const KnownDOMEvents = require('@haiku/core/lib/renderers/dom/Events').default;
-const titlecase = require('titlecase');
-const decamelize = require('decamelize');
-const Matrix = require('gl-matrix');
-const polygonOverlap = require('polygon-overlap');
-const logger = require('./../utils/LoggerInstance');
-const BaseModel = require('./BaseModel');
-const TransformCache = require('./TransformCache');
-const {Experiment, experimentIsEnabled} = require('haiku-common');
+const lodash = require('lodash')
+const HaikuElement = require('@haiku/core/lib/HaikuElement').default
+const Layout3D = require('@haiku/core/lib/Layout3D').default
+const { cssQueryTree } = require('@haiku/core/lib/HaikuNode')
+const { default: composedTransformsToTimelineProperties } = require('haiku-common')
+const functionToRFO = require('@haiku/core/lib/reflection/functionToRFO').default
+const { LAYOUT_3D_SCHEMA } = require('@haiku/core/lib/HaikuComponent')
+const KnownDOMEvents = require('@haiku/core/lib/renderers/dom/Events').default
+const decamelize = require('decamelize')
+const Matrix = require('gl-matrix')
+const { Experiment, experimentIsEnabled } = require('haiku-common')
+const polygonOverlap = require('polygon-overlap')
+const titlecase = require('titlecase')
+const logger = require('./../utils/LoggerInstance')
+const BaseModel = require('./BaseModel')
+const TransformCache = require('./TransformCache')
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't
@@ -27,7 +27,7 @@ const DEFABLE_TAG_NAMES = {
   radialGradient: true,
   solidcolor: true,
   filter: true,
-};
+}
 
 /**
  * Attributes which only show on SVG and shouldn't be copied during ungrouping.
@@ -42,30 +42,30 @@ const SVG_ONLY_ATTRIBUTES = {
   viewBox: true,
   xmlns: true,
   width: true,
-};
-
-const HAIKU_ID_ATTRIBUTE = 'haiku-id';
-const HAIKU_TITLE_ATTRIBUTE = 'haiku-title';
-const HAIKU_LOCKED_ATTRIBUTE = 'haiku-locked';
-const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
-const SYNC_LOCKED_ID_SUFFIX = '#lock';
-const TIMELINE_EVENT_PREFIX = 'timeline:';
-
-const EMPTY_ELEMENT = {elementName: 'div', attributes: {}, children: []};
-
-function isNumeric (n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function getAncestry (ancestors, elementInstance) {
-  ancestors.unshift(elementInstance);
+const HAIKU_ID_ATTRIBUTE = 'haiku-id'
+const HAIKU_TITLE_ATTRIBUTE = 'haiku-title'
+const HAIKU_LOCKED_ATTRIBUTE = 'haiku-locked'
+const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source'
+const SYNC_LOCKED_ID_SUFFIX = '#lock'
+const TIMELINE_EVENT_PREFIX = 'timeline:'
+
+const EMPTY_ELEMENT = { elementName: 'div', attributes: {}, children: [] }
+
+function isNumeric(n) {
+  return !isNaN(Number.parseFloat(n)) && isFinite(n)
+}
+
+function getAncestry(ancestors, elementInstance) {
+  ancestors.unshift(elementInstance)
   if (elementInstance.parent) {
-    getAncestry(ancestors, elementInstance.parent);
+    getAncestry(ancestors, elementInstance.parent)
   }
-  return ancestors;
+  return ancestors
 }
 
-const cleanHaikuId = (str) => titlecase(decamelize((str + '').trim()).replace(/[\W_:]/g, ' '));
+const cleanHaikuId = str => titlecase(decamelize((`${str}`).trim()).replace(/[\W_]/g, ' '))
 
 /**
  * @class Element
@@ -78,103 +78,104 @@ const cleanHaikuId = (str) => titlecase(decamelize((str + '').trim()).replace(/[
  *    - Managing addressable properties for the element in component's context.
  */
 class Element extends BaseModel {
-  constructor (props, opts) {
-    super(props, opts);
+  constructor(props, opts) {
+    super(props, opts)
 
-    this._isHovered = false;
-    this._isSelected = false;
-    this._clusterAndPropertyRows = [];
-    this._headingRow = null;
+    this._isHovered = false
+    this._isSelected = false
+    this._clusterAndPropertyRows = []
+    this._headingRow = null
 
-    this.transformCache = new TransformCache(this);
+    this.transformCache = new TransformCache(this)
   }
 
-  $el () {
-    const staticTemplateNode = this.getStaticTemplateNode();
+  $el() {
+    const staticTemplateNode = this.getStaticTemplateNode()
     if (typeof staticTemplateNode === 'string') {
-      return null;
+      return null
     }
-    const haikuId = staticTemplateNode.attributes && staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE];
-    return Element.findDomNode(haikuId, this.component.getMount().$el());
+    const haikuId = staticTemplateNode.attributes && staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE]
+    return Element.findDomNode(haikuId, this.component.getMount().$el())
   }
 
-  afterInitialize () {
+  afterInitialize() {
     // Make sure we add to the appropriate collections to avoid unexpected state issues
     if (!this._visibleProperties) {
-      this._visibleProperties = {};
+      this._visibleProperties = {}
     }
   }
 
-  oneListener ($el, uid, type, fn) {
+  oneListener($el, uid, type, fn) {
     if (!Element.cache.eventListeners[uid]) {
-      Element.cache.eventListeners[uid] = {};
+      Element.cache.eventListeners[uid] = {}
     }
     if (Element.cache.eventListeners[uid][type]) {
-      $el.removeEventListener(type, Element.cache.eventListeners[uid][type]);
-      delete Element.cache.eventListeners[uid][type];
+      $el.removeEventListener(type, Element.cache.eventListeners[uid][type])
+      delete Element.cache.eventListeners[uid][type]
     }
-    Element.cache.eventListeners[uid][type] = fn;
-    $el.addEventListener(type, fn);
-    return fn;
+    Element.cache.eventListeners[uid][type] = fn
+    $el.addEventListener(type, fn)
+    return fn
   }
 
-  hoverOn (metadata, softly = false) {
+  hoverOn(metadata, softly = false) {
     if (!this._isHovered) {
-      this.cache.clear();
-      this._isHovered = true;
+      this.cache.clear()
+      this._isHovered = true
 
       if (!softly) {
-        this.emit('update', 'element-hovered', metadata);
+        this.emit('update', 'element-hovered', metadata)
       }
     }
-    return this;
+    return this
   }
 
-  hoverOnSoftly (metadata) {
-    return this.hoverOn(metadata, true);
+  hoverOnSoftly(metadata) {
+    return this.hoverOn(metadata, true)
   }
 
-  hoverOff (metadata, softly = false) {
+  hoverOff(metadata, softly = false) {
     if (this._isHovered) {
-      this.cache.clear();
-      this._isHovered = false;
+      this.cache.clear()
+      this._isHovered = false
 
       if (!softly) {
-        this.emit('update', 'element-unhovered', metadata);
+        this.emit('update', 'element-unhovered', metadata)
       }
     }
   }
 
-  hoverOffSoftly (metadata) {
-    return this.hoverOff(metadata, true);
+  hoverOffSoftly(metadata) {
+    return this.hoverOff(metadata, true)
   }
 
-  isHovered () {
-    return this._isHovered;
+  isHovered() {
+    return this._isHovered
   }
 
-  isShimElement () {
-    return this.parent && this.parent.getSource() === '<group>';
+  isShimElement() {
+    return this.parent && this.parent.getSource() === '<group>'
   }
 
-  select (metadata, softly = false) {
+  select(metadata, softly = false) {
     if (this.isLocked()) {
-      return;
+      return
     }
 
     if (!this._isSelected) {
-      this._isSelected = true;
+      this._isSelected = true
 
       if (softly) {
-        this.emit('update', 'element-selected-softly', metadata);
-      } else {
+        this.emit('update', 'element-selected-softly', metadata)
+      }
+      else {
         // Roundabout! Note that rows, when selected, will select their corresponding element
-        const row = this.getHeadingRow();
+        const row = this.getHeadingRow()
         if (row) {
-          row.expandAndSelect(metadata);
+          row.expandAndSelect(metadata)
         }
 
-        this.emit('update', 'element-selected', metadata);
+        this.emit('update', 'element-selected', metadata)
       }
     }
   }
@@ -184,28 +185,29 @@ class Element extends BaseModel {
    * @description Like select, but emit a different event and don't select the row.
    * Mainly used for multi-selection in glass-only context.
    */
-  selectSoftly (metadata) {
-    return this.select(metadata, true);
+  selectSoftly(metadata) {
+    return this.select(metadata, true)
   }
 
-  unselect (metadata, softly = false) {
+  unselect(metadata, softly = false) {
     if (this._isSelected) {
-      this._isSelected = false;
+      this._isSelected = false
 
       if (softly) {
-        this.emit('update', 'element-unselected-softly', metadata);
-      } else {
+        this.emit('update', 'element-unselected-softly', metadata)
+      }
+      else {
         // Roundabout! Note that rows, when deselected, will deselect their corresponding element
-        const row = this.getHeadingRow();
+        const row = this.getHeadingRow()
         if (row && row.isSelected()) {
-          row.deselect(metadata);
+          row.deselect(metadata)
         }
 
-        this.emit('update', 'element-unselected', metadata);
+        this.emit('update', 'element-unselected', metadata)
       }
 
       // #FIXME: this is a bit overzealous.
-      ElementSelectionProxy.purge();
+      ElementSelectionProxy.purge()
     }
   }
 
@@ -214,146 +216,146 @@ class Element extends BaseModel {
    * @description Like unselect, but emit a different event and don't select the row.
    * Mainly used for multi-selection in glass-only context.
    */
-  unselectSoftly (metadata) {
-    return this.unselect(metadata, true);
+  unselectSoftly(metadata) {
+    return this.unselect(metadata, true)
   }
 
-  getHeadingRow () {
-    return this._headingRow;
+  getHeadingRow() {
+    return this._headingRow
   }
 
-  getPropertyRowByPropertyName (propertyName) {
+  getPropertyRowByPropertyName(propertyName) {
     for (let i = 0; i < this._clusterAndPropertyRows.length; i++) {
-      const candidateRow = this._clusterAndPropertyRows[i];
+      const candidateRow = this._clusterAndPropertyRows[i]
       if (candidateRow.isPropertyOfName(propertyName)) {
-        return candidateRow;
+        return candidateRow
       }
     }
   }
 
-  isSelected () {
-    return this._isSelected;
+  isSelected() {
+    return this._isSelected
   }
 
-  isLocked () {
-    return !!this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE];
+  isLocked() {
+    return !!this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE]
   }
 
-  isLockedViaParents () {
+  isLockedViaParents() {
     // tslint:disable-next-line:no-this-assignment
-    let p = this;
+    let p = this
     while (p) {
       if (p.isLocked()) {
-        return true;
+        return true
       }
-      p = p.parent;
+      p = p.parent
     }
-    return false;
+    return false
   }
 
-  toggleLocked (metadata, cb) {
-    this.component.setLockedStatusForComponent(this.getComponentId(), !this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE], metadata, cb);
-    this.emit('update', 'element-locked-toggle');
+  toggleLocked(metadata, cb) {
+    this.component.setLockedStatusForComponent(this.getComponentId(), !this.getStaticTemplateNode().attributes[HAIKU_LOCKED_ATTRIBUTE], metadata, cb)
+    this.emit('update', 'element-locked-toggle')
   }
 
-  getStaticTemplateNode () {
-    return this.component.locateTemplateNodeByComponentId(this.componentId);
+  getStaticTemplateNode() {
+    return this.component.locateTemplateNodeByComponentId(this.componentId)
   }
 
-  getCoreHostComponentInstance () {
-    return this.component.$instance;
+  getCoreHostComponentInstance() {
+    return this.component.$instance
   }
 
-  copy () {
-    return this.clip();
+  copy() {
+    return this.clip()
   }
 
-  clip () {
-    return this.buildClipboardPayload();
+  clip() {
+    return this.buildClipboardPayload()
   }
 
-  getVisibleEvents () {
+  getVisibleEvents() {
     return Object.keys(
       this.getReifiedEventHandlers(),
-    ).filter((handler) => !this.isTimelineEvent(handler));
+    ).filter(handler => !this.isTimelineEvent(handler))
   }
 
-  getTimelineEvents () {
+  getTimelineEvents() {
     return Object.keys(
       this.getReifiedEventHandlers(),
-    ).filter((handler) => this.isTimelineEvent(handler));
+    ).filter(handler => this.isTimelineEvent(handler))
   }
 
-  isTimelineEvent (eventName) {
-    return eventName.includes(TIMELINE_EVENT_PREFIX);
+  isTimelineEvent(eventName) {
+    return eventName.includes(TIMELINE_EVENT_PREFIX)
   }
 
-  hasEventHandlers () {
-    return !lodash.isEmpty(this.getReifiedEventHandlers());
+  hasEventHandlers() {
+    return !lodash.isEmpty(this.getReifiedEventHandlers())
   }
 
-  hasVisibleEventHandlers () {
-    return !lodash.isEmpty(this.getVisibleEvents());
+  hasVisibleEventHandlers() {
+    return !lodash.isEmpty(this.getVisibleEvents())
   }
 
-  getReifiedEventHandlers () {
-    const bytecode = this.component.getReifiedBytecode();
-    const selector = 'haiku:' + this.getComponentId();
+  getReifiedEventHandlers() {
+    const bytecode = this.component.getReifiedBytecode()
+    const selector = `haiku:${this.getComponentId()}`
     if (!bytecode.eventHandlers) {
-      bytecode.eventHandlers = {};
+      bytecode.eventHandlers = {}
     }
-    return bytecode.eventHandlers[selector] || {};
+    return bytecode.eventHandlers[selector] || {}
   }
 
-  getReifiedEventHandler (eventName) {
-    return this.getReifiedEventHandlers()[eventName];
+  getReifiedEventHandler(eventName) {
+    return this.getReifiedEventHandlers()[eventName]
   }
 
-  getEventHandlerSaveStatus (eventName) {
+  getEventHandlerSaveStatus(eventName) {
     if (!this._eventHandlerSaves) {
-      this._eventHandlerSaves = {};
+      this._eventHandlerSaves = {}
     }
-    return this._eventHandlerSaves[eventName];
+    return this._eventHandlerSaves[eventName]
   }
 
-  setEventHandlerSaveStatus (eventName, statusValue) {
+  setEventHandlerSaveStatus(eventName, statusValue) {
     if (!this._eventHandlerSaves) {
-      this._eventHandlerSaves = {};
+      this._eventHandlerSaves = {}
     }
-    this._eventHandlerSaves[eventName] = statusValue;
-    this.emit('update', 'element-event-handler-save-status-update');
-    return this;
+    this._eventHandlerSaves[eventName] = statusValue
+    this.emit('update', 'element-event-handler-save-status-update')
+    return this
   }
 
-  getApplicableEventHandlerOptionsList () {
-    const options = [];
+  getApplicableEventHandlerOptionsList() {
+    const options = []
 
     // Track which ones we've already accounted for in the 'known events' lists so that
     // we only display those that aren't accounted for under the 'custom events' list
-    const predefined = {};
+    const predefined = {}
 
     Element.HIGHER_ORDER_EVENTS.forEach((spec) => {
-      predefined[spec.value] = true;
-    });
+      predefined[spec.value] = true
+    })
 
     options.push({
       label: 'Favorites',
       options: Element.HIGHER_ORDER_EVENTS,
-    });
+    })
 
-    const handlers = this.getReifiedEventHandlers();
+    const handlers = this.getReifiedEventHandlers()
 
     for (const category in KnownDOMEvents) {
-      const suboptions = [];
+      const suboptions = []
 
       options.push({
         label: category,
         options: suboptions,
-      });
+      })
 
       for (const name in KnownDOMEvents[category]) {
-        const candidate = KnownDOMEvents[category][name];
-        predefined[name] = true;
+        const candidate = KnownDOMEvents[category][name]
+        predefined[name] = true
 
         // If this is whitelisted to appear in the menu, show it.
         // If not, show it only if there is a handler explicitly defined for it.
@@ -361,36 +363,36 @@ class Element extends BaseModel {
           suboptions.push({
             label: candidate.human || name,
             value: name,
-          });
+          })
         }
       }
     }
 
     Element.COMPONENT_EVENTS.forEach((spec) => {
-      predefined[spec.value] = true;
-    });
+      predefined[spec.value] = true
+    })
 
     options.push({
       label: 'Component/Lifecycle',
       options: Element.COMPONENT_EVENTS,
-    });
+    })
 
-    const customEvents = [];
+    const customEvents = []
     for (const name in handlers) {
       if (!this.isTimelineEvent(name) && !predefined[name]) {
         customEvents.push({
           label: name,
           value: name,
-        });
+        })
       }
     }
 
     options.push({
       label: 'Custom Events',
       options: customEvents,
-    });
+    })
 
-    return options;
+    return options
   }
 
   /**
@@ -399,30 +401,30 @@ class Element extends BaseModel {
    * information to be able to paste (instantiate with overrides) or delete it if received as
    * part of a pasteThing command.
    */
-  buildClipboardPayload () {
-    const originalNode = this.getStaticTemplateNode();
+  buildClipboardPayload() {
+    const originalNode = this.getStaticTemplateNode()
 
     // These are cloned because we may mutate their references in place when we paste
     const clonedNode = lodash.cloneDeep(
       Template.manaWithOnlyStandardProps(originalNode, true),
-    );
+    )
 
     const clonedBytecode = lodash.cloneDeepWith(
       this.component.fetchActiveBytecodeFile().getReifiedDecycledBytecode(),
       (value) => {
-        if (value instanceof Function && value.injectee) {
-          return functionToRFO(value);
+        if (typeof value === 'function' && value.injectee) {
+          return functionToRFO(value)
         }
       },
-    );
+    )
 
-    const eventHandlers = Bytecode.getAppliedEventHandlersForNode({}, clonedBytecode, clonedNode);
+    const eventHandlers = Bytecode.getAppliedEventHandlersForNode({}, clonedBytecode, clonedNode)
 
     Object.keys(eventHandlers).forEach((element) => {
       Object.keys(eventHandlers[element]).forEach((event) => {
-        eventHandlers[element][event].handler = functionToRFO(eventHandlers[element][event].handler);
-      });
-    });
+        eventHandlers[element][event].handler = functionToRFO(eventHandlers[element][event].handler)
+      })
+    })
 
     return {
       kind: 'bytecode',
@@ -431,44 +433,44 @@ class Element extends BaseModel {
         timelines: Bytecode.getAppliedTimelinesForNode({}, clonedBytecode, clonedNode),
         template: clonedNode,
       },
-    };
+    }
   }
 
-  getQualifiedBytecode () {
+  getQualifiedBytecode() {
     // Grab the 'host' bytecode and pull any control structures applied to us from it
     // These are cloned because we may mutate their references in place if we instantiate it
-    const bytecode = Bytecode.clone(this.component.getReifiedBytecode());
+    const bytecode = Bytecode.clone(this.component.getReifiedBytecode())
     const template = Template.clone(
       {},
       Template.manaWithOnlyStandardProps(this.getStaticTemplateNode(), false),
-    );
-    const states = Bytecode.getAppliedStatesForNode({}, bytecode, template);
-    const helpers = Bytecode.getAppliedHelpersForNode({}, bytecode, template);
-    const timelines = Bytecode.getAppliedTimelinesForNode({}, bytecode, template);
-    const eventHandlers = Bytecode.getAppliedEventHandlersForNode({}, bytecode, template);
+    )
+    const states = Bytecode.getAppliedStatesForNode({}, bytecode, template)
+    const helpers = Bytecode.getAppliedHelpersForNode({}, bytecode, template)
+    const timelines = Bytecode.getAppliedTimelinesForNode({}, bytecode, template)
+    const eventHandlers = Bytecode.getAppliedEventHandlersForNode({}, bytecode, template)
     return {
       helpers,
       states,
       timelines,
       eventHandlers,
       template,
-    };
-  }
-
-  isSyncLocked () {
-    const node = this.getStaticTemplateNode();
-    if (node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
-      return node.attributes[HAIKU_SOURCE_ATTRIBUTE].endsWith(SYNC_LOCKED_ID_SUFFIX);
     }
-    return false;
   }
 
-  getStackingInfo () {
+  isSyncLocked() {
+    const node = this.getStaticTemplateNode()
+    if (node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]) {
+      return node.attributes[HAIKU_SOURCE_ATTRIBUTE].endsWith(SYNC_LOCKED_ID_SUFFIX)
+    }
+    return false
+  }
+
+  getStackingInfo() {
     if (!this.parent) {
-      return;
+      return
     }
     if (!this.parent.getStaticTemplateNode()) {
-      return;
+      return
     }
     return Template.getStackingInfo(
       this.component.getReifiedBytecode(),
@@ -476,61 +478,61 @@ class Element extends BaseModel {
       // TODO: If we ever support time-bound stacking, change these to their dynamic counterparts
       this.component.getInstantiationTimelineName(),
       this.component.getInstantiationTimelineTime(),
-    );
+    )
   }
 
-  isAtFront () {
-    const stackingInfo = this.getStackingInfo();
+  isAtFront() {
+    const stackingInfo = this.getStackingInfo()
     if (!stackingInfo) {
-      return true;
+      return true
     } // Can happen with artboard
-    const myIndex = lodash.findIndex(stackingInfo, {haikuId: this.getComponentId()});
-    return myIndex === stackingInfo.length - 1;
+    const myIndex = lodash.findIndex(stackingInfo, { haikuId: this.getComponentId() })
+    return myIndex === stackingInfo.length - 1
   }
 
-  isAtBack () {
-    const stackingInfo = this.getStackingInfo();
+  isAtBack() {
+    const stackingInfo = this.getStackingInfo()
     if (!stackingInfo) {
-      return true;
+      return true
     } // Can happen with artboard
-    const myIndex = lodash.findIndex(stackingInfo, {haikuId: this.getComponentId()});
-    return myIndex === 0;
+    const myIndex = lodash.findIndex(stackingInfo, { haikuId: this.getComponentId() })
+    return myIndex === 0
   }
 
-  sendToBack () {
+  sendToBack() {
     this.component.zMoveToBack(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
-        return void (0);
+        return void (0)
       }
-    });
-    this.emit('update', 'element-send-to-back');
+    })
+    this.emit('update', 'element-send-to-back')
   }
 
-  bringToFront () {
+  bringToFront() {
     this.component.zMoveToFront(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
-        return void (0);
+        return void (0)
       }
-    });
-    this.emit('update', 'element-bring-to-front');
+    })
+    this.emit('update', 'element-bring-to-front')
   }
 
-  bringForward () {
+  bringForward() {
     this.component.zMoveForward(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
-        return void (0);
+        return void (0)
       }
-    });
-    this.emit('update', 'element-bring-forward');
+    })
+    this.emit('update', 'element-bring-forward')
   }
 
-  sendBackward () {
+  sendBackward() {
     this.component.zMoveBackward(this.getComponentId(), this.component.getCurrentTimelineName(), 0, this.component.project.getMetadata(), (err) => {
       if (err) {
-        return void (0);
+        return void (0)
       }
-    });
-    this.emit('update', 'element-send-backward');
+    })
+    this.emit('update', 'element-send-backward')
   }
 
   // marginX and marginY represent the distance from the container
@@ -538,32 +540,32 @@ class Element extends BaseModel {
   // stage.
   // since this is dependent on artboard + window dimensions,
   // this needs to be passed in from the artboard.
-  getBoundingClientRect (marginX, marginY) {
-    const points = this.getBoxPointsTransformed();
+  getBoundingClientRect(marginX, marginY) {
+    const points = this.getBoxPointsTransformed()
 
     // account for stage margin to provide a screen-space bbox
     if (marginX !== undefined && marginY !== undefined) {
-      const mat = Matrix.mat2d.create();
-      const margin = Matrix.vec2.create();
+      const mat = Matrix.mat2d.create()
+      const margin = Matrix.vec2.create()
 
-      Matrix.vec2.set(margin, -marginX, -marginY);
-      Matrix.mat2d.translate(mat, mat, margin);
+      Matrix.vec2.set(margin, -marginX, -marginY)
+      Matrix.mat2d.translate(mat, mat, margin)
 
       for (let i = 0; i < points.length; i++) {
-        const pointInput = Matrix.vec2.create();
-        const pointOutput = Matrix.vec2.create();
-        Matrix.vec2.set(pointInput, points[i].x, points[i].y);
-        Matrix.vec2.transformMat2d(pointOutput, pointInput, mat);
-        points[i] = {x: pointOutput[0], y: pointOutput[1]};
+        const pointInput = Matrix.vec2.create()
+        const pointOutput = Matrix.vec2.create()
+        Matrix.vec2.set(pointInput, points[i].x, points[i].y)
+        Matrix.vec2.transformMat2d(pointOutput, pointInput, mat)
+        points[i] = { x: pointOutput[0], y: pointOutput[1] }
       }
     }
 
-    const top = Math.min(points[0].y, points[2].y, points[6].y, points[8].y);
-    const bottom = Math.max(points[0].y, points[2].y, points[6].y, points[8].y);
-    const left = Math.min(points[0].x, points[2].x, points[6].x, points[8].x);
-    const right = Math.max(points[0].x, points[2].x, points[6].x, points[8].x);
-    const height = Math.abs(bottom - top);
-    const width = Math.abs(right - left);
+    const top = Math.min(points[0].y, points[2].y, points[6].y, points[8].y)
+    const bottom = Math.max(points[0].y, points[2].y, points[6].y, points[8].y)
+    const left = Math.min(points[0].x, points[2].x, points[6].x, points[8].x)
+    const right = Math.max(points[0].x, points[2].x, points[6].x, points[8].x)
+    const height = Math.abs(bottom - top)
+    const width = Math.abs(right - left)
 
     return {
       top,
@@ -572,29 +574,29 @@ class Element extends BaseModel {
       left,
       width,
       height,
-    };
-  }
-
-  isAutoSizeX () {
-    const layout = this.getLayoutSpec();
-    return typeof layout.sizeAbsolute.x !== 'number';
-  }
-
-  isAutoSizeY () {
-    const layout = this.getLayoutSpec();
-    return typeof layout.sizeAbsolute.y !== 'number';
-  }
-
-  getComputedSize () {
-    if (this.isTextNode()) {
-      return this.parent.getComputedSize();
     }
-    return this.getHaikuElement().size;
   }
 
-  getComputedLayout () {
-    const targetNode = this.getLiveRenderedNode() || {}; // Fallback in case of render race
-    const parentNode = (this.parent && this.parent.getLiveRenderedNode()) || {}; // Fallback in case of render race
+  isAutoSizeX() {
+    const layout = this.getLayoutSpec()
+    return typeof layout.sizeAbsolute.x !== 'number'
+  }
+
+  isAutoSizeY() {
+    const layout = this.getLayoutSpec()
+    return typeof layout.sizeAbsolute.y !== 'number'
+  }
+
+  getComputedSize() {
+    if (this.isTextNode()) {
+      return this.parent.getComputedSize()
+    }
+    return this.getHaikuElement().size
+  }
+
+  getComputedLayout() {
+    const targetNode = this.getLiveRenderedNode() || {} // Fallback in case of render race
+    const parentNode = (this.parent && this.parent.getLiveRenderedNode()) || {} // Fallback in case of render race
 
     return HaikuElement.computeLayout(
       { // targetNode
@@ -625,29 +627,29 @@ class Element extends BaseModel {
         children: parentNode.children,
         __memory: parentNode.__memory,
       },
-    );
+    )
   }
 
-  getLayoutSpec () {
-    const bytecode = this.component.getReifiedBytecode();
-    const hostInstance = this.component.$instance;
+  getLayoutSpec() {
+    const bytecode = this.component.getReifiedBytecode()
+    const hostInstance = this.component.$instance
 
     // Race condition when converting elements on stage to components
     if (!hostInstance) {
-      return Layout3D.createLayoutSpec();
+      return Layout3D.createLayoutSpec()
     }
 
-    const componentId = this.getComponentId();
-    const elementName = Element.safeElementName(this.getStaticTemplateNode());
-    const elementNode = hostInstance.findElementsByHaikuId(componentId)[0];
-    const timelineName = this.component.getCurrentTimelineName();
-    const timelineTime = this.component.getCurrentTimelineTime();
+    const componentId = this.getComponentId()
+    const elementName = Element.safeElementName(this.getStaticTemplateNode())
+    const elementNode = hostInstance.findElementsByHaikuId(componentId)[0]
+    const timelineName = this.component.getCurrentTimelineName()
+    const timelineTime = this.component.getCurrentTimelineTime()
 
     const propertiesBase = TimelineProperty.getPropertiesBase(
       bytecode.timelines,
       timelineName,
       componentId,
-    ) || {};
+    ) || {}
 
     const grabValue = (outputName) => {
       const {
@@ -661,17 +663,17 @@ class Element extends BaseModel {
         timelineTime,
         !hostInstance.shouldPerformFullFlush(), // isPatchOperation
         true, // skipCache
-      );
+      )
 
       if (computedValue === undefined || computedValue === null) {
         return TimelineProperty.getFallbackValue(
           elementName,
           outputName,
-        );
+        )
       }
 
-      return computedValue;
-    };
+      return computedValue
+    }
 
     return {
       shown: grabValue('shown'),
@@ -726,81 +728,87 @@ class Element extends BaseModel {
         y: grabValue('sizeAbsolute.y'),
         z: grabValue('sizeAbsolute.z'),
       },
-    };
+    }
   }
 
-  getBoundingBoxPoints () {
-    const layout = this.getComputedLayout();
-    const w = layout.size.x;
-    const h = layout.size.y;
+  getBoundingBoxPoints() {
+    const layout = this.getComputedLayout()
+    const w = layout.size.x
+    const h = layout.size.y
     return [
-      {x: 0, y: 0, z: 0}, {x: w / 2, y: 0, z: 0}, {x: w, y: 0, z: 0},
-      {x: 0, y: h / 2, z: 0}, {x: w / 2, y: h / 2, z: 0}, {x: w, y: h / 2, z: 0},
-      {x: 0, y: h, z: 0}, {x: w / 2, y: h, z: 0}, {x: w, y: h, z: 0},
-    ];
+      { x: 0, y: 0, z: 0 },
+      { x: w / 2, y: 0, z: 0 },
+      { x: w, y: 0, z: 0 },
+      { x: 0, y: h / 2, z: 0 },
+      { x: w / 2, y: h / 2, z: 0 },
+      { x: w, y: h / 2, z: 0 },
+      { x: 0, y: h, z: 0 },
+      { x: w / 2, y: h, z: 0 },
+      { x: w, y: h, z: 0 },
+    ]
   }
 
-  getBoxPointsTransformed () {
+  getBoxPointsTransformed() {
     return HaikuElement.transformPointsInPlace(
       this.getBoundingBoxPoints(),
       this.getOriginOffsetComposedMatrix(),
-    );
+    )
   }
 
-  getOriginNotTransformed () {
+  getOriginNotTransformed() {
     return this.cache.fetch('getOriginNotTransformed', () => {
-      const layout = this.getComputedLayout();
+      const layout = this.getComputedLayout()
       return {
         x: layout.size.x * layout.origin.x,
         y: layout.size.y * layout.origin.y,
         z: layout.size.z * layout.origin.z,
-      };
-    });
+      }
+    })
   }
 
-  getOriginTransformed () {
+  getOriginTransformed() {
     return this.cache.fetch('getOriginTransformed', () => {
       return HaikuElement.transformPointInPlace(
         this.getOriginNotTransformed(),
         this.getOriginOffsetComposedMatrix(),
-      );
-    });
+      )
+    })
   }
 
-  getOriginOffsetComposedMatrix () {
+  getOriginOffsetComposedMatrix() {
     return this.cache.fetch('getOriginOffsetComposedMatrix', () => {
       return Layout3D.multiplyArrayOfMatrices(this.getComputedLayoutAncestry().reverse().map(
-        (layout) => layout.matrix,
-      ));
-    });
+        layout => layout.matrix,
+      ))
+    })
   }
 
-  getAncestry () {
-    const ancestors = []; // We'll build a list with the original ancestor first and our node last
-    getAncestry(ancestors, this);
-    return ancestors;
+  getAncestry() {
+    const ancestors = [] // We'll build a list with the original ancestor first and our node last
+    getAncestry(ancestors, this)
+    return ancestors
   }
 
-  getComputedLayoutAncestry () {
+  getComputedLayoutAncestry() {
     return this.getAncestry().map((ancestor) => {
-      return ancestor.getComputedLayout();
-    });
+      return ancestor.getComputedLayout()
+    })
   }
 
-  getPropertyKeyframesObject (propertyName) {
-    const bytecode = this.component.getReifiedBytecode();
+  getPropertyKeyframesObject(propertyName) {
+    const bytecode = this.component.getReifiedBytecode()
     return TimelineProperty.getPropertySegmentsBase(
       bytecode.timelines,
       this.component.getCurrentTimelineName(),
       this.getComponentId(),
       propertyName,
-    );
+    )
   }
 
-  computePropertyValue (propertyName, fallbackValue) {
-    const bytecode = this.component.getReifiedBytecode();
-    const host = this.component.$instance;
-    const states = (host && host.getStates()) || {};
+  computePropertyValue(propertyName, fallbackValue) {
+    const bytecode = this.component.getReifiedBytecode()
+    const host = this.component.$instance
+    const states = (host && host.getStates()) || {}
     const computed = TimelineProperty.getComputedValue(
       this.getComponentId(),
       Element.safeElementName(
@@ -813,172 +821,173 @@ class Element extends BaseModel {
       bytecode,
       host,
       states,
-    );
+    )
     // Re: the scale NaN/Infinity issue on a freshly instantiated component module,
     // The problem is probably upstream of here in core or ActiveComponent
-    return computed;
+    return computed
   }
 
-  computePropertyGroupValueFromGroupDelta (propertyGroupDelta) {
-    const propertyGroupValue = {};
+  computePropertyGroupValueFromGroupDelta(propertyGroupDelta) {
+    const propertyGroupValue = {}
 
     for (const propertyName in propertyGroupDelta) {
-      const existingPropertyValue = this.computePropertyValue(propertyName, 0);
-      const deltaPropertyValue = propertyGroupDelta[propertyName].value;
+      const existingPropertyValue = this.computePropertyValue(propertyName, 0)
+      const deltaPropertyValue = propertyGroupDelta[propertyName].value
 
       if (isNumeric(existingPropertyValue) && isNumeric(deltaPropertyValue)) {
         propertyGroupValue[propertyName] = {
           value: MathUtils.rounded(existingPropertyValue + deltaPropertyValue),
-        };
-      } else {
+        }
+      }
+      else {
         propertyGroupValue[propertyName] = {
           value: existingPropertyValue,
-        };
+        }
       }
     }
 
-    return propertyGroupValue;
+    return propertyGroupValue
   }
 
-  remove () {
-    this.destroy();
+  remove() {
+    this.destroy()
 
-    const row = this.getHeadingRow();
+    const row = this.getHeadingRow()
     if (row) {
-      row.delete();
+      row.delete()
     }
 
-    this.emit('update', 'element-removed');
+    this.emit('update', 'element-removed')
   }
 
-  isRepeater () {
-    const rkfs = this.getRepeaterKeyframes();
-    return !!(rkfs && Object.keys(rkfs).length > 0);
+  isRepeater() {
+    const rkfs = this.getRepeaterKeyframes()
+    return !!(rkfs && Object.keys(rkfs).length > 0)
   }
 
-  getRepeaterKeyframes () {
-    return this.getPropertyKeyframesObject('controlFlow.repeat');
+  getRepeaterKeyframes() {
+    return this.getPropertyKeyframesObject('controlFlow.repeat')
   }
 
-  isTextNode () {
-    return typeof this.getStaticTemplateNode() === 'string';
+  isTextNode() {
+    return typeof this.getStaticTemplateNode() === 'string'
   }
 
-  isComponent () {
-    return !!this.getHostedComponentBytecode();
+  isComponent() {
+    return !!this.getHostedComponentBytecode()
   }
 
-  isNonRenderedComponent () {
-    const bytecode = this.getHostedComponentBytecode();
+  isNonRenderedComponent() {
+    const bytecode = this.getHostedComponentBytecode()
     if (!bytecode) { // Not even a component
-      return false;
+      return false
     }
     if (!bytecode.metadata) {
-      return false;
+      return false
     }
-    return !!bytecode.metadata.nonrendered;
+    return !!bytecode.metadata.nonrendered
   }
 
-  isExternalComponent () {
+  isExternalComponent() {
     if (!this.isComponent()) {
-      return false;
+      return false
     }
-    return !this.isLocalComponent();
+    return !this.isLocalComponent()
   }
 
-  isLocalComponent () {
+  isLocalComponent() {
     if (!this.isComponent()) {
-      return false;
+      return false
     }
-    const sourceAttr = this.getSource();
+    const sourceAttr = this.getSource()
     // Like npm, assume dot-paths equate to a local component
-    return sourceAttr && sourceAttr[0] === '.';
+    return sourceAttr && sourceAttr[0] === '.'
   }
 
-  getSource () {
-    const node = this.getStaticTemplateNode();
-    return node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE];
+  getSource() {
+    const node = this.getStaticTemplateNode()
+    return node && node.attributes && node.attributes[HAIKU_SOURCE_ATTRIBUTE]
   }
 
-  getHostedComponentBytecode () {
+  getHostedComponentBytecode() {
     if (this.isTextNode()) {
-      return null;
+      return null
     }
-    const node = this.getStaticTemplateNode();
+    const node = this.getStaticTemplateNode()
     if (!node) {
-      return null;
+      return null
     }
-    const elementName = node.elementName;
+    const elementName = node.elementName
     if (!elementName) {
-      return null;
+      return null
     }
     if (typeof elementName !== 'object') {
-      return null;
+      return null
     }
-    return elementName;
+    return elementName
   }
 
-  getTitle () {
+  getTitle() {
     if (this.isTextNode()) {
-      return '<text>';
+      return '<text>'
     } // HACK, but not sure what else to do
-    return this.getStaticTemplateNode().attributes[HAIKU_TITLE_ATTRIBUTE] || `<${this.getNameString()}>`;
+    return this.getStaticTemplateNode().attributes[HAIKU_TITLE_ATTRIBUTE] || `<${this.getNameString()}>`
   }
 
-  setTitle (newTitle, metadata, cb) {
-    this.component.setTitleForComponent(this.getComponentId(), newTitle, metadata, cb);
+  setTitle(newTitle, metadata, cb) {
+    this.component.setTitleForComponent(this.getComponentId(), newTitle, metadata, cb)
   }
 
-  getNameString () {
+  getNameString() {
     if (this.isTextNode()) {
-      return '<text>';
+      return '<text>'
     } // HACK, but not sure what else to do
     if (this.isComponent()) {
-      return 'div';
+      return 'div'
     } // this tends to be the default
-    const node = this.getStaticTemplateNode();
+    const node = this.getStaticTemplateNode()
     if (node) {
-      return node.elementName;
+      return node.elementName
     }
-    return 'div';
+    return 'div'
   }
 
-  getSafeDomFriendlyName () {
+  getSafeDomFriendlyName() {
     // If this element is component, then start by populating standard DOM properties
     const elementName = (this.isComponent())
       ? 'div'
-      : this.getNameString();
+      : this.getNameString()
 
-    return elementName;
+    return elementName
   }
 
-  getComponentId () {
-    return this.componentId;
+  getComponentId() {
+    return this.componentId
   }
 
-  getGraphAddress () {
-    return this.address;
+  getGraphAddress() {
+    return this.address
   }
 
-  updateTargetingRows (updateEventName) {
+  updateTargetingRows(updateEventName) {
     this.getAllRows().forEach((row) => {
-      row.emit('update', updateEventName);
-    });
+      row.emit('update', updateEventName)
+    })
   }
 
-  getAllRows () {
-    return Row.where({component: this.component, element: this});
+  getAllRows() {
+    return Row.where({ component: this.component, element: this })
   }
 
-  get isVisuallySelectable () {
-    return this.parent && this.parent.isRootElement();
+  get isVisuallySelectable() {
+    return this.parent && this.parent.isRootElement()
   }
 
-  get topmostHeadingRow () {
-    const headingRow = this.getHeadingRow();
+  get topmostHeadingRow() {
+    const headingRow = this.getHeadingRow()
 
     if (!this.parent) {
-      return headingRow;
+      return headingRow
     }
 
     if (headingRow) {
@@ -990,104 +999,104 @@ class Element extends BaseModel {
       //
       // [1]: https://github.com/HaikuTeam/mono/blob/5613bab3cc6006a72acc00c99bf42d723c01ed74/packages/haiku-serialization/src/bll/Property.js#L241
       // [2]: https://github.com/HaikuTeam/mono/blob/65cbfd8e0f2d32ac285c84a45753d741cf2d421b/packages/haiku-timeline/src/components/RowManager.js#L106-L107
-      headingRow.parent.silentlyExpandAllGParents();
-      return headingRow;
+      headingRow.parent.silentlyExpandAllGParents()
+      return headingRow
     }
 
-    return this.parent.topmostHeadingRow;
+    return this.parent.topmostHeadingRow
   }
 
-  shouldBeDisplayed () {
+  shouldBeDisplayed() {
     return (
-      !this.isTextNode() &&
-      !this.isShimElement() &&
-      this._clusterAndPropertyRows.length
-    );
+      !this.isTextNode()
+      && !this.isShimElement()
+      && this._clusterAndPropertyRows.length
+    )
   }
 
-  getHostedPropertyRows (doRecurse = false) {
-    const rows = [];
+  getHostedPropertyRows(doRecurse = false) {
+    const rows = []
 
-    const headingRow = this.getHeadingRow();
+    const headingRow = this.getHeadingRow()
     if (headingRow) {
-      rows.push(headingRow);
+      rows.push(headingRow)
 
       if (headingRow.children) {
         headingRow.children.forEach((childRow) => {
           if (childRow.isCluster() || childRow.isProperty()) {
-            rows.push(childRow);
+            rows.push(childRow)
 
             if (childRow.children) {
               childRow.children.forEach((grandchildRow) => {
-                rows.push(grandchildRow);
-              });
+                rows.push(grandchildRow)
+              })
             }
           }
-        });
+        })
       }
     }
 
     if (doRecurse && experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)) {
-      const deeprows = [];
+      const deeprows = []
       this.visitDescendants((descendantElement) => {
         if (!descendantElement.shouldBeDisplayed()) {
-          return;
+          return
         }
 
-        const currentHeadingRow = descendantElement.topmostHeadingRow || headingRow;
+        const currentHeadingRow = descendantElement.topmostHeadingRow || headingRow
         const subrows = descendantElement
           .getHostedPropertyRows(false)
-          .filter((row) => row.shouldBeDisplayed(currentHeadingRow));
+          .filter(row => row.shouldBeDisplayed(currentHeadingRow))
 
-        deeprows.push.apply(deeprows, subrows);
-      });
+        deeprows.push.apply(deeprows, subrows)
+      })
 
-      rows.push.apply(rows, deeprows);
+      rows.push.apply(rows, deeprows)
     }
 
-    return rows;
+    return rows
   }
 
-  clearEntityCaches () {
+  clearEntityCaches() {
     if (this.children) {
       this.children.forEach((element) => {
-        element.cache.clear();
-        element.clearEntityCaches();
-      });
+        element.cache.clear()
+        element.clearEntityCaches()
+      })
     }
 
     this.getAllRows().forEach((row) => {
-      row.cache.clear();
-      row.clearEntityCaches();
-    });
+      row.cache.clear()
+      row.clearEntityCaches()
+    })
   }
 
-  getFirstNotShimParent (current = this) {
+  getFirstNotShimParent(current = this) {
     if (!current.parent || !current.parent.isShimElement()) {
-      return current.parent;
+      return current.parent
     }
 
-    return current.getFirstNotShimParent(current.parent);
+    return current.getFirstNotShimParent(current.parent)
   }
 
-  rehydrateRows (options = {}) {
+  rehydrateRows(options = {}) {
     if (
-      options.superficial ||
-      process.env.HAIKU_SUBPROCESS !== 'timeline'
+      options.superficial
+      || process.env.HAIKU_SUBPROCESS !== 'timeline'
     ) {
-      return;
+      return
     }
 
-    const existingRows = this.getAllRows();
-    existingRows.forEach((row) => row.mark());
+    const existingRows = this.getAllRows()
+    existingRows.forEach(row => row.mark())
 
     // tslint:disable-next-line:no-this-assignment
-    const element = this;
-    const component = this.component;
-    const timeline = this.component.getCurrentTimeline();
-    const parent = this.getFirstNotShimParent();
+    const element = this
+    const component = this.component
+    const timeline = this.component.getCurrentTimeline()
+    const parent = this.getFirstNotShimParent()
 
-    const parentElementHeadingRow = parent && parent.getHeadingRow();
+    const parentElementHeadingRow = parent && parent.getHeadingRow()
 
     const currentElementHeadingRow = Row.upsert({
       uid: Row.buildHeadingUid(component, element),
@@ -1098,37 +1107,38 @@ class Element extends BaseModel {
       children: [],
       property: null,
       cluster: null,
-    }, {});
+    }, {})
 
     if (parentElementHeadingRow) {
-      parentElementHeadingRow.insertChild(currentElementHeadingRow);
+      parentElementHeadingRow.insertChild(currentElementHeadingRow)
     }
 
-    this._headingRow = currentElementHeadingRow;
-    this._clusterAndPropertyRows = [];
+    this._headingRow = currentElementHeadingRow
+    this._clusterAndPropertyRows = []
 
-    const clusters = {};
+    const clusters = {}
 
-    this.hasAddressableProperties = false;
+    this.hasAddressableProperties = false
 
     this.eachAddressableProperty((
       propertyGroupDescriptor,
       addressableName,
     ) => {
-      this.hasAddressableProperties = true;
+      this.hasAddressableProperties = true
       if (propertyGroupDescriptor.cluster) {
         // Properties that are 'clustered', like rotation.x,y,z
         const clusterId = Row.buildClusterUid(
           this,
           element,
           propertyGroupDescriptor,
-        );
+        )
 
-        let clusterRow;
+        let clusterRow
 
         if (clusters[clusterId]) {
-          clusterRow = Row.findById(clusterId);
-        } else {
+          clusterRow = Row.findById(clusterId)
+        }
+        else {
           clusterRow = Row.upsert({
             uid: clusterId,
             element,
@@ -1138,11 +1148,11 @@ class Element extends BaseModel {
             children: [],
             property: null, // This null is used to determine isClusterHeading
             cluster: propertyGroupDescriptor.cluster,
-          }, {});
+          }, {})
 
-          this._clusterAndPropertyRows.push(clusterRow);
-          currentElementHeadingRow.insertChild(clusterRow);
-          clusters[clusterId] = true;
+          this._clusterAndPropertyRows.push(clusterRow)
+          currentElementHeadingRow.insertChild(clusterRow)
+          clusters[clusterId] = true
         }
 
         const clusterMember = Row.upsert({
@@ -1154,12 +1164,13 @@ class Element extends BaseModel {
           children: [],
           property: propertyGroupDescriptor,
           cluster: propertyGroupDescriptor.cluster,
-        }, {});
+        }, {})
 
-        this._clusterAndPropertyRows.push(clusterMember);
-        clusterMember.rehydrate();
-        clusterRow.insertChild(clusterMember);
-      } else {
+        this._clusterAndPropertyRows.push(clusterMember)
+        clusterMember.rehydrate()
+        clusterRow.insertChild(clusterMember)
+      }
+      else {
         // Properties represented as a single row, like 'opacity'
         const propertyRow = Row.upsert({
           uid: Row.buildPropertyUid(this, element, addressableName),
@@ -1170,39 +1181,39 @@ class Element extends BaseModel {
           children: [],
           property: propertyGroupDescriptor,
           cluster: null,
-        }, {});
+        }, {})
 
-        this._clusterAndPropertyRows.push(propertyRow);
-        propertyRow.rehydrate();
-        currentElementHeadingRow.insertChild(propertyRow);
+        this._clusterAndPropertyRows.push(propertyRow)
+        propertyRow.rehydrate()
+        currentElementHeadingRow.insertChild(propertyRow)
       }
-    });
+    })
 
-    existingRows.forEach((row) => row.sweep());
+    existingRows.forEach(row => row.sweep())
   }
 
-  visitAll (iteratee) {
-    Element.visitAll(this, iteratee);
+  visitAll(iteratee) {
+    Element.visitAll(this, iteratee)
   }
 
-  visitDescendants (iteratee) {
-    Element.visitDescendants(this, iteratee);
+  visitDescendants(iteratee) {
+    Element.visitDescendants(this, iteratee)
   }
 
-  getAllChildren () {
-    return this.children || [];
+  getAllChildren() {
+    return this.children || []
   }
 
-  rehydrateChildren ({maxRehydrationDepth}) {
-    const node = this.getStaticTemplateNode();
+  rehydrateChildren({ maxRehydrationDepth }) {
+    const node = this.getStaticTemplateNode()
 
     if (typeof node.elementName === 'object') {
-      return;
+      return
     }
 
     if (node && node.children) {
       for (let i = 0; i < node.children.length; i++) {
-        const child = node.children[i];
+        const child = node.children[i]
 
         const element = Element.upsertElementFromVirtualElement(
           this.component, // component
@@ -1210,39 +1221,39 @@ class Element extends BaseModel {
           this, // parent element
           i, // index in parent
           `${this.getGraphAddress()}.${i}`, // graph address
-        );
+        )
 
         // If our node is replacing an existing one, we can grab its properties
         if (child.__replacee) {
-          const replaceeHaikuId = child.__replacee.attributes && child.__replacee.attributes[HAIKU_ID_ATTRIBUTE];
+          const replaceeHaikuId = child.__replacee.attributes && child.__replacee.attributes[HAIKU_ID_ATTRIBUTE]
 
           if (replaceeHaikuId) {
-            const replaceeElement = Element.findByComponentAndHaikuId(this.component, replaceeHaikuId);
+            const replaceeElement = Element.findByComponentAndHaikuId(this.component, replaceeHaikuId)
 
             if (replaceeElement) {
               // This ensures that the timeline displays correct JIT sub-element rows even after a design merge
-              element._visibleProperties = replaceeElement._visibleProperties;
+              element._visibleProperties = replaceeElement._visibleProperties
             }
           }
 
           // Don't forget to clean up to avoid possible weird side effects
-          delete child.__replacee;
+          delete child.__replacee
         }
 
-        element.rehydrate({maxRehydrationDepth});
+        element.rehydrate({ maxRehydrationDepth })
       }
     }
   }
 
-  rehydrate ({maxRehydrationDepth}) {
+  rehydrate({ maxRehydrationDepth }) {
     if (
-      this.getDepthAmongElements() <= maxRehydrationDepth ||
-      (
-        experimentIsEnabled(Experiment.ShowSubElementsInJitMenu) &&
-        this.hasInternalPropertiesDefinedCached()
+      this.getDepthAmongElements() <= maxRehydrationDepth
+      || (
+        experimentIsEnabled(Experiment.ShowSubElementsInJitMenu)
+        && this.hasInternalPropertiesDefinedCached()
       )
     ) {
-      this.rehydrateChildren({maxRehydrationDepth});
+      this.rehydrateChildren({ maxRehydrationDepth })
     }
   }
 
@@ -1251,89 +1262,89 @@ class Element extends BaseModel {
    * that have any keyframes defined, without relying on the presence of hydrated
    * models for any of those elements (it uses the raw template).
    */
-  hasInternalPropertiesDefined () {
-    const selectors = {};
+  hasInternalPropertiesDefined() {
+    const selectors = {}
 
-    const node = this.getStaticTemplateNode();
+    const node = this.getStaticTemplateNode()
 
     Template.visitWithoutDescendingIntoSubcomponents(node, (subnode) => {
       if (node === subnode) {
-        return;
+        return
       }
 
       const selector = TimelineProperty.getSelectorForComponentId(
         subnode.attributes[HAIKU_ID_ATTRIBUTE],
-      );
+      )
 
-      selectors[selector] = subnode;
-    });
+      selectors[selector] = subnode
+    })
 
     if (Object.keys(selectors).length < 1) {
-      return false;
+      return false
     }
 
-    const bytecode = this.component.getReifiedBytecode();
+    const bytecode = this.component.getReifiedBytecode()
 
     if (!bytecode || !bytecode.timelines) {
-      return false;
+      return false
     }
 
     for (const timelineName in bytecode.timelines) {
       for (const selector in bytecode.timelines[timelineName]) {
-        const subnode = selectors[selector];
+        const subnode = selectors[selector]
 
         if (!subnode) {
-          continue;
+          continue
         }
 
         for (const propertyName in bytecode.timelines[timelineName][selector]) {
-          const keyframesObject = bytecode.timelines[timelineName][selector][propertyName];
+          const keyframesObject = bytecode.timelines[timelineName][selector][propertyName]
 
           if (Property.areAnyKeyframesDefined(subnode.elementName, propertyName, keyframesObject)) {
-            return true;
+            return true
           }
         }
       }
     }
 
     // If we got this far, we've found no evidence that any internal node has a property
-    return false;
+    return false
   }
 
-  hasInternalPropertiesDefinedCached () {
+  hasInternalPropertiesDefinedCached() {
     return this.cache.fetch('hasInternalPropertiesDefinedCached', () => {
-      return this.hasInternalPropertiesDefined();
-    });
+      return this.hasInternalPropertiesDefined()
+    })
   }
 
-  getDepthAmongElements () {
-    let depth = 0;
-    let parent = this.parent;
+  getDepthAmongElements() {
+    let depth = 0
+    let parent = this.parent
     while (parent) {
-      depth += 1;
-      parent = parent.parent;
+      depth += 1
+      parent = parent.parent
     }
-    return depth;
+    return depth
   }
 
-  getBuiltinAddressables () {
-    const builtinAddressables = {};
+  getBuiltinAddressables() {
+    const builtinAddressables = {}
 
     // This assigns so-called 'cluster' properties if any are deemed such
-    Property.assignDOMSchemaProperties(builtinAddressables, this);
+    Property.assignDOMSchemaProperties(builtinAddressables, this)
 
-    return builtinAddressables;
+    return builtinAddressables
   }
 
-  getComponentAddressables () {
-    const componentAddressables = {};
+  getComponentAddressables() {
+    const componentAddressables = {}
 
     // If this is a component, then add any of our componentAddressables states as builtinAddressables
     if (this.isComponent()) {
-      const node = this.getLiveRenderedNode();
+      const node = this.getLiveRenderedNode()
       if (node && node.elementName && node.elementName.states) {
         for (const name in node.elementName.states) {
-          const state = node.elementName.states[name];
+          const state = node.elementName.states[name]
           componentAddressables[name] = {
             name,
             type: 'state',
@@ -1342,30 +1353,30 @@ class Element extends BaseModel {
             fallback: state.value,
             typedef: state.type,
             mock: state.mock,
-          };
+          }
         }
       }
     }
 
-    return componentAddressables;
+    return componentAddressables
   }
 
-  getCompleteAddressableProperties () {
-    const builtinAddressables = this.getBuiltinAddressables();
+  getCompleteAddressableProperties() {
+    const builtinAddressables = this.getBuiltinAddressables()
 
-    const componentAddressables = this.getComponentAddressables();
+    const componentAddressables = this.getComponentAddressables()
 
-    const returnedAddressables = {};
+    const returnedAddressables = {}
 
     for (const key1 in builtinAddressables) {
-      returnedAddressables[key1] = builtinAddressables[key1];
+      returnedAddressables[key1] = builtinAddressables[key1]
     }
 
     for (const key2 in componentAddressables) {
-      returnedAddressables[key2] = componentAddressables[key2];
+      returnedAddressables[key2] = componentAddressables[key2]
     }
 
-    return returnedAddressables;
+    return returnedAddressables
   }
 
   // options: [
@@ -1379,36 +1390,36 @@ class Element extends BaseModel {
   //     ]
   //   }
   // ]
-  getJITPropertyOptions () {
+  getJITPropertyOptions() {
     if (this.isNonRenderedComponent()) {
-      return [];
+      return []
     }
 
-    const exclusions = this.getExcludedAddressableProperties();
+    const exclusions = this.getExcludedAddressableProperties()
 
     // Because of bad code, I have to explicitly collect addressable properties for
     // sub-elements that wouldn't be shown in the JIT menu otherwise
     if (this.getDepthAmongElements() > 1) {
-      const complete = this.getCompleteAddressableProperties();
+      const complete = this.getCompleteAddressableProperties()
 
       for (const key in complete) {
         if (!this._visibleProperties[key]) {
-          exclusions[key] = complete[key];
+          exclusions[key] = complete[key]
         }
       }
     }
 
-    const grouped = {};
+    const grouped = {}
 
     for (const propertyName in exclusions) {
-      const propertyObj = exclusions[propertyName];
+      const propertyObj = exclusions[propertyName]
 
       if (!Property.includeInJIT(propertyName, this, propertyObj, null)) {
-        continue;
+        continue
       }
 
-      const prefix = propertyObj.prefix;
-      const suffix = propertyObj.suffix;
+      const prefix = propertyObj.prefix
+      const suffix = propertyObj.suffix
 
       if (!grouped[prefix]) {
         grouped[prefix] = {
@@ -1416,12 +1427,12 @@ class Element extends BaseModel {
           prefix,
           suffix,
           label: Property.humanizePropertyNamePart(prefix),
-        };
+        }
       }
 
       if (suffix) {
         if (!grouped[prefix].options) {
-          grouped[prefix].options = [];
+          grouped[prefix].options = []
         }
 
         grouped[prefix].options.push({
@@ -1430,9 +1441,10 @@ class Element extends BaseModel {
           suffix,
           label: Property.humanizePropertyNamePart(suffix),
           value: propertyObj.name,
-        });
-      } else {
-        grouped[prefix].value = propertyObj.name;
+        })
+      }
+      else {
+        grouped[prefix].value = propertyObj.name
       }
     }
 
@@ -1441,21 +1453,21 @@ class Element extends BaseModel {
       if (!this.isRootElement() && !this.isComponent()) {
         if (this.children && this.children.length > 0) {
           this.children.forEach((child) => {
-            const name = child.getSafeDomFriendlyName();
+            const name = child.getSafeDomFriendlyName()
 
             // Exclude elements that are either 'useless' or should be
             // represented elsewhere in the displayed element tree,
             // or which don't warrant display at all (text nodes)
             if (
-              !Property.BUILTIN_DOM_SCHEMAS[name] ||
-              child.isTextNode()
+              !Property.BUILTIN_DOM_SCHEMAS[name]
+              || child.isTextNode()
             ) {
-              return false;
+              return false
             }
 
             // Don't include useless children, and collapse sets of useless
             // children into a single node, to keep the menu as simple as we can
-            const insert = this.grabNextUsefulMenuInsert(child);
+            const insert = this.grabNextUsefulMenuInsert(child)
 
             if (insert) {
               const {
@@ -1463,7 +1475,7 @@ class Element extends BaseModel {
                 label,
                 options,
                 element,
-              } = insert;
+              } = insert
 
               grouped[key] = {
                 type: 'element',
@@ -1472,186 +1484,187 @@ class Element extends BaseModel {
                 prefix: `zzzzz_element_${label}`,
                 label: `‹› ${label}`,
                 options,
-              };
+              }
             }
-          });
+          })
         }
       }
     }
 
-    const list = this.groupedOptionsObjectToList(grouped);
-    return list;
+    const list = this.groupedOptionsObjectToList(grouped)
+    return list
   }
 
-  grabNextUsefulMenuInsert (child) {
+  grabNextUsefulMenuInsert(child) {
     if (child.isTextNode()) {
-      return null;
+      return null
     }
 
-    const options = child.getJITPropertyOptions();
+    const options = child.getJITPropertyOptions()
 
     if (options.length === 1 && options[0].type === 'element') {
-      return this.grabNextUsefulMenuInsert(options[0].element);
+      return this.grabNextUsefulMenuInsert(options[0].element)
     }
 
-    const key = child.getPrimaryKey();
-    const label = child.getFriendlyLabel();
+    const key = child.getPrimaryKey()
+    const label = child.getFriendlyLabel()
 
     return {
       key,
       label,
       options,
       element: child,
-    };
+    }
   }
 
-  eachAddressableProperty (iteratee) {
-    const addressableProperties = this.getDisplayedAddressableProperties();
+  eachAddressableProperty(iteratee) {
+    const addressableProperties = this.getDisplayedAddressableProperties()
 
     for (const propertyName in addressableProperties) {
       if (addressableProperties[propertyName]) {
         iteratee(
           addressableProperties[propertyName],
           propertyName,
-        );
+        )
       }
     }
   }
 
-  groupedOptionsObjectToList (grouped) {
+  groupedOptionsObjectToList(grouped) {
     const options = Object.values(grouped).sort((a, b) => {
-      const ap = a.prefix.toLowerCase();
-      const bp = b.prefix.toLowerCase();
+      const ap = a.prefix.toLowerCase()
+      const bp = b.prefix.toLowerCase()
 
       if (ap < bp) {
-        return -1;
+        return -1
       }
 
       if (ap > bp) {
-        return 1;
+        return 1
       }
 
-      return 0;
-    });
+      return 0
+    })
 
-    return options;
+    return options
   }
 
-  getFriendlyLabel () {
-    const node = this.getStaticTemplateNode();
-    return Element.getFriendlyLabel(node);
+  getFriendlyLabel() {
+    const node = this.getStaticTemplateNode()
+    return Element.getFriendlyLabel(node)
   }
 
-  getJITPropertyOptionsAsMenuItems () {
-    const options = this.getJITPropertyOptions();
-    return this.optionsToItems(options);
+  getJITPropertyOptionsAsMenuItems() {
+    const options = this.getJITPropertyOptions()
+    return this.optionsToItems(options)
   }
 
-  optionsToItems (options) {
+  optionsToItems(options) {
     return options.map((option) => {
       const item = {
         label: option.label,
-      };
+      }
 
       if (option.options) {
-        item.submenu = this.optionsToItems(option.options);
-      } else {
+        item.submenu = this.optionsToItems(option.options)
+      }
+      else {
         item.onClick = () => {
           // "showing" the addressable property means to add it to our whitelist,
           // which results in the Timeline UI displaying it even if not in the
           // hardcoded list of always-public properties
-          option.element.showAddressableProperty(option.value);
-        };
+          option.element.showAddressableProperty(option.value)
+        }
       }
 
-      return item;
-    });
+      return item
+    })
   }
 
-  getExcludedAddressableProperties () {
-    return this.getCollatedAddressableProperties().excluded;
+  getExcludedAddressableProperties() {
+    return this.getCollatedAddressableProperties().excluded
   }
 
-  getDisplayedAddressableProperties () {
-    return this.getCollatedAddressableProperties().filtered;
+  getDisplayedAddressableProperties() {
+    return this.getCollatedAddressableProperties().filtered
   }
 
-  getExplicitlyVisibleAddressableProperties () {
-    const complete = this.getCompleteAddressableProperties();
-    const filtered = {};
+  getExplicitlyVisibleAddressableProperties() {
+    const complete = this.getCompleteAddressableProperties()
+    const filtered = {}
     for (const propertyName in complete) {
       if (this._visibleProperties[propertyName]) {
-        filtered[propertyName] = complete[propertyName];
+        filtered[propertyName] = complete[propertyName]
       }
     }
-    return filtered;
+    return filtered
   }
 
-  getCollatedAddressableProperties () {
-    const complete = this.getCompleteAddressableProperties();
+  getCollatedAddressableProperties() {
+    const complete = this.getCompleteAddressableProperties()
 
     // The ones to display in the timeline
-    const filtered = {};
+    const filtered = {}
 
     // The ones to exclude from the timeline, but show in the JIT menu
-    const excluded = {};
+    const excluded = {}
 
     for (const propertyName in complete) {
-      const propertyObject = complete[propertyName];
+      const propertyObject = complete[propertyName]
 
       Property.buildFilterObject(
         filtered,
         this, // hostElement
         propertyName,
         propertyObject,
-      );
+      )
 
       // Make sure to list any exclusions we did
       if (!filtered[propertyName]) {
-        excluded[propertyName] = propertyObject;
+        excluded[propertyName] = propertyObject
       }
     }
 
     return {
       filtered,
       excluded,
-    };
+    }
   }
 
-  showAddressableProperty (propertyName) {
-    this._visibleProperties[propertyName] = true;
+  showAddressableProperty(propertyName) {
+    this._visibleProperties[propertyName] = true
 
-    this.rehydrateRows();
+    this.rehydrateRows()
 
-    const row = this.getPropertyRowByPropertyName(propertyName);
+    const row = this.getPropertyRowByPropertyName(propertyName)
     if (row) {
       if (row.isWithinCollapsedRow()) {
-        row.parent.expand(this.component.project.getMetadata());
+        row.parent.expand(this.component.project.getMetadata())
       }
-      row.select(this.component.project.getMetadata());
+      row.select(this.component.project.getMetadata())
     }
 
-    this.emit('update', 'jit-property-added');
+    this.emit('update', 'jit-property-added')
   }
 
-  hideAddressableProperty (propertyName) {
-    this._visibleProperties[propertyName] = false;
-    this.emit('update', 'jit-property-removed');
+  hideAddressableProperty(propertyName) {
+    this._visibleProperties[propertyName] = false
+    this.emit('update', 'jit-property-removed')
   }
 
-  isRootElement () {
-    return !this.parent;
+  isRootElement() {
+    return !this.parent
   }
 
-  getBoxPolygonPointsTransformed () {
-    const points = this.getBoxPointsTransformed();
-    return Element.pointsToPolygonPoints(points);
+  getBoxPolygonPointsTransformed() {
+    const points = this.getBoxPointsTransformed()
+    return Element.pointsToPolygonPoints(points)
   }
 
-  doesOverlapWithBox (box) {
-    const theirPoints = Element.boxToCornersAsPolygonPoints(box);
-    const ourPoints = this.getBoxPolygonPointsTransformed();
-    return polygonOverlap(theirPoints, ourPoints);
+  doesOverlapWithBox(box) {
+    const theirPoints = Element.boxToCornersAsPolygonPoints(box)
+    const ourPoints = this.getBoxPolygonPointsTransformed()
+    return polygonOverlap(theirPoints, ourPoints)
   }
 
   /**
@@ -1660,67 +1673,67 @@ class Element extends BaseModel {
    * race conditions abound
    */
 
-  getLiveRenderedNode () {
+  getLiveRenderedNode() {
     // We query our "host" instance to get our wrapper node that it "hosts"
     // Note the difference from the target instance
-    const instance = this.getCoreHostComponentInstance();
+    const instance = this.getCoreHostComponentInstance()
     // FIXME: Handle race when component instance isn't present
-    return instance ? instance.findElementsByHaikuId(this.getComponentId())[0] : null;
+    return instance ? instance.findElementsByHaikuId(this.getComponentId())[0] : null
   }
 
-  getHaikuElement () {
-    return HaikuElement.findOrCreateByNode(this.getLiveRenderedNode());
+  getHaikuElement() {
+    return HaikuElement.findOrCreateByNode(this.getLiveRenderedNode())
   }
 
-  getParentSvgElement () {
+  getParentSvgElement() {
     // tslint:disable-next-line:no-this-assignment
-    let currElem = this;
+    let currElem = this
     while (currElem) {
       if (currElem.getNameString() === 'svg') {
-        return currElem;
+        return currElem
       }
-      currElem = currElem.parent;
+      currElem = currElem.parent
     }
-    return null;
+    return null
   }
 
-  getUngroupables () {
-    const haikuElement = this.getHaikuElement();
+  getUngroupables() {
+    const haikuElement = this.getHaikuElement()
     switch (haikuElement.tagName) {
       case 'svg':
       case 'div':
-        const ungroupables = [];
+        const ungroupables = []
         this.getHaikuElement().visit((descendantHaikuElement) => {
           const eligibleChildren = descendantHaikuElement.children.filter(
-            (element) => element.tagName !== 'defs' && element.target && (haikuElement.tagName === 'div' || typeof element.target.getBBox === 'function'),
-          );
+            element => element.tagName !== 'defs' && element.target && (haikuElement.tagName === 'div' || typeof element.target.getBBox === 'function'),
+          )
           if (eligibleChildren.length > 1) {
-            ungroupables.push(...eligibleChildren);
-            return false;
+            ungroupables.push(...eligibleChildren)
+            return false
           }
-        }, (node) => node.tagName !== 'defs');
-        return ungroupables;
+        }, node => node.tagName !== 'defs')
+        return ungroupables
       default:
-        return [];
+        return []
     }
   }
 
-  doesContainUngroupableContent () {
-    return this.getUngroupables().length > 1;
+  doesContainUngroupableContent() {
+    return this.getUngroupables().length > 1
   }
 
-  ungroup (metadata, cb = () => {}) {
-    const nodes = [];
-    this.ungroupWrapper(nodes);
+  ungroup(metadata, cb = () => {}) {
+    const nodes = []
+    this.ungroupWrapper(nodes)
     switch (this.getStaticTemplateNode().elementName) {
       case 'svg':
-        this.ungroupSvg(nodes);
-        break;
+        this.ungroupSvg(nodes)
+        break
       case 'div':
-        this.ungroupDiv(nodes);
-        break;
+        this.ungroupDiv(nodes)
+        break
       default:
-        logger.warn(`[element] ignoring nonsense request to ungroup ${this.getStaticTemplateNode().elementName}`);
+        logger.warn(`[element] ignoring nonsense request to ungroup ${this.getStaticTemplateNode().elementName}`)
     }
 
     return this.component.ungroupElements(
@@ -1728,28 +1741,28 @@ class Element extends BaseModel {
       nodes,
       metadata,
       cb,
-    );
+    )
   }
 
-  ungroupWrapper (nodes) {
-    const haikuElement = this.getHaikuElement();
-    const baseStyles = haikuElement.attributes.style;
+  ungroupWrapper(nodes) {
+    const haikuElement = this.getHaikuElement()
+    const baseStyles = haikuElement.attributes.style
     if (!baseStyles) {
-      return;
+      return
     }
 
-    const style = {};
+    const style = {}
     Object.keys(baseStyles).forEach((styleName) => {
       switch (styleName) {
         case 'background':
         case 'backgroundColor':
-          style[styleName] = baseStyles[styleName];
+          style[styleName] = baseStyles[styleName]
       }
-    });
+    })
 
     if (Object.keys(style).length === 0) {
       // We didn't find any styles that would justify ungrouping the wrapper.
-      return;
+      return
     }
 
     // Upsert the wrapper div the styles on this node "imply".
@@ -1757,14 +1770,14 @@ class Element extends BaseModel {
       width: haikuElement.layout.size.x,
       height: haikuElement.layout.size.y,
       [HAIKU_SOURCE_ATTRIBUTE]: haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE],
-    }, {style});
+    }, { style })
 
-    const layoutMatrix = this.getOriginOffsetComposedMatrix();
-    const originX = haikuElement.layout.size.x / 2;
-    const originY = haikuElement.layout.size.y / 2;
-    layoutMatrix[12] += originX * layoutMatrix[0] + originY * layoutMatrix[4];
-    layoutMatrix[13] += originX * layoutMatrix[1] + originY * layoutMatrix[5];
-    composedTransformsToTimelineProperties(attributes, [layoutMatrix]);
+    const layoutMatrix = this.getOriginOffsetComposedMatrix()
+    const originX = haikuElement.layout.size.x / 2
+    const originY = haikuElement.layout.size.y / 2
+    layoutMatrix[12] += originX * layoutMatrix[0] + originY * layoutMatrix[4]
+    layoutMatrix[13] += originX * layoutMatrix[1] + originY * layoutMatrix[5]
+    composedTransformsToTimelineProperties(attributes, [layoutMatrix])
     nodes.push(Template.cleanMana({
       elementName: 'svg',
       attributes,
@@ -1777,89 +1790,90 @@ class Element extends BaseModel {
           stroke: 'none',
         },
       }],
-    }, {resetIds: true}));
+    }, { resetIds: true }))
   }
 
-  ungroupDiv (nodes) {
+  ungroupDiv(nodes) {
     this.getUngroupables().forEach((haikuElement) => {
       const layoutMatrix = Layout3D.multiplyArrayOfMatrices(
         // Under unknown conditions, some elements lack a layout.matrix,
         // which causes a crash during ungroup; hence this filter
-        haikuElement.layoutAncestryMatrices.reverse().filter((m) => !!m),
-      );
-      const layout = haikuElement.layout;
+        haikuElement.layoutAncestryMatrices.reverse().filter(m => !!m),
+      )
+      const layout = haikuElement.layout
       const attributes = {
-        width: layout.size.x,
-        height: layout.size.y,
+        'width': layout.size.x,
+        'height': layout.size.y,
         [HAIKU_TITLE_ATTRIBUTE]: haikuElement.attributes[HAIKU_TITLE_ATTRIBUTE],
         [HAIKU_SOURCE_ATTRIBUTE]: haikuElement.attributes[HAIKU_SOURCE_ATTRIBUTE],
         'origin.x': layout.origin.x,
         'origin.y': layout.origin.y,
         'haiku-transclude': haikuElement.getComponentId(),
-      };
-      composedTransformsToTimelineProperties(attributes, [layoutMatrix]);
+      }
+      composedTransformsToTimelineProperties(attributes, [layoutMatrix])
       // Make sure we have something here, so we can add to it.
       if (!attributes['translation.x']) {
-        attributes['translation.x'] = 0;
+        attributes['translation.x'] = 0
       }
       if (!attributes['translation.y']) {
-        attributes['translation.y'] = 0;
+        attributes['translation.y'] = 0
       }
       // Add our origin offset directly to the derived translation.
-      const originX = layout.size.x * layout.origin.x;
-      const originY = layout.size.y * layout.origin.y;
+      const originX = layout.size.x * layout.origin.x
+      const originY = layout.size.y * layout.origin.y
 
       // Ensure SVGs have overflow: visible.
       if (haikuElement.tagName === 'svg') {
-        attributes.style = {overflow: 'visible'};
+        attributes.style = { overflow: 'visible' }
         // (1 of 3) opacity is "special". Make sure it is preserved.
         if (haikuElement.layout.opacity !== 1) {
-          attributes.opacity = haikuElement.layout.opacity;
+          attributes.opacity = haikuElement.layout.opacity
         }
       }
 
-      attributes['translation.x'] += originX * layoutMatrix[0] + originY * layoutMatrix[4];
-      attributes['translation.y'] += originX * layoutMatrix[1] + originY * layoutMatrix[5];
+      attributes['translation.x'] += originX * layoutMatrix[0] + originY * layoutMatrix[4]
+      attributes['translation.y'] += originX * layoutMatrix[1] + originY * layoutMatrix[5]
       nodes.push({
         // Important: ensure we can serialize the node mana if we encounter a component.
         // #FIXME: Why isn't haikuElement.isComponent() correct, and why is the component pseudo tag name 'div'?
         elementName: typeof haikuElement.type !== 'string' ? '__component__' : haikuElement.tagName,
         attributes,
         children: [],
-      });
-    });
+      })
+    })
   }
 
-  ungroupSvg (nodes) {
-    const defs = [];
-    const extraNodes = [];
-    const svgElement = this.getHaikuElement();
-    const ungroupables = this.getUngroupables();
-    const bytecode = this.component.getReifiedBytecode();
+  ungroupSvg(nodes) {
+    const defs = []
+    const extraNodes = []
+    const svgElement = this.getHaikuElement()
+    const ungroupables = this.getUngroupables()
+    const bytecode = this.component.getReifiedBytecode()
     // First isolate defs 'n' friends.
     svgElement.visit((descendantHaikuElement) => {
       if (descendantHaikuElement.tagName === 'style' && descendantHaikuElement.memory && descendantHaikuElement.memory.children) {
-        const styleNode = Template.cleanMana(lodash.cloneDeep(descendantHaikuElement.node), {resetIds: true});
-        styleNode.children = [descendantHaikuElement.memory.children[0]];
-        extraNodes.push(styleNode);
-      } else if (
-        (descendantHaikuElement.parent && descendantHaikuElement.parent.tagName === 'defs') ||
-        DEFABLE_TAG_NAMES[descendantHaikuElement.tagName]
-      ) {
-        defs.push(descendantHaikuElement.node);
+        const styleNode = Template.cleanMana(lodash.cloneDeep(descendantHaikuElement.node), { resetIds: true })
+        styleNode.children = [descendantHaikuElement.memory.children[0]]
+        extraNodes.push(styleNode)
       }
-    });
+      else if (
+        (descendantHaikuElement.parent && descendantHaikuElement.parent.tagName === 'defs')
+        || DEFABLE_TAG_NAMES[descendantHaikuElement.tagName]
+      ) {
+        defs.push(descendantHaikuElement.node)
+      }
+    })
 
     ungroupables.forEach((descendantHaikuElement) => {
-      const mergedAttributes = {};
-      let parent = descendantHaikuElement.parent;
+      const mergedAttributes = {}
+      let parent = descendantHaikuElement.parent
       while (parent && (parent.node.elementName === 'g' || parent.node.elementName === 'svg')) {
         for (const propertyName in bytecode.timelines[this.component.getCurrentTimelineName()][`haiku:${parent.componentId}`]) {
           if (!propertyName.startsWith('style') && !SVG_ONLY_ATTRIBUTES[propertyName] && !mergedAttributes.hasOwnProperty(propertyName)) {
-            mergedAttributes[propertyName] = parent.componentId;
+            mergedAttributes[propertyName] = parent.componentId
           }
         }
-        parent = parent.parent;
+        parent = parent.parent
       }
 
       const attributes = Object.keys(mergedAttributes).reduce((accumulator, propertyName) => {
@@ -1872,44 +1886,44 @@ class Element extends BaseModel {
             this.component.getCurrentTimelineTime(),
             propertyName,
             undefined,
-          );
+          )
         }
-        return accumulator;
-      }, {});
+        return accumulator
+      }, {})
 
       // (3 of 3) opacity is "special". Make sure it is preserved.
       if (typeof descendantHaikuElement.opacity === 'number' && descendantHaikuElement.opacity !== 1) {
-        attributes.opacity = descendantHaikuElement.opacity;
+        attributes.opacity = descendantHaikuElement.opacity
       }
 
       // Note the implementation details of HaikuElement#target, which actually returns
       // the most recently added target - one of a list of possible DOM targets shared by each
       // render node
-      const boundingBox = descendantHaikuElement.target.getBBox();
+      const boundingBox = descendantHaikuElement.target.getBBox()
 
       // The fallbacks here ensure nonzero width/height by any means necessary. SVG getBBox() (and DOM cousins)
       // all fail to account for stroke, clipping masks, etc.
       if (boundingBox.width < 1) {
-        boundingBox.width = Math.max(descendantHaikuElement.attributes['stroke-width'] || attributes['stroke-width'] || 1, 1);
+        boundingBox.width = Math.max(descendantHaikuElement.attributes['stroke-width'] || attributes['stroke-width'] || 1, 1)
       }
 
       if (boundingBox.height < 1) {
-        boundingBox.height = Math.max(descendantHaikuElement.attributes['stroke-width'] || attributes['stroke-width'] || 1, 1);
+        boundingBox.height = Math.max(descendantHaikuElement.attributes['stroke-width'] || attributes['stroke-width'] || 1, 1)
       }
 
-      const originX = boundingBox.width / 2;
-      const originY = boundingBox.height / 2;
-      const layoutMatrix = descendantHaikuElement.layoutMatrix;
-      layoutMatrix[12] += (boundingBox.x + originX) * layoutMatrix[0] + (boundingBox.y + originY) * layoutMatrix[4];
-      layoutMatrix[13] += (boundingBox.x + originX) * layoutMatrix[1] + (boundingBox.y + originY) * layoutMatrix[5];
-      const layoutAncestryMatrices = descendantHaikuElement.layoutAncestryMatrices;
+      const originX = boundingBox.width / 2
+      const originY = boundingBox.height / 2
+      const layoutMatrix = descendantHaikuElement.layoutMatrix
+      layoutMatrix[12] += (boundingBox.x + originX) * layoutMatrix[0] + (boundingBox.y + originY) * layoutMatrix[4]
+      layoutMatrix[13] += (boundingBox.x + originX) * layoutMatrix[1] + (boundingBox.y + originY) * layoutMatrix[5]
+      const layoutAncestryMatrices = descendantHaikuElement.layoutAncestryMatrices
       if (layoutAncestryMatrices[layoutAncestryMatrices.length - 1] !== layoutMatrix) {
-        layoutAncestryMatrices.push(layoutMatrix);
+        layoutAncestryMatrices.push(layoutMatrix)
       }
       descendantHaikuElement.visit((subHaikuElement) => {
         // Clean out the computed layout so we can hoist it to the parent SVG element.
-        delete subHaikuElement.node.layout;
-      });
+        delete subHaikuElement.node.layout
+      })
 
       const parentAttributes = {
         width: boundingBox.width,
@@ -1921,19 +1935,19 @@ class Element extends BaseModel {
         },
         [HAIKU_SOURCE_ATTRIBUTE]: `${svgElement.attributes[HAIKU_SOURCE_ATTRIBUTE]}#${descendantHaikuElement.id}`,
         [HAIKU_TITLE_ATTRIBUTE]: descendantHaikuElement[HAIKU_TITLE_ATTRIBUTE] || descendantHaikuElement.title || descendantHaikuElement.id,
-      };
+      }
 
-      composedTransformsToTimelineProperties(parentAttributes, layoutAncestryMatrices);
+      composedTransformsToTimelineProperties(parentAttributes, layoutAncestryMatrices)
 
       // The following ensures that width/height receivers we might encounter inside an SVG (rect, image, use, etc.)
       // won't lose their sizing.
       if (descendantHaikuElement.layout) {
         if (descendantHaikuElement.layout.sizeAbsolute.x > 0) {
-          descendantHaikuElement.attributes.width = descendantHaikuElement.layout.sizeAbsolute.x;
+          descendantHaikuElement.attributes.width = descendantHaikuElement.layout.sizeAbsolute.x
         }
 
         if (descendantHaikuElement.layout.sizeAbsolute.y) {
-          descendantHaikuElement.attributes.height = descendantHaikuElement.layout.sizeAbsolute.y;
+          descendantHaikuElement.attributes.height = descendantHaikuElement.layout.sizeAbsolute.y
         }
       }
 
@@ -1967,7 +1981,7 @@ class Element extends BaseModel {
             },
           )],
         }],
-      }, {resetIds: true});
+      }, { resetIds: true })
 
       if (defs.length > 0) {
         node.children.unshift(
@@ -1979,42 +1993,42 @@ class Element extends BaseModel {
             },
             // Note: by resetting IDs here, we willfully destroy any animations that are inside defs. Since this is an atypical
             // construct which can only be achieved by editing bytecode directly today, it's "acceptable".
-            {resetIds: true},
+            { resetIds: true },
           ),
-        );
+        )
       }
 
-      node.children.unshift(...extraNodes.map(Template.reuseHotMana));
-      nodes.push(node);
-    });
+      node.children.unshift(...extraNodes.map(Template.reuseHotMana))
+      nodes.push(node)
+    })
   }
 
-  getAttribute (key) {
-    const node = this.getLiveRenderedNode();
-    return node && node.attributes && node.attributes[key];
+  getAttribute(key) {
+    const node = this.getLiveRenderedNode()
+    return node && node.attributes && node.attributes[key]
   }
 
-  toXMLString () {
-    return Template.manaToHtml('', this.getLiveRenderedNode() || EMPTY_ELEMENT);
+  toXMLString() {
+    return Template.manaToHtml('', this.getLiveRenderedNode() || EMPTY_ELEMENT)
   }
 
-  toJSONString () {
-    return Template.manaToJson(this.getLiveRenderedNode() || EMPTY_ELEMENT, null, 2);
+  toJSONString() {
+    return Template.manaToJson(this.getLiveRenderedNode() || EMPTY_ELEMENT, null, 2)
   }
 
   /**
    * @method dump
    * @description When debugging, use this to log a concise shorthand of this entity.
    */
-  dump () {
-    let str = `${this.getNameString()}:${this.getTitle()}:${this.getComponentId()}`;
+  dump() {
+    let str = `${this.getNameString()}:${this.getTitle()}:${this.getComponentId()}`
     if (this.isHovered()) {
-      str += ' {h}';
+      str += ' {h}'
     }
     if (this.isSelected()) {
-      str += ' {s}';
+      str += ' {s}'
     }
-    return str;
+    return str
   }
 }
 
@@ -2025,176 +2039,179 @@ Element.DEFAULT_OPTIONS = {
     address: true,
     componentId: true,
   },
-};
+}
 
-BaseModel.extend(Element);
+BaseModel.extend(Element)
 
-Element.directlySelected = null;
+Element.directlySelected = null
 
 Element.cache = {
   domNodes: {},
   eventListeners: {},
-};
+}
 
 Element.HIGHER_ORDER_EVENTS = [
-  {label: 'Hover', value: 'hover'},
-  {label: 'Unhover', value: 'unhover'},
-];
+  { label: 'Hover', value: 'hover' },
+  { label: 'Unhover', value: 'unhover' },
+]
 
 Element.COMPONENT_EVENTS = [
-  {label: 'Will Mount', value: 'component:will-mount'},
-  {label: 'Did Mount', value: 'component:did-mount'},
-  {label: 'Will Unmount', value: 'component:will-unmount'},
-  {label: 'Did Initialize', value: 'component:did-initialize'},
-  {label: 'Frame', value: 'frame'},
-];
+  { label: 'Will Mount', value: 'component:will-mount' },
+  { label: 'Did Mount', value: 'component:did-mount' },
+  { label: 'Will Unmount', value: 'component:will-unmount' },
+  { label: 'Did Initialize', value: 'component:did-initialize' },
+  { label: 'Frame', value: 'frame' },
+]
 
 Element.nodeIsGrouper = (node) => {
   return (
-    node.elementName === 'svg' ||
-    node.elementName === 'g' ||
-    node.elementName === 'div'
-  );
-};
+    node.elementName === 'svg'
+    || node.elementName === 'g'
+    || node.elementName === 'div'
+  )
+}
 
 Element.unselectAllElements = (criteria, metadata) => {
-  Element.where(criteria).forEach((element) => element.unselect(metadata));
-  Element.directlySelected = null;
-};
+  Element.where(criteria).forEach(element => element.unselect(metadata))
+  Element.directlySelected = null
+}
 
 Element.hoverOffAllElements = (criteria, metadata) => {
-  Element.where(criteria).forEach((element) => element.hoverOff(metadata));
-};
+  Element.where(criteria).forEach(element => element.hoverOff(metadata))
+}
 
-Element.clearCaches = function clearCaches () {
+Element.clearCaches = function clearCaches() {
   Element.cache = {
     domNodes: {},
     eventListeners: {},
-  };
-};
+  }
+}
 
-Element.findDomNode = function findDomNode (haikuId, element) {
+Element.findDomNode = function findDomNode(haikuId, element) {
   // Allow headless, e.g. in tests
   if (!element) {
-    return null;
+    return null
   }
 
   if (Element.cache.domNodes[haikuId]) {
-    return Element.cache.domNodes[haikuId];
+    return Element.cache.domNodes[haikuId]
   }
 
-  const selector = '[' + HAIKU_ID_ATTRIBUTE + '="' + haikuId + '"]';
+  const selector = `[${HAIKU_ID_ATTRIBUTE}="${haikuId}"]`
 
-  const found = element.querySelector(selector);
-  Element.cache.domNodes[haikuId] = found;
-  return found;
-};
+  const found = element.querySelector(selector)
+  Element.cache.domNodes[haikuId] = found
+  return found
+}
 
 Element.findRoots = (criteria) => {
   return Element.where(criteria).filter((element) => {
-    return !element.parent;
-  });
-};
+    return !element.parent
+  })
+}
 
 /**
  * Visit all elements in the given element's family, in depth-first order.
  * The element passed is the first visit.
  */
 Element.visitAll = (element, visitor) => {
-  visitor(element);
-  Element.visitDescendants(element, visitor);
-};
+  visitor(element)
+  Element.visitDescendants(element, visitor)
+}
 
 /**
  * Visit the descendants of the given element in depth-first order.
  */
 Element.visitDescendants = (element, visitor) => {
   if (!element.children) {
-    return void (0);
+    return void (0)
   }
   element.children.forEach((child) => {
-    visitor(child);
-    Element.visitDescendants(child, visitor);
-  });
-};
+    visitor(child)
+    Element.visitDescendants(child, visitor)
+  })
+}
 
 Element.getRotationIn360 = (radians) => {
   if (radians < 0) {
-    radians += (Math.PI * 2);
+    radians += (Math.PI * 2)
   }
-  let rotationDegrees = ~~(radians * 180 / Math.PI);
+  let rotationDegrees = ~~(radians * 180 / Math.PI)
   if (rotationDegrees > 360) {
-    rotationDegrees = rotationDegrees % 360;
+    rotationDegrees = rotationDegrees % 360
   }
-  return rotationDegrees;
-};
+  return rotationDegrees
+}
 
-Element.boxToCornersAsPolygonPoints = ({x, y, width, height}) => {
+Element.boxToCornersAsPolygonPoints = ({ x, y, width, height }) => {
   return [
-    [x, y], [x + width, y],
-    [x + width, y + height], [x, y + height],
-  ];
-};
+    [x, y],
+    [x + width, y],
+    [x + width, y + height],
+    [x, y + height],
+  ]
+}
 
 Element.pointsToPolygonPoints = (points) => {
   return points.map((point) => {
-    return [point.x, point.y];
-  });
-};
+    return [point.x, point.y]
+  })
+}
 
 Element.distanceBetweenPoints = (p1, p2, zoomFactor) => {
-  let distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+  let distance = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2)
   if (zoomFactor) {
-    distance *= zoomFactor;
+    distance *= zoomFactor
   }
-  return distance;
-};
+  return distance
+}
 
 Element.buildPrimaryKeyFromComponentParentIdAndStaticTemplateNode = (component, parentId, indexInParent, staticTemplateNode) => {
-  let uid;
+  let uid
   if (typeof staticTemplateNode === 'string') {
-    uid = `${parentId}/text:${indexInParent}`;
-  } else {
-    uid = (staticTemplateNode.attributes && staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE]) || Math.random();
+    uid = `${parentId}/text:${indexInParent}`
+  }
+  else {
+    uid = (staticTemplateNode.attributes && staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE]) || Math.random()
   }
 
   // Elements have to be created uniquely in the scope of their host component
   // or else we'll get collision lookups due to the fact that this is all a singleton system
-  uid = Element.buildUidFromComponentAndHaikuId(component, uid);
+  uid = Element.buildUidFromComponentAndHaikuId(component, uid)
 
-  return uid;
-};
+  return uid
+}
 
 Element.buildUidFromComponentAndDomElement = (component, $el) => {
-  return `${component.getPrimaryKey()}::${$el.getAttribute(HAIKU_ID_ATTRIBUTE)}`;
-};
+  return `${component.getPrimaryKey()}::${$el.getAttribute(HAIKU_ID_ATTRIBUTE)}`
+}
 
 Element.buildUidFromComponentAndHaikuId = (component, haikuId) => {
-  return `${component.getPrimaryKey()}::${haikuId}`;
-};
+  return `${component.getPrimaryKey()}::${haikuId}`
+}
 
 Element.findByComponentAndHaikuId = (component, haikuId) => {
-  return Element.findById(Element.buildUidFromComponentAndHaikuId(component, haikuId));
-};
+  return Element.findById(Element.buildUidFromComponentAndHaikuId(component, haikuId))
+}
 
 Element.findHoveredElement = (component) => {
-  return Element.where({component, _isHovered: true})[0];
-};
+  return Element.where({ component, _isHovered: true })[0]
+}
 
 Element.makeUid = (component, parent, index, staticTemplateNode) => {
   const parentHaikuId = (
-    parent &&
-    parent.attributes &&
-    parent.attributes[HAIKU_ID_ATTRIBUTE]
-  );
+    parent
+    && parent.attributes
+    && parent.attributes[HAIKU_ID_ATTRIBUTE]
+  )
 
   if (!parent) {
     parent = (
-      parentHaikuId &&
-      Element.findById(
+      parentHaikuId
+      && Element.findById(
         Element.buildUidFromComponentAndHaikuId(component, parentHaikuId),
       )
-    );
+    )
   }
 
   const uid = Element.buildPrimaryKeyFromComponentParentIdAndStaticTemplateNode(
@@ -2202,43 +2219,43 @@ Element.makeUid = (component, parent, index, staticTemplateNode) => {
     parentHaikuId,
     index,
     staticTemplateNode,
-  );
+  )
 
-  return uid;
-};
+  return uid
+}
 
 Element.getFriendlyLabel = (node) => {
   if (!node || typeof node !== 'object') {
-    return '';
+    return ''
   }
 
-  const id = node.attributes && node.attributes.id;
+  const id = node.attributes && node.attributes.id
 
-  const title = node.attributes && node.attributes[HAIKU_TITLE_ATTRIBUTE];
+  const title = node.attributes && node.attributes[HAIKU_TITLE_ATTRIBUTE]
 
-  let name = (typeof node.elementName === 'string' && node.elementName) ? node.elementName : 'div';
+  let name = (typeof node.elementName === 'string' && node.elementName) ? node.elementName : 'div'
   if (Element.FRIENDLY_NAME_SUBSTITUTES[name]) {
-    name = Element.FRIENDLY_NAME_SUBSTITUTES[name];
+    name = Element.FRIENDLY_NAME_SUBSTITUTES[name]
   }
 
   if (id && !title) {
-    return cleanHaikuId(id);
+    return cleanHaikuId(id)
   }
 
-  let out = '';
+  let out = ''
   if (typeof id === 'string') {
-    out += `${id} `;
+    out += `${id} `
   }
   if (typeof title === 'string') {
-    out += `${title} `;
+    out += `${title} `
   }
 
   if (out.length === 0 && typeof name === 'string') {
-    out += `${name}`;
+    out += `${name}`
   }
 
-  return cleanHaikuId(out);
-};
+  return cleanHaikuId(out)
+}
 
 Element.upsertElementFromVirtualElement = (
   component,
@@ -2248,24 +2265,24 @@ Element.upsertElementFromVirtualElement = (
   address,
 ) => {
   if (!component.project) {
-    throw new Error('component argument must have a `project` defined');
+    throw new Error('component argument must have a `project` defined')
   }
 
   if (!component.project.getPlatform()) {
-    throw new Error('component project must be able to return a platform object');
+    throw new Error('component project must be able to return a platform object')
   }
 
   if (!component.project.getMetadata()) {
-    throw new Error('component proct must be able to return a metadata object');
+    throw new Error('component proct must be able to return a metadata object')
   }
 
-  const uid = Element.makeUid(component, parent, index, staticTemplateNode);
+  const uid = Element.makeUid(component, parent, index, staticTemplateNode)
 
-  const metadata = component.project.getMetadata();
+  const metadata = component.project.getMetadata()
 
   const componentId = (typeof staticTemplateNode === 'string')
     ? uid
-    : staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE];
+    : staticTemplateNode.attributes[HAIKU_ID_ATTRIBUTE]
 
   const element = Element.upsert({
     uid,
@@ -2275,56 +2292,56 @@ Element.upsertElementFromVirtualElement = (
     component,
     parent,
     children: [], // We *must* unset this or else stale elements will be left, messing up rehydration
-  }, metadata);
+  }, metadata)
 
   if (parent) {
-    parent.insertChild(element);
+    parent.insertChild(element)
   }
 
-  return element;
-};
+  return element
+}
 
 Element.querySelectorAll = (selector, mana) => {
   return cssQueryTree(mana, selector, {
     name: 'elementName',
     attributes: 'attributes',
     children: 'children',
-  });
-};
+  })
+}
 
 Element.FRIENDLY_NAME_SUBSTITUTES = {
   g: 'group',
   tspan: 'Text Span',
-};
+}
 
 // If elementName is bytecode (i.e. a nested component) return a fallback name
 // used for a bunch of lookups, otherwise return the given string element name
 Element.safeElementName = (mana) => {
   if (!mana || typeof mana !== 'object') {
-    return 'div';
+    return 'div'
   }
   // If bytecode, the fallback name is div
   if (mana.elementName && typeof mana.elementName === 'object') {
-    return 'div'; // TODO: How will this bite us?
+    return 'div' // TODO: How will this bite us?
   }
-  return mana.elementName;
-};
+  return mana.elementName
+}
 
 Element.deselectAllOtherElements = (criteria, target, metadata) => {
-  Element.where(Object.assign({_isSelected: true}, criteria)).forEach((element) => {
+  Element.where(Object.assign({ _isSelected: true }, criteria)).forEach((element) => {
     if (element.getComponentId() !== target.getComponentId()) {
-      element.unselect(metadata, true);
+      element.unselect(metadata, true)
     }
-  });
-};
+  })
+}
 
-module.exports = Element;
+module.exports = Element
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require('./Bytecode');
-const MathUtils = require('./MathUtils');
-const Property = require('./Property');
-const Row = require('./Row');
-const Template = require('./Template');
-const TimelineProperty = require('./TimelineProperty');
-const ElementSelectionProxy = require('./ElementSelectionProxy');
+const Bytecode = require('./Bytecode')
+const ElementSelectionProxy = require('./ElementSelectionProxy')
+const MathUtils = require('./MathUtils')
+const Property = require('./Property')
+const Row = require('./Row')
+const Template = require('./Template')
+const TimelineProperty = require('./TimelineProperty')

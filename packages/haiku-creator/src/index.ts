@@ -5,9 +5,9 @@
  */
 
 // Use require to import CommonJS module
-const electronModule = require('./electron');
-const bakeryElectron = require('./bakery/electron').default;
+const electronModule = require('./electron')
+const bakeryElectron = require('./bakery/electron').default
 
 // Re-export as named exports
-export const creator = electronModule.default;
-export {bakeryElectron};
+export const creator = electronModule.default
+export { bakeryElectron }

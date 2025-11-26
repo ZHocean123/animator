@@ -1,7 +1,7 @@
-const {debounce} = require('lodash');
+const { debounce } = require('lodash')
 
-const REPORT_INTERVAL = 1800000; // 30mins
-const DEBOUNCE_RATIO = 1000;
+const REPORT_INTERVAL = 1800000 // 30mins
+const DEBOUNCE_RATIO = 1000
 
 /*
  * Utility that keeps track if the user was active over a defined
@@ -15,15 +15,15 @@ const DEBOUNCE_RATIO = 1000;
  * @param {number} ratio to debounce event listeners, in miliseconds
  */
 class ActivityMonitor {
-  constructor (
+  constructor(
     context = window,
     reportCallback,
     debounceRatio = DEBOUNCE_RATIO,
   ) {
-    this._log = debounce(this._log.bind(this), debounceRatio);
-    this.activity = false;
-    this.reportCallback = reportCallback;
-    this.context = context;
+    this._log = debounce(this._log.bind(this), debounceRatio)
+    this.activity = false
+    this.reportCallback = reportCallback
+    this.context = context
 
     this.events = [
       'mousemove',
@@ -32,7 +32,7 @@ class ActivityMonitor {
       'DOMMouseScroll',
       'mousewheel',
       'touchmove',
-    ];
+    ]
   }
 
   /*
@@ -41,12 +41,12 @@ class ActivityMonitor {
    *
    * @param {number} reportInterval
    */
-  startWatchers (reportInterval = REPORT_INTERVAL) {
+  startWatchers(reportInterval = REPORT_INTERVAL) {
     this.events.forEach((event) => {
-      this.context.addEventListener(event, this._log, false);
-    });
+      this.context.addEventListener(event, this._log, false)
+    })
 
-    this.interval = setInterval(this._report.bind(this), reportInterval);
+    this.interval = setInterval(this._report.bind(this), reportInterval)
   }
 
   /*
@@ -55,37 +55,37 @@ class ActivityMonitor {
    *
    * @param {number} reportInterval
    */
-  stopWatchers () {
+  stopWatchers() {
     this.events.forEach((event) => {
-      this.context.removeEventListener(event, this._log);
-    });
+      this.context.removeEventListener(event, this._log)
+    })
 
-    clearInterval(this.interval);
+    clearInterval(this.interval)
   }
 
-  _log () {
-    this.activity = true;
+  _log() {
+    this.activity = true
 
     // if last known activity was prior to interval, immediately report
     // (reporting on the "rising edge" of user activity gets better results)
-    const lastActivity = this.lastActivity;
-    const newActivity = Date.now();
-    this.lastActivity = newActivity;
+    const lastActivity = this.lastActivity
+    const newActivity = Date.now()
+    this.lastActivity = newActivity
 
-    const lastPeriod = newActivity - lastActivity;
+    const lastPeriod = newActivity - lastActivity
 
     if (lastPeriod > REPORT_INTERVAL) {
-      this.reportCallback(true);
+      this.reportCallback(true)
     }
   }
 
-  _report () {
+  _report() {
     if (typeof this.reportCallback === 'function') {
-      this.reportCallback(this.activity);
+      this.reportCallback(this.activity)
     }
 
-    this.activity = false;
+    this.activity = false
   }
 }
 
-export default ActivityMonitor;
+export default ActivityMonitor

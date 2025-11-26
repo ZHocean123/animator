@@ -1,13 +1,10 @@
-import {PopoverMenu} from 'haiku-ui-common';
-import {Globals} from 'haiku-ui-common';
-import {humanizePropertyName} from 'haiku-ui-common';
-import {Palette} from 'haiku-ui-common';
-import {DownCarrotSVG} from 'haiku-ui-common';
-import * as React from 'react';
-import PropertyInputField from './PropertyInputField';
-import PropertyRowHeading from './PropertyRowHeading';
-import PropertyTimelineSegments from './PropertyTimelineSegments';
-import zIndex from './styles/zIndex';
+import { DownCarrotSVG, Globals, humanizePropertyName, Palette, PopoverMenu } from 'haiku-ui-common'
+
+import * as React from 'react'
+import PropertyInputField from './PropertyInputField'
+import PropertyRowHeading from './PropertyRowHeading'
+import PropertyTimelineSegments from './PropertyTimelineSegments'
+import zIndex from './styles/zIndex'
 
 const STYLE: React.CSSProperties = {
   helper: {
@@ -20,88 +17,88 @@ const STYLE: React.CSSProperties = {
     marginBottom: 0,
     transform: 'translateY(-8px) scaleY(1.46)',
   },
-};
+}
 
 export interface PropertyRowProps {
-  row: any;
-  next: any;
-  timeline: any;
-  prev: any;
-  component: any;
-  rowHeight: number;
-  onDoubleClickToMoveGauge (): void;
-  showBezierEditor (): void;
+  row: any
+  next: any
+  timeline: any
+  prev: any
+  component: any
+  rowHeight: number
+  onDoubleClickToMoveGauge: () => void
+  showBezierEditor: () => void
 }
 
 export default class PropertyRow extends React.Component<PropertyRowProps> {
-  mounted = false;
+  mounted = false
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.row.element.removeListener('update', this.handleUpdate);
-    this.props.row.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.row.element.removeListener('update', this.handleUpdate)
+    this.props.row.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.row.element.on('update', this.handleUpdate);
-    this.props.row.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.row.element.on('update', this.handleUpdate)
+    this.props.row.on('update', this.handleUpdate)
   }
 
   handleUpdate = (what: string): void => {
     if (!this.mounted) {
-      return null;
+      return null
     }
 
     if (
-      what === 'row-selected' ||
-      what === 'row-deselected' ||
-      what === 'row-set-title' ||
-      what === 'element-locked-toggle'
+      what === 'row-selected'
+      || what === 'row-deselected'
+      || what === 'row-set-title'
+      || what === 'element-locked-toggle'
     ) {
-      this.forceUpdate();
+      this.forceUpdate()
     }
-  };
+  }
 
   handleRowHovered = (event: React.MouseEvent<any>) => {
-    this.props.row.hoverAndUnhoverOthers({from: 'timeline'});
-  };
+    this.props.row.hoverAndUnhoverOthers({ from: 'timeline' })
+  }
 
   handleRowUnhovered = (event: React.MouseEvent<any>) => {
-    this.props.row.unhover({from: 'timeline'});
-  };
+    this.props.row.unhover({ from: 'timeline' })
+  }
 
   collapse = () => {
     // Allow clicking the sub-property of a cluster to collapse the parent row,
     // which 'contains' the rows of the cluster as children
     if (this.props.row.isCluster()) {
-      this.props.row.parent.collapse();
+      this.props.row.parent.collapse()
     }
-  };
+  }
 
   activate = () => {
-    this.props.row.activate();
-  };
+    this.props.row.activate()
+  }
 
   onContextMenu = (ctxMenuEvent: React.MouseEvent<any>) => {
-    ctxMenuEvent.stopPropagation();
+    ctxMenuEvent.stopPropagation()
 
     PopoverMenu.emit('show', {
       type: 'property-row',
-      event: {offsetX: 0},
+      event: { offsetX: 0 },
       model: this.props.row,
       offset: Globals.mouse.x - this.props.timeline.getPropertiesPixelWidth(),
-    });
-  };
-
-  get isSoleProperty () {
-    return this.props.next && this.props.next.isHeading() && this.props.prev && this.props.prev.isHeading();
+    })
   }
 
-  render () {
-    const componentId = this.props.row.element.getComponentId();
-    const propertyName = this.props.row.getPropertyNameString();
-    const humanName = humanizePropertyName(propertyName);
+  get isSoleProperty() {
+    return this.props.next && this.props.next.isHeading() && this.props.prev && this.props.prev.isHeading()
+  }
+
+  render() {
+    const componentId = this.props.row.element.getComponentId()
+    const propertyName = this.props.row.getPropertyNameString()
+    const humanName = humanizePropertyName(propertyName)
 
     return (
       <div>
@@ -147,7 +144,7 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
                     height: 'inherit',
                   }}
                 >
-                  <span className="utf-icon" style={{top: -4, left: -3}}>
+                  <span className="utf-icon" style={{ top: -4, left: -3 }}>
                     <DownCarrotSVG />
                   </span>
                 </div>
@@ -235,6 +232,6 @@ export default class PropertyRow extends React.Component<PropertyRowProps> {
           />
         )}
       </div>
-    );
+    )
   }
 }

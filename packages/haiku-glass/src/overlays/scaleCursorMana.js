@@ -8,9 +8,9 @@
  * @param alt
  * @returns {*}
  */
-export default (scale, {x, y}, boxPoints, origin, activationIndex, alt) => {
-  const activationPoint = boxPoints[activationIndex];
-  const fixedPoint = alt ? origin : boxPoints[8 - activationIndex];
+export default (scale, { x, y }, boxPoints, origin, activationIndex, alt) => {
+  const activationPoint = boxPoints[activationIndex]
+  const fixedPoint = alt ? origin : boxPoints[8 - activationIndex]
   return {
     elementName: 'g',
     attributes: {
@@ -28,8 +28,8 @@ export default (scale, {x, y}, boxPoints, origin, activationIndex, alt) => {
         {
           elementName: 'g',
           attributes: {
-            transform: 'translate(-483 -211)',
-            fill: 'none',
+            'transform': 'translate(-483 -211)',
+            'fill': 'none',
             'fill-rule': 'evenodd',
           },
           children: [
@@ -53,5 +53,5 @@ export default (scale, {x, y}, boxPoints, origin, activationIndex, alt) => {
         },
       ],
     }],
-  };
-};
+  }
+}

@@ -1,13 +1,13 @@
-let fse = require('haiku-fs-extra');
-let filterWalkFolder = require('./filterWalkFolder');
+const fse = require('haiku-fs-extra')
+const filterWalkFolder = require('./filterWalkFolder')
 
-module.exports = function walkFiles (dir, done) {
-  return filterWalkFolder(dir, fileOnlyFilter, done);
-};
+module.exports = function walkFiles(dir, done) {
+  return filterWalkFolder(dir, fileOnlyFilter, done)
+}
 
-function fileOnlyFilter (abspath, _, fileObj, relpath) {
+function fileOnlyFilter(abspath, _, fileObj, relpath) {
   if (relpath.match(/(^\.|\/\.|node_modules|bower_components|jspm_modules)/)) {
-    return false; // HACK: Skip files we shouldn't be loading (.git, etc)
+    return false // HACK: Skip files we shouldn't be loading (.git, etc)
   }
-  return fse.lstatSync(abspath).isFile();
+  return fse.lstatSync(abspath).isFile()
 }

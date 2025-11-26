@@ -1,15 +1,15 @@
-import * as dedent from 'dedent';
-import * as React from 'react';
-import {PUBLISH_SHARED} from './PublishStyles';
+import * as dedent from 'dedent'
+import * as React from 'react'
+import { PUBLISH_SHARED } from './PublishStyles'
 
 export interface NpmInstallableProps {
-  projectName: string;
-  organizationName: string;
+  projectName: string
+  organizationName: string
 }
 
 export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
-  render () {
-    const {projectName, organizationName} = this.props;
+  render() {
+    const { projectName, organizationName } = this.props
 
     return (
       <div style={PUBLISH_SHARED.block}>
@@ -18,7 +18,9 @@ export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
             <span style={PUBLISH_SHARED.bullet}>1</span>
           </div>
           <div style={PUBLISH_SHARED.instructionsCol2}>
-            Install the Haiku CLI: <br />
+            Install the Haiku CLI:
+            {' '}
+            <br />
           </div>
         </div>
         <div style={PUBLISH_SHARED.instructionsRow}>
@@ -33,8 +35,10 @@ export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
             <span style={PUBLISH_SHARED.bullet}>2</span>
           </div>
           <div style={PUBLISH_SHARED.instructionsCol2}>
-            <div style={{marginTop: 19}}>
-              Run these commands in your codebase: <br />
+            <div style={{ marginTop: 19 }}>
+              Run these commands in your codebase:
+              {' '}
+              <br />
             </div>
           </div>
         </div>
@@ -57,8 +61,10 @@ export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
             <span style={PUBLISH_SHARED.bullet}>3</span>
           </div>
           <div style={PUBLISH_SHARED.instructionsCol2}>
-            <div style={{marginTop: 19}}>
-              Example usage: <br />
+            <div style={{ marginTop: 19 }}>
+              Example usage:
+              {' '}
+              <br />
             </div>
           </div>
         </div>
@@ -69,6 +75,6 @@ export class NpmInstallable extends React.PureComponent<NpmInstallableProps> {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }

@@ -1,21 +1,21 @@
-import * as React from 'react';
-import Tooltip from './Tooltip';
-import {shell} from 'electron';
-import {TOUR_STYLES} from '../../styles/tourShared';
-import * as steps from './Steps';
-import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {TourUtils} from 'haiku-common';
-import {TOUR_CHANNEL} from 'haiku-sdk-creator';
+import { shell } from 'electron'
+import { TourUtils } from 'haiku-common'
+import { TOUR_CHANNEL } from 'haiku-sdk-creator'
+import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel'
+import * as React from 'react'
+import { TOUR_STYLES } from '../../styles/tourShared'
+import * as steps from './Steps'
+import Tooltip from './Tooltip'
 
 class Tour extends React.Component {
-  constructor () {
-    super();
+  constructor() {
+    super()
 
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
-    this.finish = this.finish.bind(this);
-    this.hide = this.hide.bind(this);
-    this.showStep = this.showStep.bind(this);
+    this.next = this.next.bind(this)
+    this.prev = this.prev.bind(this)
+    this.finish = this.finish.bind(this)
+    this.hide = this.hide.bind(this)
+    this.showStep = this.showStep.bind(this)
 
     this.state = {
       component: null,
@@ -24,113 +24,115 @@ class Tour extends React.Component {
         current: 0,
         total: undefined,
       },
-    };
+    }
 
-    this.hasTriggeredTourRender = false;
+    this.hasTriggeredTourRender = false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.envoyClient.get(TOUR_CHANNEL).then((tourChannel) => {
-      this.tourChannel = tourChannel;
-      this.tourChannel.on('tour:requestShowStep', this.showStep);
-      this.tourChannel.on('tour:hide', this.hide);
-      this.tourChannel.on('tour:requestFinish', this.hide);
-    });
+      this.tourChannel = tourChannel
+      this.tourChannel.on('tour:requestShowStep', this.showStep)
+      this.tourChannel.on('tour:hide', this.hide)
+      this.tourChannel.on('tour:requestFinish', this.hide)
+    })
   }
 
-  componentWillUnmount () {
-    this.tourChannel.off('tour:requestShowStep', this.showStep);
-    this.tourChannel.off('tour:hide', this.hide);
-    this.tourChannel.off('tour:requestFinish', this.hide);
+  componentWillUnmount() {
+    this.tourChannel.off('tour:requestShowStep', this.showStep)
+    this.tourChannel.off('tour:hide', this.hide)
+    this.tourChannel.off('tour:requestFinish', this.hide)
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (
-      this.props.startTourOnMount &&
-      this.hasNecessaryProject() &&
-      !this.hasTriggeredTourRender
+      this.props.startTourOnMount
+      && this.hasNecessaryProject()
+      && !this.hasTriggeredTourRender
     ) {
-      this.tryStartTour();
+      this.tryStartTour()
     }
   }
 
-  tryStartTour () {
+  tryStartTour() {
     if (this.tourChannel) {
-      this.tourChannel.start();
-      this.hasTriggeredTourRender = true;
-      mixpanel.haikuTrack('tour', {state: 'started'});
-    } else {
+      this.tourChannel.start()
+      this.hasTriggeredTourRender = true
+      mixpanel.haikuTrack('tour', { state: 'started' })
+    }
+    else {
       // If envoy it's taking more than expected to return the tourChannel,
       // try again in 500 ms
       return setTimeout(() => {
-        this.tryStartTour();
-      }, 500);
+        this.tryStartTour()
+      }, 500)
     }
   }
 
-  hasNecessaryProject () {
+  hasNecessaryProject() {
     if (!this.props.projectsList) {
-      return false;
+      return false
     }
     if (this.props.projectsList.length < 1) {
-      return false;
+      return false
     }
     const projectIdx = this.props.projectsList.findIndex((project) => {
-      return project.projectName === TourUtils.ProjectName;
-    });
-    return projectIdx !== -1;
+      return project.projectName === TourUtils.ProjectName
+    })
+    return projectIdx !== -1
   }
 
-  next () {
+  next() {
     if (this.state.stepData.current === 1) {
-      const tutorialOpener =
-        document.querySelector(`${this.state.selector} .js-utility-project-launcher`);
+      const tutorialOpener
+        = document.querySelector(`${this.state.selector} .js-utility-project-launcher`)
 
       if (tutorialOpener) {
-        tutorialOpener.click();
+        tutorialOpener.click()
       }
-    } else {
-      this.tourChannel.next();
+    }
+    else {
+      this.tourChannel.next()
     }
   }
 
-  prev () {
-    this.tourChannel.prev();
+  prev() {
+    this.tourChannel.prev()
   }
 
-  finish (createFile, skipped) {
-    this.tourChannel.finish(createFile);
+  finish(createFile, skipped) {
+    this.tourChannel.finish(createFile)
     mixpanel.haikuTrack('tour', {
       state: 'skipped',
       step: this.state.stepData.current,
       title: this.state.component,
-    });
+    })
   }
 
-  hide () {
-    this.setState({component: null});
+  hide() {
+    this.setState({ component: null })
   }
 
-  showStep (newState) {
+  showStep(newState) {
     if (this.state.stepData.current < newState.stepData.current) {
       mixpanel.haikuTrack('tour', {
         state: 'step completed',
         step: this.state.stepData.current,
         title: this.state.component,
-      });
+      })
     }
 
-    this.setState(newState);
+    this.setState(newState)
   }
 
-  openLink (e) {
-    e.preventDefault();
-    shell.openExternal(e.target.href);
+  openLink(e) {
+    e.preventDefault()
+    shell.openExternal(e.target.href)
   }
 
-  render () {
+  render() {
     if (!this.state.component || !this.props.show) {
-      return null;
+      return null
     }
 
     const {
@@ -144,10 +146,10 @@ class Tour extends React.Component {
       isOverlayHideable,
       showPreviousButton,
       modalOffset,
-    } = this.state;
+    } = this.state
 
     // tslint:disable-next-line:variable-name
-    const Step = steps[component];
+    const Step = steps[component]
 
     return (
       <Tooltip
@@ -171,13 +173,13 @@ class Tour extends React.Component {
           openLink={this.openLink}
         />
       </Tooltip>
-    );
+    )
   }
 }
 
 Tour.propTypes = {
   envoyClient: React.PropTypes.object.isRequired,
   show: React.PropTypes.bool,
-};
+}
 
-export default Tour;
+export default Tour

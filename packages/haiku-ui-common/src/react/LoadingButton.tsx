@@ -1,7 +1,7 @@
-import * as React from 'react';
-import Palette from '../Palette';
-import {SHARED_STYLES} from '../SharedStyles';
-import {LoadingTopBar} from './LoadingTopBar';
+import * as React from 'react'
+import Palette from '../Palette'
+import { SHARED_STYLES } from '../SharedStyles'
+import { LoadingTopBar } from './LoadingTopBar'
 
 const STYLES = {
   entry: {
@@ -22,21 +22,21 @@ const STYLES = {
       cursor: 'wait',
     },
   },
-} as React.CSSProperties;
+} as React.CSSProperties
 
 export interface LoadingButtonProps {
-  disabled: boolean;
-  done: boolean;
-  effectivelyDisabled: boolean;
-  progress: number;
-  speed?: number|string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  onMouseOver?: React.MouseEventHandler<HTMLButtonElement>;
-  onMouseOut?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled: boolean
+  done: boolean
+  effectivelyDisabled: boolean
+  progress: number
+  speed?: number | string
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  onMouseOver?: React.MouseEventHandler<HTMLButtonElement>
+  onMouseOut?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export class LoadingButton extends React.PureComponent<LoadingButtonProps> {
-  render () {
+  render() {
     return (
       <button
         style={{
@@ -59,6 +59,6 @@ export class LoadingButton extends React.PureComponent<LoadingButtonProps> {
         )}
         {this.props.children}
       </button>
-    );
+    )
   }
 }

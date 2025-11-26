@@ -1,8 +1,8 @@
+import { Palette } from 'haiku-ui-common'
 /* global monaco */
-import * as React from 'react';
-import {Palette } from 'haiku-ui-common';
-import SyntaxEvaluator from './SyntaxEvaluator';
-import Snippets from './Snippets';
+import * as React from 'react'
+import Snippets from './Snippets'
+import SyntaxEvaluator from './SyntaxEvaluator'
 
 const STYLES = {
   amble: {
@@ -37,29 +37,29 @@ const STYLES = {
     height: '100%',
     overflow: 'hidden',
   },
-};
+}
 
 class Editor extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.handleEditorChange = this.handleEditorChange.bind(this);
-    this.remove = this.remove.bind(this);
-    this.evaluator = null;
+    this.handleEditorChange = this.handleEditorChange.bind(this)
+    this.remove = this.remove.bind(this)
+    this.evaluator = null
 
     this.state = {
       contents: props.contents,
-    };
+    }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.editor = monaco.editor.create(this._context, {
       value: this.props.contents || '',
       language: 'javascript',
       lineNumbers: 'off',
       links: false,
       theme: 'haiku',
-      minimap: {enabled: false},
+      minimap: { enabled: false },
       autoIndent: false,
       contextmenu: false,
       codeLens: false,
@@ -72,27 +72,27 @@ class Editor extends React.Component {
       scrollBeyondLastLine: false,
       fontFamily: 'Fira Mono',
       hover: false,
-    });
+    })
 
-    this.editor.onDidChangeModelContent(this.handleEditorChange);
-    this.editor.focus();
-    monaco.editor.setTheme('haiku-actions');
+    this.editor.onDidChangeModelContent(this.handleEditorChange)
+    this.editor.focus()
+    monaco.editor.setTheme('haiku-actions')
     // this.editor.onMouseMove listener declared in Snippets.js
 
     // Avoid listening for  cmd|ctrl+ctrl on action editor, because it is used as shortcut
-    this.editor.addCommand([monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], () => {});
+    this.editor.addCommand([monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], () => {})
 
-    this.forceUpdate();
+    this.forceUpdate()
   }
 
-  handleEditorChange () {
+  handleEditorChange() {
     setTimeout(() => {
-      this.setState({contents: this.editor.getValue()});
-      this.props.onContentChange(this.serialize());
-    });
+      this.setState({ contents: this.editor.getValue() })
+      this.props.onContentChange(this.serialize())
+    })
   }
 
-  serialize (eventName = this.props.selectedEventName) {
+  serialize(eventName = this.props.selectedEventName) {
     return {
       id: this.props.id,
       event: eventName,
@@ -103,27 +103,27 @@ class Editor extends React.Component {
         name: null,
       },
       evaluator: this.evaluator,
-    };
+    }
   }
 
-  remove () {
-    this.props.onRemove(this.serialize());
+  remove() {
+    this.props.onRemove(this.serialize())
   }
 
   setContextRef = (element) => {
-    this._context = element;
-  };
+    this._context = element
+  }
 
   setEvaluator = (evaluator) => {
-    this.evaluator = evaluator;
-  };
+    this.evaluator = evaluator
+  }
 
-  render () {
+  render() {
     return (
       <div
         id={this.props.id}
       >
-        <div style={{...STYLES.amble, ...STYLES.preamble}}>
+        <div style={{ ...STYLES.amble, ...STYLES.preamble }}>
           {`function (${this.props.params.join(', ')}) {`}
         </div>
         <div
@@ -136,7 +136,7 @@ class Editor extends React.Component {
             ref={this.setContextRef}
           />
         </div>
-        <div style={{...STYLES.amble, ...STYLES.postamble}}>
+        <div style={{ ...STYLES.amble, ...STYLES.postamble }}>
           {'}'}
           <SyntaxEvaluator
             onChange={this.setEvaluator}
@@ -145,7 +145,7 @@ class Editor extends React.Component {
           />
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -154,6 +154,6 @@ Editor.propTypes = {
   selectedEventName: React.PropTypes.string.isRequired,
   contents: React.PropTypes.string,
   params: React.PropTypes.array.isRequired,
-};
+}
 
-export default Editor;
+export default Editor

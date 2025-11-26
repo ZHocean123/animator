@@ -1,84 +1,84 @@
-const https = require('https');
-const fs = require('fs');
-const {exec} = require('child_process');
+const { exec } = require('node:child_process')
+const fs = require('node:fs')
+const https = require('node:https')
 
-const RESERVED_CHAR_REPLACEMENT = '-';
-const FILENAME_RESERVED_REGEX = /[<>:"\/\\|?*\x00-\x1F]/g;
-const WINDOWS_NAMES_RESERVED_REGEX = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+const RESERVED_CHAR_REPLACEMENT = '-'
+const FILENAME_RESERVED_REGEX = /[<>:"/\\|?*\x00-\x1F]/g
+const WINDOWS_NAMES_RESERVED_REGEX = /^(con|prn|aux|nul|com\d|lpt\d)$/i
 
 module.exports = {
-  download (url, downloadPath, onProgress, shouldCancel) {
-    const file = fs.createWriteStream(downloadPath);
+  download(url, downloadPath, onProgress, shouldCancel) {
+    const file = fs.createWriteStream(downloadPath)
 
     return new Promise((resolve, reject) => {
       const request = https.get(url, (response) => {
-        const contentLenght = parseInt(response.headers['content-length'], 10);
-        let progress = 0;
+        const contentLenght = Number.parseInt(response.headers['content-length'], 10)
+        let progress = 0
 
-        response.pipe(file);
+        response.pipe(file)
 
         response.on('data', (data) => {
           if (typeof shouldCancel === 'function' && shouldCancel()) {
-            request.abort();
-            file.close();
-            reject(Error('Download cancelled'));
+            request.abort()
+            file.close()
+            reject(new Error('Download cancelled'))
           }
 
-          progress += data.length;
-          onProgress(progress * 100 / contentLenght);
-        });
+          progress += data.length
+          onProgress(progress * 100 / contentLenght)
+        })
 
         response.on('error', (error) => {
-          fs.unlink(downloadPath);
-          reject(error);
-        });
+          fs.unlink(downloadPath)
+          reject(error)
+        })
 
         file.on('finish', () => {
-          file.close(resolve);
-        });
-      });
-    });
+          file.close(resolve)
+        })
+      })
+    })
   },
 
-  unzip (zipPath, destination) {
-    const saneZipPath = JSON.stringify(zipPath);
-    const saneDestination = JSON.stringify(destination);
-    const unzipCommand = `/usr/bin/unzip -o -qq ${saneZipPath} -d ${saneDestination}`;
+  unzip(zipPath, destination) {
+    const saneZipPath = JSON.stringify(zipPath)
+    const saneDestination = JSON.stringify(destination)
+    const unzipCommand = `/usr/bin/unzip -o -qq ${saneZipPath} -d ${saneDestination}`
 
     return new Promise((resolve, reject) => {
       exec(unzipCommand, {}, (err) => {
-        err ? reject(err) : resolve(true);
-      });
-    });
+        err ? reject(err) : resolve(true)
+      })
+    })
   },
 
-  ditto (src, dest) {
-    const saneSrc = JSON.stringify(src);
-    const saneDest = JSON.stringify(dest);
-    const dittoComand = `/usr/bin/ditto ${saneSrc} ${saneDest}`;
+  ditto(src, dest) {
+    const saneSrc = JSON.stringify(src)
+    const saneDest = JSON.stringify(dest)
+    const dittoComand = `/usr/bin/ditto ${saneSrc} ${saneDest}`
 
     return new Promise((resolve, reject) => {
       exec(dittoComand, {}, (err) => {
-        err ? reject(err) : resolve(true);
-      });
-    });
+        err ? reject(err) : resolve(true)
+      })
+    })
   },
 
-  sanitize (name) {
+  sanitize(name) {
     if (typeof name !== 'string') {
-      return '';
+      return ''
     }
 
     return name
       .replace(FILENAME_RESERVED_REGEX, RESERVED_CHAR_REPLACEMENT)
-      .replace(WINDOWS_NAMES_RESERVED_REGEX, RESERVED_CHAR_REPLACEMENT);
+      .replace(WINDOWS_NAMES_RESERVED_REGEX, RESERVED_CHAR_REPLACEMENT)
   },
 
-  stringifyPath (filePath) {
+  stringifyPath(filePath) {
     if (typeof filePath !== 'string') {
-      return '';
+      return ''
     }
 
-    return filePath.replace(/\\/g, '\\\\');
+    return filePath.replace(/\\/g, '\\\\')
   },
-};
+}

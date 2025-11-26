@@ -1,32 +1,28 @@
-import * as Radium from 'radium';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import {ipcRenderer, shell} from 'electron';
-import {ErrorCode} from '@haiku/sdk-inkstone';
-import {Experiment, experimentIsEnabled} from 'haiku-common';
-import {EXPORTER_CHANNEL} from 'haiku-sdk-creator';
-import {Palette } from 'haiku-ui-common';
-import * as Color from 'color';
-import {BTN_STYLES} from '../styles/btnShared';
-import Toggle from './Toggle';
-import {PublicPrivateOptInModal} from './PublicPrivateOptInModal';
-import {ShareModal} from 'haiku-ui-common';
-import {
+import { ErrorCode } from '@haiku/sdk-inkstone'
+import * as Color from 'color'
+import { ipcRenderer, shell } from 'electron'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import { EXPORTER_CHANNEL, ProjectError } from 'haiku-sdk-creator'
+
+import * as Element from 'haiku-serialization/src/bll/Element'
+import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy'
+import * as logger from 'haiku-serialization/src/utils/LoggerInstance'
+const mixpanel = require('haiku-serialization/src/utils/Mixpanel')
+import { Palette,ShareModal,
   EyeIconSVG, ComponentIconSVG, ConnectionIconSVG, DangerIconSVG, EventsBoltIcon, PublishSnapshotSVG, WarningIconSVG,
-} from 'haiku-ui-common';
-import * as Element from 'haiku-serialization/src/bll/Element';
-import * as ElementSelectionProxy from 'haiku-serialization/src/bll/ElementSelectionProxy';
-import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {ProjectError} from 'haiku-sdk-creator';
-import {
   isPreviewMode,
   isEditMode,
   isCodeEditorMode,
-  showGlassOnStage,
-} from 'haiku-ui-common';
-import AlignToolBox from './AlignToolBox';
+  showGlassOnStage } from 'haiku-ui-common';
+import * as Radium from 'radium'
+import * as React from 'react'
 
-const mixpanel = require('haiku-serialization/src/utils/Mixpanel');
+import * as ReactDOM from 'react-dom'
+import { BTN_STYLES } from '../styles/btnShared'
+import AlignToolBox from './AlignToolBox'
+
+import { PublicPrivateOptInModal } from './PublicPrivateOptInModal'
+import Toggle from './Toggle'
 
 const STYLES = {
   hide: {
@@ -55,7 +51,7 @@ const STYLES = {
     color: Palette.ROCK,
     textAlign: 'center',
     borderRadius: 4,
-    boxShadow: '0 6px 25px 0 ' + Palette.FATHER_COAL,
+    boxShadow: `0 6px 25px 0 ${Palette.FATHER_COAL}`,
   },
   popoverClose: {
     color: 'white',
@@ -103,7 +99,7 @@ const STYLES = {
     marginTop: 3,
     cursor: 'pointer',
     backgroundColor: Color(Palette.DARK_GRAY).fade(0.68),
-    border: '1px solid ' + Palette.DARK_GRAY,
+    border: `1px solid ${Palette.DARK_GRAY}`,
   },
   link: {
     fontSize: 10,
@@ -150,31 +146,31 @@ const STYLES = {
   activeIndicatorRight: {
     borderBottomRightRadius: 4,
   },
-};
+}
 
 const SNAPSHOT_SAVE_RESOLUTION_STRATEGIES = {
-  normal: {strategy: 'recursive', favor: 'ours'},
-  ours: {strategy: 'ours'},
-  theirs: {strategy: 'theirs'},
-};
+  normal: { strategy: 'recursive', favor: 'ours' },
+  ours: { strategy: 'ours' },
+  theirs: { strategy: 'theirs' },
+}
 
-const MAX_SYNDICATION_CHECKS = 48;
-const SYNDICATION_CHECK_INTERVAL = 2500;
+const MAX_SYNDICATION_CHECKS = 48
+const SYNDICATION_CHECK_INTERVAL = 2500
 
 class StageTitleBar extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor(props) {
+    super(props)
 
-    this.handleConnectionClick = this.handleConnectionClick.bind(this);
-    this.handleSaveSnapshotClick = this.handleSaveSnapshotClick.bind(this);
-    this.handleShowEventHandlersEditor = this.handleShowEventHandlersEditor.bind(this);
-    this.handleConglomerateComponent = this.handleConglomerateComponent.bind(this);
-    this.handleShowProjectLocationToast = this.handleShowProjectLocationToast.bind(this);
-    this.handleGlobalMenuSave = this.handleGlobalMenuSave.bind(this);
-    this.handleSaveOnRawCodeEditor = this.handleSaveOnRawCodeEditor.bind(this);
-    this.handleSaveOnGlass = this.handleSaveOnGlass.bind(this);
+    this.handleConnectionClick = this.handleConnectionClick.bind(this)
+    this.handleSaveSnapshotClick = this.handleSaveSnapshotClick.bind(this)
+    this.handleShowEventHandlersEditor = this.handleShowEventHandlersEditor.bind(this)
+    this.handleConglomerateComponent = this.handleConglomerateComponent.bind(this)
+    this.handleShowProjectLocationToast = this.handleShowProjectLocationToast.bind(this)
+    this.handleGlobalMenuSave = this.handleGlobalMenuSave.bind(this)
+    this.handleSaveOnRawCodeEditor = this.handleSaveOnRawCodeEditor.bind(this)
+    this.handleSaveOnGlass = this.handleSaveOnGlass.bind(this)
 
-    this._isMounted = false;
+    this._isMounted = false
 
     this.state = {
       snapshotSaveResolutionStrategyName: 'normal',
@@ -192,20 +188,21 @@ class StageTitleBar extends React.Component {
       showCopied: false,
       shareUrls: {},
       snapshotSyndicated: true,
-    };
+    }
 
     ipcRenderer.on('global-menu:save', () => {
       // Skip if event handler editor is open
       if (!this._isMounted || this.props.showEventHandlerEditor) {
-        return;
+        return
       }
 
       if (showGlassOnStage(this.props.interactionMode)) {
-        this.handleSaveOnGlass();
-      } else {
-        this.handleSaveOnRawCodeEditor();
+        this.handleSaveOnGlass()
       }
-    });
+      else {
+        this.handleSaveOnRawCodeEditor()
+      }
+    })
   }
 
   hideShareModal = () => {
@@ -214,11 +211,11 @@ class StageTitleBar extends React.Component {
       isSnapshotSaveInProgress: false,
       snapshotSyndicated: true,
       snapshotSaveError: null,
-    });
-  };
+    })
+  }
 
-  componentDidMount () {
-    this._isMounted = true;
+  componentDidMount() {
+    this._isMounted = true
 
     // It's kind of weird to have this heartbeat logic buried all the way down here inside StateTitleBar;
     // it probably should be moved up to the Creator level so it's easier to find #FIXME
@@ -229,12 +226,12 @@ class StageTitleBar extends React.Component {
             // If master disconnects we might not even get an error, so create a fake error in its place
             if (!heartbeatErr) {
               // tslint:disable-next-line:no-parameter-reassignment
-              heartbeatErr = new Error('Unknown problem with master heartbeat');
+              heartbeatErr = new Error('Unknown problem with master heartbeat')
             }
-            logger.error(heartbeatErr);
+            logger.error(heartbeatErr)
 
             // If master has disconnected, stop running this interval so we don't get pulsing error messages
-            clearInterval(this._fetchMasterStateInterval);
+            clearInterval(this._fetchMasterStateInterval)
 
             // But the first time we get this, display a user notice - they probably need to restart Haiku to get
             // into a better state, at least until we can resolve what the cause of this problem is
@@ -242,52 +239,52 @@ class StageTitleBar extends React.Component {
               type: 'danger',
               title: 'Uh oh!',
               message: 'Animator is having a problem accessing your project. 😢  Please restart Animator. If you see this error again, contact Haiku for support.',
-            });
+            })
           }
 
           ipcRenderer.send('topmenu:update', {
             isSaving: !!masterState.isSaving,
             ...this.props.projectModel.describeTopMenu(),
-          });
-        });
+          })
+        })
       }
-    }, 1000);
+    }, 1000)
 
     this.closeListener = (e) => {
       if (this._shareModal && this.state.showSharePopover) {
-        const node = ReactDOM.findDOMNode(this._shareModal);
-        const pnode = ReactDOM.findDOMNode(this);
+        const node = ReactDOM.findDOMNode(this._shareModal)
+        const pnode = ReactDOM.findDOMNode(this)
         if (!node.contains(e.target) && !pnode.contains(e.target)) {
-          this.hideShareModal();
-          this.clearSyndicationChecks();
+          this.hideShareModal()
+          this.clearSyndicationChecks()
         }
       }
-    };
-
-    document.addEventListener('mouseup', this.closeListener);
-
-    ipcRenderer.on('global-menu:publish', this.handleGlobalMenuSave);
-  }
-
-  componentWillUnmount () {
-    this._isMounted = false;
-    clearInterval(this._fetchMasterStateInterval);
-    ipcRenderer.removeListener('global-menu:publish', this.handleGlobalMenuSave);
-    document.removeEventListener('mouseup', this.closeListener);
-    this.clearSyndicationChecks();
-  }
-
-  handleGlobalMenuSave () {
-    if (!this._isMounted) {
-      return;
     }
 
-    this.handleSaveSnapshotClick();
+    document.addEventListener('mouseup', this.closeListener)
+
+    ipcRenderer.on('global-menu:publish', this.handleGlobalMenuSave)
   }
 
-  handleShowProjectLocationToast () {
+  componentWillUnmount() {
+    this._isMounted = false
+    clearInterval(this._fetchMasterStateInterval)
+    ipcRenderer.removeListener('global-menu:publish', this.handleGlobalMenuSave)
+    document.removeEventListener('mouseup', this.closeListener)
+    this.clearSyndicationChecks()
+  }
+
+  handleGlobalMenuSave() {
     if (!this._isMounted) {
-      return;
+      return
+    }
+
+    this.handleSaveSnapshotClick()
+  }
+
+  handleShowProjectLocationToast() {
+    if (!this._isMounted) {
+      return
     }
 
     const noticeNotice = this.props.createNotice({
@@ -298,75 +295,75 @@ class StageTitleBar extends React.Component {
           <span
             style={STYLES.link2}
             onClick={() => {
-              shell.showItemInFolder(this.props.folder);
+              shell.showItemInFolder(this.props.folder)
             }}
           >
             View in Finder
           </span>
         </p>
       ),
-    });
+    })
 
     window.setTimeout(() => {
       if (noticeNotice) {
-        this.props.removeNotice(undefined, noticeNotice.id);
+        this.props.removeNotice(undefined, noticeNotice.id)
       }
-    }, 2500);
+    }, 2500)
   }
 
-  handleConnectionClick () {
+  handleConnectionClick() {
     // TODO
   }
 
-  getProjectSaveOptions () {
+  getProjectSaveOptions() {
     return {
       saveStrategy: SNAPSHOT_SAVE_RESOLUTION_STRATEGIES[this.state.snapshotSaveResolutionStrategyName],
-    };
+    }
   }
 
-  handleSaveOnRawCodeEditor () {
-    this.props.saveCodeFromEditorToDisk();
+  handleSaveOnRawCodeEditor() {
+    this.props.saveCodeFromEditorToDisk()
   }
 
-  handleSaveOnGlass () {
+  handleSaveOnGlass() {
     const noticeNotice = this.props.createNotice({
       type: 'info',
       title: 'No need to save!',
       message: 'Animator saves your work automatically',
-    });
+    })
 
     window.setTimeout(() => {
       if (noticeNotice) {
-        this.props.removeNotice(undefined, noticeNotice.id);
+        this.props.removeNotice(undefined, noticeNotice.id)
       }
-    }, 2500);
+    }, 2500)
   }
 
-  handleSaveSnapshotClick () {
+  handleSaveSnapshotClick() {
     if (this.state.snapshotSaveError) {
-      return void (0);
+      return void (0)
     }
     if (this.state.isSnapshotSaveInProgress) {
-      return void (0);
+      return void (0)
     }
 
     mixpanel.haikuTrack('install-options', {
       from: 'app',
       event: 'show-all-options',
-    });
+    })
 
-    return this.performProjectSave();
+    return this.performProjectSave()
   }
 
-  showGenericPublishError () {
+  showGenericPublishError() {
     this.props.createNotice({
       type: 'danger',
       title: 'Uh oh!',
       message: 'We were unable to publish your project. 😢 Please make sure you are connected to the internet.',
-    });
+    })
   }
 
-  showSharePopover (cb) {
+  showSharePopover(cb) {
     this.setState(
       {
         showPublicPrivateOptInModal: false,
@@ -375,18 +372,18 @@ class StageTitleBar extends React.Component {
         snapshotSyndicated: false,
       },
       () => {
-        this.props.projectModel.saveProject(this.props.project, this.getProjectSaveOptions(), cb);
+        this.props.projectModel.saveProject(this.props.project, this.getProjectSaveOptions(), cb)
       },
-    );
+    )
   }
 
-  requestSaveProject (cb) {
+  requestSaveProject(cb) {
     if (this.props.projectModel) {
       // We might come back to this later!
-      this.setState({forceDisablePrivate: false});
+      this.setState({ forceDisablePrivate: false })
       this.props.envoyProject.getProjectsList().then((list) => {
         this.setState({
-          privateProjectCount: list.filter((project) => !project.isPublic).length,
+          privateProjectCount: list.filter(project => !project.isPublic).length,
         }, () => {
           // If the project already has a repository URL, this means the user has already confirmed their project's
           // privacy settings. Prior to 3.5.2, we presented this field during project creation in Creator; as of 3.5.2,
@@ -397,10 +394,10 @@ class StageTitleBar extends React.Component {
             this.setState({
               showPublicPrivateOptInModal: true,
               saveProjectContinue: () => {
-                this.showSharePopover(cb);
+                this.showSharePopover(cb)
               },
-            });
-            return;
+            })
+            return
           }
 
           // If we have a private project limit and the project is private, we have to first check if any updates will
@@ -413,69 +410,71 @@ class StageTitleBar extends React.Component {
                     forceDisablePrivate: true,
                     showPublicPrivateOptInModal: true,
                     saveProjectContinue: () => {
-                      this.showSharePopover(cb);
+                      this.showSharePopover(cb)
                     },
-                  });
-                  break;
+                  })
+                  break
                 default:
-                  this.showGenericPublishError();
-                  break;
+                  this.showGenericPublishError()
+                  break
               }
-            });
-          } else {
-            // We can go straight to the publish modal.
-            this.showSharePopover(cb);
+            })
           }
-        });
+          else {
+            // We can go straight to the publish modal.
+            this.showSharePopover(cb)
+          }
+        })
       }).catch(() => {
-        this.showGenericPublishError();
-      });
+        this.showGenericPublishError()
+      })
     }
   }
 
-  clearSyndicationChecks () {
-    clearInterval(this._performSyndicationCheckInterval);
+  clearSyndicationChecks() {
+    clearInterval(this._performSyndicationCheckInterval)
   }
 
-  performSyndicationCheck () {
-    this.syndicationChecks++;
-    this.props.envoyProject.getSnapshotInfo().then(({snapshotSyndicated, shareUrls}) => {
-      const newState = {shareUrls};
+  performSyndicationCheck() {
+    this.syndicationChecks++
+    this.props.envoyProject.getSnapshotInfo().then(({ snapshotSyndicated, shareUrls }) => {
+      const newState = { shareUrls }
       // Avoid races with button display while aborting publish by only setting values that have become true.
       // #FIXME: do we still need this?
       if (snapshotSyndicated) {
-        newState.snapshotSyndicated = snapshotSyndicated;
-        this.clearSyndicationChecks();
-      } else if (this.syndicationChecks >= MAX_SYNDICATION_CHECKS) {
-        newState.snapshotSyndicated = undefined;
-        this.clearSyndicationChecks();
+        newState.snapshotSyndicated = snapshotSyndicated
+        this.clearSyndicationChecks()
       }
-      this.setState(newState);
+      else if (this.syndicationChecks >= MAX_SYNDICATION_CHECKS) {
+        newState.snapshotSyndicated = undefined
+        this.clearSyndicationChecks()
+      }
+      this.setState(newState)
     }).catch(() => {
       this.props.createNotice({
         type: 'danger',
         title: 'Uh oh!',
         message: 'We were unable to publish your project. 😢 Please try again in a bit. If you see this error again, contact Haiku for support.',
-      });
-      this.clearSyndicationChecks();
+      })
+      this.clearSyndicationChecks()
       return this.setState({
         showSharePopover: false,
         isSnapshotSaveInProgress: false,
         snapshotSyndicated: undefined,
-      });
-    });
+      })
+    })
   }
 
-  performProjectSave () {
+  performProjectSave() {
     mixpanel.haikuTrack('creator:project:saving', {
       username: this.props.username,
       project: this.props.projectName,
-    });
+    })
 
     return this.requestSaveProject((snapshotSaveError, snapshotData) => {
       // If we aborted early, don't start polling.
       if (!this.state.showSharePopover) {
-        return;
+        return
       }
 
       if (snapshotSaveError) {
@@ -484,35 +483,35 @@ class StageTitleBar extends React.Component {
             // This should never happen.
             this.setState({
               isSnapshotSaveInProgress: false,
-            });
-            return;
+            })
+            return
           default:
             // #FIXME: uses legacy error handling.
             if (snapshotSaveError.conflicts) {
-              logger.warn('[creator] merge conflicts found');
+              logger.warn('[creator] merge conflicts found')
               this.props.createNotice({
                 type: 'warning',
                 title: 'Problem saving!',
                 message: 'We couldn\'t save your changes. 😢 Please contact Haiku Support.',
-              });
+              })
               return this.setState({
                 showSharePopover: false,
-              });
+              })
             }
 
-            logger.error(snapshotSaveError);
-            this.setState({isSnapshotSaveInProgress: false, snapshotSaveResolutionStrategyName: 'normal', snapshotSaveError, linkAddress: 'n/a'});
-            return;
+            logger.error(snapshotSaveError)
+            this.setState({ isSnapshotSaveInProgress: false, snapshotSaveResolutionStrategyName: 'normal', snapshotSaveError, linkAddress: 'n/a' })
+            return
         }
       }
 
       this.setState({
         isSnapshotSaveInProgress: false,
         snapshotSaveConfirmed: true,
-      });
+      })
 
       if (snapshotData) {
-        logger.info('[creator] save complete', snapshotData);
+        logger.info('[creator] save complete', snapshotData)
 
         // Unless we set back to normal, subsequent saves will still be set to use the strict ours/theirs strategy,
         // which will clobber updates that we might want to actually merge gracefully.
@@ -524,69 +523,69 @@ class StageTitleBar extends React.Component {
           //   - shareUrls {}
           ...snapshotData,
           snapshotSaveResolutionStrategyName: 'normal',
-        });
+        })
 
         if (!snapshotData.snapshotSyndicated) {
-          this.syndicationChecks = 0;
+          this.syndicationChecks = 0
           this._performSyndicationCheckInterval = setInterval(() => {
-            this.performSyndicationCheck();
-          }, SYNDICATION_CHECK_INTERVAL);
+            this.performSyndicationCheck()
+          }, SYNDICATION_CHECK_INTERVAL)
 
           if (this.props.envoyExporter) {
             this.abortSyndicationCheck = () => {
-              this.setState({snapshotSyndicated: undefined});
-              this.clearSyndicationChecks();
-              this.props.envoyExporter.off(`${EXPORTER_CHANNEL}:abort`, this.abortSyndicationCheck);
+              this.setState({ snapshotSyndicated: undefined })
+              this.clearSyndicationChecks()
+              this.props.envoyExporter.off(`${EXPORTER_CHANNEL}:abort`, this.abortSyndicationCheck)
               this.props.createNotice({
                 type: 'danger',
                 title: 'Uh oh!',
                 message: 'Not all assets were published successfully. 😢  If you see this error again, contact Haiku for support.',
-              });
-            };
+              })
+            }
 
-            this.props.envoyExporter.on(`${EXPORTER_CHANNEL}:abort`, this.abortSyndicationCheck);
+            this.props.envoyExporter.on(`${EXPORTER_CHANNEL}:abort`, this.abortSyndicationCheck)
           }
         }
 
         mixpanel.haikuTrack('creator:project:saved', {
           username: this.props.username,
           project: this.props.projectName,
-        });
+        })
       }
 
-      return setTimeout(() => this.setState({snapshotSaveConfirmed: false}), 2000);
-    });
+      return setTimeout(() => this.setState({ snapshotSaveConfirmed: false }), 2000)
+    })
   }
 
-  renderSnapshotSaveInnerButton () {
+  renderSnapshotSaveInnerButton() {
     if (this.state.snapshotSaveError) {
-      return <div style={{height: 18, marginRight: -5}}><DangerIconSVG fill="transparent" /></div>;
+      return <div style={{ height: 18, marginRight: -5 }}><DangerIconSVG fill="transparent" /></div>
     }
-    return <PublishSnapshotSVG />;
+    return <PublishSnapshotSVG />
   }
 
-  getActiveComponent () {
-    return this.props.projectModel && this.props.projectModel.getCurrentActiveComponent();
+  getActiveComponent() {
+    return this.props.projectModel && this.props.projectModel.getCurrentActiveComponent()
   }
 
-  fetchProxyElementForSelection () {
-    const component = this.getActiveComponent();
+  fetchProxyElementForSelection() {
+    const component = this.getActiveComponent()
     if (component) {
-      return ElementSelectionProxy.fromSelection(Element.where({component, _isSelected: true}), component);
+      return ElementSelectionProxy.fromSelection(Element.where({ component, _isSelected: true }), component)
     }
   }
 
-  getConglomerateComponentButtonColor () {
-    const proxy = this.fetchProxyElementForSelection();
+  getConglomerateComponentButtonColor() {
+    const proxy = this.fetchProxyElementForSelection()
     if (proxy) {
       if (proxy.canEditComponentFromSelection()) {
-        return Palette.LIGHT_BLUE;
+        return Palette.LIGHT_BLUE
       }
     }
   }
 
-  handleConglomerateComponent () {
-    const proxy = this.fetchProxyElementForSelection();
+  handleConglomerateComponent() {
+    const proxy = this.fetchProxyElementForSelection()
 
     if (proxy.canEditComponentFromSelection()) {
       this.props.websocket.send({
@@ -594,67 +593,68 @@ class StageTitleBar extends React.Component {
         from: 'creator',
         name: 'edit-component',
         folder: this.props.projectModel.getFolder(), // required when sent via Creator
-      });
-    } else {
+      })
+    }
+    else {
       this.props.conglomerateComponent({
         isBlankComponent: proxy.selection.length === 0,
         skipInstantiateInHost: proxy.selection.length === 0,
-      });
+      })
     }
   }
 
-  isEventHandlersEditorAvailable () {
-    const proxy = this.fetchProxyElementForSelection();
+  isEventHandlersEditorAvailable() {
+    const proxy = this.fetchProxyElementForSelection()
     // If nothing is selected, assume the user wants to add events to the artboard
-    return proxy && (proxy.doesManageSingleElement() || proxy.hasNothingInSelection());
+    return proxy && (proxy.doesManageSingleElement() || proxy.hasNothingInSelection())
   }
 
-  isAlignPanelAvailable () {
+  isAlignPanelAvailable() {
     // This would show the align panel only when elements are selected:
     // const proxy = this.fetchProxyElementForSelection();
     // return proxy && !proxy.hasNothingInSelection();
     // But it feels better (in zb's opinion at authoring time) to keep it shown at all times glass is shown
-    return showGlassOnStage(this.props.interactionMode);
+    return showGlassOnStage(this.props.interactionMode)
   }
 
-  handleShowEventHandlersEditor () {
+  handleShowEventHandlersEditor() {
     if (this.isEventHandlersEditorAvailable()) {
-      const element = this.getProxySelectionElement();
+      const element = this.getProxySelectionElement()
 
       if (element) {
-        mixpanel.haikuTrack('creator:top-controls:show-event-handlers-editor');
+        mixpanel.haikuTrack('creator:top-controls:show-event-handlers-editor')
 
-        this.props.onShowEventHandlerEditor(element.getPrimaryKey(), {}, null);
+        this.props.onShowEventHandlerEditor(element.getPrimaryKey(), {}, null)
       }
     }
   }
 
-  getProxySelectionElement () {
-    let element = this.fetchProxyElementForSelection().selection[0];
+  getProxySelectionElement() {
+    let element = this.fetchProxyElementForSelection().selection[0]
 
     // Fallback to the artboard element if nothing is currently selected
     if (!element) {
-      element = this.getActiveComponent().getArtboard().getElement();
+      element = this.getActiveComponent().getArtboard().getElement()
     }
 
-    return element;
+    return element
   }
 
-  getEventHandlersEditorButtonColor () {
-    const proxy = this.fetchProxyElementForSelection();
+  getEventHandlersEditorButtonColor() {
+    const proxy = this.fetchProxyElementForSelection()
 
     if (proxy) {
       if (proxy.doesManageSingleElement() || proxy.hasNothingInSelection()) {
-        const element = this.getProxySelectionElement();
+        const element = this.getProxySelectionElement()
 
         if (element && element.hasVisibleEventHandlers()) {
-          return Color(Palette.LIGHT_BLUE).lighten(0.37);
+          return Color(Palette.LIGHT_BLUE).lighten(0.37)
         }
       }
     }
   }
 
-  get conglomerateComponentButton () {
+  get conglomerateComponentButton() {
     return (
       <button
         key="conglomerate-component-button"
@@ -666,13 +666,14 @@ class StageTitleBar extends React.Component {
         style={[
           BTN_STYLES.btnIcon,
           BTN_STYLES.leftBtns,
-        ]}>
+        ]}
+      >
         <ComponentIconSVG color={this.getConglomerateComponentButtonColor()} />
       </button>
-    );
+    )
   }
 
-  get eventHandlerEditorButton () {
+  get eventHandlerEditorButton() {
     if (this.isEventHandlersEditorAvailable()) {
       return (
         <button
@@ -685,19 +686,20 @@ class StageTitleBar extends React.Component {
           style={[
             BTN_STYLES.btnIcon,
             BTN_STYLES.leftBtns,
-          ]}>
+          ]}
+        >
           <EventsBoltIcon color={this.getEventHandlersEditorButtonColor()} />
         </button>
-      );
+      )
     }
   }
 
-  render () {
-    const isEditModeActive = isEditMode(this.props.interactionMode);
-    const isCodeModeActive = isCodeEditorMode(this.props.interactionMode);
-    let btnText = 'PUBLISH';
+  render() {
+    const isEditModeActive = isEditMode(this.props.interactionMode)
+    const isCodeModeActive = isCodeEditorMode(this.props.interactionMode)
+    let btnText = 'PUBLISH'
     if (this.state.snapshotSyndicated === false) {
-      btnText = 'PUBLISHING';
+      btnText = 'PUBLISHING'
     }
 
     return (
@@ -707,60 +709,67 @@ class StageTitleBar extends React.Component {
           this.eventHandlerEditorButton,
         ]}
 
-        {this.isAlignPanelAvailable() && <AlignToolBox
-          websocket={this.props.websocket}
-          projectModel={this.props.projectModel}
-        />}
+        {this.isAlignPanelAvailable() && (
+          <AlignToolBox
+            websocket={this.props.websocket}
+            projectModel={this.props.projectModel}
+          />
+        )}
 
-        {experimentIsEnabled(Experiment.CodeEditor) &&
-          <div style={STYLES.toggleHolster}>
-            <button
-              key="toggle-design"
-              id="toggle-design"
-              aria-label="Switch to Design Mode"
-              data-tooltip={!isEditModeActive}
-              data-tooltip-bottom={!isEditModeActive}
-              onClick={this.props.tryToSwitchToEditMode}
-              style={[
-                BTN_STYLES.btnText,
-                BTN_STYLES.centerBtns,
-                {
-                  display: 'inline-block',
-                  marginRight: '0px',
-                  borderBottomRightRadius: 0,
-                  borderTopRightRadius: 0,
-                  ':hover': {
-                    backgroundColor: Color(Palette.DARKEST_COAL).darken(.3),
+        {experimentIsEnabled(Experiment.CodeEditor)
+          && (
+            <div style={STYLES.toggleHolster}>
+              <button
+                key="toggle-design"
+                id="toggle-design"
+                aria-label="Switch to Design Mode"
+                data-tooltip={!isEditModeActive}
+                data-tooltip-bottom={!isEditModeActive}
+                onClick={this.props.tryToSwitchToEditMode}
+                style={[
+                  BTN_STYLES.btnText,
+                  BTN_STYLES.centerBtns,
+                  {
+                    'display': 'inline-block',
+                    'marginRight': '0px',
+                    'borderBottomRightRadius': 0,
+                    'borderTopRightRadius': 0,
+                    ':hover': {
+                      backgroundColor: Color(Palette.DARKEST_COAL).darken(0.3),
+                    },
                   },
-                }]}>
-              <span style={{marginLeft: 7}}>DESIGN</span>
-              {isEditModeActive && <span style={{...STYLES.activeIndicator, ...STYLES.activeIndicatorLeft}} />}
-            </button>
+                ]}
+              >
+                <span style={{ marginLeft: 7 }}>DESIGN</span>
+                {isEditModeActive && <span style={{ ...STYLES.activeIndicator, ...STYLES.activeIndicatorLeft }} />}
+              </button>
 
-            <button
-              key="toggle-code"
-              id="toggle-code"
-              aria-label="Switch to Code Mode"
-              data-tooltip={!isCodeModeActive}
-              data-tooltip-bottom={!isCodeModeActive}
-              onClick={this.props.setGlassInteractionToCodeEditorMode}
-              style={[
-                BTN_STYLES.btnText,
-                BTN_STYLES.centerBtns,
-                {
-                  display: 'inline-block',
-                  marginRight: '0px',
-                  borderBottomLeftRadius: 0,
-                  borderTopLeftRadius: 0,
-                  ':hover': {
-                    backgroundColor: Color(Palette.DARKEST_COAL).darken(.3),
+              <button
+                key="toggle-code"
+                id="toggle-code"
+                aria-label="Switch to Code Mode"
+                data-tooltip={!isCodeModeActive}
+                data-tooltip-bottom={!isCodeModeActive}
+                onClick={this.props.setGlassInteractionToCodeEditorMode}
+                style={[
+                  BTN_STYLES.btnText,
+                  BTN_STYLES.centerBtns,
+                  {
+                    'display': 'inline-block',
+                    'marginRight': '0px',
+                    'borderBottomLeftRadius': 0,
+                    'borderTopLeftRadius': 0,
+                    ':hover': {
+                      backgroundColor: Color(Palette.DARKEST_COAL).darken(0.3),
+                    },
                   },
-                }]}>
-              <span style={{marginLeft: 7}}>CODE</span>
-              {isCodeModeActive && <span style={{...STYLES.activeIndicator, ...STYLES.activeIndicatorRight}} />}
-            </button>
-          </div>
-        }
+                ]}
+              >
+                <span style={{ marginLeft: 7 }}>CODE</span>
+                {isCodeModeActive && <span style={{ ...STYLES.activeIndicator, ...STYLES.activeIndicatorRight }} />}
+              </button>
+            </div>
+          )}
 
         <button
           key="toggle-preview"
@@ -771,61 +780,63 @@ class StageTitleBar extends React.Component {
           style={[
             BTN_STYLES.btnIcon,
             BTN_STYLES.rightBtns,
-            {border: '1px solid ' + Palette.COAL, padding: '4px 5px'},
+            { border: `1px solid ${Palette.COAL}`, padding: '4px 5px' },
             !this.props.isTimelineReady && STYLES.disabled,
-            isPreviewMode(this.props.interactionMode) && {border: '1px solid ' + Palette.PINK},
+            isPreviewMode(this.props.interactionMode) && { border: `1px solid ${Palette.PINK}` },
           ]}
         >
           <EyeIconSVG color={this.getConglomerateComponentButtonColor()} />
         </button>
 
-        {this.state.showPublicPrivateOptInModal && !this.props.isPreviewMode &&
-          <PublicPrivateOptInModal
-            isPublic={this.props.project.isPublic}
-            onToggle={() => {
-              this.props.updateProjectObject({
-                isPublic: !this.props.project.isPublic,
-              });
-            }}
-            onClose={() => {
-              this.setState({showPublicPrivateOptInModal: false});
-            }}
-            onContinue={this.state.saveProjectContinue}
-            privateProjectCount={this.state.privateProjectCount}
-            privateProjectLimit={this.props.privateProjectLimit}
-            explorePro={this.props.explorePro}
-            forceDisablePrivate={this.state.forceDisablePrivate}
-          />
-        }
+        {this.state.showPublicPrivateOptInModal && !this.props.isPreviewMode
+          && (
+            <PublicPrivateOptInModal
+              isPublic={this.props.project.isPublic}
+              onToggle={() => {
+                this.props.updateProjectObject({
+                  isPublic: !this.props.project.isPublic,
+                })
+              }}
+              onClose={() => {
+                this.setState({ showPublicPrivateOptInModal: false })
+              }}
+              onContinue={this.state.saveProjectContinue}
+              privateProjectCount={this.state.privateProjectCount}
+              privateProjectLimit={this.props.privateProjectLimit}
+              explorePro={this.props.explorePro}
+              forceDisablePrivate={this.state.forceDisablePrivate}
+            />
+          )}
 
-        {this.state.showSharePopover && !this.props.isPreviewMode &&
-          <ShareModal
-            envoyProject={this.props.envoyProject}
-            supportOfflineExport={this.props.supportOfflineExport}
-            onClose={this.hideShareModal}
-            project={this.props.project}
-            snapshotSaveConfirmed={this.state.snapshotSaveConfirmed}
-            isSnapshotSaveInProgress={this.state.isSnapshotSaveInProgress}
-            linkAddress={this.state.linkAddress}
-            semverVersion={this.state.semverVersion}
-            error={this.state.snapshotSaveError}
-            snapshotSyndicated={this.state.snapshotSyndicated}
-            userName={this.props.username}
-            organizationName={this.props.organizationName}
-            ref={(el) => {
-              this._shareModal = el;
-            }}
-            projectName={this.props.project.projectName}
-            folder={this.props.folder}
-            mixpanel={mixpanel}
-            urls={this.state.shareUrls}
-            privateProjectCount={this.state.privateProjectCount}
-            privateProjectLimit={this.props.privateProjectLimit}
-            explorePro={this.props.explorePro}
-          />
-        }
+        {this.state.showSharePopover && !this.props.isPreviewMode
+          && (
+            <ShareModal
+              envoyProject={this.props.envoyProject}
+              supportOfflineExport={this.props.supportOfflineExport}
+              onClose={this.hideShareModal}
+              project={this.props.project}
+              snapshotSaveConfirmed={this.state.snapshotSaveConfirmed}
+              isSnapshotSaveInProgress={this.state.isSnapshotSaveInProgress}
+              linkAddress={this.state.linkAddress}
+              semverVersion={this.state.semverVersion}
+              error={this.state.snapshotSaveError}
+              snapshotSyndicated={this.state.snapshotSyndicated}
+              userName={this.props.username}
+              organizationName={this.props.organizationName}
+              ref={(el) => {
+                this._shareModal = el
+              }}
+              projectName={this.props.project.projectName}
+              folder={this.props.folder}
+              mixpanel={mixpanel}
+              urls={this.state.shareUrls}
+              privateProjectCount={this.state.privateProjectCount}
+              privateProjectLimit={this.props.privateProjectLimit}
+              explorePro={this.props.explorePro}
+            />
+          )}
       </div>
-    );
+    )
   }
 }
 
@@ -838,6 +849,6 @@ StageTitleBar.propTypes = {
   createNotice: React.PropTypes.func.isRequired,
   removeNotice: React.PropTypes.func.isRequired,
   supportOfflineExport: React.PropTypes.bool,
-};
+}
 
-export default Radium(StageTitleBar);
+export default Radium(StageTitleBar)

@@ -1,1 +1,1 @@
-export default (domNode: Element) => domNode.getBoundingClientRect();
+export default (domNode: Element) => domNode.getBoundingClientRect()

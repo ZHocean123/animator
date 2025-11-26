@@ -1,57 +1,56 @@
-import * as React from 'react';
-import {Palette} from 'haiku-ui-common';
-import {Experiment, experimentIsEnabled} from 'haiku-common';
-import * as lodash from 'lodash';
+import { Palette } from 'haiku-ui-common'
+import * as lodash from 'lodash'
+import * as React from 'react'
 
-const KNOB_RADIUS = 5;
+const KNOB_RADIUS = 5
 
 export default class TimelineRangeScrollbarPlayheadIndicator extends React.Component {
-  constructor (props) {
-    super(props);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64);
+  constructor(props) {
+    super(props)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.throttledForceUpdate = lodash.throttle(this.forceUpdate.bind(this), 64)
   }
 
-  componentWillUnmount () {
-    this.mounted = false;
-    this.props.timeline.removeListener('update', this.handleUpdate);
+  componentWillUnmount() {
+    this.mounted = false
+    this.props.timeline.removeListener('update', this.handleUpdate)
   }
 
-  componentDidMount () {
-    this.mounted = true;
-    this.props.timeline.on('update', this.handleUpdate);
+  componentDidMount() {
+    this.mounted = true
+    this.props.timeline.on('update', this.handleUpdate)
   }
 
-  handleUpdate (what) {
+  handleUpdate(what) {
     if (!this.mounted) {
-      return null;
+      return null
     }
     if (what === 'timeline-frame') {
-      this.throttledForceUpdate();
+      this.throttledForceUpdate()
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // When switching the active component, we also get a new timeline instance
     if (nextProps.timeline !== this.props.timeline) {
-      this.props.timeline.removeListener('update', this.handleUpdate);
-      nextProps.timeline.on('update', this.handleUpdate);
+      this.props.timeline.removeListener('update', this.handleUpdate)
+      nextProps.timeline.on('update', this.handleUpdate)
     }
   }
 
-  getPlayheadPc (frameInfo) {
+  getPlayheadPc(frameInfo) {
     if (frameInfo.friMaxVirt < 1) {
-      return 0;
+      return 0
     }
-    const frame = this.props.timeline.getCurrentFrame();
+    const frame = this.props.timeline.getCurrentFrame()
     if (frame < 1) {
-      return 0;
+      return 0
     }
-    return (frame / frameInfo.friMax) * 100;
+    return (frame / frameInfo.friMax) * 100
   }
 
-  render () {
-    const frameInfo = this.props.timeline.getFrameInfo();
+  render() {
+    const frameInfo = this.props.timeline.getFrameInfo()
 
     return (
       <div
@@ -59,7 +58,8 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
         style={{
           left: 10,
           position: 'relative',
-        }}>
+        }}
+      >
         <div
           id="timeline-playhead-indicator"
           style={{
@@ -68,13 +68,14 @@ export default class TimelineRangeScrollbarPlayheadIndicator extends React.Compo
             height: KNOB_RADIUS * 2,
             width: 1,
             backgroundColor: Palette.ROCK,
-            left: this.getPlayheadPc(frameInfo) + '%',
-          }} />
+            left: `${this.getPlayheadPc(frameInfo)}%`,
+          }}
+        />
       </div>
-    );
+    )
   }
 }
 
 TimelineRangeScrollbarPlayheadIndicator.propTypes = {
   timeline: React.PropTypes.object.isRequired,
-};
+}
