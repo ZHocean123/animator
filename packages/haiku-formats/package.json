@@ -2,9 +2,20 @@
   "name": "haiku-formats",
   "version": "5.1.2",
   "description": "Formatting-related utilities for Haiku.",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
+  "main": "lib/index.cjs",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    },
+    "./*": {
+      "import": "./lib/*.mjs",
+      "require": "./lib/*.cjs",
+      "types": "./lib/*.d.ts"
+    }
   },
   "scripts": {
     "lint": "eslint --ext .ts",

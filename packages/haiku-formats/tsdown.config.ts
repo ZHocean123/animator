@@ -10,7 +10,7 @@ const __dirname = resolve(__filename, '..');
 export default defineConfig({
   ...baseConfig,
   // 包特定入口
-  entry: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.jsx', 'src/**/*.tsx'],
+  entry: ['src/index.ts'],
   
   // 包特定输出
   outDir: resolve(__dirname, 'lib'),

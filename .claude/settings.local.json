@@ -9,7 +9,8 @@
       "Bash(pnpm run compile)",
       "Bash(powershell:*)",
       "Bash(yarn build:*)",
-      "Bash(npx tsdown:*)"
+      "Bash(npx tsdown:*)",
+      "Bash(yarn build-all:*)"
     ],
     "deny": [],
     "ask": []

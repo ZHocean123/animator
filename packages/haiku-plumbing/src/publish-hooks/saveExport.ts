@@ -1,4 +1,4 @@
-import {handleExporterSaveRequest} from 'haiku-formats/lib/exporters';
+import {handleExporterSaveRequest} from 'haiku-formats';
 import {ExporterFormat, ExporterRequest} from 'haiku-sdk-creator';
 // @ts-ignore
 import * as ActiveComponent from 'haiku-serialization/src/bll/ActiveComponent';
