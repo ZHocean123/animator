@@ -43,15 +43,15 @@ import Palette from 'haiku-ui-common/lib/Palette';
 import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
 import ActivityMonitor from '../utils/activityMonitor.js';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {buildProxyUrl, describeProxyFromUrl} from 'haiku-common/lib/proxies';
+import {buildProxyUrl, describeProxyFromUrl} from 'haiku-common';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as opn from 'opn';
 import ConfirmGroupUngroupPopup from './components/Popups/ConfirmGroupUngroup';
 import {FailWhale} from './components/Popups/FailWhale';
-import {getAccountUrl, shouldEmitErrors} from 'haiku-common/lib/environments';
+import {getAccountUrl, shouldEmitErrors} from 'haiku-common';
 import Globals from 'haiku-ui-common/lib/Globals';
 import {inkstone} from '@haiku/sdk-inkstone';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 
 // Useful debugging originator of calls in shared model code
 process.env.HAIKU_SUBPROCESS = 'creator';

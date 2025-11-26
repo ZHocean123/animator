@@ -4,8 +4,7 @@ const BaseModel = require('./BaseModel');
 const Sketch = require('./Sketch');
 const Illustrator = require('./Illustrator');
 const {Figma, PHONY_FIGMA_FILE} = require('./Figma');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
-const {isMac, isWindows} = require('haiku-common/lib/environments/os');
+const {Experiment, experimentIsEnabled, isMac, isWindows} = require('haiku-common');
 
 const PAGES_REGEX =  isWindows() ? /\\pages\\/ : /\/pages\//;
 const SLICES_REGEX = isWindows() ? /\\slices\\/ : /\/slices\//;

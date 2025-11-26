@@ -1,6 +1,6 @@
 const {execSync} = require('child_process');
 const fse = require('haiku-fs-extra');
-const {isMac, isWindows} = require('haiku-common/lib/environments/os');
+const {isMac, isWindows} = require('haiku-common');
 const logger = require('../utils/LoggerInstance');
 const {stringifyPath} = require('../utils/fileManipulation');
 const os = require('os');

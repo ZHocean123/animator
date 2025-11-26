@@ -4,7 +4,7 @@ import {GitWrapper, Repository_open, Repository_init, Clone_clone} from './GitSi
 import * as path from 'path';
 import * as fs from 'haiku-fs-extra';
 import * as async from 'async';
-import {Environment} from 'haiku-common/lib/environments';
+import {Environment} from 'haiku-common';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 // Temporary mock for nodegit compatibility during migration

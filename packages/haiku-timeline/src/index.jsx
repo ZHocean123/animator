@@ -8,7 +8,7 @@ import Timeline from './components/Timeline';
 import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import {fetchProjectConfigInfo} from '@haiku/sdk-client/lib/ProjectDefinitions';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common';
 
 // We are in a webview; use query string parameters for boot-up configuration
 const search = (window.location.search || '').split('?')[1] || '';

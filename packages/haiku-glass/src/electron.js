@@ -1,7 +1,7 @@
 import * as qs from 'qs';
 import {app, BrowserWindow, ipcMain} from 'electron';
 import * as path from 'path';
-import TopMenu from 'haiku-common/lib/electron/TopMenu';
+import {TopMenu} from 'haiku-common';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 
 /**

@@ -7,7 +7,7 @@ import {FadingCircle} from 'better-react-spinkit';
 import Palette from 'haiku-ui-common/lib/Palette';
 import {UserIconSVG, PasswordIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';
-import {getAccountUrl, getUrl} from 'haiku-common/lib/environments';
+import {getAccountUrl, getUrl} from 'haiku-common';
 
 const STYLES = {
   container: {

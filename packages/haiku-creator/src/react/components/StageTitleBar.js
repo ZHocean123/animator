@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {ipcRenderer, shell} from 'electron';
 import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common';
 import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
 import Palette from 'haiku-ui-common/lib/Palette';
 import * as Color from 'color';

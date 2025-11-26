@@ -17,9 +17,9 @@ const logger = require('./../utils/LoggerInstance');
 const CryptoUtils = require('./../utils/CryptoUtils');
 const ensureTrailingSlash = require('../utils/ensureTrailingSlash');
 const toTitleCase = require('./helpers/toTitleCase');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const {Experiment, experimentIsEnabled} = require('haiku-common');
 const Lock = require('./Lock');
-const SustainedWarningChecker = require('haiku-common/lib/sustained-checker/SustainedWarningChecker').default;
+const SustainedWarningChecker = require('haiku-common').SustainedWarningChecker;
 
 const KEYFRAME_MOVE_DEBOUNCE_TIME = 100;
 const CHECK_SUSTAINED_WARNINGS_DEBOUNCE_TIME = 1000;

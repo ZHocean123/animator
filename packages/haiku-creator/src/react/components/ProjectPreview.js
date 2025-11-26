@@ -5,7 +5,7 @@ import * as Module from 'module';
 import * as React from 'react';
 import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter';
 import {InteractionMode} from 'haiku-ui-common/lib/interactionModes';
-import {TourUtils} from 'haiku-common/lib/types/enums';
+import {TourUtils} from 'haiku-common';
 
 /**
  * This is the _original_ way we loaded component modules from a filename.

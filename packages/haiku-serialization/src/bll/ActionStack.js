@@ -1,6 +1,6 @@
 const lodash = require('lodash');
 
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const {Experiment, experimentIsEnabled} = require('haiku-common');
 
 const BaseModel = require('./BaseModel');
 const Lock = require('./Lock');

@@ -5,7 +5,7 @@ import * as Radium from 'radium';
 import {shell, ipcRenderer} from 'electron';
 import {UserSettings} from 'haiku-sdk-creator/lib/bll/User';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common';
 import Palette from 'haiku-ui-common/lib/Palette';
 import {LoadingTopBar} from 'haiku-ui-common/lib/react/LoadingTopBar';
 import {didAskedForSketch} from 'haiku-serialization/src/utils/HaikuHomeDir';

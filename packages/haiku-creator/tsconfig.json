@@ -3,7 +3,10 @@
   "compilerOptions": {
     "allowJs": true,
     "jsx": "react",
-    "lib": ["ES2017", "dom"],
+    "lib": [
+      "ES2017",
+      "dom"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -11,7 +14,6 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",
     "types": [
       "node"

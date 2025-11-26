@@ -7,7 +7,7 @@ import {Figma} from 'haiku-serialization/src/bll/Figma';
 import {Draggable} from 'react-drag-and-drop';
 import AssetList from './AssetList';
 import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 import Palette from 'haiku-ui-common/lib/Palette';
 import * as Popover from 'react-popover';
 import {
@@ -28,7 +28,7 @@ import ControlText from 'haiku-ui-common/lib/react/icons/ControlText';
 import ControlHTML from 'haiku-ui-common/lib/react/icons/ControlHTML';
 // import ControlInput from 'haiku-ui-common/lib/react/icons/ControlInput'
 import FigmaPopover from './importers/FigmaPopover';
-import {experimentIsEnabled, Experiment} from 'haiku-common/lib/experiments';
+import {experimentIsEnabled, Experiment} from 'haiku-common';
 
 const ASSET_ICONS = {
   ControlImage: () => {

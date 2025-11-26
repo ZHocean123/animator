@@ -1,4 +1,4 @@
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common';
 // @ts-ignore
 import {HOMEDIR_CRASH_REPORTS_PATH} from 'haiku-serialization/src/utils/HaikuHomeDir';
 import {basename, join} from 'path';

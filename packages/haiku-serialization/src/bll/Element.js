@@ -2,7 +2,7 @@ const lodash = require('lodash');
 const HaikuElement = require('@haiku/core/lib/HaikuElement').default;
 const Layout3D = require('@haiku/core/lib/Layout3D').default;
 const {cssQueryTree} = require('@haiku/core/lib/HaikuNode');
-const {default: composedTransformsToTimelineProperties} = require('haiku-common/lib/layout/composedTransformsToTimelineProperties');
+const {default: composedTransformsToTimelineProperties} = require('haiku-common');
 const functionToRFO = require('@haiku/core/lib/reflection/functionToRFO').default;
 const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
 const KnownDOMEvents = require('@haiku/core/lib/renderers/dom/Events').default;
@@ -13,7 +13,7 @@ const polygonOverlap = require('polygon-overlap');
 const logger = require('./../utils/LoggerInstance');
 const BaseModel = require('./BaseModel');
 const TransformCache = require('./TransformCache');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const {Experiment, experimentIsEnabled} = require('haiku-common');
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't

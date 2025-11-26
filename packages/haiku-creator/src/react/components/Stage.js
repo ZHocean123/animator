@@ -8,7 +8,7 @@ import StageTitleBar from './StageTitleBar';
 import ComponentMenu from './ComponentMenu/ComponentMenu';
 import CodeEditor from './CodeEditor/CodeEditor';
 import Palette from 'haiku-ui-common/lib/Palette';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common';
 import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
 import {
   isPreviewMode,

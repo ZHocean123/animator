@@ -1,6 +1,6 @@
 import {remote} from 'electron';
-import {isMac} from 'haiku-common/lib/environments/os';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {isMac} from 'haiku-common';
+import {Experiment, experimentIsEnabled} from 'haiku-common';
 import * as React from 'react';
 
 export interface FileSystemImporterProps {

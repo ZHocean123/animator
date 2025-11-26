@@ -1,5 +1,5 @@
 import * as Raven from 'raven';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common';
 import {SentryReporter} from 'haiku-sdk-creator/lib/bll/Error';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 

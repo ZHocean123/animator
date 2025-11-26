@@ -21,7 +21,8 @@ export * from './GitSimple';
 // Environment & Configuration
 export {default as envInfo} from './envInfo';
 export {default as haikuInfo} from './haikuInfo';
-export {default as Raven} from './Raven';
+// TODO: Fix Raven export - temporarily commented out due to TypeScript declaration issues
+// export {default as Raven} from './Raven';
 
 // Project Folder Operations
 export * from './project-folder/AssetUtils';

@@ -300,7 +300,7 @@ export default class Plumbing extends EventEmitter {
           } else if(process.versions && !!process.versions.electron) {
             // We are in electron main (e.g. in a test context).
             global.process.env.HAIKU_ENV = JSON.stringify(haiku);
-            require('haiku-creator/lib/electron');
+            require('haiku-creator');
           }
         }
 

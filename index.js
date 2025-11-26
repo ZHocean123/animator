@@ -51,10 +51,10 @@ if (process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     switch (message) {
       case 'launchCreator':
         global.process.env.HAIKU_ENV = JSON.stringify(data.haiku);
-        require('haiku-creator/lib/electron');
+        require('haiku-creator');
         break;
       case 'bakePngSequence':
-        require('haiku-creator/lib/bakery/electron').default(
+        require('haiku-creator').bakeryElectron(
           data,
           () => {
             global.haikuHelper.send({type: 'bakePngSequenceComplete'});

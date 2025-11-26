@@ -1,5 +1,5 @@
 import {shell} from 'electron';
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common';
 // @ts-ignore
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 // @ts-ignore

@@ -6,7 +6,7 @@ import Palette from 'haiku-ui-common/lib/Palette';
 import ProjectPreview from './ProjectPreview';
 import {StackMenuSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import {DASH_STYLES} from '../styles/dashShared';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 
 class ProjectThumbnail extends React.Component {
   constructor (props) {

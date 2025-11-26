@@ -2,7 +2,7 @@ import * as React from 'react';
 import autoUpdate from '../../utils/autoUpdate';
 import {DOWNLOAD_STYLES as STYLES} from '../styles/downloadShared';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 
 const statuses = {
   IDLE: 'Idle',

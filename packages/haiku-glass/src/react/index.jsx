@@ -2,7 +2,7 @@ import {ipcRenderer} from 'electron';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as qs from 'qs';
-import {shouldEmitErrors} from 'haiku-common/lib/environments';
+import {shouldEmitErrors} from 'haiku-common';
 import * as Websocket from 'haiku-serialization/src/ws/Websocket';
 import * as MockWebsocket from 'haiku-serialization/src/ws/MockWebsocket';
 import Glass from './Glass.jsx';

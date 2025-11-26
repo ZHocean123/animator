@@ -19,7 +19,7 @@ import CreateComponentModal from './modals/CreateComponentModal';
 import PopoverMenu from 'haiku-ui-common/lib/electron/PopoverMenu';
 import {ComponentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import * as requestElementCoordinates from 'haiku-serialization/src/utils/requestElementCoordinates';
-import {Experiment, experimentIsEnabled} from 'haiku-common/lib/experiments';
+import {Experiment, experimentIsEnabled} from 'haiku-common';
 import originMana from '../overlays/originMana';
 import controlPointMana from '../overlays/controlPointMana';
 import boxMana from '../overlays/boxMana';
@@ -28,7 +28,7 @@ import defsMana from '../overlays/defsMana';
 import rotationCursorMana from '../overlays/rotationCursorMana';
 import scaleCursorMana from '../overlays/scaleCursorMana';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 import directSelectionMana from '../overlays/directSelectionMana';
 import {calculateValue} from '@haiku/core/lib/Transitions';
 import {
@@ -38,7 +38,7 @@ import {
   transform2DPoint,
   closestNormalPointOnLineSegment,
   buildPathLUT,
-} from 'haiku-common/lib/math/geometryUtils';
+} from 'haiku-common';
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
 import {splitSegmentInSVGPoints, distance} from '@haiku/core/lib/helpers/PathUtils';
 import Globals from 'haiku-ui-common/lib/Globals';

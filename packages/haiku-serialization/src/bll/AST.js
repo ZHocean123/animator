@@ -4,7 +4,7 @@ const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').defa
 const bytecodeObjectToAST = require('./../ast/bytecodeObjectToAST');
 const normalizeBytecodeAST = require('./../ast/normalizeBytecodeAST');
 const parseCode = require('./../ast/parseCode');
-const {Experiment, experimentIsEnabled} = require('haiku-common/lib/experiments');
+const {Experiment, experimentIsEnabled} = require('haiku-common');
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var';

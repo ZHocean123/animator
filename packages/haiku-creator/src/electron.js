@@ -11,12 +11,12 @@ import * as qs from 'qs';
 
 import * as fs from 'fs';
 
-import {isProxied, ProxyType} from 'haiku-common/lib/proxies';
-import TopMenu from 'haiku-common/lib/electron/TopMenu';
+import {isProxied, ProxyType} from 'haiku-common';
+import {TopMenu} from 'haiku-common';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import * as ensureTrailingSlash from 'haiku-serialization/src/utils/ensureTrailingSlash';
 import logger from 'haiku-serialization/src/utils/LoggerInstance';
-import {isMac, isWindows} from 'haiku-common/lib/environments/os';
+import {isMac, isWindows} from 'haiku-common';
 import _ from 'lodash';
 import { writeJSON } from 'fs-extra';
 

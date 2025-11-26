@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as qs from 'qs';
 import {app, BrowserWindow, ipcMain} from 'electron';
 
-import TopMenu from 'haiku-common/lib/electron/TopMenu';
+import {TopMenu} from 'haiku-common';
 
 /**
  * This file is bypassed when loaded in the full app.

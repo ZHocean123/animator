@@ -2,8 +2,7 @@ const path = require('path');
 const winston = require('winston');
 const jsonStringify = require('fast-safe-stringify');
 const EventEmitter = require('events');
-const {isProduction} = require('haiku-common/lib/environments');
-const {isWindows} = require('haiku-common/lib/environments/os');
+const {isProduction, isWindows} = require('haiku-common');
 
 require('colors'); // TODO: use non-string-extending module
 

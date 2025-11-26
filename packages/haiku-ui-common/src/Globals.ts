@@ -1,4 +1,4 @@
-import {isMac} from 'haiku-common/lib/environments/os';
+import {isMac} from 'haiku-common';
 
 /* tslint:disable:variable-name */
 const Globals = {

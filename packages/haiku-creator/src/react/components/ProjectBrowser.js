@@ -7,7 +7,7 @@ import Palette from 'haiku-ui-common/lib/Palette';
 import * as mixpanel from 'haiku-serialization/src/utils/Mixpanel';
 import NotificationExplorer from './notifications/NotificationExplorer';
 import ProjectThumbnail from './ProjectThumbnail';
-import {TourUtils} from 'haiku-common/lib/types/enums';
+import {TourUtils} from 'haiku-common';
 import {TOUR_CHANNEL} from 'haiku-sdk-creator/lib/tour';
 import {UserIconSVG, LogOutSVG, PresentIconSVG} from 'haiku-ui-common/lib/react/OtherIcons';
 import AnimatorSVG from 'haiku-ui-common/lib/react/icons/AnimatorSVG';

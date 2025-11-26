@@ -1,6 +1,6 @@
 /* tslint:disable:no-shadowed-variable only-arrow-functions ter-prefer-arrow-callback max-line-length no-parameter-reassignment */
 import * as async from 'async';
-import {Environment} from 'haiku-common/lib/environments';
+import {Environment} from 'haiku-common';
 import * as fs from 'haiku-fs-extra';
 import * as logger from 'haiku-serialization/src/utils/LoggerInstance';
 import * as path from 'path';
