@@ -44,17 +44,9 @@ export default defineConfig({
     '@haiku/*',
     'haiku-*'
   ],
-  
-  // 包特定别名
-  alias: {
-    ...baseConfig.alias,
-    '@testing': resolve(__dirname, 'src'),
-  },
-  
+
   // 包特定构建选项
-  dts: {
-    outDir: resolve(__dirname, 'lib'),
-  },
+  dts: true,
   
   // 保持与现有构建兼容
   format: ['cjs', 'esm'],

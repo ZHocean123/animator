@@ -28,7 +28,7 @@
     "@haiku/core": "workspace:*",
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
-        "async": "^2.5.0",
+    "async": "^2.5.0",
     "chokidar": "^1.7.0",
     "dedent": "^0.7.0",
     "fs-extra": "^4.0.2",
@@ -77,11 +77,6 @@
     "tape": "^4.9.0",
     "tmp": "0.0.31",
     "ts-node": "^6.1.0",
-    "tsconfig-paths": "^3.3.2",
-        "typescript": "^5.3.3",
-    "tsdown": "^0.15.1",
-    "eslint": "^8.56.0",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1"
+    "tsconfig-paths": "^3.3.2"
   }
 }

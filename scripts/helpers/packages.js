@@ -11,7 +11,7 @@ const PACKAGE_ROOT = path.join(global.process.cwd(), 'packages/');
 const allPackages = {};
 
 packagePatterns.forEach((pattern) => {
-  const packages = glob.sync(path.join(PACKAGE_ROOT, pattern));
+  const packages = glob.sync(path.posix.join(PACKAGE_ROOT.replace(/\\/g, '/'), pattern))
   packages.forEach((packageDir) => {
     const pkgJsonPath = path.join(packageDir, 'package.json');
     if (!fs.existsSync(pkgJsonPath)) {

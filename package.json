@@ -36,7 +36,19 @@
       "@haiku/core": "^5.0.0",
       "@types/react": "^18.2.0",
       "@types/node": "^22.0.0"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "aws-sdk",
+      "core-js",
+      "electron-chromedriver",
+      "es5-ext",
+      "fsevents",
+      "radium",
+      "spectron"
+    ],
+    "onlyBuiltDependencies": [
+      "electron"
+    ]
   },
   "dependencies": {
     "@haiku/cli": "workspace:*",
@@ -56,6 +68,10 @@
     "haiku-ui-common": "workspace:*"
   },
   "devDependencies": {
+    "@electron/notarize": "^1.2.2",
+    "@electron/rebuild": "^3.2.9",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "async": "^3.2.4",
     "aws-sdk": "^2.1491.0",
     "cli-color": "^2.0.3",
@@ -63,11 +79,10 @@
     "cross-spawn": "^7.0.3",
     "dependency-graph": "^0.11.0",
     "derequire": "^2.1.1",
-    "dotenv": "^16.3.1",ti
+    "dotenv": "^16.3.1",
     "electron": "^28.3.3",
     "electron-builder": "^24.9.1",
-    "@electron/notarize": "^1.2.2",
-    "@electron/rebuild": "^3.2.9",
+    "eslint": "^8.57.1",
     "fs-extra": "^11.1.1",
     "git-branch": "^2.0.1",
     "glob": "^11.0.0",
@@ -78,6 +93,7 @@
     "mime-types": "^2.1.35",
     "moment": "^2.29.4",
     "node-gyp": "^10.0.1",
+    "rolldown": "1.0.0-beta.51",
     "semver": "^7.5.4",
     "semver-sort": "^0.0.4",
     "slack": "^11.0.2",
@@ -85,15 +101,12 @@
     "tap-spec": "^5.0.0",
     "tape": "^5.7.2",
     "tsc-watch": "^6.0.4",
+    "tsdown": "^0.16.7",
     "typescript": "^5.3.3",
-    "tsdown": "^0.15.1",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.17.4",
     "webpack": "^5.89.0",
-    "yargs": "^17.7.2",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.1"
+    "yargs": "^17.7.2"
   },
   "standard": {
     "ignore": [

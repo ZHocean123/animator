@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(pnpm store prune:*)",
+      "Bash(pnpm install)",
+      "Bash(cat package.json)",
+      "Bash(pnpm run build)",
+      "Bash(cat:*)",
+      "Bash(pnpm list tsdown)",
+      "Bash(pnpm view:*)",
+      "Bash(pnpm list rolldown)",
+      "Bash(pnpm why tsdown)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -40,11 +40,6 @@
     "tape": "^5.7.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "tsdown": "^0.15.1",
-    "eslint": "^8.56.0",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1",
-    "typescript": "^5.3.3",
     "leaked-handles": "^5.2.0",
     "haiku-testing": "workspace:*"
   }
