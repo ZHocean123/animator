@@ -3,7 +3,7 @@
  */
 
 // tslint:disable-next-line:variable-name
-const EventsDict = {};
+const EventsDict = {}
 
 const eventsList = [
   'onAbort',
@@ -73,12 +73,12 @@ const eventsList = [
   'onVolumeChange',
   'onWaiting',
   'onWheel',
-];
+]
 
 for (let i = 0; i < eventsList.length; i++) {
-  const name = eventsList[i];
-  EventsDict[name] = 'func';
-  EventsDict[name + 'Capture'] = 'func';
+  const name = eventsList[i]
+  EventsDict[name] = 'func'
+  EventsDict[`${name}Capture`] = 'func'
 }
 
-export default EventsDict;
+export default EventsDict

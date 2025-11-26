@@ -2,13 +2,13 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import {BytecodeNode} from '../api';
-import svgPoints from '../vendor/svg-points';
-import {CurveSpec, LineSpec, PathSpec, ShapeSpec} from '../vendor/svg-points/types';
-import parseCssValueString from './parseCssValueString';
+import type { BytecodeNode } from '../api'
+import type { CurveSpec, LineSpec, PathSpec, ShapeSpec } from '../vendor/svg-points/types'
+import svgPoints from '../vendor/svg-points'
+import parseCssValueString from './parseCssValueString'
 
 // In leiu of good math, this gives pretty good results for converting arcs to cubic beziers
-const MAGIC_BEZIER_ARC_RATIO = 1.8106602;
+const MAGIC_BEZIER_ARC_RATIO = 1.8106602
 
 const SVG_TYPES = {
   g: true,
@@ -19,7 +19,7 @@ const SVG_TYPES = {
   line: true,
   ellipse: true,
   circle: true,
-};
+}
 
 const SVG_POINT_NUMERIC_FIELDS = {
   cx: true,
@@ -31,64 +31,64 @@ const SVG_POINT_NUMERIC_FIELDS = {
   x2: true,
   x: true,
   y: true,
-};
+}
 
 const SVG_POINT_COMMAND_FIELDS = {
   d: true,
   points: true,
-};
+}
 
 const SVG_COMMAND_TYPES = {
   path: true,
   polyline: true,
   polygon: true,
-};
+}
 
-function polyPointsStringToPoints (pointsString: string|[number, number][]) {
+function polyPointsStringToPoints(pointsString: string | [number, number][]) {
   if (!pointsString) {
-    return [];
+    return []
   }
   if (Array.isArray(pointsString)) {
-    return pointsString;
+    return pointsString
   }
 
   // Normalize "x1,y1 x2,y2" syntax to "x1 y1 x2 y2" syntax before splitting.
-  const chunkedPoints = [];
-  const points: number[] = pointsString.trim().replace(/,/g, ' ').split(/\s+/g).map(Number);
+  const chunkedPoints = []
+  const points: number[] = pointsString.trim().replace(/,/g, ' ').split(/\s+/g).map(Number)
   for (let i = 0; i < points.length; i += 2) {
-    chunkedPoints.push(points.slice(i, i + 2) as [number, number]);
+    chunkedPoints.push(points.slice(i, i + 2) as [number, number])
   }
-  return chunkedPoints;
+  return chunkedPoints
 }
 
-function pointsToPolyString (points: string|string[][]) {
+function pointsToPolyString(points: string | string[][]) {
   if (!points) {
-    return '';
+    return ''
   }
   if (typeof points === 'string') {
-    return points;
+    return points
   }
-  const arr = [];
+  const arr = []
   for (let i = 0; i < points.length; i++) {
-    const point = points[i];
-    const seg = point.join(',');
-    arr.push(seg);
+    const point = points[i]
+    const seg = point.join(',')
+    arr.push(seg)
   }
-  return arr.join(' ');
+  return arr.join(' ')
 }
 
-function rectToPoints (x: number, y: number, width: number, height: number, rxIn: number, ryIn: number) {
-  let rx = rxIn;
-  let ry = ryIn;
+function rectToPoints(x: number, y: number, width: number, height: number, rxIn: number, ryIn: number) {
+  let rx = rxIn
+  let ry = ryIn
   if (rx || ry) {
     if (rx && isNaN(ry)) {
-      ry = rx;
+      ry = rx
     } // Assume equal radius if ry is not defined (SVG)
     if (isNaN(rx)) {
-      rx = 0;
+      rx = 0
     }
     if (isNaN(ry)) {
-      ry = 0;
+      ry = 0
     }
     return [
       {
@@ -157,7 +157,7 @@ function rectToPoints (x: number, y: number, width: number, height: number, rxIn
           y2: y,
         },
       },
-    ];
+    ]
   }
 
   // Non-rounded rect
@@ -184,14 +184,14 @@ function rectToPoints (x: number, y: number, width: number, height: number, rxIn
       x,
       y,
     }, // appease the SVG points library
-  ];
+  ]
 }
 
-function circleToPoints (cx: number, cy: number, r: number) {
-  return ellipseToPoints(cx, cy, r, r);
+function circleToPoints(cx: number, cy: number, r: number) {
+  return ellipseToPoints(cx, cy, r, r)
 }
 
-function ellipseToPoints (cx: number, cy: number, rx: number, ry: number) {
+function ellipseToPoints(cx: number, cy: number, rx: number, ry: number) {
   return [
     {
       x: cx,
@@ -243,100 +243,101 @@ function ellipseToPoints (cx: number, cy: number, rx: number, ry: number) {
         y2: cy - ry,
       },
     },
-  ];
+  ]
 }
 
-function lineToPoints (x1: number, y1: number, x2: number, y2: number) {
-  const shape = {x1, y1, x2, y2, type: 'line'} as LineSpec;
-  return svgPoints.toPoints(shape);
+function lineToPoints(x1: number, y1: number, x2: number, y2: number) {
+  const shape = { x1, y1, x2, y2, type: 'line' } as LineSpec
+  return svgPoints.toPoints(shape)
 }
 
-function pathToPoints (pathString: string): CurveSpec[] {
+function pathToPoints(pathString: string): CurveSpec[] {
   if (!pathString) {
-    return [];
+    return []
   }
-  const shape = {type: 'path', d: pathString} as PathSpec;
-  return svgPoints.toPoints(shape);
+  const shape = { type: 'path', d: pathString } as PathSpec
+  return svgPoints.toPoints(shape)
 }
 
-function pointsToPath (pointsArray): string {
-  return svgPoints.toPath(pointsArray);
+function pointsToPath(pointsArray): string {
+  return svgPoints.toPath(pointsArray)
 }
 
-function manaToPoints (mana: BytecodeNode) {
+function manaToPoints(mana: BytecodeNode) {
   if (
-    typeof mana.elementName === 'string' &&
-    SVG_TYPES[mana.elementName] &&
-    mana.elementName !== 'rect' &&
-    mana.elementName !== 'g'
+    typeof mana.elementName === 'string'
+    && SVG_TYPES[mana.elementName]
+    && mana.elementName !== 'rect'
+    && mana.elementName !== 'g'
   ) {
-    const shape = {type: mana.elementName};
+    const shape = { type: mana.elementName }
     if (SVG_COMMAND_TYPES[shape.type]) {
       for (const f2 in SVG_POINT_COMMAND_FIELDS) {
         if (mana.attributes[f2]) {
-          shape[f2] = mana.attributes[f2];
-        }
-      }
-    } else {
-      for (const f1 in SVG_POINT_NUMERIC_FIELDS) {
-        if (mana.attributes[f1]) {
-          shape[f1] = Number(mana.attributes[f1]);
+          shape[f2] = mana.attributes[f2]
         }
       }
     }
-    return svgPoints.toPoints(shape as ShapeSpec);
+    else {
+      for (const f1 in SVG_POINT_NUMERIC_FIELDS) {
+        if (mana.attributes[f1]) {
+          shape[f1] = Number(mana.attributes[f1])
+        }
+      }
+    }
+    return svgPoints.toPoints(shape as ShapeSpec)
   }
 
   // div, rect, svg ...
   const width = parseCssValueString(
-    (mana.layout &&
-      mana.layout.computed &&
-      mana.layout.computed.size &&
-      mana.layout.computed.size.x) ||
-    (mana.rect && mana.rect.width) ||
-    (mana.attributes &&
-      mana.attributes.style &&
-      mana.attributes.style.width) ||
-    (mana.attributes && mana.attributes.width) ||
-    (mana.attributes && mana.attributes.x) ||
-    0,
+    (mana.layout
+      && mana.layout.computed
+      && mana.layout.computed.size
+      && mana.layout.computed.size.x)
+    || (mana.rect && mana.rect.width)
+    || (mana.attributes
+      && mana.attributes.style
+      && mana.attributes.style.width)
+    || (mana.attributes && mana.attributes.width)
+    || (mana.attributes && mana.attributes.x)
+    || 0,
     null,
-  ).value;
+  ).value
   const height = parseCssValueString(
-    (mana.layout &&
-      mana.layout.computed &&
-      mana.layout.computed.size &&
-      mana.layout.computed.size.y) ||
-    (mana.rect && mana.rect.height) ||
-    (mana.attributes &&
-      mana.attributes.style &&
-      mana.attributes.style.height) ||
-    (mana.attributes && mana.attributes.height) ||
-    (mana.attributes && mana.attributes.y) ||
-    0,
+    (mana.layout
+      && mana.layout.computed
+      && mana.layout.computed.size
+      && mana.layout.computed.size.y)
+    || (mana.rect && mana.rect.height)
+    || (mana.attributes
+      && mana.attributes.style
+      && mana.attributes.style.height)
+    || (mana.attributes && mana.attributes.height)
+    || (mana.attributes && mana.attributes.y)
+    || 0,
     null,
-  ).value;
+  ).value
   const left = parseCssValueString(
-    (mana.rect && mana.rect.left) ||
-    (mana.attributes.style && mana.attributes.style.left) ||
-    mana.attributes.x ||
-    0,
+    (mana.rect && mana.rect.left)
+    || (mana.attributes.style && mana.attributes.style.left)
+    || mana.attributes.x
+    || 0,
     null,
-  ).value;
+  ).value
   const top = parseCssValueString(
-    (mana.rect && mana.rect.top) ||
-    (mana.attributes.style && mana.attributes.style.top) ||
-    mana.attributes.y ||
-    0,
+    (mana.rect && mana.rect.top)
+    || (mana.attributes.style && mana.attributes.style.top)
+    || mana.attributes.y
+    || 0,
     null,
-  ).value;
+  ).value
   return svgPoints.toPoints({
     width,
     height,
     type: 'rect',
     x: left,
     y: top,
-  });
+  })
 }
 
 export default {
@@ -349,4 +350,4 @@ export default {
   polyPointsStringToPoints,
   pointsToPolyString,
   manaToPoints,
-};
+}

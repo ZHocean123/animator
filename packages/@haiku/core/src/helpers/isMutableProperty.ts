@@ -6,7 +6,7 @@
  * @method isMutableProperty
  * @description Mechanism to determine if a property is mutated within the timeline.
  */
-export default function isMutableProperty (property, propertyName) {
+export default function isMutableProperty(property, propertyName) {
   // For now, we can use a "naive" set of sufficient (but not necessary) conditions for immutability of a property:
   //   1. Has exactly one keyframe.
   //   2. The keyframe is "0".
@@ -16,5 +16,5 @@ export default function isMutableProperty (property, propertyName) {
   return Object.keys(property).length !== 1
     || !property.hasOwnProperty('0')
     || typeof property[0].value === 'function'
-    || /^controlFlow/.test(propertyName);
+    || propertyName.startsWith('controlFlow')
 }

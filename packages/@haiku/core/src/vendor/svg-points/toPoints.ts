@@ -16,47 +16,57 @@
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import {
-  CircleSpec, CurveSpec, EllipseSpec, LineSpec, PathSpec, PolygonSpec, PolylineSpec, RectSpec, ShapeSpec,
-} from './types';
+import type {
+  CircleSpec,
+  CurveSpec,
+  EllipseSpec,
+  LineSpec,
+  PathSpec,
+  PolygonSpec,
+  PolylineSpec,
+  RectSpec,
+  ShapeSpec,
+} from './types'
 
-const convertQuadraticToCubicBezier = (spec: CurveSpec, prevSpec: CurveSpec): CurveSpec => prevSpec ?
-{
-  curve: {
-    type: 'cubic',
-    x1: prevSpec.x + 2 / 3 * (spec.curve.x1 - prevSpec.x),
-    y1: prevSpec.y + 2 / 3 * (spec.curve.y1 - prevSpec.y),
-    x2: spec.x + 2 / 3 * (spec.curve.x1 - spec.x),
-    y2: spec.y + 2 / 3 * (spec.curve.y1 - spec.y),
-  },
-  x: spec.x,
-  y: spec.y,
-} :
+function convertQuadraticToCubicBezier(spec: CurveSpec, prevSpec: CurveSpec): CurveSpec {
+  return prevSpec
+    ? {
+        curve: {
+          type: 'cubic',
+          x1: prevSpec.x + 2 / 3 * (spec.curve.x1 - prevSpec.x),
+          y1: prevSpec.y + 2 / 3 * (spec.curve.y1 - prevSpec.y),
+          x2: spec.x + 2 / 3 * (spec.curve.x1 - spec.x),
+          y2: spec.y + 2 / 3 * (spec.curve.y1 - spec.y),
+        },
+        x: spec.x,
+        y: spec.y,
+      }
   // This should never happen, but just return the original spec if we didn't have a starting point.
-  spec;
+    : spec
+}
 
-const toPoints = (spec: ShapeSpec): CurveSpec[] => {
+function toPoints(spec: ShapeSpec): CurveSpec[] {
   switch (spec.type) {
     case 'circle':
-      return getPointsFromCircle(spec);
+      return getPointsFromCircle(spec)
     case 'ellipse':
-      return getPointsFromEllipse(spec);
+      return getPointsFromEllipse(spec)
     case 'line':
-      return getPointsFromLine(spec);
+      return getPointsFromLine(spec)
     case 'path':
-      return getPointsFromPath(spec);
+      return getPointsFromPath(spec)
     case 'polygon':
-      return getPointsFromPolygon(spec);
+      return getPointsFromPolygon(spec)
     case 'polyline':
-      return getPointsFromPolyline(spec);
+      return getPointsFromPolyline(spec)
     case 'rect':
-      return getPointsFromRect(spec);
+      return getPointsFromRect(spec)
     default:
-      return [];
+      return []
   }
-};
+}
 
-const getPointsFromCircle = ({cx, cy, r}: CircleSpec): CurveSpec[] => {
+function getPointsFromCircle({ cx, cy, r }: CircleSpec): CurveSpec[] {
   return [
     {
       x: cx,
@@ -83,10 +93,10 @@ const getPointsFromCircle = ({cx, cy, r}: CircleSpec): CurveSpec[] => {
         sweepFlag: 1,
       },
     },
-  ];
-};
+  ]
+}
 
-const getPointsFromEllipse = ({cx, cy, rx, ry}: EllipseSpec): CurveSpec[] => {
+function getPointsFromEllipse({ cx, cy, rx, ry }: EllipseSpec): CurveSpec[] {
   return [
     {
       x: cx,
@@ -113,10 +123,10 @@ const getPointsFromEllipse = ({cx, cy, rx, ry}: EllipseSpec): CurveSpec[] => {
         sweepFlag: 1,
       },
     },
-  ];
-};
+  ]
+}
 
-const getPointsFromLine = ({x1, x2, y1, y2}: LineSpec): CurveSpec[] => {
+function getPointsFromLine({ x1, x2, y1, y2 }: LineSpec): CurveSpec[] {
   return [
     {
       x: x1,
@@ -127,10 +137,10 @@ const getPointsFromLine = ({x1, x2, y1, y2}: LineSpec): CurveSpec[] => {
       x: x2,
       y: y2,
     },
-  ];
-};
+  ]
+}
 
-const validCommands = /[MmLlHhVvCcSsQqTtAaZz]/g;
+const validCommands = /[MLHVCSQTAZ]/gi
 
 const commandLengths = {
   A: 7,
@@ -143,7 +153,7 @@ const commandLengths = {
   T: 2,
   V: 1,
   Z: 0,
-};
+}
 
 const relativeCommands = [
   'a',
@@ -155,143 +165,143 @@ const relativeCommands = [
   's',
   't',
   'v',
-];
+]
 
 const PARSING_REGEXPS = {
-  command: /^[MmLlHhVvCcSsQqTtAaZz]/g,
-  whitespace: /^[\s]+/,
+  command: /^[MLHVCSQTAZ]/gi,
+  whitespace: /^\s+/,
   comma: /^,/,
   number: /^0b[01]+|^0o[0-7]+|^0x[\da-f]+|^-?\d*\.?\d+(?:e[+-]?\d+)?/i,
-};
-
-const isRelative = (command: string): boolean => relativeCommands.indexOf(command) !== -1;
-
-const optionalArcKeys = ['xAxisRotation', 'largeArcFlag', 'sweepFlag'];
-
-const getCommands = (d: string): string[] => d && d.match(validCommands);
-
-interface Token {
-  type: string;
-  raw: string;
 }
 
-function tokenize (d: string): Token[] {
-  const tokens = [];
-  let chunk = d;
+const isRelative = (command: string): boolean => relativeCommands.includes(command)
+
+const optionalArcKeys = ['xAxisRotation', 'largeArcFlag', 'sweepFlag']
+
+const getCommands = (d: string): string[] => d && d.match(validCommands)
+
+interface Token {
+  type: string
+  raw: string
+}
+
+function tokenize(d: string): Token[] {
+  const tokens = []
+  let chunk = d
   while (chunk.length > 0) {
     for (const regexpName in PARSING_REGEXPS) {
-      const match = PARSING_REGEXPS[regexpName].exec(chunk);
+      const match = PARSING_REGEXPS[regexpName].exec(chunk)
       if (match) {
         tokens.push({
           type: regexpName,
           raw: match[0],
-        });
+        })
         // Need to slice the chunk at the original match length
-        chunk = chunk.slice(match[0].length, chunk.length);
-        break;
+        chunk = chunk.slice(match[0].length, chunk.length)
+        break
       }
     }
   }
-  return tokens;
+  return tokens
 }
 
-const getParams = (d: string): number[][] => {
-  const tokens = tokenize(d);
+function getParams(d: string): number[][] {
+  const tokens = tokenize(d)
 
   const fixed = tokens.filter((t) => {
-    return t.type === 'number' || t.type === 'command' || t.type === 'comma';
+    return t.type === 'number' || t.type === 'command' || t.type === 'comma'
   }).map((t) => {
-    return t.raw;
-  }).join(' ');
+    return t.raw
+  }).join(' ')
 
   const segs = fixed.split(validCommands)
     .map((p) => {
-      return p.trim();
+      return p.trim()
     })
     .filter((p) => {
-      return p.length > 0;
-    });
+      return p.length > 0
+    })
 
   return segs.map((s) => {
     return s.split(/[ ,]+/)
       .map((n) => {
-        return parseFloat(n);
+        return Number.parseFloat(n)
       })
       .filter((n) => {
-        return !isNaN(n);
-      });
-  });
-};
+        return !isNaN(n)
+      })
+  })
+}
 
-const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
-  const commands = getCommands(d);
+function getPointsFromPath({ d }: PathSpec): CurveSpec[] {
+  const commands = getCommands(d)
 
   if (!commands) {
-    return [];
+    return []
   }
 
-  const params = getParams(d);
+  const params = getParams(d)
 
-  const points: CurveSpec[] = [];
+  const points: CurveSpec[] = []
 
-  let moveTo;
+  let moveTo
 
   for (let i = 0, l = commands.length; i < l; i++) {
-    const command = commands[i];
-    const upperCaseCommand = command.toUpperCase();
-    const commandLength = commandLengths[upperCaseCommand];
-    const relative = isRelative(command);
+    const command = commands[i]
+    const upperCaseCommand = command.toUpperCase()
+    const commandLength = commandLengths[upperCaseCommand]
+    const relative = isRelative(command)
 
-    let prevPoint = (points.length < 1) ? null : points[points.length - 1];
+    let prevPoint = (points.length < 1) ? null : points[points.length - 1]
 
     if (commandLength > 0) {
-      const commandParams = params.shift();
-      const iterations = commandParams.length / commandLength;
+      const commandParams = params.shift()
+      const iterations = commandParams.length / commandLength
 
       for (let j = 0; j < iterations; j++) {
-        prevPoint = (points.length < 1) ? null : points[points.length - 1];
+        prevPoint = (points.length < 1) ? null : points[points.length - 1]
 
         switch (upperCaseCommand) {
           case 'M':
-            const x = (relative && prevPoint ? prevPoint.x : 0) + commandParams.shift();
-            const y = (relative && prevPoint ? prevPoint.y : 0) + commandParams.shift();
+            const x = (relative && prevPoint ? prevPoint.x : 0) + commandParams.shift()
+            const y = (relative && prevPoint ? prevPoint.y : 0) + commandParams.shift()
 
             moveTo = {
               x,
               y,
-            };
+            }
 
             points.push({
               x,
               y,
               moveTo: true,
-            });
+            })
 
-            break;
+            break
 
           case 'L':
             points.push({
               x: (relative ? prevPoint.x : 0) + commandParams.shift(),
               y: (relative ? prevPoint.y : 0) + commandParams.shift(),
-            });
+            })
 
-            break;
+            break
 
           case 'H':
             points.push({
               x: (relative ? prevPoint.x : 0) + commandParams.shift(),
               y: prevPoint.y,
-            });
+            })
 
-            break;
+            break
 
           case 'V':
             points.push({
               x: prevPoint.x,
               y: (relative ? prevPoint.y : 0) + commandParams.shift(),
-            });
+            })
 
-            break;
+            break
 
           case 'A':
             points.push({
@@ -305,15 +315,15 @@ const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
               },
               x: (relative ? prevPoint.x : 0) + commandParams.shift(),
               y: (relative ? prevPoint.y : 0) + commandParams.shift(),
-            });
+            })
 
             for (const k of optionalArcKeys) {
               if (points[points.length - 1].curve[k] === 0) {
-                delete points[points.length - 1].curve[k];
+                delete points[points.length - 1].curve[k]
               }
             }
 
-            break;
+            break
 
           case 'C':
             points.push({
@@ -326,34 +336,35 @@ const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
               },
               x: (relative ? prevPoint.x : 0) + commandParams.shift(),
               y: (relative ? prevPoint.y : 0) + commandParams.shift(),
-            });
+            })
 
-            break;
+            break
 
           case 'S':
-            const sx2 = (relative ? prevPoint.x : 0) + commandParams.shift();
-            const sy2 = (relative ? prevPoint.y : 0) + commandParams.shift();
-            const sx = (relative ? prevPoint.x : 0) + commandParams.shift();
-            const sy = (relative ? prevPoint.y : 0) + commandParams.shift();
+            const sx2 = (relative ? prevPoint.x : 0) + commandParams.shift()
+            const sy2 = (relative ? prevPoint.y : 0) + commandParams.shift()
+            const sx = (relative ? prevPoint.x : 0) + commandParams.shift()
+            const sy = (relative ? prevPoint.y : 0) + commandParams.shift()
 
-            const diff: {x: number, y: number} = {
+            const diff: { x: number, y: number } = {
               x: null,
               y: null,
-            };
+            }
 
-            let sx1;
-            let sy1;
+            let sx1
+            let sy1
 
             if (prevPoint.curve && prevPoint.curve.type === 'cubic') {
-              diff.x = Math.abs(prevPoint.x - prevPoint.curve.x2);
-              diff.y = Math.abs(prevPoint.y - prevPoint.curve.y2);
-              sx1 = prevPoint.x < prevPoint.curve.x2 ? prevPoint.x - diff.x : prevPoint.x + diff.x;
-              sy1 = prevPoint.y < prevPoint.curve.y2 ? prevPoint.y - diff.y : prevPoint.y + diff.y;
-            } else {
-              diff.x = Math.abs(sx - sx2);
-              diff.y = Math.abs(sy - sy2);
-              sx1 = prevPoint.x;
-              sy1 = prevPoint.y;
+              diff.x = Math.abs(prevPoint.x - prevPoint.curve.x2)
+              diff.y = Math.abs(prevPoint.y - prevPoint.curve.y2)
+              sx1 = prevPoint.x < prevPoint.curve.x2 ? prevPoint.x - diff.x : prevPoint.x + diff.x
+              sy1 = prevPoint.y < prevPoint.curve.y2 ? prevPoint.y - diff.y : prevPoint.y + diff.y
+            }
+            else {
+              diff.x = Math.abs(sx - sx2)
+              diff.y = Math.abs(sy - sy2)
+              sx1 = prevPoint.x
+              sy1 = prevPoint.y
             }
 
             points.push({
@@ -366,9 +377,9 @@ const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
               },
               x: sx,
               y: sy,
-            });
+            })
 
-            break;
+            break
 
           case 'Q':
             points.push(convertQuadraticToCubicBezier({
@@ -379,28 +390,29 @@ const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
               },
               x: (relative ? prevPoint.x : 0) + commandParams.shift(),
               y: (relative ? prevPoint.y : 0) + commandParams.shift(),
-            }, prevPoint));
+            }, prevPoint))
 
-            break;
+            break
 
           case 'T':
-            const tx = (relative ? prevPoint.x : 0) + commandParams.shift();
-            const ty = (relative ? prevPoint.y : 0) + commandParams.shift();
+            const tx = (relative ? prevPoint.x : 0) + commandParams.shift()
+            const ty = (relative ? prevPoint.y : 0) + commandParams.shift()
 
-            let tx1;
-            let ty1;
+            let tx1
+            let ty1
 
             if (prevPoint.curve && prevPoint.curve.type === 'quadratic') {
               const diff = {
                 x: Math.abs(prevPoint.x - prevPoint.curve.x1),
                 y: Math.abs(prevPoint.y - prevPoint.curve.y1),
-              };
+              }
 
-              tx1 = prevPoint.x < prevPoint.curve.x1 ? prevPoint.x - diff.x : prevPoint.x + diff.x;
-              ty1 = prevPoint.y < prevPoint.curve.y1 ? prevPoint.y - diff.y : prevPoint.y + diff.y;
-            } else {
-              tx1 = prevPoint.x;
-              ty1 = prevPoint.y;
+              tx1 = prevPoint.x < prevPoint.curve.x1 ? prevPoint.x - diff.x : prevPoint.x + diff.x
+              ty1 = prevPoint.y < prevPoint.curve.y1 ? prevPoint.y - diff.y : prevPoint.y + diff.y
+            }
+            else {
+              tx1 = prevPoint.x
+              ty1 = prevPoint.y
             }
 
             points.push(convertQuadraticToCubicBezier({
@@ -411,67 +423,69 @@ const getPointsFromPath = ({d}: PathSpec): CurveSpec[] => {
               },
               x: tx,
               y: ty,
-            }, prevPoint));
+            }, prevPoint))
 
-            break;
+            break
         }
       }
-    } else if (prevPoint !== null) {
+    }
+    else if (prevPoint !== null) {
       if (upperCaseCommand === 'Z') {
-        prevPoint.closed = true;
+        prevPoint.closed = true
       }
       if (moveTo !== undefined && (prevPoint.x !== moveTo.x || prevPoint.y !== moveTo.y)) {
         points.push({
           x: moveTo.x,
           y: moveTo.y,
-        });
+        })
       }
     }
   }
 
-  return points;
-};
+  return points
+}
 
-const getPointsFromPolygon = ({points}: PolygonSpec): CurveSpec[] => {
+function getPointsFromPolygon({ points }: PolygonSpec): CurveSpec[] {
   return getPointsFromPoints({
     points,
     closed: true,
-  });
-};
+  })
+}
 
-const getPointsFromPolyline = ({points}: PolylineSpec): CurveSpec[] => {
+function getPointsFromPolyline({ points }: PolylineSpec): CurveSpec[] {
   return getPointsFromPoints({
     points,
     closed: false,
-  });
-};
+  })
+}
 
-const getPointsFromPoints = ({closed, points}: {closed: boolean, points: string}): CurveSpec[] => {
-  const numbers = points.split(/[\s,]+/).map((n: string) => parseFloat(n));
+function getPointsFromPoints({ closed, points}: { closed: boolean, points: string }): CurveSpec[] {
+  const numbers = points.split(/[\s,]+/).map((n: string) => Number.parseFloat(n))
 
   const p = numbers.reduce(
     (arr, point, i) => {
       if (i % 2 === 0) {
-        arr.push({x: point});
-      } else {
-        arr[(i - 1) / 2].y = point;
+        arr.push({ x: point })
+      }
+      else {
+        arr[(i - 1) / 2].y = point
       }
 
-      return arr;
+      return arr
     },
     [],
-  );
+  )
 
   if (closed) {
-    p.push({...p[0]});
+    p.push({ ...p[0] })
   }
 
-  p[0].moveTo = true;
+  p[0].moveTo = true
 
-  return p;
-};
+  return p
+}
 
-const getPointsFromRect = ({height, rx, ry, width, x, y}: RectSpec): CurveSpec[] => {
+function getPointsFromRect({ height, rx, ry, width, x, y }: RectSpec): CurveSpec[] {
   if (rx || ry) {
     return getPointsFromRectWithCornerRadius({
       height,
@@ -481,7 +495,7 @@ const getPointsFromRect = ({height, rx, ry, width, x, y}: RectSpec): CurveSpec[]
       rx: rx || ry,
       ry: ry || rx,
       type: 'rect',
-    });
+    })
   }
 
   return getPointsFromBasicRect({
@@ -489,10 +503,10 @@ const getPointsFromRect = ({height, rx, ry, width, x, y}: RectSpec): CurveSpec[]
     width,
     x,
     y,
-  });
-};
+  })
+}
 
-const getPointsFromBasicRect = ({height, width, x, y}: RectSpec): CurveSpec[] => {
+function getPointsFromBasicRect({ height, width, x, y }: RectSpec): CurveSpec[] {
   return [
     {
       x,
@@ -515,16 +529,16 @@ const getPointsFromBasicRect = ({height, width, x, y}: RectSpec): CurveSpec[] =>
       x,
       y,
     },
-  ];
-};
+  ]
+}
 
-const getPointsFromRectWithCornerRadius = ({height, rx, ry, width, x, y}: RectSpec): CurveSpec[] => {
+function getPointsFromRectWithCornerRadius({ height, rx, ry, width, x, y }: RectSpec): CurveSpec[] {
   const curve = {
     rx,
     ry,
     type: 'arc',
     sweepFlag: 1,
-  };
+  }
 
   return [
     {
@@ -568,7 +582,7 @@ const getPointsFromRectWithCornerRadius = ({height, rx, ry, width, x, y}: RectSp
       y,
       x: x + rx,
     },
-  ];
-};
+  ]
+}
 
-export default toPoints;
+export default toPoints

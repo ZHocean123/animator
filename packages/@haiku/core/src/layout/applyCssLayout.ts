@@ -2,20 +2,20 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import Layout3D from '../Layout3D';
-import formatTransform from './formatTransform';
-import scopeOfElement from './scopeOfElement';
+import Layout3D from '../Layout3D'
+import formatTransform from './formatTransform'
+import scopeOfElement from './scopeOfElement'
 
-const SVG = 'svg';
+const SVG = 'svg'
 
-function hasExplicitStyle (domElement, key) {
+function hasExplicitStyle(domElement, key) {
   if (!domElement.haiku) {
-    return false;
+    return false
   }
   if (!domElement.haiku.explicitStyles) {
-    return false;
+    return false
   }
-  return domElement.haiku.explicitStyles[key] !== undefined;
+  return domElement.haiku.explicitStyles[key] !== undefined
 }
 
 /**
@@ -48,23 +48,24 @@ export const SVG_SIZEABLES = {
   pattern: true,
   rect: true,
   use: true,
-};
+}
 
-export default function applyCssLayout (domElement, virtualElement, nodeLayout, computedLayout, context) {
+export default function applyCssLayout(domElement, virtualElement, nodeLayout, computedLayout, context) {
   // No point continuing if there's no computedLayout contents
   if (computedLayout.opacity === undefined && !computedLayout.size && !computedLayout.matrix) {
-    return;
+    return
   }
 
-  const elementScope = scopeOfElement(virtualElement);
+  const elementScope = scopeOfElement(virtualElement)
 
   if (nodeLayout.shown === false) {
     if (domElement.style.visibility !== 'hidden') {
-      domElement.style.visibility = 'hidden';
+      domElement.style.visibility = 'hidden'
     }
-  } else if (nodeLayout.shown === true) {
+  }
+  else if (nodeLayout.shown === true) {
     if (domElement.style.visibility !== 'visible') {
-      domElement.style.visibility = 'visible';
+      domElement.style.visibility = 'visible'
     }
   }
 
@@ -72,21 +73,24 @@ export default function applyCssLayout (domElement, virtualElement, nodeLayout, 
     // No opacity defined means use whatever the previously defined opacity was
     if (computedLayout.opacity === undefined) {
       // no-op
-    } else {
-      let finalOpacity;
+    }
+    else {
+      let finalOpacity
 
       if (computedLayout.opacity >= 0.999) {
-        finalOpacity = 1;
-      } else if (computedLayout.opacity <= 0.0001) {
-        finalOpacity = 0;
-      } else {
-        finalOpacity = computedLayout.opacity;
+        finalOpacity = 1
+      }
+      else if (computedLayout.opacity <= 0.0001) {
+        finalOpacity = 0
+      }
+      else {
+        finalOpacity = computedLayout.opacity
       }
 
-      const opacityString = '' + finalOpacity;
+      const opacityString = `${finalOpacity}`
 
       if (domElement.style.opacity !== opacityString) {
-        domElement.style.opacity = opacityString;
+        domElement.style.opacity = opacityString
       }
     }
   }
@@ -97,32 +101,33 @@ export default function applyCssLayout (domElement, virtualElement, nodeLayout, 
       // (and do something with them).
       if (SVG_SIZEABLES[virtualElement.elementName]) {
         if (
-          computedLayout.size.x !== undefined &&
-          domElement.getAttribute('width') === null &&
-          domElement.getAttribute('width') !== computedLayout.size.x
+          computedLayout.size.x !== undefined
+          && domElement.getAttribute('width') === null
+          && domElement.getAttribute('width') !== computedLayout.size.x
         ) {
-          domElement.setAttribute('width', computedLayout.size.x);
+          domElement.setAttribute('width', computedLayout.size.x)
         }
         if (
-          computedLayout.size.y !== undefined &&
-          domElement.getAttribute('height') === null &&
-          domElement.getAttribute('height') !== computedLayout.size.y
+          computedLayout.size.y !== undefined
+          && domElement.getAttribute('height') === null
+          && domElement.getAttribute('height') !== computedLayout.size.y
         ) {
-          domElement.setAttribute('height', computedLayout.size.y);
+          domElement.setAttribute('height', computedLayout.size.y)
         }
       }
-    } else {
+    }
+    else {
       if (!hasExplicitStyle(domElement, 'width')) {
         if (computedLayout.size.x !== undefined) {
-          const sizeXString = parseFloat(computedLayout.size.x.toFixed(2)) + 'px';
+          const sizeXString = `${Number.parseFloat(computedLayout.size.x.toFixed(2))}px`
           if (domElement.style.width !== sizeXString) {
-            domElement.style.width = sizeXString;
+            domElement.style.width = sizeXString
           }
         }
         if (computedLayout.size.y !== undefined) {
-          const sizeYString = parseFloat(computedLayout.size.y.toFixed(2)) + 'px';
+          const sizeYString = `${Number.parseFloat(computedLayout.size.y.toFixed(2))}px`
           if (domElement.style.height !== sizeYString) {
-            domElement.style.height = sizeYString;
+            domElement.style.height = sizeYString
           }
         }
       }
@@ -131,35 +136,36 @@ export default function applyCssLayout (domElement, virtualElement, nodeLayout, 
 
   if (Layout3D.virtualElementIsLayoutContainer(virtualElement) && !domElement.style.transformOrigin) {
     // Reset the transform-origin so that our layout system can be self-contained.
-    domElement.style.transformOrigin = '0% 0% 0px';
+    domElement.style.transformOrigin = '0% 0% 0px'
   }
 
   if (computedLayout.matrix) {
-    const matrixString = formatTransform(computedLayout.matrix, nodeLayout.format);
+    const matrixString = formatTransform(computedLayout.matrix, nodeLayout.format)
     if (matrixString === domElement.haiku.cachedTransform) {
-      return;
+      return
     }
 
-    domElement.haiku.cachedTransform = matrixString;
+    domElement.haiku.cachedTransform = matrixString
 
     if (
-      elementScope === SVG &&
+      elementScope === SVG
       // IE doesn't support using transform on the CSS style in SVG elements, so if we are in SVG, and if we are
       // inside an IE context, use the transform attribute itself. Always prefer the transform attribute for 2D inner
       // SVG attributes, which have more consistent cross-browser behavior.
-      (
-        nodeLayout.format === Layout3D.FORMATS.TWO ||
-        context.config.platform.isIE ||
-        context.config.platform.isEdge
+      && (
+        nodeLayout.format === Layout3D.FORMATS.TWO
+        || context.config.platform.isIE
+        || context.config.platform.isEdge
       )
     ) {
-      domElement.setAttribute('transform', matrixString);
-    } else if (
+      domElement.setAttribute('transform', matrixString)
+    }
+    else if (
       !hasExplicitStyle(domElement, 'transform') && !domElement.getAttribute('transform')
     ) {
       // A domElement might have an explicit transform override set, in which case, don't
       // attach the style transform to this node, because we will likely clobber what they've set
-      domElement.style.transform = matrixString;
+      domElement.style.transform = matrixString
     }
   }
 }

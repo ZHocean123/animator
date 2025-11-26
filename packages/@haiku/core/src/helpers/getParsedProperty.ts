@@ -5,7 +5,7 @@ const HAIKU_CONFIG_PROPS_RENAME_MAPPING = {
   haikuEventHandlers: 'eventHandlers',
   haikuTimelines: 'timelines',
   haikuVanities: 'vanities',
-};
+}
 
 /**
  * Parses a specific property specified by `verboseKeyName` from the `props`
@@ -13,27 +13,28 @@ const HAIKU_CONFIG_PROPS_RENAME_MAPPING = {
  * This method is mainly used by the React and Vue adapters.
  * @param props
  * @param verboseKeyName
- * @returns {Object}
+ * @returns {object}
  */
 
-const getParsedProperty = (props, verboseKeyName) => {
-  const result = {};
+function getParsedProperty(props, verboseKeyName) {
+  const result = {}
 
-  const haikuConfigRemappedKey = HAIKU_CONFIG_PROPS_RENAME_MAPPING[verboseKeyName];
+  const haikuConfigRemappedKey = HAIKU_CONFIG_PROPS_RENAME_MAPPING[verboseKeyName]
 
-  const haikuConfigFinalKey = haikuConfigRemappedKey || verboseKeyName;
+  const haikuConfigFinalKey = haikuConfigRemappedKey || verboseKeyName
 
   // Special case: Options used to be a separate object, so if we see this legacy
   // format, just merge it in with the root level of the new options
   if (haikuConfigFinalKey === 'options') {
     for (const optionsSubKey in props[verboseKeyName]) {
-      result[optionsSubKey] = props[verboseKeyName][optionsSubKey];
+      result[optionsSubKey] = props[verboseKeyName][optionsSubKey]
     }
-  } else {
-    result[haikuConfigFinalKey] = props[verboseKeyName];
+  }
+  else {
+    result[haikuConfigFinalKey] = props[verboseKeyName]
   }
 
-  return result;
-};
+  return result
+}
 
-export default getParsedProperty;
+export default getParsedProperty

@@ -2,13 +2,12 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import {
+import type {
   BytecodeEventHandlerDescriptor,
   BytecodeHelpers,
   BytecodeNode,
   BytecodeOptions,
   BytecodeTimelines,
-  Curve,
   HaikuBytecode,
   IHaikuClock,
   IHaikuComponent,
@@ -16,113 +15,121 @@ import {
   ParsedValueCluster,
   ParsedValueClusterCollection,
   TwoPointFiveDimensionalLayoutProperty,
-} from './api';
-import Config, {DEFAULTS} from './Config';
-import HaikuBase, {GLOBAL_LISTENER_KEY} from './HaikuBase';
-import HaikuElement from './HaikuElement';
-import HaikuHelpers from './HaikuHelpers';
-import {ascend, cssMatchOne, cssQueryList, manaFlattenTree, visit} from './HaikuNode';
-import HaikuTimeline, {PlaybackFlag, TimeUnit} from './HaikuTimeline';
-import ColorUtils from './helpers/ColorUtils';
-import consoleErrorOnce from './helpers/consoleErrorOnce';
-import {isLiveMode} from './helpers/interactionModes';
-import isMutableProperty from './helpers/isMutableProperty';
-import {getSortedKeyframes} from './helpers/KeyframeUtils';
-import {synchronizePathStructure} from './helpers/PathUtils';
-import SVGPoints from './helpers/SVGPoints';
-import Layout3D from './Layout3D';
-import {
+} from './api'
+import type {
   MigrationOptions,
+} from './Migration'
+import type { RFO } from './reflection/functionToRFO'
+import type { StateTransitionParameters, StateValues } from './StateTransitionManager'
+import type { CurveSpec } from './vendor/svg-points/types'
+import {
+  Curve,
+} from './api'
+import Config, { DEFAULTS } from './Config'
+import HaikuBase, { GLOBAL_LISTENER_KEY } from './HaikuBase'
+import HaikuElement from './HaikuElement'
+import HaikuHelpers from './HaikuHelpers'
+import { ascend, cssMatchOne, cssQueryList, manaFlattenTree, visit } from './HaikuNode'
+import HaikuTimeline, { PlaybackFlag, TimeUnit } from './HaikuTimeline'
+import ColorUtils from './helpers/ColorUtils'
+import consoleErrorOnce from './helpers/consoleErrorOnce'
+import { isLiveMode } from './helpers/interactionModes'
+import isMutableProperty from './helpers/isMutableProperty'
+import { getSortedKeyframes } from './helpers/KeyframeUtils'
+import { synchronizePathStructure } from './helpers/PathUtils'
+import SVGPoints from './helpers/SVGPoints'
+import Layout3D from './Layout3D'
+import {
   runMigrationsPostPhase,
   runMigrationsPrePhase,
-} from './Migration';
-import enhance from './reflection/enhance';
-import functionToRFO, {RFO} from './reflection/functionToRFO';
-import StateTransitionManager, {StateTransitionParameters, StateValues} from './StateTransitionManager';
-import {calculateValue} from './Transitions';
-import assign from './vendor/assign';
-import invert from './vendor/gl-mat4/invert';
-import {CurveSpec} from './vendor/svg-points/types';
+} from './Migration'
+import enhance from './reflection/enhance'
+import functionToRFO from './reflection/functionToRFO'
+import StateTransitionManager from './StateTransitionManager'
+import { calculateValue } from './Transitions'
+import assign from './vendor/assign'
+import invert from './vendor/gl-mat4/invert'
 
-const FUNCTION = 'function';
-const KEYFRAME_ZERO = 0;
-const OBJECT = 'object';
-const MAX_INT = 2147483646;
-const SCOPE_STRATA = {div: 'div', svg: 'svg'};
-const CDN_ROOT_STR = 'HAIKU|CDN|PROJECT|ROOT'.split('|').join('_'); // Split to avoid server-side munging
+const FUNCTION = 'function'
+const KEYFRAME_ZERO = 0
+const OBJECT = 'object'
+const MAX_INT = 2147483646
+const SCOPE_STRATA = { div: 'div', svg: 'svg' }
+const CDN_ROOT_STR = 'HAIKU|CDN|PROJECT|ROOT'.split('|').join('_') // Split to avoid server-side munging
 
 // HACK: Required until DOM subtree-hydration race is fixed
-const ALWAYS_UPDATED_PROPERTIES = {'controlFlow.placeholder': true};
+const ALWAYS_UPDATED_PROPERTIES = { 'controlFlow.placeholder': true }
 
 export interface IComputedValue {
-  computedValue: any;
-  didValueChangeSinceLastRequest: boolean;
-  didValueOriginateFromExplicitKeyframeDefinition: boolean;
+  computedValue: any
+  didValueChangeSinceLastRequest: boolean
+  didValueOriginateFromExplicitKeyframeDefinition: boolean
 }
 
-const parseD = (value: string|CurveSpec[]): CurveSpec[] => {
+function parseD(value: string | CurveSpec[]): CurveSpec[] {
   // in case of d="" for any reason, don't try to expand this otherwise this will choke
   // #TODO: arguably we should preprocess SVGs before things get this far; try svgo?
   if (!value || value.length === 0) {
-    return [];
+    return []
   }
   // Allow points to return an array for convenience, and let downstream marshal it
   if (Array.isArray(value)) {
-    return value;
+    return value
   }
-  return SVGPoints.pathToPoints(value);
-};
+  return SVGPoints.pathToPoints(value)
+}
 
-const generateD = (value: string|CurveSpec[]): string => {
+function generateD(value: string | CurveSpec[]): string {
   if (typeof value === 'string') {
-    return value;
+    return value
   }
-  return SVGPoints.pointsToPath(value);
-};
+  return SVGPoints.pointsToPath(value)
+}
 
-const parseColor = (value) => {
-  return ColorUtils.parseString(value);
-};
+function parseColor(value) {
+  return ColorUtils.parseString(value)
+}
 
-const generateColor = (value) => {
-  return ColorUtils.generateString(value);
-};
+function generateColor(value) {
+  return ColorUtils.generateString(value)
+}
 
-const parsePoints = (value) => {
+function parsePoints(value) {
   if (Array.isArray(value)) {
-    return value;
+    return value
   }
-  return SVGPoints.polyPointsStringToPoints(value);
-};
+  return SVGPoints.polyPointsStringToPoints(value)
+}
 
-const generatePoints = (value) => {
+function generatePoints(value) {
   if (typeof value === 'string') {
-    return value;
+    return value
   }
-  return SVGPoints.pointsToPolyString(value);
-};
+  return SVGPoints.pointsToPolyString(value)
+}
 
-const isFunction = (value) => {
-  return typeof value === FUNCTION;
-};
+function isFunction(value) {
+  return typeof value === FUNCTION
+}
 
-const INJECTABLES: any = {};
+const INJECTABLES: any = {}
 
-declare var window: any;
+declare let window: any
 
-const pkg = require('./../package.json');
-export const VERSION = pkg.version;
+const pkg = require('./../package.json')
 
-const STRING_TYPE = 'string';
-const OBJECT_TYPE = 'object';
-const HAIKU_ID_ATTRIBUTE = 'haiku-id';
-const DEFAULT_TIMELINE_NAME = 'Default';
+export const VERSION = pkg.version
+
+const STRING_TYPE = 'string'
+const OBJECT_TYPE = 'object'
+const HAIKU_ID_ATTRIBUTE = 'haiku-id'
+const DEFAULT_TIMELINE_NAME = 'Default'
 
 const CSS_QUERY_MAPPING = {
   name: 'elementName',
   attributes: 'attributes',
   children: 'children',
-};
+}
 
 /**
  * An interface for a "hot component" to patch into the renderer.
@@ -131,165 +138,165 @@ const CSS_QUERY_MAPPING = {
  * without marking the owner HaikuComponent instance for a full flush render.
  */
 export interface HotComponent {
-  timelineName: string;
-  selector: string;
-  propertyNames: string[];
+  timelineName: string
+  selector: string
+  propertyNames: string[]
 }
 
 export interface ClearCacheOptions {
-  clearStates?: boolean;
+  clearStates?: boolean
 }
 
 // tslint:disable:variable-name function-name
 export default class HaikuComponent extends HaikuElement implements IHaikuComponent {
-  isDeactivated;
-  isSleeping;
-  private mutableTimelines: BytecodeTimelines;
-  private parsedValueClusters: ParsedValueClusterCollection = {};
-  _states;
+  isDeactivated
+  isSleeping
+  private mutableTimelines: BytecodeTimelines
+  private parsedValueClusters: ParsedValueClusterCollection = {}
+  _states
 
-  bytecode: HaikuBytecode;
+  bytecode: HaikuBytecode
   /**
    * @deprecated
    */
-  _bytecode;
-  config;
-  container;
-  context: IHaikuContext;
-  CORE_VERSION;
-  doAlwaysFlush;
-  doesNeedFullFlush;
-  doPreserve3d;
-  guests: {[haikuId: string]: HaikuComponent};
-  helpers;
-  lastHoveredElement: HaikuElement;
-  hooks;
-  host: HaikuComponent;
-  playback;
-  PLAYER_VERSION;
-  registeredEventHandlers;
-  state;
-  stateTransitionManager: StateTransitionManager;
-  needsExpand = true;
+  _bytecode
+  config
+  container
+  context: IHaikuContext
+  CORE_VERSION
+  doAlwaysFlush
+  doesNeedFullFlush
+  doPreserve3d
+  guests: { [haikuId: string]: HaikuComponent }
+  helpers
+  lastHoveredElement: HaikuElement
+  hooks
+  host: HaikuComponent
+  playback
+  PLAYER_VERSION
+  registeredEventHandlers
+  state
+  stateTransitionManager: StateTransitionManager
+  needsExpand = true
 
-  patches: BytecodeNode[] = [];
+  patches: BytecodeNode[] = []
 
-  constructor (
+  constructor(
     bytecode: HaikuBytecode,
     context: IHaikuContext,
     host: HaikuComponent,
     config: BytecodeOptions,
     container,
   ) {
-    super();
+    super()
 
     if (!bytecode.template) {
-      console.warn('[haiku core] adding missing template object');
-      bytecode.template = {elementName: 'div', attributes: {}, children: []};
+      console.warn('[haiku core] adding missing template object')
+      bytecode.template = { elementName: 'div', attributes: {}, children: [] }
     }
 
     if (!bytecode.timelines) {
-      console.warn('[haiku core] adding missing timelines object');
-      bytecode.timelines = {};
+      console.warn('[haiku core] adding missing timelines object')
+      bytecode.timelines = {}
     }
 
     if (!bytecode.timelines[DEFAULT_TIMELINE_NAME]) {
-      console.warn('[haiku core] adding missing default timeline');
-      bytecode.timelines[DEFAULT_TIMELINE_NAME] = {};
+      console.warn('[haiku core] adding missing default timeline')
+      bytecode.timelines[DEFAULT_TIMELINE_NAME] = {}
     }
 
     if (!context) {
-      throw new Error('Component requires a context');
+      throw new Error('Component requires a context')
     }
 
     if (!config) {
-      throw new Error('Config options required');
+      throw new Error('Config options required')
     }
 
     if (!config.seed) {
-      throw new Error('Seed value must be provided');
+      throw new Error('Seed value must be provided')
     }
 
-    this.PLAYER_VERSION = VERSION; // #LEGACY
-    this.CORE_VERSION = VERSION;
+    this.PLAYER_VERSION = VERSION // #LEGACY
+    this.CORE_VERSION = VERSION
 
-    this.context = context;
-    this.container = container;
+    this.context = context
+    this.container = container
 
-    this.host = host;
-    this.guests = {};
+    this.host = host
+    this.guests = {}
 
     this.bytecode = (config.hotEditingMode)
       ? bytecode
-      : clone(bytecode, this); // Important because migrations mutate the bytecode
+      : clone(bytecode, this) // Important because migrations mutate the bytecode
 
-    assertTemplate(this.bytecode.template);
+    assertTemplate(this.bytecode.template)
 
     // Allow users to expose methods that can be called in event handlers
     if (this.bytecode.methods) {
       for (const methodNameGiven in this.bytecode.methods) {
         if (!this[methodNameGiven]) {
-          this[methodNameGiven] = this.bytecode.methods[methodNameGiven].bind(this);
+          this[methodNameGiven] = this.bytecode.methods[methodNameGiven].bind(this)
         }
       }
     }
 
-    this._states = {}; // Storage for getter/setter actions in userland logic
-    this.state = {}; // Public accessor object, e.g. this.state.foo = 1
+    this._states = {} // Storage for getter/setter actions in userland logic
+    this.state = {} // Public accessor object, e.g. this.state.foo = 1
 
     // Instantiate StateTransitions. Responsible to store and execute any state transition.
-    this.stateTransitionManager = new StateTransitionManager(this);
+    this.stateTransitionManager = new StateTransitionManager(this)
 
-    this.hooks = {};
+    this.hooks = {}
 
     this.helpers = Object.assign({}, this.bytecode.helpers, {
       data: {},
-    });
+    })
 
     // `assignConfig` calls bindStates because our incoming config, which
     // could occur at any point during runtime, e.g. in React, may need to update internal states, etc.
     // It also may populate hooks and helpers if passed in via configuration.
-    this.assignConfig(config);
+    this.assignConfig(config)
 
     // Flag used internally to determine whether we need to re-render the full tree or can survive by just patching
-    this.doesNeedFullFlush = false;
+    this.doesNeedFullFlush = false
 
     // If true, will continually flush the entire tree until explicitly set to false again
-    this.doAlwaysFlush = false;
+    this.doAlwaysFlush = false
 
     // If true, the component will assign 3D-preservation setting if one hasn't been set explicitly.
     // If config.preserve3d is 'auto', the migration pre-phase will try to detect whether 3d is needed.
-    this.doPreserve3d = (this.config.preserve3d === true) ? true : false;
+    this.doPreserve3d = (this.config.preserve3d === true)
 
     // Dictionary of event handler names to handler functions; used to efficiently manage multiple subscriptions
-    this.registeredEventHandlers = {};
+    this.registeredEventHandlers = {}
 
     // The last HaikuElement in this scope to be hovered; used to help manage hover/unhover
-    this.lastHoveredElement = null;
+    this.lastHoveredElement = null
 
     // Flag to determine whether this component should continue doing any work
-    this.isDeactivated = false;
+    this.isDeactivated = false
 
     // Flag to indicate whether we are sleeping, an ephemeral condition where no rendering occurs
-    this.isSleeping = false;
+    this.isSleeping = false
 
     this.helpers = {
       data: {},
-    };
+    }
 
-    const helpers =  Object.assign({}, HaikuHelpers.helpers, this.getHelpers());
+    const helpers = Object.assign({}, HaikuHelpers.helpers, this.getHelpers())
 
     for (const helperName in helpers) {
-      this.helpers[helperName] = helpers[helperName];
+      this.helpers[helperName] = helpers[helperName]
     }
 
     this.helpers.now = () => {
       if (this.isLiveMode()) {
-        return (this.config.timestamp || 1) + (this.helpers.data.lastTimelineTime || 1);
+        return (this.config.timestamp || 1) + (this.helpers.data.lastTimelineTime || 1)
       }
 
-      return 1;
-    };
+      return 1
+    }
 
     this.helpers.rand = () => {
       if (this.isLiveMode()) {
@@ -298,23 +305,23 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
           this.helpers.data.lastTimelineTime,
           this.helpers.data.lastPropertyName,
           this.helpers.data.lastFlexId,
-        ].join('|');
+        ].join('|')
 
-        const randKey = `${this.config.seed}@${scopeKey}`;
+        const randKey = `${this.config.seed}@${scopeKey}`
 
-        const keyInt = stringToInt(randKey);
+        const keyInt = stringToInt(randKey)
 
-        const outFloat = ((keyInt + 1) % MAX_INT) / MAX_INT;
+        const outFloat = ((keyInt + 1) % MAX_INT) / MAX_INT
 
-        return outFloat;
+        return outFloat
       }
 
-      return 1;
-    };
+      return 1
+    }
 
     this.helpers.find = (selector) => {
-      return this.querySelectorAll(selector);
-    };
+      return this.querySelectorAll(selector)
+    }
 
     const migrationOptions: MigrationOptions = {
       attrsHyphToCamel: ATTRS_HYPH_TO_CAMEL,
@@ -326,16 +333,17 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
           : Math.random().toString(36).slice(2),
         haikuRoot: this.getProjectRootPathWithTerminatingSlash(),
       },
-    };
+    }
 
     try {
-      runMigrationsPrePhase(this, migrationOptions);
-    } catch (exception) {
-      console.warn('[haiku core] caught error during migration pre-phase', exception);
+      runMigrationsPrePhase(this, migrationOptions)
+    }
+    catch (exception) {
+      console.warn('[haiku core] caught error during migration pre-phase', exception)
     }
 
     // Ensure full tree is are properly set up and all render nodes are connected to their models
-    this.render({...this.config});
+    this.render({ ...this.config })
 
     try {
       // If the bytecode we got happens to be in an outdated format, we automatically update it to the latest.
@@ -343,30 +351,32 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         this,
         migrationOptions,
         VERSION,
-      );
-    } catch (exception) {
-      console.warn('[haiku core] caught error during migration post-phase', exception);
+      )
+    }
+    catch (exception) {
+      console.warn('[haiku core] caught error during migration post-phase', exception)
     }
 
-    this.hydrateMutableTimelines();
+    this.hydrateMutableTimelines()
 
     if (!this.host) {
-      this.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:did-initialize', [this]);
-    } else {
-      this.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:did-initialize', [this]);
+      this.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:did-initialize', [this])
+    }
+    else {
+      this.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:did-initialize', [this])
     }
 
     // #FIXME: some handlers may still reference `_bytecode` directly.
-    this._bytecode = this.bytecode;
+    this._bytecode = this.bytecode
   }
 
   /**
    * @description Track elements that are at the horizon of what we want to render, i.e., a list of
    * virtual elements that we don't want to make any updates lower than in the tree.
    */
-  markHorizonElement (virtualElement) {
+  markHorizonElement(virtualElement) {
     if (virtualElement && virtualElement.attributes) {
-      virtualElement.__horizon = true;
+      virtualElement.__horizon = true
     }
   }
 
@@ -374,65 +384,66 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
    * @description Returns true/false whether this element is one that we don't want to make any
    *  updates further down its tree.
    */
-  isHorizonElement (virtualElement): boolean {
+  isHorizonElement(virtualElement): boolean {
     if (virtualElement && virtualElement.attributes) {
-      return virtualElement.__horizon;
+      return virtualElement.__horizon
     }
-    return false;
+    return false
   }
 
-  isLiveMode (): boolean {
-    return isLiveMode(this.config.interactionMode);
+  isLiveMode(): boolean {
+    return isLiveMode(this.config.interactionMode)
   }
 
-  isEditMode (): boolean {
-    return !this.isLiveMode();
+  isEditMode(): boolean {
+    return !this.isLiveMode()
   }
 
-  registerGuest (subcomponent: HaikuComponent) {
-    this.guests[subcomponent.getId()] = subcomponent;
+  registerGuest(subcomponent: HaikuComponent) {
+    this.guests[subcomponent.getId()] = subcomponent
   }
 
-  visitGuestHierarchy (visitor: Function) {
-    visitor(this, this.$id, this.host);
+  visitGuestHierarchy(visitor: Function) {
+    visitor(this, this.$id, this.host)
     for (const $id in this.guests) {
-      this.guests[$id].visitGuestHierarchy(visitor);
+      this.guests[$id].visitGuestHierarchy(visitor)
     }
   }
 
-  visitGuests (visitor: Function) {
+  visitGuests(visitor: Function) {
     for (const $id in this.guests) {
-      visitor(this.guests[$id], $id);
+      visitor(this.guests[$id], $id)
     }
   }
 
   // If the component needs to remount itself for some reason, make sure we fire the right events
-  callRemount (incomingConfig, skipMarkForFullFlush = false) {
+  callRemount(incomingConfig, skipMarkForFullFlush = false) {
     this.visitGuestHierarchy((guest) => {
       if (guest === this) {
-        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:will-mount', [guest]);
-      } else {
-        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:will-mount', [guest]);
+        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:will-mount', [guest])
       }
-    });
+      else {
+        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:will-mount', [guest])
+      }
+    })
 
     // Note!: Only update config if we actually got incoming options!
     if (incomingConfig) {
-      this.assignConfig(incomingConfig);
+      this.assignConfig(incomingConfig)
     }
 
     if (!skipMarkForFullFlush) {
-      this.markForFullFlush();
-      this.clearCaches(null);
+      this.markForFullFlush()
+      this.clearCaches(null)
     }
 
     // If autoplay is not wanted, stop the all timelines immediately after we've mounted
     // (We have to mount first so that the component displays, but then pause it at that state.)
     // If you don't want the component to show up at all, use options.automount=false.
-    const timelineInstances = this.getTimelines();
+    const timelineInstances = this.getTimelines()
 
     for (const timelineName in timelineInstances) {
-      const timelineInstance = timelineInstances[timelineName];
+      const timelineInstance = timelineInstances[timelineName]
 
       if (this.config.autoplay) {
         if (timelineName === DEFAULT_TIMELINE_NAME) {
@@ -443,337 +454,340 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
           // like running the first frame twice. So we pass the option into play so it can conditionally skip the
           // markForFullFlush step.
           if (!timelineInstance.isPaused()) {
-            timelineInstance.play({skipMarkForFullFlush});
+            timelineInstance.play({ skipMarkForFullFlush })
           }
         }
-      } else {
-        timelineInstance.pause();
+      }
+      else {
+        timelineInstance.pause()
       }
     }
 
-    this.context.contextMount();
+    this.context.contextMount()
 
     this.visitGuestHierarchy((guest) => {
       if (guest === this) {
-        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:did-mount', [guest]);
-      } else {
-        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:did-mount', [guest]);
+        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:did-mount', [guest])
       }
-    });
+      else {
+        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:did-mount', [guest])
+      }
+    })
   }
 
-  destroy () {
-    super.destroy();
+  destroy() {
+    super.destroy()
     // Destroy all timelines we host.
-    const timelineInstances = this.getTimelines();
+    const timelineInstances = this.getTimelines()
     for (const timelineName in timelineInstances) {
-      const timelineInstance = timelineInstances[timelineName];
-      timelineInstance.destroy();
+      const timelineInstance = timelineInstances[timelineName]
+      timelineInstance.destroy()
     }
 
     this.visitGuestHierarchy((component) => {
       // Clean up HaikuComponent dependents.
       // TODO: is this step necessary?
       if (component !== this) {
-        component.destroy();
+        component.destroy()
       }
-    });
+    })
 
     this.visitDescendants((child) => {
       // Clean up HaikuElement dependents.
-      child.destroy();
-    });
+      child.destroy()
+    })
   }
 
-  callUnmount () {
+  callUnmount() {
     // Since we're unmounting, pause all animations to avoid unnecessary calc while detached
-    const timelineInstances = this.getTimelines();
+    const timelineInstances = this.getTimelines()
     for (const timelineName in timelineInstances) {
-      const timelineInstance = timelineInstances[timelineName];
-      timelineInstance.pause();
+      const timelineInstance = timelineInstances[timelineName]
+      timelineInstance.pause()
     }
 
-    this.context.contextUnmount();
+    this.context.contextUnmount()
 
     this.visitGuestHierarchy((guest) => {
       if (guest === this) {
-        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:will-unmount', [guest]);
-      } else {
-        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:will-unmount', [guest]);
+        guest.routeEventToHandlerAndEmit(GLOBAL_LISTENER_KEY, 'component:will-unmount', [guest])
       }
-    });
+      else {
+        guest.routeEventToHandlerAndEmitWithoutBubbling(GLOBAL_LISTENER_KEY, 'component:will-unmount', [guest])
+      }
+    })
   }
 
-  assignConfig (incomingConfig) {
-    this.config = Config.build(this.config || {}, incomingConfig || {});
+  assignConfig(incomingConfig) {
+    this.config = Config.build(this.config || {}, incomingConfig || {})
 
     // Don't assign the context config if we're a guest component;
     // assume only the top-level component should have this power
     if (this.host) {
       // Don't forget to update the configuration values shared by the context,
       // but skip component assignment so we don't end up in an infinite loop
-      this.context.assignConfig(this.config, {skipComponentAssign: true});
+      this.context.assignConfig(this.config, { skipComponentAssign: true })
     }
 
-    const timelines = this.getTimelines();
+    const timelines = this.getTimelines()
 
     for (const name in timelines) {
-      const timeline = timelines[name];
-      timeline.assignOptions(this.config);
+      const timeline = timelines[name]
+      timeline.assignOptions(this.config)
     }
 
-    this.bindStates();
+    this.bindStates()
 
-    assign(this.hooks, this.config.hooks);
+    assign(this.hooks, this.config.hooks)
 
-    assign(this.helpers, this.config.helpers);
+    assign(this.helpers, this.config.helpers)
 
-    assign(this.bytecode.timelines, this.config.timelines);
+    assign(this.bytecode.timelines, this.config.timelines)
 
-    return this;
+    return this
   }
 
-  set (key, value) {
-    this.callHook('state:change', {state: key, from: this.state[key], to: value});
-    this.state[key] = value;
-    return this;
+  set(key, value) {
+    this.callHook('state:change', { state: key, from: this.state[key], to: value })
+    this.state[key] = value
+    return this
   }
 
-  get (key) {
-    return this.state[key];
+  get(key) {
+    return this.state[key]
   }
 
-  setState (states: StateValues, transitionParameter?: StateTransitionParameters) {
+  setState(states: StateValues, transitionParameter?: StateTransitionParameters) {
     // Do not set any state if invalid
     if (!states || typeof states !== 'object') {
-      return this;
+      return this
     }
 
     // Set states is delegated to stateTransitionManager
-    this.stateTransitionManager.setState(states, transitionParameter);
+    this.stateTransitionManager.setState(states, transitionParameter)
 
-    return this;
+    return this
   }
 
-  getStates () {
-    return this.state;
+  getStates() {
+    return this.state
   }
 
-  clearCaches (options: ClearCacheOptions = {}) {
+  clearCaches(options: ClearCacheOptions = {}) {
     // HaikuBase implements a general-purpose caching mechanism which we also call here
-    this.cacheClear();
+    this.cacheClear()
 
-    this.needsExpand = true;
+    this.needsExpand = true
 
     // Don't forget to repopulate the states with originals when we clear cache
     if (options.clearStates) {
-      this.clearStates();
+      this.clearStates()
     }
 
-    this.hydrateMutableTimelines();
-    this.parsedValueClusters = {};
+    this.hydrateMutableTimelines()
+    this.parsedValueClusters = {}
 
     // Our managed timeline instances may have their own privately cached properties
-    const timelines = this.fetchTimelines();
+    const timelines = this.fetchTimelines()
     for (const timelineName in timelines) {
-      timelines[timelineName].cacheClear();
+      timelines[timelineName].cacheClear()
     }
   }
 
-  cacheNodeWithSelectorKey (node) {
+  cacheNodeWithSelectorKey(node) {
     if (!node || typeof node !== 'object') {
-      return;
+      return
     }
 
     if (node.attributes && node.attributes[HAIKU_ID_ATTRIBUTE]) {
-      const selector = `haiku:${node.attributes[HAIKU_ID_ATTRIBUTE]}`;
-      const key = this.nodesCacheKey(selector);
-      const collection = this.cacheGet(key) || [];
+      const selector = `haiku:${node.attributes[HAIKU_ID_ATTRIBUTE]}`
+      const key = this.nodesCacheKey(selector)
+      const collection = this.cacheGet(key) || []
 
-      if (collection.indexOf(node) === -1) {
-        collection.push(node);
+      if (!collection.includes(node)) {
+        collection.push(node)
       }
 
-      this.cacheSet(key, collection);
+      this.cacheSet(key, collection)
     }
   }
 
-  clearStates () {
-    this._states = {};
-    this.bindStates();
+  clearStates() {
+    this._states = {}
+    this.bindStates()
   }
 
-  getClock (): IHaikuClock {
-    return this.context.clock;
+  getClock(): IHaikuClock {
+    return this.context.clock
   }
 
-  getTemplate (): any {
-    return this.bytecode.template;
+  getTemplate(): any {
+    return this.bytecode.template
   }
 
-  getHelpers (): BytecodeHelpers {
-    return this.bytecode.helpers;
+  getHelpers(): BytecodeHelpers {
+    return this.bytecode.helpers
   }
 
-  getTimelines () {
+  getTimelines() {
     return this.cacheFetch('getTimelines', () => {
-      return this.fetchTimelines();
-    });
+      return this.fetchTimelines()
+    })
   }
 
-  fetchTimelines () {
-    const names = Object.keys(this.bytecode.timelines);
+  fetchTimelines() {
+    const names = Object.keys(this.bytecode.timelines)
 
     for (let i = 0; i < names.length; i++) {
-      const name = names[i];
+      const name = names[i]
 
       if (!name) {
-        continue;
+        continue
       }
 
       const existing = HaikuTimeline.where({
         name,
         component: this,
-      })[0];
+      })[0]
 
       if (!existing) {
         HaikuTimeline.create(
           this,
           name,
           this.config,
-        );
+        )
       }
     }
 
-    const out = {};
+    const out = {}
 
-    const timelines = HaikuTimeline.where({component: this});
+    const timelines = HaikuTimeline.where({ component: this })
 
     for (let j = 0; j < timelines.length; j++) {
-      const timeline = timelines[j];
-      out[timeline.getName()] = timeline;
+      const timeline = timelines[j]
+      out[timeline.getName()] = timeline
     }
 
-    return out;
+    return out
   }
 
-  getTimeline (name): HaikuTimeline {
-    return this.getTimelines()[name];
+  getTimeline(name): HaikuTimeline {
+    return this.getTimelines()[name]
   }
 
-  fetchTimeline (name, descriptor): HaikuTimeline {
-    const found = this.getTimeline(name);
+  fetchTimeline(name, descriptor): HaikuTimeline {
+    const found = this.getTimeline(name)
 
     if (found) {
-      return found;
+      return found
     }
 
-    return HaikuTimeline.create(this, name, this.config);
+    return HaikuTimeline.create(this, name, this.config)
   }
 
-  getDefaultTimeline (): HaikuTimeline {
-    const timelines = this.getTimelines();
-    return timelines[DEFAULT_TIMELINE_NAME];
+  getDefaultTimeline(): HaikuTimeline {
+    const timelines = this.getTimelines()
+    return timelines[DEFAULT_TIMELINE_NAME]
   }
 
-  stopAllTimelines () {
-    const timelines = this.getTimelines();
+  stopAllTimelines() {
+    const timelines = this.getTimelines()
     for (const name in timelines) {
-      this.stopTimeline(name);
+      this.stopTimeline(name)
     }
   }
 
-  startAllTimelines () {
-    const timelines = this.getTimelines();
+  startAllTimelines() {
+    const timelines = this.getTimelines()
     for (const name in timelines) {
-      this.startTimeline(name);
+      this.startTimeline(name)
     }
   }
 
-  startTimeline (timelineName) {
-    const descriptor = this.getTimelineDescriptor(timelineName);
-    const existing = this.fetchTimeline(timelineName, descriptor);
+  startTimeline(timelineName) {
+    const descriptor = this.getTimelineDescriptor(timelineName)
+    const existing = this.fetchTimeline(timelineName, descriptor)
     if (existing) {
-      existing.start();
+      existing.start()
     }
   }
 
-  stopTimeline (timelineName) {
-    const descriptor = this.getTimelineDescriptor(timelineName);
-    const existing = this.fetchTimeline(timelineName, descriptor);
+  stopTimeline(timelineName) {
+    const descriptor = this.getTimelineDescriptor(timelineName)
+    const existing = this.fetchTimeline(timelineName, descriptor)
     if (existing) {
-      existing.stop();
+      existing.stop()
     }
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#gotoAndPlay
    */
-  gotoAndPlay (amount: number, unit: TimeUnit = TimeUnit.Frame) {
-    this.getDefaultTimeline().gotoAndPlay(amount, unit);
+  gotoAndPlay(amount: number, unit: TimeUnit = TimeUnit.Frame) {
+    this.getDefaultTimeline().gotoAndPlay(amount, unit)
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#gotoAndStop
    */
-  gotoAndStop (amount: number, unit: TimeUnit = TimeUnit.Frame) {
-    this.getDefaultTimeline().gotoAndStop(amount, unit);
+  gotoAndStop(amount: number, unit: TimeUnit = TimeUnit.Frame) {
+    this.getDefaultTimeline().gotoAndStop(amount, unit)
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#pause
    */
-  pause () {
-    this.getDefaultTimeline().pause();
+  pause() {
+    this.getDefaultTimeline().pause()
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#stop
    */
-  stop () {
-    this.getDefaultTimeline().stop();
+  stop() {
+    this.getDefaultTimeline().stop()
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#seek
    */
-  seek (amount: number, unit: TimeUnit = TimeUnit.Frame) {
-    this.getDefaultTimeline().seek(amount, unit);
+  seek(amount: number, unit: TimeUnit = TimeUnit.Frame) {
+    this.getDefaultTimeline().seek(amount, unit)
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#start
    */
-  start () {
-    this.getDefaultTimeline().start();
+  start() {
+    this.getDefaultTimeline().start()
   }
 
   /**
    * @description Convenience alias for HaikuTimeline#play
    */
-  play (options: any = {}) {
-    this.getDefaultTimeline().play();
+  play(options: any = {}) {
+    this.getDefaultTimeline().play()
   }
 
-  getTimelineDescriptor (timelineName: string) {
-    return this.bytecode.timelines[timelineName];
+  getTimelineDescriptor(timelineName: string) {
+    return this.bytecode.timelines[timelineName]
   }
 
-  getInjectables (): any {
-    const injectables = {};
+  getInjectables(): any {
+    const injectables = {}
 
-    assign(injectables, this.getSummonablesSchema());
+    assign(injectables, this.getSummonablesSchema())
 
     // Local states get precedence over global summonables, so assign them last
     for (const key in this._states) {
-      let type = this._states[key] && this._states[key].type;
+      let type = this._states[key] && this._states[key].type
       if (!type) {
-        type = typeof this._states[key];
+        type = typeof this._states[key]
       }
-      injectables[key] = type;
+      injectables[key] = type
     }
 
-    return injectables;
+    return injectables
   }
 
   /**
@@ -781,57 +795,57 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
    * @description When hot-reloading a component during editing, this can be used to
    * ensure that this component doesn't keep updating after its replacement is loaded.
    */
-  deactivate () {
-    this.isDeactivated = true;
+  deactivate() {
+    this.isDeactivated = true
   }
 
-  activate () {
-    this.isDeactivated = false;
+  activate() {
+    this.isDeactivated = false
   }
 
-  sleepOn () {
-    this.isSleeping = true;
+  sleepOn() {
+    this.isSleeping = true
   }
 
-  sleepOff () {
-    this.isSleeping = false;
+  sleepOff() {
+    this.isSleeping = false
   }
 
   /**
    * @method dump
    * @description Dump serializable info about this object
    */
-  dump () {
-    const metadata = this.getBytecodeMetadata();
-    return `${metadata.relpath}:${this.getComponentId()}`;
+  dump() {
+    const metadata = this.getBytecodeMetadata()
+    return `${metadata.relpath}:${this.getComponentId()}`
   }
 
-  getBytecodeMetadata () {
-    return this.bytecode.metadata;
+  getBytecodeMetadata() {
+    return this.bytecode.metadata
   }
 
-  getBytecodeRelpath (): string {
-    const metadata = this.getBytecodeMetadata();
-    return metadata && metadata.relpath;
+  getBytecodeRelpath(): string {
+    const metadata = this.getBytecodeMetadata()
+    return metadata && metadata.relpath
   }
 
-  getBytecodeProject (): string {
-    const metadata = this.getBytecodeMetadata();
-    return metadata && metadata.project;
+  getBytecodeProject(): string {
+    const metadata = this.getBytecodeMetadata()
+    return metadata && metadata.project
   }
 
-  getBytecodeOrganization (): string {
-    const metadata = this.getBytecodeMetadata();
-    return metadata && metadata.organization;
+  getBytecodeOrganization(): string {
+    const metadata = this.getBytecodeMetadata()
+    return metadata && metadata.organization
   }
 
-  getAddressableProperties (out = {}) {
+  getAddressableProperties(out = {}) {
     if (!this.bytecode.states) {
-      return out;
+      return out
     }
 
     for (const name in this.bytecode.states) {
-      const state = this.bytecode.states[name];
+      const state = this.bytecode.states[name]
 
       out[name] = {
         name,
@@ -843,39 +857,39 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         mock: state.mock, // Just in case needed by someone
         target: this, // Used for tracking convenience; may also be an 'element'; do not remove
         value: () => { // Lazy because this may change over time and we don't want to require re-query
-          return this.state[name]; // The current live value of this state as seen by the app
+          return this.state[name] // The current live value of this state as seen by the app
         },
-      };
+      }
     }
 
-    return out;
+    return out
   }
 
-  bindStates () {
-    const allStates = assign({}, this.bytecode.states, this.config.states);
+  bindStates() {
+    const allStates = assign({}, this.bytecode.states, this.config.states)
 
     for (const stateSpecName in allStates) {
-      const stateSpec = allStates[stateSpecName];
+      const stateSpec = allStates[stateSpecName]
 
       // 'null' is the signal for an empty prop, not undefined.
       if (!stateSpec || stateSpec.value === undefined) {
         console.error(
-          'Property `' +
-          stateSpecName +
-          '` cannot be undefined; use null for empty states',
-        );
+          `Property \`${
+            stateSpecName
+          }\` cannot be undefined; use null for empty states`,
+        )
 
-        continue;
+        continue
       }
 
       if (!this._states.hasOwnProperty(stateSpecName) || this.config.states.hasOwnProperty(stateSpecName)) {
-        this._states[stateSpecName] = stateSpec.value;
-        this.defineSettableState(stateSpec, stateSpecName);
+        this._states[stateSpecName] = stateSpec.value
+        this.defineSettableState(stateSpec, stateSpecName)
       }
     }
   }
 
-  defineSettableState (
+  defineSettableState(
     stateSpec,
     stateSpecName: string,
   ) {
@@ -885,7 +899,7 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       enumerable: true,
 
       get: () => {
-        return this._states[stateSpecName];
+        return this._states[stateSpecName]
       },
 
       set: (inputValue) => {
@@ -894,138 +908,139 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
           this._states[stateSpecName] = stateSpec.setter.call(
             this,
             inputValue,
-          );
-        } else {
-          this._states[stateSpecName] = inputValue;
+          )
+        }
+        else {
+          this._states[stateSpecName] = inputValue
         }
 
         if (!this.isDeactivated) {
-          this.emit('state:set', stateSpecName, this._states[stateSpecName]);
+          this.emit('state:set', stateSpecName, this._states[stateSpecName])
         }
 
-        return this._states[stateSpecName];
+        return this._states[stateSpecName]
       },
-    });
+    })
   }
 
-  allEventHandlers (): any {
+  allEventHandlers(): any {
     return assign(
       {},
       this.bytecode.eventHandlers,
       this.config.eventHandlers,
-    );
+    )
   }
 
-  eachEventHandler (
+  eachEventHandler(
     iteratee: (eventSelector: string, eventName: string, descriptor: BytecodeEventHandlerDescriptor) => void,
   ) {
-    const eventHandlers = this.allEventHandlers();
+    const eventHandlers = this.allEventHandlers()
 
     for (const eventSelector in eventHandlers) {
       for (const eventName in eventHandlers[eventSelector]) {
-        const descriptor = eventHandlers[eventSelector][eventName];
+        const descriptor = eventHandlers[eventSelector][eventName]
 
         if (!descriptor || !descriptor.handler) {
-          continue;
+          continue
         }
 
         iteratee(
           eventSelector,
           eventName,
           descriptor,
-        );
+        )
       }
     }
   }
 
-  routeEventToHandler (
+  routeEventToHandler(
     eventSelectorGiven: string,
     eventNameGiven: string,
     eventArgs: any,
   ) {
     if (this.isDeactivated) {
-      return;
+      return
     }
 
-    this.eachEventHandler((eventSelector, eventName, {handler}) => {
+    this.eachEventHandler((eventSelector, eventName, { handler }) => {
       if (eventNameGiven === eventName) {
         if (
-          eventSelectorGiven === eventSelector ||
-          eventSelectorGiven === GLOBAL_LISTENER_KEY
+          eventSelectorGiven === eventSelector
+          || eventSelectorGiven === GLOBAL_LISTENER_KEY
         ) {
-          this.callEventHandler(eventSelector, eventName, handler, eventArgs);
-          return;
+          this.callEventHandler(eventSelector, eventName, handler, eventArgs)
         }
       }
-    });
+    })
   }
 
-  setHook (hookName: string, hookFn: Function) {
-    this.hooks[hookName] = hookFn;
+  setHook(hookName: string, hookFn: Function) {
+    this.hooks[hookName] = hookFn
   }
 
-  callHook (hookName: string, ...args) {
+  callHook(hookName: string, ...args) {
     if (typeof this.hooks[hookName] === 'function') {
-      this.hooks[hookName](...args);
+      this.hooks[hookName](...args)
     }
   }
 
-  callEventHandler (eventsSelector: string, eventName: string, handler: Function, eventArgs: any): any {
+  callEventHandler(eventsSelector: string, eventName: string, handler: Function, eventArgs: any): any {
     // Only fire the event listeners if the component is in 'live' interaction mode,
     // i.e., not currently being edited inside the Haiku authoring environment
     // However, some components rely on specific event hooks firing in Edit mode, too — they can
     // whitelist their "edit mode" event names through `options`
-    if (!this.isLiveMode() &&
-      !(this.bytecode.options &&
-          this.bytecode.options.editModeEvents &&
-          this.bytecode.options.editModeEvents[eventName])) {
-      return;
+    if (!this.isLiveMode()
+      && !(this.bytecode.options
+        && this.bytecode.options.editModeEvents
+        && this.bytecode.options.editModeEvents[eventName])) {
+      return
     }
 
-    this.callHook('action:before', this, eventName, eventsSelector, eventArgs);
+    this.callHook('action:before', this, eventName, eventsSelector, eventArgs)
     try {
-      handler.apply(this, [this].concat(eventArgs));
-    } catch (exception) {
-      consoleErrorOnce(exception);
+      handler.apply(this, [this].concat(eventArgs))
     }
-    this.callHook('action:after', this, eventName, eventsSelector, eventArgs);
+    catch (exception) {
+      consoleErrorOnce(exception)
+    }
+    this.callHook('action:after', this, eventName, eventsSelector, eventArgs)
   }
 
-  routeEventToHandlerAndEmit (
+  routeEventToHandlerAndEmit(
     eventSelectorGiven: string,
     eventNameGiven: string,
     eventArgs: any,
   ) {
     if (this.isDeactivated) {
-      return;
+      return
     }
-    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs);
-    this.emit(eventNameGiven, ...eventArgs);
+    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs)
+    this.emit(eventNameGiven, ...eventArgs)
   }
 
-  routeEventToHandlerAndEmitWithoutBubbling (
+  routeEventToHandlerAndEmitWithoutBubbling(
     eventSelectorGiven: string,
     eventNameGiven: string,
     eventArgs: any,
   ) {
     if (this.isDeactivated) {
-      return;
+      return
     }
-    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs);
-    this.emitWithoutBubbling(eventNameGiven, ...eventArgs);
+    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs)
+    this.emitWithoutBubbling(eventNameGiven, ...eventArgs)
   }
 
-  routeEventToHandlerAndEmitWithoutBubblingAndWithoutGlobalHandlers (
+  routeEventToHandlerAndEmitWithoutBubblingAndWithoutGlobalHandlers(
     eventSelectorGiven: string,
     eventNameGiven: string,
     eventArgs: any,
   ) {
     if (this.isDeactivated) {
-      return;
+      return
     }
-    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs);
-    this.emitToListeners(eventNameGiven, eventArgs);
-    this.emitToGenericListeners(eventNameGiven, eventArgs);
+    this.routeEventToHandler(eventSelectorGiven, eventNameGiven, eventArgs)
+    this.emitToListeners(eventNameGiven, eventArgs)
+    this.emitToGenericListeners(eventNameGiven, eventArgs)
   }
 
   /**
@@ -1034,44 +1049,44 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
    * selectors, etc. This method is provided in lieu of providing an individual method
    * for every possible topology.
    */
-  send (route: string, name: string, ...args) {
+  send(route: string, name: string, ...args) {
     // Send to parent
     if (
-      route === 'emit' ||
-      route === 'up' ||
-      route === 'parent' ||
-      route === '<' // Cute: '>' is the opposite of CSS children selector '<'
+      route === 'emit'
+      || route === 'up'
+      || route === 'parent'
+      || route === '<' // Cute: '>' is the opposite of CSS children selector '<'
     ) {
-      this.emit(name, ...args);
-      return;
+      this.emit(name, ...args)
+      return
     }
 
     // Send to children
     if (
-      route === 'down' ||
-      route === 'children' ||
-      route === '>' // CSS children selector
+      route === 'down'
+      || route === 'children'
+      || route === '>' // CSS children selector
     ) {
       this.visitGuests((guest) => {
-        guest.emitWithoutBubbling(name, ...args);
-      });
-      return;
+        guest.emitWithoutBubbling(name, ...args)
+      })
+      return
     }
 
     // Send to siblings
     if (
-      route === 'sideways' ||
-      route === 'siblings' ||
-      route === '~' // CSS sibling selector
+      route === 'sideways'
+      || route === 'siblings'
+      || route === '~' // CSS sibling selector
     ) {
       if (this.host) {
         this.host.visitGuests((guest) => {
           if (guest !== this) {
-            guest.emitWithoutBubbling(name, ...args);
+            guest.emitWithoutBubbling(name, ...args)
           }
-        });
+        })
       }
-      return;
+      return
     }
 
     // Send to everyone
@@ -1080,126 +1095,127 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     ) {
       this.top.visitGuestHierarchy((guest) => {
         if (guest !== this) {
-          guest.emitWithoutBubbling(name, ...args);
+          guest.emitWithoutBubbling(name, ...args)
         }
-      });
+      })
     }
   }
 
-  emitToAncestors (name: string, ...args) {
+  emitToAncestors(name: string, ...args) {
     if (this.host) {
       // 1. Emit to listeners on the "wrapper" div
       this.host.routeEventToHandler(
         `haiku:${getNodeCompositeId(this.parentNode)}`,
         name,
         [this].concat(args),
-      );
+      )
 
       // 2. For convenience, emit to listeners on the root component of the hosts
       this.host.routeEventToHandler(
         `haiku:${getNodeCompositeId(this.host)}`,
         name,
         [this].concat(args),
-      );
+      )
     }
   }
 
-  emitWithoutBubbling (key: string, ...args) {
-    this.routeEventToHandler(GLOBAL_LISTENER_KEY, key, args);
-    this.emitToListeners(key, args);
-    this.emitToGenericListeners(key, args);
+  emitWithoutBubbling(key: string, ...args) {
+    this.routeEventToHandler(GLOBAL_LISTENER_KEY, key, args)
+    this.emitToListeners(key, args)
+    this.emitToGenericListeners(key, args)
   }
 
-  markForFullFlush () {
-    this.doesNeedFullFlush = true;
+  markForFullFlush() {
+    this.doesNeedFullFlush = true
   }
 
-  unmarkForFullFlush () {
-    this.doesNeedFullFlush = false;
+  unmarkForFullFlush() {
+    this.doesNeedFullFlush = false
   }
 
-  shouldPerformFullFlush () {
-    return this.doesNeedFullFlush || this.doAlwaysFlush;
+  shouldPerformFullFlush() {
+    return this.doesNeedFullFlush || this.doAlwaysFlush
   }
 
-  private expandIfNeeded () {
+  private expandIfNeeded() {
     if (this.needsExpand) {
       expandNode(
         this.bytecode.template,
         this.container,
-      );
+      )
 
-      this.needsExpand = false;
+      this.needsExpand = false
     }
   }
 
-  performFullFlushRenderWithRenderer (renderer, options: any = {}) {
-    this.context.getContainer(true); // Force recalc of container
+  performFullFlushRenderWithRenderer(renderer, options: any = {}) {
+    this.context.getContainer(true) // Force recalc of container
 
     // Since we will produce a full tree, we don't need a further full flush.
-    this.unmarkForFullFlush();
+    this.unmarkForFullFlush()
 
-    this.needsExpand = true;
-    this.render(options);
+    this.needsExpand = true
+    this.render(options)
 
     // Untyped code paths downstream depend on the output of this method
     return renderer.render(
       this.container,
       this.bytecode.template,
       this,
-    );
+    )
   }
 
-  performPatchRenderWithRenderer (renderer, options: any = {}, skipCache: boolean) {
+  performPatchRenderWithRenderer(renderer, options: any = {}, skipCache: boolean) {
     if (renderer.shouldCreateContainer) {
-      this.context.getContainer(true); // Force recalc of container
+      this.context.getContainer(true) // Force recalc of container
     }
 
-    const patches = this.patch(options, skipCache);
+    const patches = this.patch(options, skipCache)
 
     renderer.patch(
       this,
       patches,
-    );
+    )
 
     for (const $id in this.guests) {
-      const guest = this.guests[$id];
+      const guest = this.guests[$id]
 
       if (guest.shouldPerformFullFlush() && guest.target) {
         guest.performFullFlushRenderWithRenderer(
           renderer,
           options,
-        );
-      } else {
+        )
+      }
+      else {
         guest.performPatchRenderWithRenderer(
           renderer,
           options,
           skipCache,
-        );
+        )
       }
     }
   }
 
-  render (options: any = {}) {
+  render(options: any = {}) {
     // We register ourselves with our host here because render is guaranteed to be called
     // both in our constructor and in the case that we were deactivated/reactivated.
     // This must run before the isDeactivated check since we may use the registry to activate later.
     if (this.host) {
-      this.host.registerGuest(this);
+      this.host.registerGuest(this)
     }
 
     if (this.isDeactivated) {
       // If deactivated, pretend like there is nothing to render
-      return;
+      return
     }
 
-    this.clearCaches();
+    this.clearCaches()
 
-    HaikuElement.findOrCreateByNode(this.container);
+    HaikuElement.findOrCreateByNode(this.container)
 
     if (!this.container.__memory.subcomponent) {
       // A semantically different thing than .subcomponent/.instance
-      this.container.__memory.containee = this;
+      this.container.__memory.containee = this
     }
 
     hydrateNode(
@@ -1211,30 +1227,30 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       'div', // scope (the default is a div)
       options,
       true, // doConnectInstanceToNode
-    );
+    )
 
     this.applyLocalBehaviors(
       false, // isPatchOperation
       false, // skipCache
-    );
+    )
 
     if (this.context.renderer.mount) {
       this.eachEventHandler((eventSelector, eventName) => {
-        const registrationKey = `${eventSelector}:${eventName}`;
+        const registrationKey = `${eventSelector}:${eventName}`
 
         if (this.registeredEventHandlers[registrationKey]) {
-          return;
+          return
         }
 
-        this.registeredEventHandlers[registrationKey] = true;
+        this.registeredEventHandlers[registrationKey] = true
 
         this.context.renderer.mountEventListener(this, eventSelector, eventName, (...args) => {
-          this.routeEventToHandlerAndEmit(eventSelector, eventName, args);
-        });
-      });
+          this.routeEventToHandlerAndEmit(eventSelector, eventName, args)
+        })
+      })
     }
 
-    this.applyGlobalBehaviors(options);
+    this.applyGlobalBehaviors(options)
 
     // But also note we need to call subcomponent renders *after* our own behaviors,
     // because we need the parent-to-child states to be set prior to this render call,
@@ -1243,102 +1259,102 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       this.guests[$id].render({
         ...this.guests[$id].config,
         ...Config.buildChildSafeConfig(options),
-      });
+      })
     }
 
-    this.expandIfNeeded();
-    return this.bytecode.template;
+    this.expandIfNeeded()
+    return this.bytecode.template
   }
 
-  patch (options: any = {}, skipCache = false) {
+  patch(options: any = {}, skipCache = false) {
     if (this.isDeactivated) {
       // If deactivated, pretend like there is nothing to render
-      return {};
+      return {}
     }
 
     this.applyLocalBehaviors(
       true, // isPatchOperation
       skipCache,
-    );
+    )
 
-    this.applyGlobalBehaviors(options);
+    this.applyGlobalBehaviors(options)
 
-    const patches = {};
+    const patches = {}
 
-    this.expandIfNeeded();
+    this.expandIfNeeded()
     for (let i = 0; i < this.patches.length; i++) {
-      const node = this.patches[i];
-      computeAndApplyLayout(node, node.__memory.parent);
-      patches[getNodeCompositeId(node)] = node;
+      const node = this.patches[i]
+      computeAndApplyLayout(node, node.__memory.parent)
+      patches[getNodeCompositeId(node)] = node
     }
 
-    this.patches = [];
+    this.patches = []
 
-    return patches;
+    return patches
   }
 
-  applyGlobalBehaviors (options: any = {}) {
+  applyGlobalBehaviors(options: any = {}) {
     if (!this.host && options.sizing) {
       const didSizingChange = computeAndApplyPresetSizing(
         this.bytecode.template,
         this.container,
         options.sizing,
-      );
+      )
 
       if (didSizingChange) {
-        this.patches.push(this.bytecode.template);
+        this.patches.push(this.bytecode.template)
       }
     }
   }
 
-  applyLocalBehaviors (
+  applyLocalBehaviors(
     isPatchOperation,
     skipCache = false,
   ) {
-    const globalClockTime = this.context.clock.getExplicitTime();
-    const manaTree = this.manaTreeCached();
+    const globalClockTime = this.context.clock.getExplicitTime()
+    const manaTree = this.manaTreeCached()
 
     for (const timelineName in this.bytecode.timelines) {
-      const timelineInstance = this.getTimeline(timelineName);
+      const timelineInstance = this.getTimeline(timelineName)
 
-      timelineInstance.executePreUpdateHooks(globalClockTime);
+      timelineInstance.executePreUpdateHooks(globalClockTime)
 
-      const timelineTime = timelineInstance.getTime(); // Bounded time
+      const timelineTime = timelineInstance.getTime() // Bounded time
 
-      const timelineDescriptor = this.bytecode.timelines[timelineName];
+      const timelineDescriptor = this.bytecode.timelines[timelineName]
 
       let mutableTimelineDescriptor = isPatchOperation
         ? this.mutableTimelines[timelineName]
-        : timelineDescriptor;
+        : timelineDescriptor
 
       if (!mutableTimelineDescriptor) {
-        mutableTimelineDescriptor = {};
+        mutableTimelineDescriptor = {}
       }
 
       for (const behaviorSelector in mutableTimelineDescriptor) {
-        const matchingElementsForBehavior = this.findMatchingNodesByCSSSelector(manaTree, behaviorSelector);
+        const matchingElementsForBehavior = this.findMatchingNodesByCSSSelector(manaTree, behaviorSelector)
 
         if (!matchingElementsForBehavior || matchingElementsForBehavior.length < 1) {
-          continue;
+          continue
         }
 
-        const propertiesGroup = mutableTimelineDescriptor[behaviorSelector];
+        const propertiesGroup = mutableTimelineDescriptor[behaviorSelector]
 
         if (!propertiesGroup) {
-          continue;
+          continue
         }
 
         // This is our opportunity to group property operations that need to be in order
-        const propertyOperations = collatePropertyGroup(propertiesGroup);
+        const propertyOperations = collatePropertyGroup(propertiesGroup)
 
         for (let i = 0; i < matchingElementsForBehavior.length; i++) {
-          const matchingElement = matchingElementsForBehavior[i];
-          const compositeId = getNodeCompositeId(matchingElement);
+          const matchingElement = matchingElementsForBehavior[i]
+          const compositeId = getNodeCompositeId(matchingElement)
 
           for (let j = 0; j < propertyOperations.length; j++) {
-            const propertyGroup = propertyOperations[j];
+            const propertyGroup = propertyOperations[j]
             for (const propertyName in propertyGroup) {
-              const keyframeCluster = propertyGroup[propertyName];
+              const keyframeCluster = propertyGroup[propertyName]
 
               const grabbedValue = this.grabValue(
                 timelineName,
@@ -1349,35 +1365,35 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
                 timelineTime,
                 isPatchOperation,
                 skipCache,
-              );
+              )
 
               const {
                 computedValue,
                 didValueChangeSinceLastRequest,
                 didValueOriginateFromExplicitKeyframeDefinition,
-              } = grabbedValue;
+              } = grabbedValue
 
               if (computedValue === undefined) {
-                continue;
+                continue
               }
 
               // We always apply the property if...
               if (
                 // - This is a full render
-                !isPatchOperation ||
+                !isPatchOperation
                 // - The value in question has changed
-                didValueChangeSinceLastRequest ||
+                || didValueChangeSinceLastRequest
                 // - The value is in the whitelist of always-updated properties
-                ALWAYS_UPDATED_PROPERTIES[propertyName] ||
-                (
+                || ALWAYS_UPDATED_PROPERTIES[propertyName]
+                || (
                   // - The value was explicitly defined as a keyframe and...
                   didValueOriginateFromExplicitKeyframeDefinition && (
                     // - We haven't yet reached the end
-                    (timelineTime < timelineInstance.getMaxTime()) ||
+                    (timelineTime < timelineInstance.getMaxTime())
                     // - The timeline is looping (we won't be hanging on the final keyframe)
-                    timelineInstance.isLooping() ||
+                    || timelineInstance.isLooping()
                     // - We just reached the final keyframe (but haven't already visited it)
-                    timelineInstance.getLastFrame() !== timelineInstance.getBoundedFrame()
+                    || timelineInstance.getLastFrame() !== timelineInstance.getBoundedFrame()
                   )
                 )
               ) {
@@ -1386,10 +1402,10 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
                   propertyName,
                   computedValue,
                   timelineInstance,
-                );
+                )
 
                 if (isPatchOperation) {
-                  this.patches.push(matchingElement);
+                  this.patches.push(matchingElement)
                 }
               }
             }
@@ -1397,45 +1413,45 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         }
       }
 
-      timelineInstance.executePostUpdateHooks(globalClockTime);
+      timelineInstance.executePostUpdateHooks(globalClockTime)
     }
   }
 
-  getProjectRootPathWithTerminatingSlash (): string {
-    const metadata = this.getBytecodeMetadata();
+  getProjectRootPathWithTerminatingSlash(): string {
+    const metadata = this.getBytecodeMetadata()
 
     // If root is set and is not precisely this known magic string,
     // assume the root actually defines a root path somewhere on the web we can resolve to.
     if (metadata && metadata.root && metadata.root !== CDN_ROOT_STR) {
-      return metadata.root;
+      return metadata.root
     }
 
     // Try to use a locally defined folder (i.e. during editing in Haiku),
     // or fallback to a local path and hope we resolve to something meaningful.
-    return this.config.folder || (metadata && metadata.folder) || './';
+    return this.config.folder || (metadata && metadata.folder) || './'
   }
 
-  applyPropertyToNode (
+  applyPropertyToNode(
     node,
     name: string,
     value,
     timeline: HaikuTimeline,
   ) {
-    const sender = (node.__memory.instance) ? node.__memory.instance : this; // Who sent the command
-    const receiver = node.__memory.subcomponent;
-    const type = (receiver && receiver.tagName) || node.elementName;
-    const addressables = receiver && receiver.getAddressableProperties();
-    const addressee = addressables && addressables[name] !== undefined && receiver;
+    const sender = (node.__memory.instance) ? node.__memory.instance : this // Who sent the command
+    const receiver = node.__memory.subcomponent
+    const type = (receiver && receiver.tagName) || node.elementName
+    const addressables = receiver && receiver.getAddressableProperties()
+    const addressee = addressables && addressables[name] !== undefined && receiver
 
     if (addressee) {
       // Note: Even though we apply the value to addressables of the subcomponent,
       // we still proceed with application of properties directly to the wrapper.
       // This is as a convenience, so that if a subcomponent wants to handle any property
       // applied to its wrapper than it can do so, e.g. sizeAbsolute.x/sizeAbsolute.y.
-      addressee.set(name, value);
+      addressee.set(name, value)
     }
 
-    const vanity = getVanity(type, name);
+    const vanity = getVanity(type, name)
 
     if (vanity) {
       return vanity(
@@ -1446,71 +1462,72 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         timeline,
         receiver,
         sender,
-      );
+      )
     }
 
-    const parts = name.split('.');
+    const parts = name.split('.')
 
     if (parts[0] === 'style' && parts[1]) {
-      return setStyle(parts[1], node, value);
+      return setStyle(parts[1], node, value)
     }
 
-    return setAttribute(name, node, value);
+    return setAttribute(name, node, value)
   }
 
-  findElementsByHaikuId (componentId) {
-    return this.findMatchingNodesByCSSSelector(this.manaTreeCached(), `haiku:${componentId}`);
+  findElementsByHaikuId(componentId) {
+    return this.findMatchingNodesByCSSSelector(this.manaTreeCached(), `haiku:${componentId}`)
   }
 
-  nodesCacheKey (selector: string) {
-    return 'nodes:' + selector;
+  nodesCacheKey(selector: string) {
+    return `nodes:${selector}`
   }
 
-  private manaTreeCached () {
-    return this.cacheFetch('flatManaTree', () => manaFlattenTree(this.bytecode.template, CSS_QUERY_MAPPING));
+  private manaTreeCached() {
+    return this.cacheFetch('flatManaTree', () => manaFlattenTree(this.bytecode.template, CSS_QUERY_MAPPING))
   }
 
-  findMatchingNodesByCSSSelector (manaTree, selector: string) {
+  findMatchingNodesByCSSSelector(manaTree, selector: string) {
     const nodes = this.cacheFetch(
       this.nodesCacheKey(selector),
       () => cssQueryList(manaTree, selector, CSS_QUERY_MAPPING),
-    );
+    )
 
-    const out = [];
+    const out = []
 
     for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
+      const node = nodes[i]
 
-      const repeatees = findRespectiveRepeatees(node);
+      const repeatees = findRespectiveRepeatees(node)
 
       // If the node in question is the descendant of a repeater, we need to find all repeated
       // copies of it inside the host repeater. If any repeatees are returned that means the
       // element is in fact a repeater, otherwise it is not a repeater, so just use the node.
       if (repeatees.length > 0) {
-        out.push(...repeatees);
-      } else {
-        out.push(node);
+        out.push(...repeatees)
+      }
+      else {
+        out.push(node)
       }
     }
 
-    return out;
+    return out
   }
 
-  private hydrateMutableTimelines () {
-    this.mutableTimelines = {};
+  private hydrateMutableTimelines() {
+    this.mutableTimelines = {}
     if (this.bytecode.timelines) {
       for (const timelineName in this.bytecode.timelines) {
         for (const selector in this.bytecode.timelines[timelineName]) {
           for (const propertyName in this.bytecode.timelines[timelineName][selector]) {
             if (isMutableProperty(this.bytecode.timelines[timelineName][selector][propertyName], propertyName)) {
               if (!this.mutableTimelines[timelineName]) {
-                this.mutableTimelines[timelineName] = {};
+                this.mutableTimelines[timelineName] = {}
               }
               if (!this.mutableTimelines[timelineName][selector]) {
-                this.mutableTimelines[timelineName][selector] = {};
+                this.mutableTimelines[timelineName][selector] = {}
               }
-              this.mutableTimelines[timelineName][selector][propertyName] =
-                this.bytecode.timelines[timelineName][selector][propertyName];
+              this.mutableTimelines[timelineName][selector][propertyName]
+                = this.bytecode.timelines[timelineName][selector][propertyName]
             }
           }
         }
@@ -1518,23 +1535,23 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     }
   }
 
-  addHotComponent (hotComponent: HotComponent) {
+  addHotComponent(hotComponent: HotComponent) {
     if (
-      !this.bytecode.timelines ||
-      !this.bytecode.timelines[hotComponent.timelineName] ||
-      !this.bytecode.timelines[hotComponent.timelineName][hotComponent.selector]
+      !this.bytecode.timelines
+      || !this.bytecode.timelines[hotComponent.timelineName]
+      || !this.bytecode.timelines[hotComponent.timelineName][hotComponent.selector]
     ) {
-      return;
+      return
     }
 
-    const propertyGroup = this.bytecode.timelines[hotComponent.timelineName][hotComponent.selector];
+    const propertyGroup = this.bytecode.timelines[hotComponent.timelineName][hotComponent.selector]
 
     if (!this.mutableTimelines[hotComponent.timelineName]) {
-      this.mutableTimelines[hotComponent.timelineName] = {};
+      this.mutableTimelines[hotComponent.timelineName] = {}
     }
 
     if (!this.mutableTimelines[hotComponent.timelineName][hotComponent.selector]) {
-      this.mutableTimelines[hotComponent.timelineName][hotComponent.selector] = {};
+      this.mutableTimelines[hotComponent.timelineName][hotComponent.selector] = {}
     }
 
     Object.assign(
@@ -1543,17 +1560,17 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         (hotProperties, propertyName) => (hotProperties[propertyName] = propertyGroup[propertyName], hotProperties),
         {},
       ),
-    );
+    )
   }
 
-  controlTime (timelineName: string, timelineTime: number) {
-    const explicitTime = this.context.clock.getExplicitTime();
-    const timelineInstances = this.getTimelines();
+  controlTime(timelineName: string, timelineTime: number) {
+    const explicitTime = this.context.clock.getExplicitTime()
+    const timelineInstances = this.getTimelines()
 
     for (const localTimelineName in timelineInstances) {
       if (localTimelineName === timelineName) {
-        const timelineInstance = timelineInstances[timelineName];
-        timelineInstance.controlTime(timelineTime, explicitTime);
+        const timelineInstance = timelineInstances[timelineName]
+        timelineInstance.controlTime(timelineTime, explicitTime)
       }
     }
 
@@ -1561,66 +1578,66 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       this.guests[$id].controlTime(
         timelineName,
         0, // For now: Like Flash, freeze all guests at 0 while controlling host
-      );
+      )
     }
   }
 
-  getPropertiesGroup (timelineName: string, flexId: string) {
+  getPropertiesGroup(timelineName: string, flexId: string) {
     return (
-      this.bytecode &&
-      this.bytecode.timelines &&
-      this.bytecode.timelines[timelineName] &&
-      this.bytecode.timelines[timelineName][`haiku:${flexId}`]
-    );
+      this.bytecode
+      && this.bytecode.timelines
+      && this.bytecode.timelines[timelineName]
+      && this.bytecode.timelines[timelineName][`haiku:${flexId}`]
+    )
   }
 
   /**
    * Execute state transitions.
    */
-  tickStateTransitions (): void {
-    this.stateTransitionManager.tickStateTransitions();
+  tickStateTransitions(): void {
+    this.stateTransitionManager.tickStateTransitions()
   }
 
   /**
    * Reset states to initial values by using State Transitions. Default to linear
    */
-  resetStatesToInitialValuesWithTransition (duration: number, curve: Curve = Curve.Linear) {
+  resetStatesToInitialValuesWithTransition(duration: number, curve: Curve = Curve.Linear) {
     // Build initial states
-    const initialStates = assign({}, this.bytecode.states, this.config.states);
+    const initialStates = assign({}, this.bytecode.states, this.config.states)
     for (const key in initialStates) {
-      initialStates[key] = initialStates[key].value;
+      initialStates[key] = initialStates[key].value
     }
     // Create state transition to initial state values
-    this.stateTransitionManager.setState(initialStates, {curve, duration});
+    this.stateTransitionManager.setState(initialStates, { curve, duration })
   }
 
   /**
    * @description Get the topmost component in the hierarchy.
    */
-  get top (): HaikuComponent {
+  get top(): HaikuComponent {
     if (this.host) {
-      return this.host.top;
+      return this.host.top
     }
 
-    return this;
+    return this
   }
 
-  getRootComponent () {
+  getRootComponent() {
     if (this.host) {
-      return this.host.getRootComponent();
+      return this.host.getRootComponent()
     }
 
-    return this;
+    return this
   }
 
-  emitFromRootComponent (eventName: string, attachedObject: any) {
+  emitFromRootComponent(eventName: string, attachedObject: any) {
     this.getRootComponent().emit(eventName, {
       ...attachedObject,
       componentTitle: this.title, // HaikuElement#get title
-    });
+    })
   }
 
-  evaluate (expr: string) {
+  evaluate(expr: string) {
     // Make all injectables available within the scope of the function we'll create below,
     // so users can freely evaluate an expression like this.evaluate('$user.mouse.x');
     try {
@@ -1648,7 +1665,7 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         '$user',
         '$window',
         `return ${expr};\n`,
-      );
+      )
       return fn(
         this.summon('$children'),
         this.summon('$clock'),
@@ -1671,28 +1688,29 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         this.summon('$tree'),
         this.summon('$user'),
         this.summon('$window'),
-      );
-    } catch (exception) {
-      console.warn(`[haiku core] could not evaluate ${expr}`, exception);
+      )
+    }
+    catch (exception) {
+      console.warn(`[haiku core] could not evaluate ${expr}`, exception)
     }
   }
 
-  summon (injectable: string) {
+  summon(injectable: string) {
     if (INJECTABLES[injectable] && INJECTABLES[injectable].summon) {
-      const out = {};
+      const out = {}
 
       INJECTABLES[injectable].summon(
         out, // injectees
         this, // component
         this.bytecode.template, // node
         DEFAULT_TIMELINE_NAME, // timeline name
-      );
+      )
 
-      return out[injectable];
+      return out[injectable]
     }
   }
 
-  evaluateExpression (
+  evaluateExpression(
     fn,
     timelineName: string,
     flexId: string,
@@ -1701,26 +1719,30 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     keyframeMs,
     keyframeCluster,
   ) {
-    enhance(fn, null);
+    enhance(fn, null)
 
     // We'll store the result of this evaluation in this variable
     // (so we can cache it in case unexpected subsequent calls)
-    let evaluation;
+    let evaluation
 
     if (fn.specification === true) {
       // This function is of an unknown kind, so just evaluate it normally without magic dependency injection
-      evaluation = safeCall(fn, this, this._states);
-    } else if (!Array.isArray(fn.specification.params)) {
+      evaluation = safeCall(fn, this, this._states)
+    }
+    else if (!Array.isArray(fn.specification.params)) {
       // If for some reason we got a non-array params, just evaluate
-      evaluation = safeCall(fn, this, this._states);
-    } else if (fn.specification.params.length < 1) {
+      evaluation = safeCall(fn, this, this._states)
+    }
+    else if (fn.specification.params.length < 1) {
       // If for some reason we got 0 params, just evaluate it
-      evaluation = safeCall(fn, this, this._states);
-    } else {
+      evaluation = safeCall(fn, this, this._states)
+    }
+    else {
       if (fn.specification.params.length < 1) {
         // If the summon isn't in the destructured object format, just evaluate it
-        evaluation = safeCall(fn, this, this._states);
-      } else {
+        evaluation = safeCall(fn, this, this._states)
+      }
+      else {
         const summoneesArray = this.summonSummonables(
           fn.specification.params,
           timelineName,
@@ -1729,16 +1751,17 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
           propertyName,
           keyframeMs,
           keyframeCluster,
-        );
+        )
 
-        const previousSummoneesArray = this.getPreviousSummonees(timelineName, flexId, propertyName, keyframeMs);
+        const previousSummoneesArray = this.getPreviousSummonees(timelineName, flexId, propertyName, keyframeMs)
 
         if (areSummoneesDifferent(previousSummoneesArray, summoneesArray)) {
-          this.cacheSummonees(timelineName, flexId, propertyName, keyframeMs, summoneesArray);
-          evaluation = safeApply(fn, this, summoneesArray);
-        } else {
+          this.cacheSummonees(timelineName, flexId, propertyName, keyframeMs, summoneesArray)
+          evaluation = safeApply(fn, this, summoneesArray)
+        }
+        else {
           // Since nothing is different, return the previous evaluation
-          evaluation = this.getPreviousEvaluation(timelineName, flexId, propertyName, keyframeMs);
+          evaluation = this.getPreviousEvaluation(timelineName, flexId, propertyName, keyframeMs)
         }
       }
     }
@@ -1747,23 +1770,23 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     // intended. This can happen commonly when editing in Haiku.app and creating dynamic behavior
     // based on state payloads whose fields may be missing, especially with controlFlow.repeat.
     if (Number.isNaN(evaluation)) {
-      evaluation = 1;
+      evaluation = 1
     }
 
     // Same for Infinity; as it's more likely than not that this is a mistake
     if (typeof evaluation === 'number' && !isFinite(evaluation)) {
-      evaluation = 1;
+      evaluation = 1
     }
 
     // Store the result so we can return it on the next run without re-eval
     if (fn.specification && fn.specification !== true) {
-      this.cacheEvaluation(timelineName, flexId, propertyName, keyframeMs, evaluation);
+      this.cacheEvaluation(timelineName, flexId, propertyName, keyframeMs, evaluation)
     }
 
-    return evaluation;
+    return evaluation
   }
 
-  summonSummonables (
+  summonSummonables(
     paramsArray,
     timelineName: string,
     flexId: string,
@@ -1772,45 +1795,46 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     keyframeMs,
     keyframeCluster,
   ) {
-    const summonablesArray = [];
+    const summonablesArray = []
 
     // Temporary storage, just creating one object here to avoid excessive allocations
-    const summonStorage = {};
+    const summonStorage = {}
 
     for (let i = 0; i < paramsArray.length; i++) {
-      const summonsEntry = paramsArray[i];
+      const summonsEntry = paramsArray[i]
 
       // We'll store the output of the summons in this var, whether we're dealing with
       // a complex nested summonable or a flat one
-      let summonsOutput;
+      let summonsOutput
 
       // In case of a string, we will treat it as the key for the object to summon
       if (typeof summonsEntry === 'string') {
         // Treat the entry as the key to a known injectable
         if (INJECTABLES[summonsEntry]) {
-          summonStorage[summonsEntry] = undefined; // Clear out the old value before populating with the new one
+          summonStorage[summonsEntry] = undefined // Clear out the old value before populating with the new one
           INJECTABLES[summonsEntry].summon(
             summonStorage,
             this,
             matchingElement,
             timelineName,
-          );
-          summonsOutput = summonStorage[summonsEntry];
-        } else {
-          summonsOutput = this.state[summonsEntry];
+          )
+          summonsOutput = summonStorage[summonsEntry]
+        }
+        else {
+          summonsOutput = this.state[summonsEntry]
         }
       }
 
       // Whatever the request format was, populate the result in here
       if (summonsOutput !== undefined) {
-        summonablesArray[i] = summonsOutput;
+        summonablesArray[i] = summonsOutput
       }
     }
 
-    return summonablesArray;
+    return summonablesArray
   }
 
-  private fetchParsedValueCluster (
+  private fetchParsedValueCluster(
     timelineName: string,
     flexId: string,
     matchingElement,
@@ -1819,27 +1843,27 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     isPatchOperation: boolean,
     skipCache: boolean,
   ): ParsedValueCluster {
-    const parseeWithKeys = this.getParseeWithKeys(timelineName, flexId, outputName, cluster);
+    const parseeWithKeys = this.getParseeWithKeys(timelineName, flexId, outputName, cluster)
 
     if (!cluster) {
-      return parseeWithKeys;
+      return parseeWithKeys
     }
 
-    const skipStableParsees = isPatchOperation && !skipCache;
+    const skipStableParsees = isPatchOperation && !skipCache
 
     if (skipStableParsees && this.clusterParseeIsStable(parseeWithKeys)) {
-      return parseeWithKeys;
+      return parseeWithKeys
     }
 
     for (let i = 0; i < parseeWithKeys.keys.length; i++) {
-      const ms = parseeWithKeys.keys[i];
-      const descriptor = cluster[ms];
+      const ms = parseeWithKeys.keys[i]
+      const descriptor = cluster[ms]
 
       if (
-        (skipStableParsees && parseeWithKeys.parsee[ms] && !parseeWithKeys.parsee[ms].expression) ||
-        descriptor === undefined
+        (skipStableParsees && parseeWithKeys.parsee[ms] && !parseeWithKeys.parsee[ms].expression)
+        || descriptor === undefined
       ) {
-        continue;
+        continue
       }
 
       if (isFunction(descriptor.value)) {
@@ -1854,48 +1878,49 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
             ms,
             cluster,
           ),
-        };
-      } else {
+        }
+      }
+      else {
         parseeWithKeys.parsee[ms] = {
           expression: false,
           value: descriptor.value,
-        };
+        }
       }
 
       if (descriptor.curve) {
-        parseeWithKeys.parsee[ms].curve = descriptor.curve;
+        parseeWithKeys.parsee[ms].curve = descriptor.curve
       }
     }
 
     if (parseeWithKeys.keys.length > 1) {
-      let parser = this.getParser(outputName);
+      let parser = this.getParser(outputName)
       if (
-        !parser &&
+        !parser
         // tslint:disable-next-line:triple-equals
-        parseFloat(parseeWithKeys.parsee[parseeWithKeys.keys[0]].value) ==
-          parseeWithKeys.parsee[parseeWithKeys.keys[0]].value
+        && Number.parseFloat(parseeWithKeys.parsee[parseeWithKeys.keys[0]].value)
+        == parseeWithKeys.parsee[parseeWithKeys.keys[0]].value
       ) {
-        parser = parseFloat;
+        parser = Number.parseFloat
       }
 
       if (!parser) {
-        return parseeWithKeys;
+        return parseeWithKeys
       }
 
       for (let j = 0; j < parseeWithKeys.keys.length; j++) {
-        const ms2 = parseeWithKeys.keys[j];
-        parseeWithKeys.parsee[ms2].value = parser(parseeWithKeys.parsee[ms2].value);
+        const ms2 = parseeWithKeys.keys[j]
+        parseeWithKeys.parsee[ms2].value = parser(parseeWithKeys.parsee[ms2].value)
       }
 
       if (outputName === 'd') {
-        synchronizePathStructure(...parseeWithKeys.keys.map((ms) => parseeWithKeys.parsee[ms].value));
+        synchronizePathStructure(...parseeWithKeys.keys.map(ms => parseeWithKeys.parsee[ms].value))
       }
     }
 
-    return parseeWithKeys;
+    return parseeWithKeys
   }
 
-  generateFinalValueFromParsedValue (
+  generateFinalValueFromParsedValue(
     timelineName,
     flexId,
     matchingElement,
@@ -1903,19 +1928,19 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     computedValue,
   ) {
     if (computedValue === undefined) {
-      return;
+      return
     }
 
-    const generator = this.getGenerator(outputName);
+    const generator = this.getGenerator(outputName)
 
     if (generator) {
-      return generator(computedValue);
+      return generator(computedValue)
     }
 
-    return computedValue;
+    return computedValue
   }
 
-  grabValue (
+  grabValue(
     timelineName: string,
     flexId: string,
     matchingElement,
@@ -1931,7 +1956,7 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       lastFlexId: flexId,
       lastPropertyName: propertyName,
       lastTimelineTime: timelineTime,
-    };
+    }
 
     const parsedValueCluster = this.fetchParsedValueCluster(
       timelineName,
@@ -1941,7 +1966,7 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       keyframeCluster,
       isPatchOperation,
       skipCache,
-    );
+    )
 
     // If there is no property of that name, we would have gotten nothing back, so we can't forward this to Transitions
     // since it expects to receive a populated cluster object
@@ -1950,28 +1975,28 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         computedValue: undefined,
         didValueChangeSinceLastRequest: false,
         didValueOriginateFromExplicitKeyframeDefinition: false,
-      };
+      }
     }
 
-    let computedValueForTime;
+    let computedValueForTime
 
     if (!parsedValueCluster.parsee[KEYFRAME_ZERO]) {
       parsedValueCluster.parsee[KEYFRAME_ZERO] = {
         value: getFallback(matchingElement && matchingElement.elementName, propertyName),
-      };
+      }
     }
 
     computedValueForTime = calculateValue(
       parsedValueCluster.parsee,
       timelineTime,
       parsedValueCluster.keys,
-    );
+    )
 
     // When expressions and other dynamic functionality is in play, data may be missing resulting in
     // properties lacking defined values; in this case we try to do the right thing and fallback
     // to a known usable value for the field. Especially needed with controlFlow.repeat.
     if (computedValueForTime === undefined) {
-      computedValueForTime = getFallback(matchingElement && matchingElement.elementName, propertyName);
+      computedValueForTime = getFallback(matchingElement && matchingElement.elementName, propertyName)
     }
 
     const computedValue = this.generateFinalValueFromParsedValue(
@@ -1980,72 +2005,72 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
       matchingElement,
       propertyName,
       computedValueForTime,
-    );
+    )
 
-    const previousValue = this.cacheGet(`values:${timelineName}|${flexId}|${propertyName}`);
-    this.cacheSet(`values:${timelineName}|${flexId}|${propertyName}`, computedValue);
+    const previousValue = this.cacheGet(`values:${timelineName}|${flexId}|${propertyName}`)
+    this.cacheSet(`values:${timelineName}|${flexId}|${propertyName}`, computedValue)
 
-    const didValueChangeSinceLastRequest = computedValue !== previousValue;
+    const didValueChangeSinceLastRequest = computedValue !== previousValue
 
     return {
       computedValue,
       didValueChangeSinceLastRequest,
       didValueOriginateFromExplicitKeyframeDefinition: keyframeCluster && !!keyframeCluster[Math.round(timelineTime)],
-    };
+    }
   }
 
-  getPreviousSummonees (
+  getPreviousSummonees(
     timelineName,
     flexId,
     propertyName,
     keyframeMs,
   ) {
-    return this.cacheGet(`summonees:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`);
+    return this.cacheGet(`summonees:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`)
   }
 
-  cacheSummonees (
+  cacheSummonees(
     timelineName,
     flexId,
     propertyName,
     keyframeMs,
     summonees,
   ) {
-    this.cacheSet(`summonees:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`, summonees);
-    return summonees;
+    this.cacheSet(`summonees:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`, summonees)
+    return summonees
   }
 
-  getPreviousEvaluation (
+  getPreviousEvaluation(
     timelineName,
     flexId,
     propertyName,
     keyframeMs,
   ) {
-    return this.cacheGet(`evaluation:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`);
+    return this.cacheGet(`evaluation:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`)
   }
 
-  cacheEvaluation (
+  cacheEvaluation(
     timelineName,
     flexId,
     propertyName,
     keyframeMs,
     evaluation,
   ) {
-    this.cacheSet(`evaluation:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`, evaluation);
-    return evaluation;
+    this.cacheSet(`evaluation:${timelineName}|${flexId}|${propertyName}|${keyframeMs}`, evaluation)
+    return evaluation
   }
 
-  private getParseeWithKeys (
+  private getParseeWithKeys(
     timelineName,
     flexId,
     outputName,
     cluster,
   ): ParsedValueCluster {
     if (!this.parsedValueClusters[timelineName]) {
-      this.parsedValueClusters[timelineName] = {};
+      this.parsedValueClusters[timelineName] = {}
     }
 
     if (!this.parsedValueClusters[timelineName][flexId]) {
-      this.parsedValueClusters[timelineName][flexId] = {};
+      this.parsedValueClusters[timelineName][flexId] = {}
     }
 
     if (!this.parsedValueClusters[timelineName][flexId][outputName]) {
@@ -2053,74 +2078,74 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
         // The parsee object is mutated in place downstream
         parsee: {},
         keys: cluster ? getSortedKeyframes(cluster) : [],
-      };
+      }
     }
 
-    return this.parsedValueClusters[timelineName][flexId][outputName];
+    return this.parsedValueClusters[timelineName][flexId][outputName]
   }
 
-  private clusterParseeIsStable (parsedValueCluster: ParsedValueCluster): boolean {
+  private clusterParseeIsStable(parsedValueCluster: ParsedValueCluster): boolean {
     return parsedValueCluster.keys.every(
-      (ms) => parsedValueCluster.parsee[ms] && !parsedValueCluster.parsee[ms].expression,
-    );
+      ms => parsedValueCluster.parsee[ms] && !parsedValueCluster.parsee[ms].expression,
+    )
   }
 
-  didChangeValue (
+  didChangeValue(
     timelineName,
     flexId,
     matchingElement,
     outputName,
     outputValue,
   ) {
-    let answer = false;
+    let answer = false
 
-    const change = this.cacheGet(`changes:${timelineName}|${flexId}|${outputName}`);
+    const change = this.cacheGet(`changes:${timelineName}|${flexId}|${outputName}`)
 
     if (change === undefined || change !== outputValue) {
-      this.cacheSet(`changes:${timelineName}|${flexId}|${outputName}`, outputValue);
-      answer = true;
+      this.cacheSet(`changes:${timelineName}|${flexId}|${outputName}`, outputValue)
+      answer = true
     }
 
-    return answer;
+    return answer
   }
 
-  getSummonablesSchema () {
-    const summonablesSchema = {};
+  getSummonablesSchema() {
+    const summonablesSchema = {}
     for (const key in INJECTABLES) {
-      summonablesSchema[key] = INJECTABLES[key].schema;
+      summonablesSchema[key] = INJECTABLES[key].schema
     }
-    return summonablesSchema;
+    return summonablesSchema
   }
 
-  transformContextPointToLocalPoint (
+  transformContextPointToLocalPoint(
     point: TwoPointFiveDimensionalLayoutProperty,
   ): TwoPointFiveDimensionalLayoutProperty {
     if (this.layoutAncestryMatrices) {
-      const matrix = Layout3D.multiplyArrayOfMatrices(this.layoutAncestryMatrices.reverse());
-      const inverse = invert([], matrix);
+      const matrix = Layout3D.multiplyArrayOfMatrices(this.layoutAncestryMatrices.reverse())
+      const inverse = invert([], matrix)
       if (inverse !== null) {
-        HaikuElement.transformPointInPlace(point, inverse);
+        HaikuElement.transformPointInPlace(point, inverse)
       }
     }
 
-    return point;
+    return point
   }
 
-  getParser (outputName) {
-    const foundParser = HaikuComponent.PARSERS[outputName];
-    return foundParser && foundParser.parse;
+  getParser(outputName) {
+    const foundParser = HaikuComponent.PARSERS[outputName]
+    return foundParser && foundParser.parse
   }
 
-  getGenerator (outputName) {
-    const foundGenerator = HaikuComponent.PARSERS[outputName];
-    return foundGenerator && foundGenerator.generate;
+  getGenerator(outputName) {
+    const foundGenerator = HaikuComponent.PARSERS[outputName]
+    return foundGenerator && foundGenerator.generate
   }
 
-  static __name__ = 'HaikuComponent';
+  static __name__ = 'HaikuComponent'
 
-  static PLAYER_VERSION = VERSION; // #LEGACY
-  static CORE_VERSION = VERSION;
-  static INJECTABLES = INJECTABLES;
+  static PLAYER_VERSION = VERSION // #LEGACY
+  static CORE_VERSION = VERSION
+  static INJECTABLES = INJECTABLES
 
   // When editing a component, any of these appearing inside an expression will trigger a warning.
   // This is kept in the core so it's easier to compare these to the built-in injectables and
@@ -2184,195 +2209,202 @@ export default class HaikuComponent extends HaikuElement implements IHaikuCompon
     constructor: true,
     defineProperties: true,
     defineProperty: true,
-  };
+  }
 
   static PARSERS = {
-    'style.stroke': {parse: parseColor, generate: generateColor},
-    'style.fill': {parse: parseColor, generate: generateColor},
-    'style.backgroundColor': {parse: parseColor, generate: generateColor},
-    'style.borderBottomColor': {parse: parseColor, generate: generateColor},
-    'style.borderColor': {parse: parseColor, generate: generateColor},
-    'style.borderLeftColor': {parse: parseColor, generate: generateColor},
-    'style.borderRightColor': {parse: parseColor, generate: generateColor},
-    'style.borderTopColor': {parse: parseColor, generate: generateColor},
-    'style.floodColor': {parse: parseColor, generate: generateColor},
-    'style.lightingColor': {parse: parseColor, generate: generateColor},
-    'style.stopColor': {parse: parseColor, generate: generateColor},
-    stroke: {parse: parseColor, generate: generateColor},
-    fill: {parse: parseColor, generate: generateColor},
-    floodColor: {parse: parseColor, generate: generateColor},
-    lightingColor: {parse: parseColor, generate: generateColor},
-    stopColor: {parse: parseColor, generate: generateColor},
-    backgroundColor: {parse: parseColor, generate: generateColor},
-    animateColor: {parse: parseColor, generate: generateColor},
-    feColor: {parse: parseColor, generate: generateColor},
+    'style.stroke': { parse: parseColor, generate: generateColor },
+    'style.fill': { parse: parseColor, generate: generateColor },
+    'style.backgroundColor': { parse: parseColor, generate: generateColor },
+    'style.borderBottomColor': { parse: parseColor, generate: generateColor },
+    'style.borderColor': { parse: parseColor, generate: generateColor },
+    'style.borderLeftColor': { parse: parseColor, generate: generateColor },
+    'style.borderRightColor': { parse: parseColor, generate: generateColor },
+    'style.borderTopColor': { parse: parseColor, generate: generateColor },
+    'style.floodColor': { parse: parseColor, generate: generateColor },
+    'style.lightingColor': { parse: parseColor, generate: generateColor },
+    'style.stopColor': { parse: parseColor, generate: generateColor },
+    'stroke': { parse: parseColor, generate: generateColor },
+    'fill': { parse: parseColor, generate: generateColor },
+    'floodColor': { parse: parseColor, generate: generateColor },
+    'lightingColor': { parse: parseColor, generate: generateColor },
+    'stopColor': { parse: parseColor, generate: generateColor },
+    'backgroundColor': { parse: parseColor, generate: generateColor },
+    'animateColor': { parse: parseColor, generate: generateColor },
+    'feColor': { parse: parseColor, generate: generateColor },
     // Note the hyphenated duplicates, for convenience
-    'flood-color': {parse: parseColor, generate: generateColor},
-    'lighting-color': {parse: parseColor, generate: generateColor},
-    'stop-color': {parse: parseColor, generate: generateColor},
-    'background-color': {parse: parseColor, generate: generateColor},
-    'animate-color': {parse: parseColor, generate: generateColor},
-    'fe-color': {parse: parseColor, generate: generateColor},
-    d: {parse: parseD, generate: generateD},
-    points: {parse: parsePoints, generate: generatePoints},
-  };
+    'flood-color': { parse: parseColor, generate: generateColor },
+    'lighting-color': { parse: parseColor, generate: generateColor },
+    'stop-color': { parse: parseColor, generate: generateColor },
+    'background-color': { parse: parseColor, generate: generateColor },
+    'animate-color': { parse: parseColor, generate: generateColor },
+    'fe-color': { parse: parseColor, generate: generateColor },
+    'd': { parse: parseD, generate: generateD },
+    'points': { parse: parsePoints, generate: generatePoints },
+  }
 
-  static all = (): HaikuComponent[] => HaikuBase.getRegistryForClass(HaikuComponent);
+  static all = (): HaikuComponent[] => HaikuBase.getRegistryForClass(HaikuComponent)
 }
 
-const getNodeFlexId = (node): string => {
+function getNodeFlexId(node): string {
   const domId = (
-    node &&
-    node.attributes &&
-    node.attributes.id
-  );
+    node
+    && node.attributes
+    && node.attributes.id
+  )
 
   const haikuId = (
-    node &&
-    node.attributes &&
-    node.attributes[HAIKU_ID_ATTRIBUTE]
-  );
+    node
+    && node.attributes
+    && node.attributes[HAIKU_ID_ATTRIBUTE]
+  )
 
-  return haikuId || domId;
-};
+  return haikuId || domId
+}
 
-export const getNodeCompositeId = (node): string => {
-  const flexId = getNodeFlexId(node);
+export function getNodeCompositeId(node): string {
+  const flexId = getNodeFlexId(node)
 
   // Treat the 0th repeater as the original (source) element
   return (node.__memory && node.__memory.repeatee && node.__memory.repeatee.index)
     ? `${flexId}'${node.__memory.repeatee.index}`
-    : flexId;
-};
+    : flexId
+}
 
-const collatePropertyGroup = (propertiesGroup) => {
+function collatePropertyGroup(propertiesGroup) {
   const collation = [
     {}, // presentational ops
     {}, // "if" ops
     {}, // "repeat" ops
     {}, // "placeholder" ops
-  ];
+  ]
 
   for (const propertyName in propertiesGroup) {
     if (propertyName === 'controlFlow.if') {
-      collation[0][propertyName] = propertiesGroup[propertyName];
-    } else if (propertyName === 'controlFlow.repeat') {
-      collation[1][propertyName] = propertiesGroup[propertyName];
-    } else if (propertyName === 'controlFlow.placeholder') {
-      collation[2][propertyName] = propertiesGroup[propertyName];
-    } else {
-      collation[3][propertyName] = propertiesGroup[propertyName];
+      collation[0][propertyName] = propertiesGroup[propertyName]
+    }
+    else if (propertyName === 'controlFlow.repeat') {
+      collation[1][propertyName] = propertiesGroup[propertyName]
+    }
+    else if (propertyName === 'controlFlow.placeholder') {
+      collation[2][propertyName] = propertiesGroup[propertyName]
+    }
+    else {
+      collation[3][propertyName] = propertiesGroup[propertyName]
     }
   }
 
-  return collation;
-};
-
-function isBytecode (thing) {
-  return thing && typeof thing === OBJECT_TYPE && thing.template;
+  return collation
 }
 
-function assertTemplate (template) {
+function isBytecode(thing) {
+  return thing && typeof thing === OBJECT_TYPE && thing.template
+}
+
+function assertTemplate(template) {
   if (!template) {
-    throw new Error('Empty template not allowed');
+    throw new Error('Empty template not allowed')
   }
 
   if (typeof template === OBJECT_TYPE) {
     if (template.attributes) {
       if (!template.attributes[HAIKU_ID_ATTRIBUTE]) {
-        console.warn('[haiku core] bytecode template has no id');
+        console.warn('[haiku core] bytecode template has no id')
       }
-    } else {
-      console.warn('[haiku core] bytecode template has no attributes');
+    }
+    else {
+      console.warn('[haiku core] bytecode template has no attributes')
     }
 
     if (!template.elementName) {
-      console.warn('[haiku core] unexpected bytecode template format');
+      console.warn('[haiku core] unexpected bytecode template format')
     }
 
-    return template;
+    return template
   }
 
-  throw new Error('Unknown bytecode template format');
+  throw new Error('Unknown bytecode template format')
 }
 
-const needsVirtualChildren = (child: BytecodeNode): boolean => typeof child === 'object' &&
-  child.__memory &&
-  (
-    (child.__memory.if && !child.__memory.if.answer) ||
-    (child.__memory.repeater && !!child.__memory.repeater.repeatees)
-  );
+function needsVirtualChildren(child: BytecodeNode): boolean {
+  return typeof child === 'object'
+    && child.__memory
+    && (
+      (child.__memory.if && !child.__memory.if.answer)
+      || (child.__memory.repeater && !!child.__memory.repeater.repeatees)
+    )
+}
 
-const reduceNodeMemoryChildren = (children, out = [], doIncludeRepeatees = false) => {
+function reduceNodeMemoryChildren(children, out = [], doIncludeRepeatees = false) {
   for (let i = 0; i < children.length; i++) {
-    const child = children[i];
+    const child = children[i]
 
     if (!child) {
-      continue;
+      continue
     }
 
     if (typeof child === 'object' && child.__memory) {
       // Do not include any children that have been removed due to $if-logic
       if (child.__memory.if && !child.__memory.if.answer) {
-        continue;
+        continue
       }
 
       // If the child is a repeater, use the $repeats instead of itself
       if (
-        doIncludeRepeatees &&
-        child.__memory.repeater &&
-        child.__memory.repeater.repeatees
+        doIncludeRepeatees
+        && child.__memory.repeater
+        && child.__memory.repeater.repeatees
       ) {
-        reduceNodeMemoryChildren(child.__memory.repeater.repeatees, out, false);
-        continue;
+        reduceNodeMemoryChildren(child.__memory.repeater.repeatees, out, false)
+        continue
       }
 
       // If we got this far, the child is structurally normal
-      out.push(child);
-    } else {
-      out.push(child);
+      out.push(child)
+    }
+    else {
+      out.push(child)
     }
   }
 
-  return out;
-};
+  return out
+}
 
-const assembleNodeMemoryChildren = (node: BytecodeNode, subtree) => {
+function assembleNodeMemoryChildren(node: BytecodeNode, subtree) {
   if (subtree) {
-    return [subtree];
+    return [subtree]
   }
 
   if (node.__memory.placeholder) {
-    return [];
+    return []
   }
 
   // To avoid creating garbage, only allow allocations here if we actually need virtual children.
   if (!node.children || !node.children.some(needsVirtualChildren)) {
-    return;
+    return
   }
 
-  return reduceNodeMemoryChildren(node.children, [], true);
-};
+  return reduceNodeMemoryChildren(node.children, [], true)
+}
 
-const expandNode = (node: BytecodeNode|string, parent) => {
+function expandNode(node: BytecodeNode | string, parent) {
   if (!node || typeof node !== 'object' || !node.__memory) {
-    return;
+    return
   }
 
-  let children = node.children;
+  let children = node.children
 
   // Special case if our current original is the wrapper of a subcomponent.
-  const subtree = node.__memory.subcomponent && node.__memory.subcomponent.bytecode.template;
+  const subtree = node.__memory.subcomponent && node.__memory.subcomponent.bytecode.template
 
-  const assembled = assembleNodeMemoryChildren(node, subtree);
+  const assembled = assembleNodeMemoryChildren(node, subtree)
 
   // Don't just overwrite, since node.__memory.children may've been set to vanity 'content'
   if (assembled) {
-    node.__memory.children = assembled;
+    node.__memory.children = assembled
   }
 
   if (node.__memory.children) {
-    children = node.__memory.children;
+    children = node.__memory.children
   }
 
   /**
@@ -2398,70 +2430,61 @@ const expandNode = (node: BytecodeNode|string, parent) => {
    *        with their container, no matter what size it is.
    */
 
-  computeAndApplyLayout(node, parent);
+  computeAndApplyLayout(node, parent)
 
   if (children) {
     for (let j = 0; j < children.length; j++) {
       // Special case: The subtree of the subcomponent doesn't need to be re-expanded.
       if (children[j] !== subtree) {
-        expandNode(children[j], node);
+        expandNode(children[j], node)
       }
     }
   }
-};
+}
 
-const computeAndApplyLayout = (node, parent) => {
+function computeAndApplyLayout(node, parent) {
   // Don't assume the node has/needs a layout, for example, control-flow injectees
   if (node.layout) {
     node.layout.computed = HaikuElement.computeLayout(
       node,
       parent,
-    );
+    )
   }
-};
+}
 
-const hydrateNode = (
-  node,
-  parent,
-  component: HaikuComponent,
-  context: IHaikuContext,
-  host: HaikuComponent,
-  scope: string,
-  options: any = {},
-  doConnectInstanceToNode: boolean,
-) => {
+function hydrateNode(node, parent, component: HaikuComponent, context: IHaikuContext, host: HaikuComponent, scope: string, options: any = {}, doConnectInstanceToNode: boolean) {
   // Nothing to expand if the node happens to be text or unexpected type
   if (!node || typeof node !== 'object') {
-    return;
+    return
   }
 
   // Hydrate a HaikuElement representation of all nodes in the tree.
   // The instance is cached as node.__memory.element for performance purposes.
-  HaikuElement.findOrCreateByNode(node);
+  HaikuElement.findOrCreateByNode(node)
 
-  component.cacheNodeWithSelectorKey(node);
+  component.cacheNodeWithSelectorKey(node)
 
   // Platform-specific renderers may depend on access to the parent.
-  node.__memory.parent = parent;
+  node.__memory.parent = parent
 
   // So renderers can detect when different layout behavior is needed.
-  node.__memory.scope = scope || 'div';
+  node.__memory.scope = scope || 'div'
 
   // Give it a pointer back to the host context; used by HaikuElement
-  node.__memory.context = context;
+  node.__memory.context = context
 
   Layout3D.initializeNodeAttributes(
     node,
     doConnectInstanceToNode, // a.k.a isRootNode
-  );
+  )
 
   // Give instances a pointer to their node and vice versa
   if (doConnectInstanceToNode) {
-    node.__memory.instance = component;
+    node.__memory.instance = component
 
     // In the case that the node represents the root of an instance, treat the instance as the element;
     // connect their references and override the equivalent action in findOrCreateByNode.
-    HaikuElement.connectNodeWithElement(node, node.__memory.instance);
+    HaikuElement.connectNodeWithElement(node, node.__memory.instance)
   }
 
   // If the element name is missing it should still be safe to hydrate the children
@@ -2477,11 +2500,11 @@ const hydrateNode = (
           SCOPE_STRATA[node.elementName] || scope, // scope
           options,
           false,
-        );
+        )
       }
     }
 
-    return;
+    return
   }
 
   if (isBytecode(node.elementName)) {
@@ -2496,7 +2519,7 @@ const hydrateNode = (
       const config = Config.buildChildSafeConfig({
         ...context.config,
         ...options,
-      });
+      })
 
       // Note: .render and thus .hydrateNode are called by the constructor,
       // automatically connecting the root node to itself (see stanza above).
@@ -2509,78 +2532,79 @@ const hydrateNode = (
           ...config,
         },
         node, // container
-      );
+      )
 
       // Very important, as the guests collection is used in rendering/patching
-      component.registerGuest(node.__memory.subcomponent);
-    } else {
+      component.registerGuest(node.__memory.subcomponent)
+    }
+    else {
       // Reassigning is necessary since these objects may have changed between
       // renders in the editing environment
-      node.__memory.subcomponent.context = context; // context
-      node.__memory.subcomponent.host = component; // host
-      node.__memory.subcomponent.container = node; // container
+      node.__memory.subcomponent.context = context // context
+      node.__memory.subcomponent.host = component // host
+      node.__memory.subcomponent.container = node // container
 
       // Very important, as the guests collection is used in rendering/patching
-      component.registerGuest(node.__memory.subcomponent);
+      component.registerGuest(node.__memory.subcomponent)
 
       // Don't re-start any nested timelines that have been explicitly paused
       if (!node.__memory.subcomponent.getDefaultTimeline().isPaused()) {
-        node.__memory.subcomponent.startTimeline(DEFAULT_TIMELINE_NAME);
+        node.__memory.subcomponent.startTimeline(DEFAULT_TIMELINE_NAME)
       }
     }
 
-    return;
+    return
   }
 
   // In case we got a __reference node or other unknown
-  console.warn('[haiku core] cannot hydrate node');
-};
+  console.warn('[haiku core] cannot hydrate node')
+}
 
-const computeAndApplyPresetSizing = (element, container, mode): boolean => {
-  const elementWidth = element.layout.sizeAbsolute.x;
-  const elementHeight = element.layout.sizeAbsolute.y;
+function computeAndApplyPresetSizing(element, container, mode): boolean {
+  const elementWidth = element.layout.sizeAbsolute.x
+  const elementHeight = element.layout.sizeAbsolute.y
 
   // Some browsers does not work correctly with matrix3d transforms on SVGs
   // with resulting subpixel rendering, so let's round up the size to avoid
   // browser problems
-  const containerWidth = Math.ceil(container.layout.computed.size.x);
-  const containerHeight = Math.ceil(container.layout.computed.size.y);
+  const containerWidth = Math.ceil(container.layout.computed.size.x)
+  const containerHeight = Math.ceil(container.layout.computed.size.y)
 
   // I.e., the amount by which we'd have to multiply the element's scale to make it
   // exactly the same size as its container (without going above it)
-  const scaleDiffX = containerWidth / elementWidth;
-  const scaleDiffY = containerHeight / elementHeight;
+  const scaleDiffX = containerWidth / elementWidth
+  const scaleDiffY = containerHeight / elementHeight
 
   // This makes sure that the sizing occurs with respect to a correct and consistent origin point,
   // but only if the user didn't happen to explicitly set this value (we allow their override).
   if (!element.attributes.style['transform-origin']) {
-    element.attributes.style['transform-origin'] = '0% 0% 0px';
+    element.attributes.style['transform-origin'] = '0% 0% 0px'
   }
 
   // IMPORTANT: If any value has been changed on the element, you must set this to true.
   // Otherwise the changed object won't go into the deltas dictionary, and the element won't update.
-  let changed = false;
+  let changed = false
 
   switch (mode) {
     // Make the base element its default scale, which is just a multiplier of one. This is the default.
     case 'normal':
       if (element.layout.scale.x !== 1.0 || element.layout.scale.y !== 1.0) {
-        changed = true;
-        element.layout.scale.x = element.layout.scale.y = 1.0;
+        changed = true
+        element.layout.scale.x = element.layout.scale.y = 1.0
       }
-      break;
+      break
 
     // Stretch the element to fit the container on both x and y dimensions (distortion allowed)
     case 'stretch':
       if (scaleDiffX !== element.layout.scale.x) {
-        changed = true;
-        element.layout.scale.x = scaleDiffX;
+        changed = true
+        element.layout.scale.x = scaleDiffX
       }
       if (scaleDiffY !== element.layout.scale.y) {
-        changed = true;
-        element.layout.scale.y = scaleDiffY;
+        changed = true
+        element.layout.scale.y = scaleDiffY
       }
-      break;
+      break
 
     // CONTAIN algorithm
     // see https://developer.mozilla.org/en-US/docs/Web/CSS/background-size?v=example
@@ -2590,51 +2614,52 @@ const computeAndApplyPresetSizing = (element, container, mode): boolean => {
     // are filled with the background-color.
     case 'contain':
     case true: // (Legacy.)
-      let containScaleToUse = null;
+      let containScaleToUse = null
 
       // We're looking for the larger of the two scales that still allows both dimensions to fit in the box
       // The rounding is necessary to avoid precision issues, where we end up comparing e.g. 2.0000000000001 to 2
       if (
-        ~~(scaleDiffX * elementWidth) <= containerWidth &&
-        ~~(scaleDiffX * elementHeight) <= containerHeight
+        ~~(scaleDiffX * elementWidth) <= containerWidth
+        && ~~(scaleDiffX * elementHeight) <= containerHeight
       ) {
-        containScaleToUse = scaleDiffX;
+        containScaleToUse = scaleDiffX
       }
       if (
-        ~~(scaleDiffY * elementWidth) <= containerWidth &&
-        ~~(scaleDiffY * elementHeight) <= containerHeight
+        ~~(scaleDiffY * elementWidth) <= containerWidth
+        && ~~(scaleDiffY * elementHeight) <= containerHeight
       ) {
         if (containScaleToUse === null) {
-          containScaleToUse = scaleDiffY;
-        } else {
+          containScaleToUse = scaleDiffY
+        }
+        else {
           if (scaleDiffY >= containScaleToUse) {
-            containScaleToUse = scaleDiffY;
+            containScaleToUse = scaleDiffY
           }
         }
       }
 
       if (element.layout.scale.x !== containScaleToUse) {
-        changed = true;
-        element.layout.scale.x = containScaleToUse;
+        changed = true
+        element.layout.scale.x = containScaleToUse
       }
       if (element.layout.scale.y !== containScaleToUse) {
-        changed = true;
-        element.layout.scale.y = containScaleToUse;
+        changed = true
+        element.layout.scale.y = containScaleToUse
       }
 
       // Offset the translation so that the element remains centered within the letterboxing
-      const containTranslationOffsetX = -(containScaleToUse * elementWidth - containerWidth) / 2;
-      const containTranslationOffsetY = -(containScaleToUse * elementHeight - containerHeight) / 2;
+      const containTranslationOffsetX = -(containScaleToUse * elementWidth - containerWidth) / 2
+      const containTranslationOffsetY = -(containScaleToUse * elementHeight - containerHeight) / 2
       if (element.layout.translation.x !== containTranslationOffsetX) {
-        changed = true;
-        element.layout.translation.x = containTranslationOffsetX;
+        changed = true
+        element.layout.translation.x = containTranslationOffsetX
       }
       if (element.layout.translation.y !== containTranslationOffsetY) {
-        changed = true;
-        element.layout.translation.y = containTranslationOffsetY;
+        changed = true
+        element.layout.translation.y = containTranslationOffsetY
       }
 
-      break;
+      break
 
     // COVER algorithm (inverse of CONTAIN)
     // see https://developer.mozilla.org/en-US/docs/Web/CSS/background-size?v=example
@@ -2643,213 +2668,216 @@ const computeAndApplyPresetSizing = (element, container, mode): boolean => {
     // of the container. When the image and container have different dimensions, the image is clipped
     // either left/right or top/bottom.
     case 'cover':
-      let coverScaleToUse = null;
+      let coverScaleToUse = null
 
       // We're looking for the smaller of two scales that ensures the entire box is covered.
       // The rounding is necessary to avoid precision issues, where we end up comparing e.g. 2.0000000000001 to 2
       if (~~(scaleDiffX * elementHeight) >= containerHeight) {
-        coverScaleToUse = scaleDiffX;
-      } else if (~~(scaleDiffY * elementWidth) >= containerWidth) {
-        coverScaleToUse = scaleDiffY;
-      } else {
-        coverScaleToUse = Math.max(scaleDiffX, scaleDiffY);
+        coverScaleToUse = scaleDiffX
+      }
+      else if (~~(scaleDiffY * elementWidth) >= containerWidth) {
+        coverScaleToUse = scaleDiffY
+      }
+      else {
+        coverScaleToUse = Math.max(scaleDiffX, scaleDiffY)
       }
 
       if (element.layout.scale.x !== coverScaleToUse) {
-        changed = true;
-        element.layout.scale.x = coverScaleToUse;
+        changed = true
+        element.layout.scale.x = coverScaleToUse
       }
       if (element.layout.scale.y !== coverScaleToUse) {
-        changed = true;
-        element.layout.scale.y = coverScaleToUse;
+        changed = true
+        element.layout.scale.y = coverScaleToUse
       }
 
       // Offset the translation so that the element remains centered despite clipping
-      const coverTranslationOffsetX = -(coverScaleToUse * elementWidth - containerWidth) / 2;
-      const coverTranslationOffsetY = -(coverScaleToUse * elementHeight - containerHeight) / 2;
+      const coverTranslationOffsetX = -(coverScaleToUse * elementWidth - containerWidth) / 2
+      const coverTranslationOffsetY = -(coverScaleToUse * elementHeight - containerHeight) / 2
       if (element.layout.translation.x !== coverTranslationOffsetX) {
-        changed = true;
-        element.layout.translation.x = coverTranslationOffsetX;
+        changed = true
+        element.layout.translation.x = coverTranslationOffsetX
       }
       if (element.layout.translation.y !== coverTranslationOffsetY) {
-        changed = true;
-        element.layout.translation.y = coverTranslationOffsetY;
+        changed = true
+        element.layout.translation.y = coverTranslationOffsetY
       }
 
-      break;
+      break
   }
 
-  return changed;
-};
-
-export interface ClonedFunction {
-  (...args: any[]): void;
-  __rfo?: RFO;
+  return changed
 }
 
-export const clone = (value, binding) => {
+export interface ClonedFunction {
+  (...args: any[]): void
+  __rfo?: RFO
+}
+
+export function clone(value, binding) {
   if (!value) {
-    return value;
+    return value
   }
 
   if (typeof value === 'boolean') {
-    return value;
+    return value
   }
 
   if (typeof value === 'number') {
-    return value;
+    return value
   }
 
   if (typeof value === 'string') {
-    return value;
+    return value
   }
 
   if (typeof value === 'function') {
-    const fn: ClonedFunction = (...args: any[]) => value.call(binding, ...args);
+    const fn: ClonedFunction = (...args: any[]) => value.call(binding, ...args)
     // Core decorates injectee functions with metadata properties
     for (const key in value) {
       if (value.hasOwnProperty(key)) {
-        fn[key] = clone(value[key], binding);
+        fn[key] = clone(value[key], binding)
       }
     }
-    fn.__rfo = functionToRFO(value).__function;
-    return fn;
+    fn.__rfo = functionToRFO(value).__function
+    return fn
   }
 
   if (Array.isArray(value)) {
-    return value.map((el) => clone(el, binding));
+    return value.map(el => clone(el, binding))
   }
 
   // Don't try to clone anything other than plain objects
   if (typeof value === 'object' && value.constructor === Object) {
-    const out = {};
+    const out = {}
 
     for (const key in value) {
       if (!value.hasOwnProperty(key) || key.slice(0, 2) === '__') {
-        continue;
+        continue
       }
 
       // If it looks like guest bytecode, don't clone it since
       // (a) we're passing down *our* function binding, which will break event handling and
       // (b) each HaikuComponent#constructor calls clone() on its own anyway
       if (key === 'elementName' && typeof value[key] !== 'string') {
-        out[key] = value[key];
-      } else {
-        out[key] = clone(value[key], binding);
+        out[key] = value[key]
+      }
+      else {
+        out[key] = clone(value[key], binding)
       }
     }
 
-    return out;
+    return out
   }
 
-  return value;
-};
+  return value
+}
 
-const setStyle = (subkey, element, value) => {
-  element.attributes.style[subkey] = value;
-};
+function setStyle(subkey, element, value) {
+  element.attributes.style[subkey] = value
+}
 
-const setAttribute = (key, element, value) => {
-  const final = ATTRS_CAMEL_TO_HYPH[key] || key;
-  element.attributes[final] = value;
-};
+function setAttribute(key, element, value) {
+  const final = ATTRS_CAMEL_TO_HYPH[key] || key
+  element.attributes[final] = value
+}
 
-const isNumeric = (n) => {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-};
+function isNumeric(n) {
+  return !isNaN(Number.parseFloat(n)) && isFinite(n)
+}
 
-const isInteger = (x) => {
-  return x % 1 === 0;
-};
+function isInteger(x) {
+  return x % 1 === 0
+}
 
 const REACT_MATCHING_OPTIONS = {
   name: 'type',
   attributes: 'props',
-};
+}
 
 const HAIKU_MATCHING_OPTIONS = {
   name: 'elementName',
   attributes: 'attributes',
-};
+}
 
-const querySelectSubtree = (surrogate: any, value) => {
+function querySelectSubtree(surrogate: any, value) {
   // First try the Haiku format
   if (cssMatchOne(surrogate, value, HAIKU_MATCHING_OPTIONS)) {
-    return surrogate;
+    return surrogate
   }
 
   // If no match yet, try the React format (TODO: Does this belong here?)
   if (cssMatchOne(surrogate, value, REACT_MATCHING_OPTIONS)) {
-    return surrogate;
+    return surrogate
   }
 
   // Visit the descendants (if any) and see if we have a match there
   const children = (
-    surrogate.children || // Haiku's format
-    (surrogate.props && surrogate.props.children) // React's format
-  );
+    surrogate.children // Haiku's format
+    || (surrogate.props && surrogate.props.children) // React's format
+  )
 
   // If no children, we definitely don't have a match in this subtree
   if (!children) {
-    return null;
+    return null
   }
 
   // Check for arrays first since arrays pass the typeof object check
   if (Array.isArray(children)) {
     for (let i = 0; i < children.length; i++) {
-      const found = querySelectSubtree(children[i], value);
+      const found = querySelectSubtree(children[i], value)
 
       // First time a match is found, break the loop and return it
       if (found) {
-        return found;
+        return found
       }
     }
   }
 
   // React may store 'children' as a single object
   if (typeof children === 'object') {
-    return querySelectSubtree(children, value);
+    return querySelectSubtree(children, value)
   }
-};
+}
 
-const querySelectSurrogates = (surrogates: any, value: string): any => {
+function querySelectSurrogates(surrogates: any, value: string): any {
   if (Array.isArray(surrogates)) {
     // Return the first match we locate in the collection
-    return surrogates.map((surrogate) => querySelectSurrogates(surrogate, value))[0];
+    return surrogates.map(surrogate => querySelectSurrogates(surrogate, value))[0]
   }
 
   if (surrogates && typeof surrogates === 'object') {
-    return querySelectSubtree(surrogates, value);
+    return querySelectSubtree(surrogates, value)
   }
-};
+}
 
-const selectSurrogate = (surrogates: any, value: any): any => {
+function selectSurrogate(surrogates: any, value: any): any {
   // If the placeholder value is intended as an array index
   if (Array.isArray(surrogates) && isNumeric(value) && isInteger(value)) {
     if (surrogates[value]) {
-      return surrogates[value];
+      return surrogates[value]
     }
   }
 
   // If the placeholder value is intended as a key
   if (surrogates && typeof surrogates === 'object' && typeof value === 'string') {
     if (surrogates[value]) {
-      return surrogates[value];
+      return surrogates[value]
     }
   }
 
-  return querySelectSurrogates(surrogates, value + '');
-};
+  return querySelectSurrogates(surrogates, `${value}`)
+}
 
-const getCanonicalPlaybackValue = (value) => {
+function getCanonicalPlaybackValue(value) {
   if (typeof value !== 'object') {
     return {
       Default: value,
-    };
+    }
   }
 
-  return value;
-};
+  return value
+}
 
 /**
  * 'Vanities' are functions that provide special handling for applied properties.
@@ -2862,175 +2890,175 @@ const getCanonicalPlaybackValue = (value) => {
  * loads and calls.
  */
 
-export const getVanity = (elementName: string, propertyName: string) => {
+export function getVanity(elementName: string, propertyName: string) {
   if (elementName) {
     if (VANITIES[elementName] && VANITIES[elementName][propertyName]) {
-      return VANITIES[elementName][propertyName];
+      return VANITIES[elementName][propertyName]
     }
   }
 
-  return VANITIES['*'][propertyName];
-};
+  return VANITIES['*'][propertyName]
+}
 
 /**
  * Ensures layout before applying a layout vanity.
  */
-const ensureLayout = (node: BytecodeNode) => {
+function ensureLayout(node: BytecodeNode) {
   if (!node.layout) {
-    Layout3D.initializeNodeLayout(node);
+    Layout3D.initializeNodeLayout(node)
   }
-};
+}
 
 export const LAYOUT_3D_VANITIES = {
   // Layout has a couple of special values that relate to display
   // but not to position:
-  shown: (_, element, value) => {
-    ensureLayout(element);
-    element.layout.shown = value;
+  'shown': (_, element, value) => {
+    ensureLayout(element)
+    element.layout.shown = value
   },
   // Opacity needs to have its opacity *layout* property set
   // as opposed to its element attribute so the renderer can make a decision about
   // where to put it based on the rendering medium's rules
-  opacity: (_, element, value) => {
-    ensureLayout(element);
-    element.layout.opacity = value;
+  'opacity': (_, element, value) => {
+    ensureLayout(element)
+    element.layout.opacity = value
   },
 
   // If you really want to set what we call 'position' then
   // we do so on the element's attributes; this is mainly to
   // enable the x/y positioning system for SVG elements.
   'position.x': (name, element, value) => {
-    ensureLayout(element);
-    element.attributes.x = value;
+    ensureLayout(element)
+    element.attributes.x = value
   },
   'position.y': (name, element, value) => {
-    ensureLayout(element);
-    element.attributes.y = value;
+    ensureLayout(element)
+    element.attributes.y = value
   },
 
   // Everything that follows is a standard 3-coord component
   // relating to the element's position in space
   'rotation.x': (_, element, value) => {
-    ensureLayout(element);
-    element.layout.rotation.x = value;
+    ensureLayout(element)
+    element.layout.rotation.x = value
   },
   'rotation.y': (_, element, value) => {
-    ensureLayout(element);
-    element.layout.rotation.y = value;
+    ensureLayout(element)
+    element.layout.rotation.y = value
   },
   'rotation.z': (_, element, value) => {
-    ensureLayout(element);
-    element.layout.rotation.z = value;
+    ensureLayout(element)
+    element.layout.rotation.z = value
   },
   'offset.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.offset.x = value;
+    ensureLayout(element)
+    element.layout.offset.x = value
   },
   'offset.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.offset.y = value;
+    ensureLayout(element)
+    element.layout.offset.y = value
   },
   'offset.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.offset.z = value;
+    ensureLayout(element)
+    element.layout.offset.z = value
   },
   'origin.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.origin.x = value;
+    ensureLayout(element)
+    element.layout.origin.x = value
   },
   'origin.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.origin.y = value;
+    ensureLayout(element)
+    element.layout.origin.y = value
   },
   'origin.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.origin.z = value;
+    ensureLayout(element)
+    element.layout.origin.z = value
   },
   'scale.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.scale.x = value;
+    ensureLayout(element)
+    element.layout.scale.x = value
   },
   'scale.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.scale.y = value;
+    ensureLayout(element)
+    element.layout.scale.y = value
   },
   'scale.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.scale.z = value;
+    ensureLayout(element)
+    element.layout.scale.z = value
   },
   'sizeAbsolute.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeAbsolute.x = value;
+    ensureLayout(element)
+    element.layout.sizeAbsolute.x = value
   },
   'sizeAbsolute.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeAbsolute.y = value;
+    ensureLayout(element)
+    element.layout.sizeAbsolute.y = value
   },
   'sizeAbsolute.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeAbsolute.z = value;
+    ensureLayout(element)
+    element.layout.sizeAbsolute.z = value
   },
   'sizeDifferential.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeDifferential.x = value;
+    ensureLayout(element)
+    element.layout.sizeDifferential.x = value
   },
   'sizeDifferential.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeDifferential.y = value;
+    ensureLayout(element)
+    element.layout.sizeDifferential.y = value
   },
   'sizeDifferential.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeDifferential.z = value;
+    ensureLayout(element)
+    element.layout.sizeDifferential.z = value
   },
   'sizeMode.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeMode.x = value;
+    ensureLayout(element)
+    element.layout.sizeMode.x = value
   },
   'sizeMode.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeMode.y = value;
+    ensureLayout(element)
+    element.layout.sizeMode.y = value
   },
   'sizeMode.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeMode.z = value;
+    ensureLayout(element)
+    element.layout.sizeMode.z = value
   },
   'sizeProportional.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeProportional.x = value;
+    ensureLayout(element)
+    element.layout.sizeProportional.x = value
   },
   'sizeProportional.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeProportional.y = value;
+    ensureLayout(element)
+    element.layout.sizeProportional.y = value
   },
   'sizeProportional.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.sizeProportional.z = value;
+    ensureLayout(element)
+    element.layout.sizeProportional.z = value
   },
   'shear.xy': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.shear.xy = value;
+    ensureLayout(element)
+    element.layout.shear.xy = value
   },
   'shear.xz': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.shear.xz = value;
+    ensureLayout(element)
+    element.layout.shear.xz = value
   },
   'shear.yz': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.shear.yz = value;
+    ensureLayout(element)
+    element.layout.shear.yz = value
   },
   'translation.x': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.translation.x = value;
+    ensureLayout(element)
+    element.layout.translation.x = value
   },
   'translation.y': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.translation.y = value;
+    ensureLayout(element)
+    element.layout.translation.y = value
   },
   'translation.z': (name, element, value) => {
-    ensureLayout(element);
-    element.layout.translation.z = value;
+    ensureLayout(element)
+    element.layout.translation.z = value
   },
-};
+}
 
 export const VANITIES = {
   '*': {
@@ -3038,11 +3066,11 @@ export const VANITIES = {
 
     // CSS style properties that need special handling
     'style.WebkitTapHighlightColor': (_, element, value) => {
-      element.attributes.style.webkitTapHighlightColor = value;
+      element.attributes.style.webkitTapHighlightColor = value
     },
 
     // Text and other inner-content related vanities
-    content: (
+    'content': (
       name,
       element,
       value,
@@ -3051,17 +3079,17 @@ export const VANITIES = {
       receiver,
       sender,
     ) => {
-      element.__memory.children = [value];
+      element.__memory.children = [value]
 
       // If we don't do this, then content changes resulting from setState calls
       // don't have the effect of flushing the content, and the rendered text doesn't change.
       // DEMO: bind-numeric-state-to-text
       // TODO: What is the best way to make this less expensive (while still functional)?
-      sender.patches.push(element);
+      sender.patches.push(element)
     },
 
     // Playback-related vanities that involve controlling timeline or clock time
-    playback: (
+    'playback': (
       name,
       element,
       value: any,
@@ -3070,13 +3098,13 @@ export const VANITIES = {
       receiver: HaikuComponent,
       sender: HaikuComponent,
     ) => {
-      const canonicalValue = getCanonicalPlaybackValue(value);
+      const canonicalValue = getCanonicalPlaybackValue(value)
 
       for (const timelineName in canonicalValue) {
-        const timelineInstance = receiver && receiver.getTimeline(timelineName);
+        const timelineInstance = receiver && receiver.getTimeline(timelineName)
 
         if (timelineInstance) {
-          timelineInstance.setPlaybackStatus(canonicalValue[timelineName]);
+          timelineInstance.setPlaybackStatus(canonicalValue[timelineName])
         }
       }
     },
@@ -3093,18 +3121,18 @@ export const VANITIES = {
     ) => {
       // For MVP's sake, structural behaviors not rendered during hot editing.
       if (sender.config.hotEditingMode) {
-        return;
+        return
       }
 
       if (value === null || value === undefined) {
-        return;
+        return
       }
 
       if (typeof value !== 'number' && typeof value !== 'string') {
-        return;
+        return
       }
 
-      let surrogates;
+      let surrogates
 
       // Surrogates can be passed in as:
       //   - React children (an array)
@@ -3112,29 +3140,30 @@ export const VANITIES = {
       //   - A Haiku subtree (we'll use query selectors to match)
       //   - Key/value pairs
       if (context.config.children) {
-        surrogates = context.config.children;
+        surrogates = context.config.children
         if (!Array.isArray(surrogates)) {
-          surrogates = [surrogates];
+          surrogates = [surrogates]
         }
-      } else if (context.config.placeholder) {
-        surrogates = context.config.placeholder;
+      }
+      else if (context.config.placeholder) {
+        surrogates = context.config.placeholder
       }
 
       if (!surrogates) {
-        return;
+        return
       }
 
-      const surrogate = selectSurrogate(surrogates, value);
+      const surrogate = selectSurrogate(surrogates, value)
 
       if (surrogate === null || surrogate === undefined) {
-        return;
+        return
       }
 
       if (!element.__memory.placeholder) {
-        element.__memory.placeholder = {};
+        element.__memory.placeholder = {}
       }
 
-      element.__memory.placeholder.value = value;
+      element.__memory.placeholder.value = value
 
       // If we are running via a framework adapter, allow that framework to provide its own placeholder mechanism.
       // This is necessary e.g. in React where their element format needs to be converted into our 'mana' format
@@ -3147,9 +3176,10 @@ export const VANITIES = {
           timeline,
           receiver,
           sender,
-        );
-      } else {
-        element.__memory.placeholder.surrogate = surrogate;
+        )
+      }
+      else {
+        element.__memory.placeholder.surrogate = surrogate
       }
     },
 
@@ -3162,49 +3192,52 @@ export const VANITIES = {
       receiver: HaikuComponent,
       sender: HaikuComponent,
     ) => {
-      let instructions;
+      let instructions
 
       if (Array.isArray(value)) {
-        instructions = value;
-      } else if (isNumeric(value)) {
-        const arr = [];
+        instructions = value
+      }
+      else if (isNumeric(value)) {
+        const arr = []
 
         for (let i = 0; i < value; i++) {
-          arr.push({}); // Empty repeat payload spec
+          arr.push({}) // Empty repeat payload spec
         }
 
-        instructions = arr;
-      } else {
-        return;
+        instructions = arr
+      }
+      else {
+        return
       }
 
       if (element.__memory.repeatee) {
         // Don't repeat the repeatee of an existing repeater
         if (element.__memory.repeatee.index > 0) {
-          return;
+          return
         }
       }
 
       if (element.__memory.repeater) {
         if (element.__memory.repeater.changed) {
-          element.__memory.repeater.changed = false;
-        } else {
+          element.__memory.repeater.changed = false
+        }
+        else {
           // Save CPU by avoiding recomputing a repeat when we've already done so.
           // Although upstream HaikuComponent#applyLocalBehaviors does do diff comparisons,
           // it intentionally skips this comparison for complex properties i.e. arrays
           // and objects due to the intractability of smartly comparing for all cases.
           // We do a comparison that is fairly sensible in the repeat-exclusive case.
           if (isSameRepeatBehavior(element.__memory.repeater.instructions, instructions)) {
-            return;
+            return
           }
         }
       }
 
       if (!element.__memory.repeater) {
-        element.__memory.repeater = {};
+        element.__memory.repeater = {}
       }
 
-      element.__memory.repeater.instructions = instructions;
+      element.__memory.repeater.instructions = instructions
 
       // Structural behaviors are not rendered during hot editing.
       if (sender.config.hotEditingMode) {
@@ -3215,33 +3248,34 @@ export const VANITIES = {
             index: 0,
             payload: instructions[0],
             source: element,
-          };
+          }
 
           applyPayloadToNode(
             element,
             instructions[0],
             sender,
             timeline,
-          );
+          )
 
-          sender.patches.push(element);
-          expandNode(element, element.__memory.parent);
+          sender.patches.push(element)
+          expandNode(element, element.__memory.parent)
         }
 
-        return;
+        return
       }
 
       if (!element.__memory.repeater.repeatees) {
-        element.__memory.repeater.repeatees = [];
-      } else {
+        element.__memory.repeater.repeatees = []
+      }
+      else {
         // If the instructions have decreased on this run, remove the excess repeatees
-        element.__memory.repeater.repeatees.splice(instructions.length);
+        element.__memory.repeater.repeatees.splice(instructions.length)
       }
 
       instructions.forEach((payload, index) => {
         const repeatee = (index === 0)
           ? element // The first element should be the source element
-          : element.__memory.repeater.repeatees[index] || clone(element, sender);
+          : element.__memory.repeater.repeatees[index] || clone(element, sender)
 
         // We have to initialize the element's component instance, etc.
         hydrateNode(
@@ -3253,27 +3287,27 @@ export const VANITIES = {
           element.__memory.scope, // scope (use same scope as source node)
           sender.config, // options
           false, // doConnectInstanceToNode
-        );
+        )
 
         repeatee.__memory.repeatee = {
           index,
           instructions,
           payload,
           source: element,
-        };
+        }
 
         applyPayloadToNode(
           repeatee,
           payload,
           sender,
           timeline,
-        );
+        )
 
-        element.__memory.repeater.repeatees[index] = repeatee;
-      });
+        element.__memory.repeater.repeatees[index] = repeatee
+      })
 
-      sender.patches.push(element);
-      expandNode(element, element.__memory.parent);
+      sender.patches.push(element)
+      expandNode(element, element.__memory.parent)
     },
 
     'controlFlow.if': (
@@ -3287,34 +3321,34 @@ export const VANITIES = {
     ) => {
       // For MVP's sake, structural behaviors not rendered during hot editing.
       if (sender.config.hotEditingMode) {
-        return;
+        return
       }
 
       // Assume our if-answer is only false if we got an explicit false value
-      const answer = value !== false;
+      const answer = value !== false
 
       if (element.__memory.if) {
         // Save CPU by avoiding recomputing an if when we've already done so.
         if (isSameIfBehavior(element.__memory.if.answer, answer)) {
-          return;
+          return
         }
       }
 
       element.__memory.if = {
         answer,
-      };
+      }
 
       // Ensure that a change in repeat will trigger the necessary re-repeat
       if (element.__memory.repeater) {
-        element.__memory.repeater.changed = true;
+        element.__memory.repeater.changed = true
       }
 
-      sender.markForFullFlush();
+      sender.markForFullFlush()
     },
   },
-};
+}
 
-const applyPayloadToNode = (node, payload, sender, timeline) => {
+function applyPayloadToNode(node, payload, sender, timeline) {
   // Apply the repeat payload to the element as if it were a normal timeline output
   for (const propertyName in payload) {
     // Control-flow occurs after presentational behaviors, meaning we are overriding
@@ -3324,122 +3358,123 @@ const applyPayloadToNode = (node, payload, sender, timeline) => {
       propertyName,
       payload[propertyName], // finalValue
       timeline,
-    );
+    )
   }
-};
+}
 
-const isSameIfBehavior = (prev, next): boolean => {
-  return prev === next;
-};
+function isSameIfBehavior(prev, next): boolean {
+  return prev === next
+}
 
-const isSameRepeatBehavior = (prevs, nexts): boolean => {
+function isSameRepeatBehavior(prevs, nexts): boolean {
   if (prevs === nexts) {
-    return true;
+    return true
   }
 
   if (prevs.length !== nexts.length) {
-    return false;
+    return false
   }
 
-  let answer = true;
+  let answer = true
 
   for (let i = 0; i < prevs.length; i++) {
     if (!answer) {
-      break;
+      break
     }
 
-    const prev = prevs[i];
-    const next = nexts[i];
+    const prev = prevs[i]
+    const next = nexts[i]
 
     if (prev === next) {
-      continue;
+      continue
     }
 
     for (const key in next) {
       if (next[key] !== prev[key]) {
-        answer = false;
-        break;
+        answer = false
+        break
       }
     }
   }
 
-  return answer;
-};
+  return answer
+}
 
-const findRespectiveRepeatees = (target) => {
-  const repeatees = [];
+function findRespectiveRepeatees(target) {
+  const repeatees = []
 
   // Required to fix a race condition that can occur during copy+paste in Haiku.app
   if (!target.__memory) {
-    return repeatees;
+    return repeatees
   }
 
   // The host repeatee of the given target node, if the target is a repeater's descendant
-  let host;
+  let host
 
   if (target.__memory.repeatee) {
-    host = target;
-  } else {
+    host = target
+  }
+  else {
     // Note that we do not ascend beyond the nearest host component instance
     ascend(target, (node) => {
       if (node.__memory.repeatee) {
-        host = node;
+        host = node
       }
-    });
+    })
   }
 
   // If we've found a host repeatee, the target is a descendant of a repeater,
   // and we need to find its respective node within each repeatee.
   if (host) {
-    const repeater = host.__memory.repeatee.source;
+    const repeater = host.__memory.repeatee.source
 
     if (repeater.__memory.repeater.repeatees) {
       repeater.__memory.repeater.repeatees.forEach((repeatee) => {
         visit(repeatee, (candidate) => {
           if (areNodesRespective(target, candidate)) {
-            repeatees.push(candidate);
+            repeatees.push(candidate)
           }
-        });
-      });
+        })
+      })
     }
   }
 
-  return repeatees;
-};
+  return repeatees
+}
 
-const areNodesRespective = (n1, n2): boolean => {
+function areNodesRespective(n1, n2): boolean {
   if (n1 === n2) {
-    return true;
+    return true
   }
 
   // We assume that all nodes within the tree of a component have unique haiku-ids, and that
   // these haiku-ids are not directly modified within repeater groups
   if (
     // If the haiku-id attribute is empty, assume the comparison isn't valid
-    n1.attributes[HAIKU_ID_ATTRIBUTE] &&
-    n1.attributes[HAIKU_ID_ATTRIBUTE] === n2.attributes[HAIKU_ID_ATTRIBUTE]
+    n1.attributes[HAIKU_ID_ATTRIBUTE]
+    && n1.attributes[HAIKU_ID_ATTRIBUTE] === n2.attributes[HAIKU_ID_ATTRIBUTE]
   ) {
-    return true;
+    return true
   }
 
-  return false;
-};
+  return false
+}
 
-export const getFallback = (elementName: string, propertyName: string) => {
+export function getFallback(elementName: string, propertyName: string) {
   if (elementName) {
     if (
-      LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName] &&
-      LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName][propertyName] !== undefined) {
-      return LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName][propertyName];
+      LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName]
+      && LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName][propertyName] !== undefined) {
+      return LAYOUT_COORDINATE_SYSTEM_FALLBACKS[elementName][propertyName]
     }
 
     if (FALLBACKS[elementName] && FALLBACKS[elementName][propertyName] !== undefined) {
-      return FALLBACKS[elementName][propertyName];
+      return FALLBACKS[elementName][propertyName]
     }
   }
 
-  return FALLBACKS['*'][propertyName];
-};
+  return FALLBACKS['*'][propertyName]
+}
 
 const LAYOUT_COORDINATE_SYSTEM_FALLBACKS = {
   svg: {
@@ -3447,15 +3482,15 @@ const LAYOUT_COORDINATE_SYSTEM_FALLBACKS = {
     'origin.y': 0.5,
     'origin.z': 0.5,
   },
-};
+}
 
-const LAYOUT_DEFAULTS = Layout3D.createLayoutSpec();
+const LAYOUT_DEFAULTS = Layout3D.createLayoutSpec()
 
 export const FALLBACKS = {
   '*': {
-    shown: LAYOUT_DEFAULTS.shown,
-    opacity: LAYOUT_DEFAULTS.opacity,
-    content: '',
+    'shown': LAYOUT_DEFAULTS.shown,
+    'opacity': LAYOUT_DEFAULTS.opacity,
+    'content': '',
     'offset.x': LAYOUT_DEFAULTS.offset.x,
     'offset.y': LAYOUT_DEFAULTS.offset.y,
     'offset.z': LAYOUT_DEFAULTS.offset.z,
@@ -3490,28 +3525,28 @@ export const FALLBACKS = {
     'style.overflowY': 'hidden',
     'style.zIndex': 1,
     'style.WebkitTapHighlightColor': 'rgba(0,0,0,0)',
-    width: 0,
-    height: 0,
-    x: 0,
-    y: 0,
-    r: 0,
-    cx: 0,
-    cy: 0,
-    rx: 0,
-    ry: 0,
-    x1: 0,
-    y1: 0,
-    x2: 0,
-    y2: 0,
-    playback: PlaybackFlag.LOOP,
+    'width': 0,
+    'height': 0,
+    'x': 0,
+    'y': 0,
+    'r': 0,
+    'cx': 0,
+    'cy': 0,
+    'rx': 0,
+    'ry': 0,
+    'x1': 0,
+    'y1': 0,
+    'x2': 0,
+    'y2': 0,
+    'playback': PlaybackFlag.LOOP,
     'controlFlow.repeat': null,
     'controlFlow.placeholder': null,
   },
-};
+}
 
 export const LAYOUT_3D_SCHEMA = {
-  shown: 'boolean',
-  opacity: 'number',
+  'shown': 'boolean',
+  'opacity': 'number',
   'offset.x': 'number',
   'offset.y': 'number',
   'offset.z': 'number',
@@ -3542,7 +3577,7 @@ export const LAYOUT_3D_SCHEMA = {
   'sizeMode.x': 'number',
   'sizeMode.y': 'number',
   'sizeMode.z': 'number',
-};
+}
 
 export const ATTRS_CAMEL_TO_HYPH = {
   accentHeight: 'accent-height',
@@ -3617,18 +3652,18 @@ export const ATTRS_CAMEL_TO_HYPH = {
   wordSpacing: 'word-spacing',
   writingMode: 'writing-mode',
   xHeight: 'x-height',
-};
+}
 
 const PositionSchema = {
   x: 'number',
   y: 'number',
   z: 'number',
-};
+}
 
-export const ATTRS_HYPH_TO_CAMEL = {};
+export const ATTRS_HYPH_TO_CAMEL = {}
 
 for (const camel in ATTRS_CAMEL_TO_HYPH) {
-  ATTRS_HYPH_TO_CAMEL[ATTRS_CAMEL_TO_HYPH[camel]] = camel;
+  ATTRS_HYPH_TO_CAMEL[ATTRS_CAMEL_TO_HYPH[camel]] = camel
 }
 
 INJECTABLES.$element = {
@@ -3642,36 +3677,36 @@ INJECTABLES.$element = {
     rotation: PositionSchema,
     scale: PositionSchema,
     shown: 'boolean',
-    size: {x: 'number', y: 'number'},
+    size: { x: 'number', y: 'number' },
     sizeAbsolute: PositionSchema,
     sizeProportional: PositionSchema,
     translation: PositionSchema,
   },
-  summon (injectees, component: HaikuComponent, node) {
-    injectees.$element = HaikuElement.findOrCreateByNode(node);
+  summon(injectees, component: HaikuComponent, node) {
+    injectees.$element = HaikuElement.findOrCreateByNode(node)
   },
-};
+}
 
 INJECTABLES.$window = {
   schema: {},
-  summon (injectees) {
-    injectees.$window = (typeof window !== 'undefined') ? window : {};
+  summon(injectees) {
+    injectees.$window = (typeof window !== 'undefined') ? window : {}
   },
-};
+}
 
 INJECTABLES.$mount = {
   schema: {},
-  summon (injectees, component: HaikuComponent) {
-    injectees.$mount = component.context.renderer.mount;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$mount = component.context.renderer.mount
   },
-};
+}
 
 INJECTABLES.$timeline = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node, timelineName: string) {
-    injectees.$timeline = component.getTimeline(timelineName);
+  summon(injectees, component: HaikuComponent, node, timelineName: string) {
+    injectees.$timeline = component.getTimeline(timelineName)
   },
-};
+}
 
 INJECTABLES.$clock = {
   schema: {
@@ -3685,10 +3720,10 @@ INJECTABLES.$clock = {
     start: 'function',
     assignOptions: 'function',
   },
-  summon (injectees, component: HaikuComponent) {
-    injectees.$clock = component.getClock();
+  summon(injectees, component: HaikuComponent) {
+    injectees.$clock = component.getClock()
   },
-};
+}
 
 INJECTABLES.$core = {
   schema: {
@@ -3696,73 +3731,73 @@ INJECTABLES.$core = {
     timeline: INJECTABLES.$timeline.schema,
     clock: INJECTABLES.$clock.schema,
   },
-  summon (injectees, component: HaikuComponent, node, timelineName: string) {
+  summon(injectees, component: HaikuComponent, node, timelineName: string) {
     injectees.$core = {
       component,
       context: component.context,
       options: component.config,
       timeline: component.getTimeline(timelineName),
       clock: component.getClock(),
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$context = {
   schema: {},
-  summon (injectees, component: HaikuComponent) {
-    injectees.$context = component.context;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$context = component.context
   },
-};
+}
 
 INJECTABLES.$component = {
   schema: INJECTABLES.$element.schema,
-  summon (injectees, component: HaikuComponent) {
-    injectees.$component = component;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$component = component
   },
-};
+}
 
 INJECTABLES.$host = {
   schema: {},
-  summon (injectees, component: HaikuComponent) {
-    injectees.$host = component.host;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$host = component.host
   },
-};
+}
 
 INJECTABLES.$top = {
   schema: {},
-  summon (injectees, component: HaikuComponent) {
-    injectees.$host = component.top;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$host = component.top
   },
-};
+}
 
 INJECTABLES.$state = {
   schema: {},
-  summon (injectees, component: HaikuComponent) {
-    injectees.$state = component.state;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$state = component.state
   },
-};
+}
 
 INJECTABLES.$parent = {
   schema: INJECTABLES.$element.schema,
-  summon (injectees, component: HaikuComponent, node) {
-    injectees.$parent = HaikuElement.findOrCreateByNode(node).parent;
+  summon(injectees, component: HaikuComponent, node) {
+    injectees.$parent = HaikuElement.findOrCreateByNode(node).parent
   },
-};
+}
 
 INJECTABLES.$container = {
   schema: INJECTABLES.$element.schema,
-  summon (injectees, component: HaikuComponent, node) {
-    const element = HaikuElement.findOrCreateByNode(node);
-    injectees.$container = element.owner;
+  summon(injectees, component: HaikuComponent, node) {
+    const element = HaikuElement.findOrCreateByNode(node)
+    injectees.$container = element.owner
   },
-};
+}
 
 INJECTABLES.$children = {
   schema: INJECTABLES.$element.schema.children,
-  summon (injectees, component: HaikuComponent, node) {
-    injectees.$children = HaikuElement.findOrCreateByNode(node).children;
+  summon(injectees, component: HaikuComponent, node) {
+    injectees.$children = HaikuElement.findOrCreateByNode(node).children
   },
-};
+}
 
 INJECTABLES.$tree = {
   schema: {
@@ -3772,17 +3807,17 @@ INJECTABLES.$tree = {
     root: INJECTABLES.$element.schema,
     element: INJECTABLES.$element.schema,
   },
-  summon (injectees, component: HaikuComponent, node) {
-    const element = HaikuElement.findOrCreateByNode(node);
+  summon(injectees, component: HaikuComponent, node) {
+    const element = HaikuElement.findOrCreateByNode(node)
     injectees.$tree = {
       element,
       component,
       parent: element.parent,
       children: element.children,
       root: element.owner,
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$user = {
   schema: {
@@ -3800,9 +3835,9 @@ INJECTABLES.$user = {
       y: 'number',
     },
   },
-  summon (injectees, component: HaikuComponent, node) {
+  summon(injectees, component: HaikuComponent, node) {
     if (component.isLiveMode()) {
-      injectees.$user = component.context.getGlobalUserState();
+      injectees.$user = component.context.getGlobalUserState()
 
       // If we're inside another component, produce mouse coords in terms
       // of our own coordinate space
@@ -3812,9 +3847,10 @@ INJECTABLES.$user = {
           component.transformContextPointToLocalPoint(
             Object.assign({}, injectees.$user.mouse),
           ),
-        );
+        )
       }
-    } else {
+    }
+    else {
       injectees.$user = {
         mouse: {
           x: 1,
@@ -3829,136 +3865,136 @@ INJECTABLES.$user = {
         keys: {},
         touches: [],
         mouches: [],
-      };
+      }
     }
   },
-};
+}
 
-const getRepeatHostNode = (node) => {
+function getRepeatHostNode(node) {
   if (!node) {
-    return;
+    return
   }
 
   if (node.__memory.repeatee) {
-    return node;
+    return node
   }
 
-  return getRepeatHostNode(node.__memory && node.__memory.parent);
-};
+  return getRepeatHostNode(node.__memory && node.__memory.parent)
+}
 
-const getIfHostNode = (node) => {
+function getIfHostNode(node) {
   if (!node) {
-    return;
+    return
   }
 
   if (node.__memory.if) {
-    return node;
+    return node
   }
 
-  return getIfHostNode(node.__memory && node.__memory.parent);
-};
+  return getIfHostNode(node.__memory && node.__memory.parent)
+}
 
 INJECTABLES.$flow = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
+  summon(injectees, component: HaikuComponent, node) {
     if (!injectees.$flow) {
-      injectees.$flow = {};
+      injectees.$flow = {}
     }
 
-    const repeatNode = getRepeatHostNode(node);
+    const repeatNode = getRepeatHostNode(node)
 
     injectees.$flow.repeat = (repeatNode && repeatNode.__memory.repeatee) || {
       instructions: [],
       payload: {},
       source: repeatNode,
       index: 0,
-    };
+    }
 
-    const ifNode = getIfHostNode(node);
+    const ifNode = getIfHostNode(node)
 
     injectees.$flow.if = (ifNode && ifNode.__memory.if) || {
       answer: null,
-    };
+    }
 
     injectees.$flow.placeholder = node.__memory.placeholder || {
       value: null,
       surrogate: null,
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$repeat = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
+  summon(injectees, component: HaikuComponent, node) {
     if (!injectees.$repeat) {
-      injectees.$repeat = {};
+      injectees.$repeat = {}
     }
 
-    const repeatNode = getRepeatHostNode(node);
+    const repeatNode = getRepeatHostNode(node)
 
     injectees.$repeat = (repeatNode && repeatNode.__memory.repeatee) || {
       instructions: [],
       payload: {},
       source: repeatNode,
       index: 0,
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$if = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
+  summon(injectees, component: HaikuComponent, node) {
     if (!injectees.$if) {
-      injectees.$if = {};
+      injectees.$if = {}
     }
 
-    const ifNode = getIfHostNode(node);
+    const ifNode = getIfHostNode(node)
 
     injectees.$if = (ifNode && ifNode.__memory.if) || {
       answer: null,
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$placeholder = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
+  summon(injectees, component: HaikuComponent, node) {
     if (!injectees.$placeholder) {
-      injectees.$placeholder = {};
+      injectees.$placeholder = {}
     }
 
     injectees.$placeholder = node.__memory.placeholder || {
       value: null,
       surrogate: null,
-    };
+    }
   },
-};
+}
 
 INJECTABLES.$index = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
-    const repeatNode = getRepeatHostNode(node);
+  summon(injectees, component: HaikuComponent, node) {
+    const repeatNode = getRepeatHostNode(node)
 
     injectees.$index = (
-      repeatNode &&
-      repeatNode.__memory.repeatee &&
-      repeatNode.__memory.repeatee.index
-    ) || 0;
+      repeatNode
+      && repeatNode.__memory.repeatee
+      && repeatNode.__memory.repeatee.index
+    ) || 0
   },
-};
+}
 
 INJECTABLES.$payload = {
   schema: {},
-  summon (injectees, component: HaikuComponent, node) {
-    const repeatNode = getRepeatHostNode(node);
+  summon(injectees, component: HaikuComponent, node) {
+    const repeatNode = getRepeatHostNode(node)
 
     injectees.$payload = (
-      repeatNode &&
-      repeatNode.__memory.repeatee &&
-      repeatNode.__memory.repeatee.payload
-    ) || {};
+      repeatNode
+      && repeatNode.__memory.repeatee
+      && repeatNode.__memory.repeatee.payload
+    ) || {}
   },
-};
+}
 
 INJECTABLES.$helpers = {
   schema: {
@@ -3966,16 +4002,16 @@ INJECTABLES.$helpers = {
     rand: 'function',
     find: 'function',
   },
-  summon (injectees, component: HaikuComponent) {
-    injectees.$helpers = component.helpers;
+  summon(injectees, component: HaikuComponent) {
+    injectees.$helpers = component.helpers
   },
-};
+}
 
 // List of JavaScript global built-in objects that we want to provide as an injectable.
 // In the future, we might end up passing in modified versions of these objects/functions.
 const BUILTIN_INJECTABLES = {
   Infinity,
-  NaN,
+  NaN: Number.NaN,
   Object,
   Boolean,
   Math,
@@ -3987,8 +4023,8 @@ const BUILTIN_INJECTABLES = {
   Array,
   isFinite,
   isNaN,
-  parseFloat,
-  parseInt,
+  parseFloat: Number.parseFloat,
+  parseInt: Number.parseInt,
   decodeURI,
   decodeURIComponent,
   encodeURI,
@@ -4034,14 +4070,14 @@ const BUILTIN_INJECTABLES = {
   // 'Iterator ': Iterator,
   // 'ParallelArray ': ParallelArray,
   // 'StopIteration': StopIteration
-};
+}
 
 for (const builtinInjectableKey in BUILTIN_INJECTABLES) {
   INJECTABLES[builtinInjectableKey] = {
-    summon (injectees) {
-      injectees[builtinInjectableKey] = BUILTIN_INJECTABLES[builtinInjectableKey];
+    summon(injectees) {
+      injectees[builtinInjectableKey] = BUILTIN_INJECTABLES[builtinInjectableKey]
     },
-  };
+  }
 }
 
 /**
@@ -4049,28 +4085,30 @@ for (const builtinInjectableKey in BUILTIN_INJECTABLES) {
  * Log the error (but only once, since we're animating) and then return a
  * fairly safe all-purpose value (1).
  */
-const safeCall = (fn, hostInstance, hostStates) => {
+function safeCall(fn, hostInstance, hostStates) {
   try {
-    return fn.call(hostInstance, hostStates);
-  } catch (exception) {
-    consoleErrorOnce(exception);
-    return 1;
+    return fn.call(hostInstance, hostStates)
   }
-};
+  catch (exception) {
+    consoleErrorOnce(exception)
+    return 1
+  }
+}
 
-const safeApply = (fn, hostInstance, summoneesArray) => {
+function safeApply(fn, hostInstance, summoneesArray) {
   try {
-    return fn.apply(hostInstance, summoneesArray);
-  } catch (exception) {
-    consoleErrorOnce(exception);
-    return 1;
+    return fn.apply(hostInstance, summoneesArray)
   }
-};
+  catch (exception) {
+    consoleErrorOnce(exception)
+    return 1
+  }
+}
 
-const areSummoneesDifferent = (previous: any, incoming: any): boolean => {
+function areSummoneesDifferent(previous: any, incoming: any): boolean {
   if (Array.isArray(previous) && Array.isArray(incoming)) {
     if (previous.length !== incoming.length) {
-      return true;
+      return true
     }
 
     // Do a shallow comparison of elements. We don't go deep because:
@@ -4079,39 +4117,39 @@ const areSummoneesDifferent = (previous: any, incoming: any): boolean => {
     for (let i = 0; i < previous.length; i++) {
       // Assume that objects are different since we don't want to do a deep comparison
       if (previous[i] && typeof previous[i] === 'object') {
-        return true;
+        return true
       }
 
       if (previous[i] !== incoming[i]) {
-        return true;
+        return true
       }
     }
 
     for (let j = 0; j < previous.length; j++) {
       // Assume that objects are different since we don't want to do a deep comparison
       if (incoming[j] && typeof incoming[j] === 'object') {
-        return true;
+        return true
       }
 
       if (incoming[j] !== previous[j]) {
-        return true;
+        return true
       }
     }
 
-    return false;
+    return false
   }
 
   if (typeof previous === OBJECT && typeof incoming === OBJECT) {
     if (previous === null && incoming === null) {
-      return false;
+      return false
     }
 
     if (previous === null) {
-      return true;
+      return true
     }
 
     if (incoming === null) {
-      return true;
+      return true
     }
 
     // Do a shallow comparison of properties. We don't go deep because:
@@ -4120,30 +4158,30 @@ const areSummoneesDifferent = (previous: any, incoming: any): boolean => {
 
     for (const pkey in previous) {
       if (previous[pkey] !== incoming[pkey]) {
-        return true;
+        return true
       }
     }
 
     for (const ikey in incoming) {
       if (incoming[ikey] !== previous[ikey]) {
-        return true;
+        return true
       }
     }
 
-    return false;
+    return false
   }
 
-  return previous !== incoming;
-};
+  return previous !== incoming
+}
 
-const stringToInt = (str) => {
-  let hash = 5381;
+function stringToInt(str) {
+  let hash = 5381
 
-  let i = str.length;
+  let i = str.length
 
   while (i) {
-    hash = (hash * 33) ^ str.charCodeAt(--i);
+    hash = (hash * 33) ^ str.charCodeAt(--i)
   }
 
-  return hash >>> 0;
-};
+  return hash >>> 0
+}

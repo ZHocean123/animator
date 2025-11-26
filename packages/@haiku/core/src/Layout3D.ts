@@ -2,11 +2,11 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import {
+import type {
   BytecodeNode,
   LayoutSpec,
   ThreeDimensionalLayoutProperty,
-} from './api';
+} from './api'
 
 const ELEMENTS_2D = {
   circle: true,
@@ -28,115 +28,117 @@ const ELEMENTS_2D = {
   tspan: true,
   unknown: true,
   use: true,
-};
+}
 
-export const AUTO_SIZING_TOKEN = 'auto';
+export const AUTO_SIZING_TOKEN = 'auto'
 
 // Coordinate (0, 0, 0) is the top left of the screen
 
-export const SIZE_PROPORTIONAL = 0; // A percentage of the parent
-export const SIZE_ABSOLUTE = 1; // A fixed size in screen pixels
-const IDENTITY = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+export const SIZE_PROPORTIONAL = 0 // A percentage of the parent
+export const SIZE_ABSOLUTE = 1 // A fixed size in screen pixels
+const IDENTITY = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
 // Used for rendering downstream
 const FORMATS = {
   THREE: 3,
   TWO: 2,
-};
+}
 
-const DIV = 'div';
-const SVG = 'svg';
-const TYPE_STRING = 'string';
+const DIV = 'div'
+const SVG = 'svg'
+const TYPE_STRING = 'string'
 
-const virtualElementIsLayoutContainer = (virtualElement) => {
+function virtualElementIsLayoutContainer(virtualElement) {
   // A virtual element is a layout container if the element is a component…
-  return typeof virtualElement.elementName !== TYPE_STRING ||
+  return typeof virtualElement.elementName !== TYPE_STRING
   // …or if it is a layout container defining its own coordinate system.
-  virtualElement.elementName === SVG ||
-  virtualElement.elementName === DIV;
-};
+    || virtualElement.elementName === SVG
+    || virtualElement.elementName === DIV
+}
 
-const initializeNodeAttributes = (node, isRootNode: boolean) => {
+function initializeNodeAttributes(node, isRootNode: boolean) {
   if (!node || typeof node !== 'object') {
-    return;
+    return
   }
 
   if (!node.attributes) {
-    node.attributes = {};
+    node.attributes = {}
   }
 
   if (!node.attributes.style) {
-    node.attributes.style = {};
+    node.attributes.style = {}
   }
 
-  node.isRootNode = isRootNode;
+  node.isRootNode = isRootNode
 
-  return node;
-};
+  return node
+}
 
-const initializeNodeLayout = (node: BytecodeNode) => {
-  node.layout = createLayoutSpec(!node.isRootNode && virtualElementIsLayoutContainer(node));
-  node.layout.matrix = createMatrix();
+function initializeNodeLayout(node: BytecodeNode) {
+  node.layout = createLayoutSpec(!node.isRootNode && virtualElementIsLayoutContainer(node))
+  node.layout.matrix = createMatrix()
   node.layout.format = ELEMENTS_2D[node.elementName as string]
     ? FORMATS.TWO
-    : FORMATS.THREE;
-};
+    : FORMATS.THREE
+}
 
-const createMatrix = () => copyMatrix(IDENTITY);
+const createMatrix = () => copyMatrix(IDENTITY)
 
-const copyMatrix = (m: number[]) => [...m];
+const copyMatrix = (m: number[]) => [...m]
 
-const multiplyMatrices = (a: number[], b: number[]): number[] => [
-  a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12],
-  a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13],
-  a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14],
-  a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15],
-  a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12],
-  a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13],
-  a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14],
-  a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15],
-  a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12],
-  a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13],
-  a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14],
-  a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15],
-  a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12],
-  a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13],
-  a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14],
-  a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15],
-];
+function multiplyMatrices(a: number[], b: number[]): number[] {
+  return [
+    a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12],
+    a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13],
+    a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14],
+    a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15],
+    a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12],
+    a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13],
+    a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14],
+    a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15],
+    a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12],
+    a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13],
+    a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14],
+    a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15],
+    a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12],
+    a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13],
+    a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14],
+    a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15],
+  ]
+}
 
-const multiplyArrayOfMatrices = (arrayOfMatrices: number[][]): number[] => {
-  let product = createMatrix();
+function multiplyArrayOfMatrices(arrayOfMatrices: number[][]): number[] {
+  let product = createMatrix()
   for (let i = 0; i < arrayOfMatrices.length; i++) {
-    product = multiplyMatrices(product, arrayOfMatrices[i]);
+    product = multiplyMatrices(product, arrayOfMatrices[i])
   }
-  return product;
-};
+  return product
+}
 
-const computeOrthonormalBasisMatrix = (rotation, shear) => {
+function computeOrthonormalBasisMatrix(rotation, shear) {
   const orthonormalBasisLayout = {
     ...createLayoutSpec(),
     rotation,
     shear,
-  };
-  const ignoredSize = {x: 0, y: 0, z: 0};
-  return computeMatrix(orthonormalBasisLayout, ignoredSize);
-};
+  }
+  const ignoredSize = { x: 0, y: 0, z: 0 }
+  return computeMatrix(orthonormalBasisLayout, ignoredSize)
+}
 
-const computeScaledBasisMatrix = (rotation, scale, shear) => {
+function computeScaledBasisMatrix(rotation, scale, shear) {
   const scaledBasisLayout = {
     ...createLayoutSpec(),
     rotation,
     scale,
     shear,
-  };
-  const ignoredSize = {x: 0, y: 0, z: 0};
-  return computeMatrix(scaledBasisLayout, ignoredSize);
-};
+  }
+  const ignoredSize = { x: 0, y: 0, z: 0 }
+  return computeMatrix(scaledBasisLayout, ignoredSize)
+}
 
-const clone = (layout) => {
+function clone(layout) {
   if (!layout) {
-    return layout;
+    return layout
   }
 
   const out = {
@@ -156,22 +158,22 @@ const clone = (layout) => {
     size: null,
     matrix: null,
     computed: null,
-  };
+  }
 
   if (layout.computed) {
-    out.computed = clone(layout.computed);
+    out.computed = clone(layout.computed)
   }
 
   // Handle either a raw layout (no size or matrix) or a computed one (has size and matrix)
   if (layout.matrix) {
-    out.matrix = layout.matrix.map((n) => n);
+    out.matrix = layout.matrix.map(n => n)
   }
   if (layout.size) {
-    out.size = Object.assign({}, layout.size);
+    out.size = Object.assign({}, layout.size)
   }
 
-  return out;
-};
+  return out
+}
 
 /**
  * The code below includes modified code from https://github.com/famous/engine
@@ -201,105 +203,104 @@ const clone = (layout) => {
  * THE SOFTWARE.
  */
 
-const createLayoutSpec = (createCoordinateSystem?: boolean): LayoutSpec => ({
-  shown: true,
-  opacity: 1.0,
-  offset: {x: 0, y: 0, z: 0},
-  origin: createCoordinateSystem ? {x: 0.5, y: 0.5, z: 0.5} : {x: 0, y: 0, z: 0}, // transform origin
-  translation: {x: 0, y: 0, z: 0},
-  rotation: {x: 0, y: 0, z: 0},
-  scale: {x: 1, y: 1, z: 1},
-  shear: {xy: 0, xz: 0, yz: 0},
-  sizeMode: {
-    x: SIZE_PROPORTIONAL,
-    y: SIZE_PROPORTIONAL,
-    z: SIZE_PROPORTIONAL,
-  },
-  sizeProportional: {x: 1, y: 1, z: 1},
-  sizeDifferential: {x: 0, y: 0, z: 0},
-  sizeAbsolute: {x: 0, y: 0, z: 0},
-});
+function createLayoutSpec(createCoordinateSystem?: boolean): LayoutSpec {
+  return {
+    shown: true,
+    opacity: 1.0,
+    offset: { x: 0, y: 0, z: 0 },
+    origin: createCoordinateSystem ? { x: 0.5, y: 0.5, z: 0.5 } : { x: 0, y: 0, z: 0 }, // transform origin
+    translation: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 1, y: 1, z: 1 },
+    shear: { xy: 0, xz: 0, yz: 0 },
+    sizeMode: {
+      x: SIZE_PROPORTIONAL,
+      y: SIZE_PROPORTIONAL,
+      z: SIZE_PROPORTIONAL,
+    },
+    sizeProportional: { x: 1, y: 1, z: 1 },
+    sizeDifferential: { x: 0, y: 0, z: 0 },
+    sizeAbsolute: { x: 0, y: 0, z: 0 },
+  }
+}
 
-const computeMatrix = (
-  layoutSpec: LayoutSpec,
-  targetSize: ThreeDimensionalLayoutProperty,
-) => {
-  const originX = layoutSpec.origin.x * targetSize.x;
-  const originY = layoutSpec.origin.y * targetSize.y;
-  const originZ = layoutSpec.origin.z * targetSize.z;
+function computeMatrix(layoutSpec: LayoutSpec, targetSize: ThreeDimensionalLayoutProperty) {
+  const originX = layoutSpec.origin.x * targetSize.x
+  const originY = layoutSpec.origin.y * targetSize.y
+  const originZ = layoutSpec.origin.z * targetSize.z
 
   // We represent the matrix in column-major order, a convention in graphics programming.
-  const m = createMatrix();
+  const m = createMatrix()
 
   // Only if necessary, apply rotation from Euler angles in order: Z then Y then X.
   if (layoutSpec.rotation.x || layoutSpec.rotation.y || layoutSpec.rotation.z) {
-    const sx = Math.sin(layoutSpec.rotation.x);
-    const sy = Math.sin(layoutSpec.rotation.y);
-    const sz = Math.sin(layoutSpec.rotation.z);
-    const cx = Math.cos(layoutSpec.rotation.x);
-    const cy = Math.cos(layoutSpec.rotation.y);
-    const cz = Math.cos(layoutSpec.rotation.z);
-    const cxcz = cx * cz;
-    const cxsz = cx * sz;
-    const sxcz = sx * cz;
-    const sxsz = sx * sz;
+    const sx = Math.sin(layoutSpec.rotation.x)
+    const sy = Math.sin(layoutSpec.rotation.y)
+    const sz = Math.sin(layoutSpec.rotation.z)
+    const cx = Math.cos(layoutSpec.rotation.x)
+    const cy = Math.cos(layoutSpec.rotation.y)
+    const cz = Math.cos(layoutSpec.rotation.z)
+    const cxcz = cx * cz
+    const cxsz = cx * sz
+    const sxcz = sx * cz
+    const sxsz = sx * sz
 
-    m[0] = cy * cz;
-    m[4] = sy * sxcz - cxsz;
-    m[8] = sy * cxcz + sxsz;
-    m[1] = cy * sz;
-    m[5] = sy * sxsz + cxcz;
-    m[9] = sy * cxsz - sxcz;
-    m[2] = -sy;
-    m[6] = cy * sx;
-    m[10] = cy * cx;
+    m[0] = cy * cz
+    m[4] = sy * sxcz - cxsz
+    m[8] = sy * cxcz + sxsz
+    m[1] = cy * sz
+    m[5] = sy * sxsz + cxcz
+    m[9] = sy * cxsz - sxcz
+    m[2] = -sy
+    m[6] = cy * sx
+    m[10] = cy * cx
   }
 
   // Only if necessary, apply shear.
   if (layoutSpec.shear.xy || layoutSpec.shear.xz || layoutSpec.shear.yz) {
-    const shearXzProxy = layoutSpec.shear.xy * layoutSpec.shear.yz + layoutSpec.shear.xz;
-    m[8] += layoutSpec.shear.yz * m[4] + shearXzProxy * m[0];
-    m[9] += layoutSpec.shear.yz * m[5] + shearXzProxy * m[1];
-    m[10] += layoutSpec.shear.yz * m[6] + shearXzProxy * m[2];
-    m[4] += layoutSpec.shear.xy * m[0];
-    m[5] += layoutSpec.shear.xy * m[1];
-    m[6] += layoutSpec.shear.xy * m[2];
+    const shearXzProxy = layoutSpec.shear.xy * layoutSpec.shear.yz + layoutSpec.shear.xz
+    m[8] += layoutSpec.shear.yz * m[4] + shearXzProxy * m[0]
+    m[9] += layoutSpec.shear.yz * m[5] + shearXzProxy * m[1]
+    m[10] += layoutSpec.shear.yz * m[6] + shearXzProxy * m[2]
+    m[4] += layoutSpec.shear.xy * m[0]
+    m[5] += layoutSpec.shear.xy * m[1]
+    m[6] += layoutSpec.shear.xy * m[2]
   }
 
   // Multiply nontrivial scale through.
   if (layoutSpec.scale.x !== 1) {
-    m[0] *= layoutSpec.scale.x;
-    m[1] *= layoutSpec.scale.x;
-    m[2] *= layoutSpec.scale.x;
+    m[0] *= layoutSpec.scale.x
+    m[1] *= layoutSpec.scale.x
+    m[2] *= layoutSpec.scale.x
   }
 
   if (layoutSpec.scale.y !== 1) {
-    m[4] *= layoutSpec.scale.y;
-    m[5] *= layoutSpec.scale.y;
-    m[6] *= layoutSpec.scale.y;
+    m[4] *= layoutSpec.scale.y
+    m[5] *= layoutSpec.scale.y
+    m[6] *= layoutSpec.scale.y
   }
 
   if (layoutSpec.scale.z !== 1) {
-    m[8] *= layoutSpec.scale.z;
-    m[9] *= layoutSpec.scale.z;
-    m[10] *= layoutSpec.scale.z;
+    m[8] *= layoutSpec.scale.z
+    m[9] *= layoutSpec.scale.z
+    m[10] *= layoutSpec.scale.z
   }
 
-  m[12] =
-    layoutSpec.offset.x +
-    layoutSpec.translation.x -
-    (m[0] * originX + m[4] * originY + m[8] * originZ);
-  m[13] =
-    layoutSpec.offset.y +
-    layoutSpec.translation.y -
-    (m[1] * originX + m[5] * originY + m[9] * originZ);
-  m[14] =
-    layoutSpec.offset.z +
-    layoutSpec.translation.z -
-    (m[2] * originX + m[6] * originY + m[10] * originZ);
+  m[12]
+    = layoutSpec.offset.x
+      + layoutSpec.translation.x
+      - (m[0] * originX + m[4] * originY + m[8] * originZ)
+  m[13]
+    = layoutSpec.offset.y
+      + layoutSpec.translation.y
+      - (m[1] * originX + m[5] * originY + m[9] * originZ)
+  m[14]
+    = layoutSpec.offset.z
+      + layoutSpec.translation.z
+      - (m[2] * originX + m[6] * originY + m[10] * originZ)
 
-  return m;
-};
+  return m
+}
 
 export default {
   multiplyArrayOfMatrices,
@@ -316,4 +317,4 @@ export default {
   FORMATS,
   SIZE_ABSOLUTE,
   SIZE_PROPORTIONAL,
-};
+}

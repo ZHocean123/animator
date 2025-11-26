@@ -12,24 +12,24 @@
  * @param {string} b
  * @returns {number}
  */
-const compareSemver = (a: string, b: string): number => {
-  const semverA = a.split('.');
-  const semverB = b.split('.');
+function compareSemver(a: string, b: string): number {
+  const semverA = a.split('.')
+  const semverB = b.split('.')
 
   if (semverA.length !== 3 || semverB.length !== 3) {
-    throw new Error(`Invalid semver comparison: ${a}, ${b}`);
+    throw new Error(`Invalid semver comparison: ${a}, ${b}`)
   }
 
   for (let i = 0; i < 3; ++i) {
     if (semverA[i] < semverB[i]) {
-      return -1;
+      return -1
     }
     if (semverA[i] > semverB[i]) {
-      return 1;
+      return 1
     }
   }
 
-  return 0;
-};
+  return 0
+}
 
-export default compareSemver;
+export default compareSemver

@@ -25,7 +25,7 @@ for (const pack of allPackages) {
     // Use root ESLint configuration for all packages
     const env = {...global.process.env, FORCE_COLOR: true};
     // Point ESLint to root config since we use unified configuration
-    env.ESLINT_USE_FLAT_CONFIG = 'false';
+    env.ESLINT_USE_FLAT_CONFIG = 'true';
     
     lintProcess.cp = cp.spawn(lintProcess.command, {cwd: pack.abspath, shell: true, env});
 

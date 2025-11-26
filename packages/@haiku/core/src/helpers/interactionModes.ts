@@ -5,11 +5,12 @@
 /**
  * Interaction mode types.
  * @namespace {object}
+ * @property
  */
 // tslint:disable-next-line:no-namespace
 export namespace InteractionMode {
-  export const EDIT = 0; // Default mode, all is editable
-  export const LIVE = 1; // Live mode
+  export const EDIT = 0 // Default mode, all is editable
+  export const LIVE = 1 // Live mode
 }
 
 /**
@@ -19,8 +20,8 @@ export namespace InteractionMode {
  * mode is 'preview' mode.
  * @returns boolean
  */
-export function isPreviewMode (mode: number): boolean {
-  return mode === InteractionMode.LIVE;
+export function isPreviewMode(mode: number): boolean {
+  return mode === InteractionMode.LIVE
 }
 
 /**
@@ -30,6 +31,6 @@ export function isPreviewMode (mode: number): boolean {
  * mode is 'preview' mode.
  * @returns boolean
  */
-export function isLiveMode (mode): boolean {
-  return isPreviewMode(mode);
+export function isLiveMode(mode): boolean {
+  return isPreviewMode(mode)
 }

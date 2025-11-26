@@ -22,7 +22,7 @@
   "repository": "https://github.com/HaikuTeam/core",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --exclude 'src/vendor/**' 'src/**/*.ts'",
+    "lint": "eslint --ignore-pattern '!src/vendor/**' src/**/*.ts --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",

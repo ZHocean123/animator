@@ -3,10 +3,10 @@ export default (
   actions,
   mspf: number,
 ): number => {
-  let max = 0;
+  let max = 0
 
   if (!actions) {
-    return max;
+    return max
   }
 
   for (const selector in actions) {
@@ -15,26 +15,26 @@ export default (
         _, // always "timeline"
         timelineNameOfListener,
         frameKeyOfListener,
-      ] = eventName.split(':');
+      ] = eventName.split(':')
 
       // Skip non-frame-listener events
       if (!timelineNameOfListener || !frameKeyOfListener) {
-        continue;
+        continue
       }
 
       // Skip frame listeners for timelines other than us
       if (timelineNameOfListener !== name) {
-        continue;
+        continue
       }
 
-      const frameOfListener = Number(frameKeyOfListener);
-      const timeOfListener = frameOfListener * mspf;
+      const frameOfListener = Number(frameKeyOfListener)
+      const timeOfListener = frameOfListener * mspf
 
       if (timeOfListener > max) {
-        max = timeOfListener;
+        max = timeOfListener
       }
     }
   }
 
-  return max;
-};
+  return max
+}

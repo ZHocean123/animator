@@ -3,44 +3,44 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import {BytecodeNode} from '../../api';
-import HaikuComponent from '../../HaikuComponent';
-import getParsedProperty from '../../helpers/getParsedProperty';
-import {randomString} from '../../helpers/StringUtils';
+import type { BytecodeNode } from '../../api'
+import type HaikuComponent from '../../HaikuComponent'
+import getParsedProperty from '../../helpers/getParsedProperty'
+import { randomString } from '../../helpers/StringUtils'
 
-const clearProps = (props): Object => {
-  const result = {};
+function clearProps(props): object {
+  const result = {}
 
   for (const verboseKeyName in props) {
     if (props[verboseKeyName] === undefined) {
-      continue;
+      continue
     }
 
-    Object.assign(result, getParsedProperty(props, verboseKeyName));
+    Object.assign(result, getParsedProperty(props, verboseKeyName))
   }
 
-  return result;
-};
+  return result
+}
 
-const allProps = (vueComponent) => {
+function allProps(vueComponent) {
   return Object.assign(
     clearProps(vueComponent.$props),
     {
       ref: vueComponent.$el,
       onHaikuComponentWillInitialize: (component) => {
-        vueComponent.$emit('haikuComponentWillInitialize', component);
+        vueComponent.$emit('haikuComponentWillInitialize', component)
       },
       onHaikuComponentDidMount: (component) => {
-        vueComponent.$emit('haikuComponentDidMount', component);
+        vueComponent.$emit('haikuComponentDidMount', component)
       },
       onHaikuComponentWillMount: (component) => {
-        vueComponent.$emit('haikuComponentWillMount', component);
+        vueComponent.$emit('haikuComponentWillMount', component)
       },
       onHaikuComponentDidInitialize: (component) => {
-        vueComponent.$emit('haikuComponentDidInitialize', component);
+        vueComponent.$emit('haikuComponentDidInitialize', component)
       },
       onHaikuComponentWillUnmount: (component) => {
-        vueComponent.$emit('haikuComponentWillUnmount', component);
+        vueComponent.$emit('haikuComponentWillUnmount', component)
       },
       children: vueComponent.$slots.default
         ? vueComponent.$slots.default.filter((node: any) => node.tag !== undefined)
@@ -55,37 +55,36 @@ const allProps = (vueComponent) => {
           receiver,
           sender: HaikuComponent,
         ) => {
-
           if (element.__memory.placeholder.surrogate === surrogate || !element.__memory.targets) {
-            return;
+            return
           }
 
-          const node = element.__memory.targets[0];
+          const node = element.__memory.targets[0]
           if (node) {
-            const vueElement = surrogate.elm;
-            const div = document.createElement('div');
-            node.parentNode.replaceChild(div, node);
+            const vueElement = surrogate.elm
+            const div = document.createElement('div')
+            node.parentNode.replaceChild(div, node)
 
-            node.style.visibility = 'hidden';
+            node.style.visibility = 'hidden'
             if (vueElement) {
-              div.appendChild(vueElement);
+              div.appendChild(vueElement)
             }
 
             window.requestAnimationFrame(() => {
-              element.__memory.placeholder.surrogate = surrogate;
-              node.style.visibility = 'visible';
-            });
-            sender.markHorizonElement(element);
-            sender.markForFullFlush();
+              element.__memory.placeholder.surrogate = surrogate
+              node.style.visibility = 'visible'
+            })
+            sender.markHorizonElement(element)
+            sender.markForFullFlush()
           }
         },
       },
     },
-  );
-};
+  )
+}
 
 // tslint:disable-next-line:function-name
-export default function HaikuVueDOMAdapter (haikuComponentFactory): {} {
+export default function HaikuVueDOMAdapter(haikuComponentFactory): {} {
   return {
     props: {
       // We use null (which is the equivalent of 'any') for Boolean values
@@ -118,16 +117,16 @@ export default function HaikuVueDOMAdapter (haikuComponentFactory): {} {
       // LEGACY
       haikuOptions: Object,
     },
-    mounted () {
-      this.haiku = haikuComponentFactory(this.$el, allProps(this));
+    mounted() {
+      this.haiku = haikuComponentFactory(this.$el, allProps(this))
     },
-    updated () {
-      this.haiku.assignConfig(allProps(this));
+    updated() {
+      this.haiku.assignConfig(allProps(this))
     },
-    destroyed () {
-      this.haiku.callUnmount();
+    destroyed() {
+      this.haiku.callUnmount()
     },
-    render (createElement) {
+    render(createElement) {
       return createElement('div', {
         attrs: {
           id: `haiku-vueroot-${randomString(24)}`,
@@ -141,7 +140,7 @@ export default function HaikuVueDOMAdapter (haikuComponentFactory): {} {
           height: '100%',
           transform: 'matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)',
         },
-      }, this.$slots.default);
+      }, this.$slots.default)
     },
-  };
+  }
 }

@@ -1,32 +1,32 @@
 /**
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
-import {get, to} from '../vendor/color-string';
+import { get, to } from '../vendor/color-string'
 
-const STRING = 'string';
-const OBJECT = 'object';
+const STRING = 'string'
+const OBJECT = 'object'
 
-function parseString (str) {
+function parseString(str) {
   if (!str) {
-    return null;
+    return null
   }
   if (typeof str === OBJECT || (typeof str === STRING && str.trim().slice(0, 3) === 'url')) {
-    return str;
+    return str
   }
-  return get(String(str));
+  return get(String(str))
 }
 
-function generateString (desc) {
+function generateString(desc) {
   if (typeof desc === STRING) {
-    return desc;
+    return desc
   }
   if (!desc) {
-    return 'none';
+    return 'none'
   }
-  return to(desc.model, desc.value);
+  return to(desc.model, desc.value)
 }
 
 export default {
   parseString,
   generateString,
-};
+}

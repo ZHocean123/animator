@@ -2,8 +2,8 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import {BytecodeOptions} from './api';
-import {InteractionMode} from './helpers/interactionModes';
+import type { BytecodeOptions } from './api'
+import { InteractionMode } from './helpers/interactionModes'
 
 export const DEFAULTS: BytecodeOptions = {
   alwaysComputeSizing: false,
@@ -34,7 +34,7 @@ export const DEFAULTS: BytecodeOptions = {
   timelines: null,
   timestamp: null,
   vanities: null,
-};
+}
 
 /**
  * Configuration from HaikuContext is forwarded to all HaikuComponent instances in its tree.
@@ -57,22 +57,22 @@ const CHILD_SAFE_CONFIG = {
   seed: true,
   sizing: true,
   timestamp: true,
-};
+}
 
-const buildChildSafeConfig = (config: BytecodeOptions): BytecodeOptions => {
-  const out = {};
+function buildChildSafeConfig(config: BytecodeOptions): BytecodeOptions {
+  const out = {}
 
   for (const key in config) {
     if (CHILD_SAFE_CONFIG[key]) {
-      out[key] = config[key];
+      out[key] = config[key]
     }
   }
 
-  return out;
-};
+  return out
+}
 
-function seed () {
-  return Math.random().toString(36).slice(2);
+function seed() {
+  return Math.random().toString(36).slice(2)
 }
 
 const CONFIG_KEYS_TO_MERGE = {
@@ -82,48 +82,49 @@ const CONFIG_KEYS_TO_MERGE = {
   helpers: true,
   vanities: true,
   initialStates: true,
-};
+}
 
-function build (...argums): BytecodeOptions {
-  const config: BytecodeOptions = {};
+function build(...argums): BytecodeOptions {
+  const config: BytecodeOptions = {}
 
-  const args = [...argums];
+  const args = [...argums]
 
-  args.unshift(DEFAULTS);
+  args.unshift(DEFAULTS)
 
   args.forEach((incoming) => {
     if (!incoming || typeof incoming !== 'object') {
-      return;
+      return
     }
 
     for (const key in incoming) {
       if (incoming[key] === undefined) {
-        continue;
+        continue
       }
 
       if (CONFIG_KEYS_TO_MERGE[key]) {
         if (!config[key]) {
-          config[key] = {};
+          config[key] = {}
         }
 
         config[key] = {
           ...config[key],
           ...incoming[key],
-        };
-      } else {
-        config[key] = incoming[key];
+        }
+      }
+      else {
+        config[key] = incoming[key]
       }
     }
-  });
+  })
 
   // Validations
   if (config.overflow && (config.overflowX || config.overflowY)) {
-    console.warn('[haiku core] `overflow` overrides `overflowY`/`overflowX`');
-    config.overflowX = null;
-    config.overflowY = null;
+    console.warn('[haiku core] `overflow` overrides `overflowY`/`overflowX`')
+    config.overflowX = null
+    config.overflowY = null
   }
 
-  return config;
+  return config
 }
 
 export default {
@@ -131,4 +132,4 @@ export default {
   seed,
   DEFAULTS,
   buildChildSafeConfig,
-};
+}
