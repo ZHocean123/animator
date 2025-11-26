@@ -2,7 +2,7 @@ import * as Radium from 'radium';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {ipcRenderer, shell} from 'electron';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
+import {ErrorCode} from '@haiku/sdk-inkstone';
 import {Experiment, experimentIsEnabled} from 'haiku-common';
 import {EXPORTER_CHANNEL} from 'haiku-sdk-creator/lib/exporter';
 import Palette from 'haiku-ui-common/lib/Palette';

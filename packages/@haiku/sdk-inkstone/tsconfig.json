@@ -4,7 +4,10 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
-    "lib": ["es6", "dom"],
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -12,7 +15,6 @@
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",
     "types": [
       "node"

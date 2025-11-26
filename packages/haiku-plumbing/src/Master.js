@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import {debounce} from 'lodash';
 import * as fse from 'haiku-fs-extra';
-import {ErrorCode} from '@haiku/sdk-inkstone/lib/errors';
+import {ErrorCode} from '@haiku/sdk-inkstone';
 import HaikuComponent from '@haiku/core/lib/HaikuComponent';
 import * as walkFiles from 'haiku-serialization/src/utils/walkFiles';
 import * as BaseModel from 'haiku-serialization/src/bll/BaseModel';

@@ -13,7 +13,7 @@ export * from "./experiments";
 export * from "./experiments/config";
 
 // Layout utilities
-export * from "./layout/composedTransformsToTimelineProperties";
+export {default as composedTransformsToTimelineProperties, type ComposedTransformSpec} from "./layout/composedTransformsToTimelineProperties";
 export * from "./layout/convertManaLayout";
 export * from "./layout/parseCssTransformString";
 export * from "./layout/xmlUtils";

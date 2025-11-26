@@ -7,9 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, '..');
 
 export default defineConfig({
-  // 包特定入口
-  entry: ['src/**/*.js', 'src/**/*.ts', 'src/**/*.jsx', 'src/**/*.tsx'],
-  
+  // 使用单一入口点
+  entry: ['src/index.ts'],
+
   // 包特定输出
   outDir: resolve(__dirname, 'lib'),
   

@@ -7,6 +7,13 @@ import {requestInstance} from './transport';
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json');
 
+// Export all individual modules for simplified imports
+export * from './config';
+export * from './errors';
+export * from './services';
+export * from './transport';
+export {requestInstance} from './transport';
+
 // TODO: refactor endpoints using these to the new factory pattern.
 const ENDPOINTS = {
   LOGIN: 'v0/user/auth',

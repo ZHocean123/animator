@@ -1,8 +1,7 @@
 import {BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty} from '@haiku/core/lib/api';
 import {LAYOUT_3D_VANITIES} from '@haiku/core/lib/HaikuComponent';
 import Layout3D from '@haiku/core/lib/Layout3D';
-import composedTransformsToTimelineProperties,
-  {ComposedTransformSpec} from 'haiku-common';
+import  {composedTransformsToTimelineProperties, ComposedTransformSpec} from 'haiku-common';
 import {initialValueOr} from './timelineUtils';
 
 const {createLayoutSpec, computeMatrix} = Layout3D;
