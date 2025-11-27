@@ -612,6 +612,9 @@ importers:
       '@haiku/core':
         specifier: ^5.0.0
         version: 5.1.2(@angular/core@18.2.14(rxjs@7.8.2)(zone.js@0.14.10))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.1
       haiku-sdk-creator:
         specifier: workspace:*
         version: link:../haiku-sdk-creator

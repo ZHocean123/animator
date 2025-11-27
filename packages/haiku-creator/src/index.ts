@@ -5,9 +5,8 @@
  */
 
 import * as bakeryElectron from './bakery/electron'
-import * as electronModule from './electron'
+import * as creator from './electron'
 
 // Re-export as named exports
-const creator = electronModule
 export default creator
 export { bakeryElectron, creator }

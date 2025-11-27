@@ -10,7 +10,7 @@ if (!globalThis.process.env.NODE_ENV || globalThis.process.env.NODE_ENV === 'pro
   if (globalThis.process.env.HAIKU_APP_LAUNCH_CLI === '1') {
     globalThis.process.env.HAIKU_APP_SKIP_LOG = '1'
   }
-  // require('./config')
+  require('./config')
 }
 
 // On Windows and Linux, custom protocol handler is passed as argument

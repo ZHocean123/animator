@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@haiku/core": "workspace:*",
+    "@types/node": "^22.19.1",
     "haiku-sdk-creator": "workspace:*",
     "haiku-vendor-legacy": "workspace:*"
   },
