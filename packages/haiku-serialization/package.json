@@ -23,7 +23,7 @@
     "test:utils": "cross-env NODE_ENV=test tape \"test/utils/**/*.test.js\" | tap-spec || true",
     "test:bll": "cross-env NODE_ENV=test tape \"test/bll/**/*.test.js\" | tap-spec || true",
     "test-report": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" > test-result.tap",
-    "lint": "eslint --ext .ts",
+    "lint": "eslint src/**/* --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "compile": "tsdown",

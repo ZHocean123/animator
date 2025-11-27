@@ -5,19 +5,14 @@
   "license": "UNLICENSED",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
       "import": "./lib/index.mjs",
       "require": "./lib/index.cjs"
     },
-    "./*": {
-      "types": "./lib/*.d.ts",
-      "import": "./lib/*.mjs",
-      "require": "./lib/*.cjs"
-    }
+    "./package.json": "./package.json"
   },
-  "main": "lib/index.cjs",
-  "module": "lib/index.mjs",
-  "types": "lib/index.d.cts",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
@@ -41,7 +36,6 @@
     "haiku-common": "workspace:*",
     "haiku-sdk-creator": "workspace:*",
     "haiku-serialization": "workspace:*"
-
   },
   "dependencies": {
     "bezier-easing": "^2.0.3",
