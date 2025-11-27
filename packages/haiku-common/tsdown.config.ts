@@ -21,4 +21,7 @@ export default {
       manualChunks: undefined,
     },
   },
+  external:[
+    'electron'
+  ]
 };
