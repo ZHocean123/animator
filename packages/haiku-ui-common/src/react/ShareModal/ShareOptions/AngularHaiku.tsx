@@ -1,5 +1,5 @@
 import { getAngularSelectorName } from '@haiku/sdk-client'
-import * as dedent from 'dedent'
+import dedent from 'dedent'
 // @ts-ignore
 import * as React from 'react'
 import { CodeBox } from '../../CodeBox'

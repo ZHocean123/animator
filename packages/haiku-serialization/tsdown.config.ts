@@ -1,4 +1,3 @@
-import { resolve } from 'node:path'
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
@@ -8,7 +7,6 @@ export default defineConfig({
   clean: true,
   dts: true,
   exports: true,
-  tsconfig: resolve(__dirname, 'tsconfig.json'),
   external: [
     'haiku-formats',
   ],

@@ -55,7 +55,6 @@ export default {
   format: ['cjs', 'esm'],
   clean: true,
   watch: false,
-  tsconfig: resolve(__dirname, 'tsconfig.json'),
   dts: false,
   exports: true,
   sourcemap: true,

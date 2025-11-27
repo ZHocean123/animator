@@ -8,7 +8,7 @@ import { bootstrapSceneFilesSync, client, createProjectFiles, DEFAULT_BRANCH_NAM
 
 import { ErrorCode, inkstone } from '@haiku/sdk-inkstone'
 import chalk from 'chalk'
-import * as dedent from 'dedent'
+import dedent from 'dedent'
 // @ts-ignore
 import * as hasbin from 'hasbin'
 import * as inquirer from 'inquirer'
@@ -16,8 +16,8 @@ import * as _ from 'lodash'
 
 // @ts-ignore
 import * as prependFile from 'prepend-file'
-
 import { Nib } from './nib'
+
 // tslint:disable-next-line:no-var-requires
 const pkg = require('./../package.json')
 

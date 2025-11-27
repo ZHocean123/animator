@@ -1,4 +1,4 @@
-import * as dedent from 'dedent'
+import dedent from 'dedent'
 import * as React from 'react'
 import { CodeBox } from '../../CodeBox'
 import { NpmInstallable } from './NpmInstallable'

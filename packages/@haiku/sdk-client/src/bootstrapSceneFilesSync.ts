@@ -1,5 +1,5 @@
 import * as path from 'node:path'
-import * as dedent from 'dedent'
+import dedent from 'dedent'
 import * as fse from 'fs-extra'
 import { getAngularSelectorName, getHaikuCoreVersion } from './ProjectDefinitions'
 

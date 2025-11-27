@@ -1,4 +1,3 @@
-import { resolve } from 'node:path'
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
@@ -7,7 +6,7 @@ export default defineConfig({
   entry: ['src/index.ts', 'src/entry.js'],
 
   // 包特定输出
-  outDir: resolve(__dirname, 'lib'),
+  outDir: 'lib',
   // 包特定外部依赖
   external: [
     // 外部依赖

@@ -1,5 +1,5 @@
 import type { HaikuShareUrls } from 'haiku-sdk-creator'
-import * as dedent from 'dedent'
+import dedent from 'dedent'
 import * as React from 'react'
 import { CodeBox } from '../../CodeBox'
 import { PUBLISH_SHARED } from './PublishStyles'

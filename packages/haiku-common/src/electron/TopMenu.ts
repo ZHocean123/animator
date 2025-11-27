@@ -7,7 +7,7 @@ import { isMac, isWindows } from '../environments/os'
 import { Experiment, experimentIsEnabled } from '../experiments'
 import { TourUtils } from '../types/enums'
 
-app.setName('Haiku Animator')
+// app.setName('Haiku Animator')
 
 export interface UndoState {
   canUndo: boolean

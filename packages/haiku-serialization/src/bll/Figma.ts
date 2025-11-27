@@ -6,7 +6,7 @@ import fse from 'haiku-fs-extra'
 import request from 'request'
 import fileManipulation from '../utils/fileManipulation'
 import logger from '../utils/LoggerInstance'
-import mixpanel from '../utils/mixpanel'
+import mixpanel from '../utils/Mixpanel'
 
 const { sanitize } = fileManipulation as any
 

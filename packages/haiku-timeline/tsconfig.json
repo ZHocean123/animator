@@ -1,27 +1,27 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "allowJs": true,
+    "target": "esnext",
     "jsx": "react",
     "lib": [
       "ES2017",
       "dom"
     ],
+    "rootDir": "src",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "noImplicitAny": true,
-    "outDir": "lib",
-    "preserveConstEnums": true,
-    "rootDir": "src",
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "target": "esnext",
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
     "types": [
       "node"
     ],
-    "typeRoots": [
-      "node_modules/@types/"
-    ]
+    "allowJs": true,
+    "noImplicitAny": true,
+    "outDir": "lib",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.js",
