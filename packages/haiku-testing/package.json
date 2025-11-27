@@ -2,7 +2,7 @@
   "name": "haiku-testing",
   "version": "5.1.2",
   "description": "Testing utilities for Haiku.",
-  "main": "lib/index.js",
+  "main": "./lib/index.cjs",
   "directories": {
     "lib": "lib"
   },
@@ -38,5 +38,22 @@
     "tsconfig-paths": "^3.3.2",
     "typescript": "^5.3.3",
     "leaked-handles": "^5.2.0"
+  },
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./assertions": {
+      "import": "./lib/assertions.mjs",
+      "require": "./lib/assertions.cjs"
+    },
+    "./mock": {
+      "import": "./lib/mock.mjs",
+      "require": "./lib/mock.cjs"
+    },
+    "./package.json": "./package.json"
   }
 }

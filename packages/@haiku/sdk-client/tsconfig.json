@@ -5,8 +5,8 @@
     "declaration": true,
     "declarationDir": "lib",
     "lib": ["es2017", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
+    "target": "esnext",
     "types": [
       "node"
     ],

@@ -6,8 +6,8 @@
     "declarationDir": "lib",
     "jsx": "react",
     "lib": ["dom", "es2017"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ESNext",
+    "target": "esnext",
     "types": [
       "node"
     ],

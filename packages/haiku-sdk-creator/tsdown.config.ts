@@ -14,4 +14,5 @@ export default {
   dts: true,
   sourcemap: true,
   minify: false,
+  exports: true,
 };

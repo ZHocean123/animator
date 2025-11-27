@@ -8,14 +8,14 @@
       "es6",
       "dom"
     ],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
-    "target": "ES5",
+    "target": "esnext",
     "types": [
       "node"
     ],

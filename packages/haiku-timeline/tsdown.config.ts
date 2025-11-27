@@ -57,6 +57,7 @@ export default {
   watch: false,
   tsconfig: resolve(__dirname, 'tsconfig.json'),
   dts: false,
+  exports: true,
   sourcemap: true,
   minify: false,
   esbuild: {

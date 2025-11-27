@@ -57,4 +57,6 @@ export default defineConfig({
   
   // 禁用 watch 模式
   watch: false,
+
+  exports: true,
 });

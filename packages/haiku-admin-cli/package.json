@@ -2,7 +2,7 @@
   "name": "haiku-admin-cli",
   "version": "5.1.2",
   "description": "Haiku Admin CLI",
-  "main": "lib/index.js",
+  "main": "./lib/index.cjs",
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
@@ -57,8 +57,29 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-        "typescript": "^3.0.3",
+    "typescript": "^3.0.3",
     "leaked-handles": "^5.2.0",
     "haiku-testing": "workspace:*"
+  },
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./admin-cli": {
+      "import": "./lib/admin-cli.mjs",
+      "require": "./lib/admin-cli.cjs"
+    },
+    "./sdk": {
+      "import": "./lib/sdk/index.mjs",
+      "require": "./lib/sdk/index.cjs"
+    },
+    "./sdk/admin-sdk": {
+      "import": "./lib/sdk/admin-sdk.mjs",
+      "require": "./lib/sdk/admin-sdk.cjs"
+    },
+    "./package.json": "./package.json"
   }
 }

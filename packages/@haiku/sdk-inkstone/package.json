@@ -5,14 +5,9 @@
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs",
-      "types": "./lib/index.d.ts"
+      "require": "./lib/index.cjs"
     },
-    "./*": {
-      "import": "./lib/*.mjs",
-      "require": "./lib/*.cjs",
-      "types": "./lib/*.d.ts"
-    }
+    "./package.json": "./package.json"
   },
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
@@ -31,7 +26,7 @@
   ],
   "author": "Zack Brown <zack@haiku.ai>",
   "license": "UNLICENSED",
-  "types": "./lib/index.d.ts",
+  "types": "./lib/index.d.cts",
   "dependencies": {
     "request": "^2.83.0"
   },
@@ -48,5 +43,7 @@
     "typescript": "^3.0.3",
     "leaked-handles": "^5.2.0",
     "haiku-testing": "workspace:*"
-  }
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs"
 }

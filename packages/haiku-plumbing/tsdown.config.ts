@@ -51,4 +51,6 @@ export default defineConfig({
 
   // TypeScript 配置
   tsconfig: './tsconfig.json',
+
+  exports: true,
 });

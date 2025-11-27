@@ -174,8 +174,8 @@ module.exports = {
 // tsconfig.base.json
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
+    "target": "esnext",
+    "module": "preserve",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

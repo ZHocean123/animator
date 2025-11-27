@@ -13,6 +13,7 @@ export default {
   tsconfig: resolve(__dirname, 'tsconfig.json'),
   dts: true,
   sourcemap: true,
+  exports: true,
   minify: false,
   // 确保生成单一的入口文件
   rollupOptions: {

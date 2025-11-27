@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es2019",
+    "target": "esnext",
     "baseUrl": "./",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "strict": true,
     "noImplicitAny": true,
@@ -13,6 +13,11 @@
     "outDir": "lib",
     "sourceMap": true,
     "esModuleInterop": true,
+    "moduleDetection": "force",
+    "types": [],
+    "noUnusedLocals": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
   "include": ["src/**/*"],

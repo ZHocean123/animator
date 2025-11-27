@@ -45,4 +45,6 @@ export default defineConfig({
   
   // 禁用监听模式，避免在构建脚本中出现错误
   watch: false,
+
+  exports: true,
 });

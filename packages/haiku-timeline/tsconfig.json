@@ -7,15 +7,15 @@
       "ES2017",
       "dom"
     ],
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ES5",
+    "target": "esnext",
     "types": [
       "node"
     ],

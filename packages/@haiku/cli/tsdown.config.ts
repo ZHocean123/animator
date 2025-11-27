@@ -15,5 +15,6 @@ export default {
   sourcemap: true,
   minify: false,
   skipLibCheck: true,
+  exports: true,
   __dirname
 }

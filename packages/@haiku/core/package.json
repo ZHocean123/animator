@@ -82,5 +82,592 @@
     "@angular/core": "^18.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "exports": {
+    "./adapters/angular-dom/HaikuAngularDOMAdapter": {
+      "import": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.mjs",
+      "require": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.cjs"
+    },
+    "./adapters/dom": {
+      "import": "./lib/adapters/dom/index.mjs",
+      "require": "./lib/adapters/dom/index.cjs"
+    },
+    "./adapters/dom/HaikuDOMAdapter": {
+      "import": "./lib/adapters/dom/HaikuDOMAdapter.mjs",
+      "require": "./lib/adapters/dom/HaikuDOMAdapter.cjs"
+    },
+    "./adapters/react-dom": {
+      "import": "./lib/adapters/react-dom/index.mjs",
+      "require": "./lib/adapters/react-dom/index.cjs"
+    },
+    "./adapters/react-dom/EventsDict": {
+      "import": "./lib/adapters/react-dom/EventsDict.mjs",
+      "require": "./lib/adapters/react-dom/EventsDict.cjs"
+    },
+    "./adapters/react-dom/HaikuReactDOMAdapter": {
+      "import": "./lib/adapters/react-dom/HaikuReactDOMAdapter.mjs",
+      "require": "./lib/adapters/react-dom/HaikuReactDOMAdapter.cjs"
+    },
+    "./adapters/vue-dom": {
+      "import": "./lib/adapters/vue-dom/index.mjs",
+      "require": "./lib/adapters/vue-dom/index.cjs"
+    },
+    "./adapters/vue-dom/HaikuVueDOMAdapter": {
+      "import": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.mjs",
+      "require": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.cjs"
+    },
+    "./api": {
+      "import": "./lib/api/index.mjs",
+      "require": "./lib/api/index.cjs"
+    },
+    "./Config": {
+      "import": "./lib/Config.mjs",
+      "require": "./lib/Config.cjs"
+    },
+    "./HaikuBase": {
+      "import": "./lib/HaikuBase.mjs",
+      "require": "./lib/HaikuBase.cjs"
+    },
+    "./HaikuClock": {
+      "import": "./lib/HaikuClock.mjs",
+      "require": "./lib/HaikuClock.cjs"
+    },
+    "./HaikuComponent": {
+      "import": "./lib/HaikuComponent.mjs",
+      "require": "./lib/HaikuComponent.cjs"
+    },
+    "./HaikuContext": {
+      "import": "./lib/HaikuContext.mjs",
+      "require": "./lib/HaikuContext.cjs"
+    },
+    "./HaikuElement": {
+      "import": "./lib/HaikuElement.mjs",
+      "require": "./lib/HaikuElement.cjs"
+    },
+    "./HaikuGlobal": {
+      "import": "./lib/HaikuGlobal.mjs",
+      "require": "./lib/HaikuGlobal.cjs"
+    },
+    "./HaikuHelpers": {
+      "import": "./lib/HaikuHelpers.mjs",
+      "require": "./lib/HaikuHelpers.cjs"
+    },
+    "./HaikuNode": {
+      "import": "./lib/HaikuNode.mjs",
+      "require": "./lib/HaikuNode.cjs"
+    },
+    "./HaikuTimeline": {
+      "import": "./lib/HaikuTimeline.mjs",
+      "require": "./lib/HaikuTimeline.cjs"
+    },
+    "./helpers/ColorUtils": {
+      "import": "./lib/helpers/ColorUtils.mjs",
+      "require": "./lib/helpers/ColorUtils.cjs"
+    },
+    "./helpers/compareSemver": {
+      "import": "./lib/helpers/compareSemver.mjs",
+      "require": "./lib/helpers/compareSemver.cjs"
+    },
+    "./helpers/consoleErrorOnce": {
+      "import": "./lib/helpers/consoleErrorOnce.mjs",
+      "require": "./lib/helpers/consoleErrorOnce.cjs"
+    },
+    "./helpers/getActionsMaxTime": {
+      "import": "./lib/helpers/getActionsMaxTime.mjs",
+      "require": "./lib/helpers/getActionsMaxTime.cjs"
+    },
+    "./helpers/getParsedProperty": {
+      "import": "./lib/helpers/getParsedProperty.mjs",
+      "require": "./lib/helpers/getParsedProperty.cjs"
+    },
+    "./helpers/getTimelineMaxTime": {
+      "import": "./lib/helpers/getTimelineMaxTime.mjs",
+      "require": "./lib/helpers/getTimelineMaxTime.cjs"
+    },
+    "./helpers/interactionModes": {
+      "import": "./lib/helpers/interactionModes.mjs",
+      "require": "./lib/helpers/interactionModes.cjs"
+    },
+    "./helpers/isMatrixableTransformArray": {
+      "import": "./lib/helpers/isMatrixableTransformArray.mjs",
+      "require": "./lib/helpers/isMatrixableTransformArray.cjs"
+    },
+    "./helpers/isMutableProperty": {
+      "import": "./lib/helpers/isMutableProperty.mjs",
+      "require": "./lib/helpers/isMutableProperty.cjs"
+    },
+    "./helpers/KeyframeUtils": {
+      "import": "./lib/helpers/KeyframeUtils.mjs",
+      "require": "./lib/helpers/KeyframeUtils.cjs"
+    },
+    "./helpers/migrateAutoSizing": {
+      "import": "./lib/helpers/migrateAutoSizing.mjs",
+      "require": "./lib/helpers/migrateAutoSizing.cjs"
+    },
+    "./helpers/parseCssValueString": {
+      "import": "./lib/helpers/parseCssValueString.mjs",
+      "require": "./lib/helpers/parseCssValueString.cjs"
+    },
+    "./helpers/PathUtils": {
+      "import": "./lib/helpers/PathUtils.mjs",
+      "require": "./lib/helpers/PathUtils.cjs"
+    },
+    "./helpers/PRNG": {
+      "import": "./lib/helpers/PRNG.mjs",
+      "require": "./lib/helpers/PRNG.cjs"
+    },
+    "./helpers/reactToMana": {
+      "import": "./lib/helpers/reactToMana.mjs",
+      "require": "./lib/helpers/reactToMana.cjs"
+    },
+    "./helpers/StringUtils": {
+      "import": "./lib/helpers/StringUtils.mjs",
+      "require": "./lib/helpers/StringUtils.cjs"
+    },
+    "./helpers/SVGPoints": {
+      "import": "./lib/helpers/SVGPoints.mjs",
+      "require": "./lib/helpers/SVGPoints.cjs"
+    },
+    "./helpers/transformValueIsEssentiallyInt": {
+      "import": "./lib/helpers/transformValueIsEssentiallyInt.mjs",
+      "require": "./lib/helpers/transformValueIsEssentiallyInt.cjs"
+    },
+    "./Interpolate": {
+      "import": "./lib/Interpolate.mjs",
+      "require": "./lib/Interpolate.cjs"
+    },
+    "./layout/applyCssLayout": {
+      "import": "./lib/layout/applyCssLayout.mjs",
+      "require": "./lib/layout/applyCssLayout.cjs"
+    },
+    "./layout/formatTransform": {
+      "import": "./lib/layout/formatTransform.mjs",
+      "require": "./lib/layout/formatTransform.cjs"
+    },
+    "./layout/scopeOfElement": {
+      "import": "./lib/layout/scopeOfElement.mjs",
+      "require": "./lib/layout/scopeOfElement.cjs"
+    },
+    "./Layout3D": {
+      "import": "./lib/Layout3D.mjs",
+      "require": "./lib/Layout3D.cjs"
+    },
+    "./Migration": {
+      "import": "./lib/Migration.mjs",
+      "require": "./lib/Migration.cjs"
+    },
+    "./reflection/enhance": {
+      "import": "./lib/reflection/enhance.mjs",
+      "require": "./lib/reflection/enhance.cjs"
+    },
+    "./reflection/expressionToRO": {
+      "import": "./lib/reflection/expressionToRO.mjs",
+      "require": "./lib/reflection/expressionToRO.cjs"
+    },
+    "./reflection/functionSpecificationToFunction": {
+      "import": "./lib/reflection/functionSpecificationToFunction.mjs",
+      "require": "./lib/reflection/functionSpecificationToFunction.cjs"
+    },
+    "./reflection/functionToRFO": {
+      "import": "./lib/reflection/functionToRFO.mjs",
+      "require": "./lib/reflection/functionToRFO.cjs"
+    },
+    "./reflection/inject": {
+      "import": "./lib/reflection/inject.mjs",
+      "require": "./lib/reflection/inject.cjs"
+    },
+    "./reflection/isComplexValue": {
+      "import": "./lib/reflection/isComplexValue.mjs",
+      "require": "./lib/reflection/isComplexValue.cjs"
+    },
+    "./reflection/isFunction": {
+      "import": "./lib/reflection/isFunction.mjs",
+      "require": "./lib/reflection/isFunction.cjs"
+    },
+    "./reflection/isSerializableScalar": {
+      "import": "./lib/reflection/isSerializableScalar.mjs",
+      "require": "./lib/reflection/isSerializableScalar.cjs"
+    },
+    "./reflection/isSerializedFunction": {
+      "import": "./lib/reflection/isSerializedFunction.mjs",
+      "require": "./lib/reflection/isSerializedFunction.cjs"
+    },
+    "./reflection/JavaScriptIdentifier": {
+      "import": "./lib/reflection/JavaScriptIdentifier.mjs",
+      "require": "./lib/reflection/JavaScriptIdentifier.cjs"
+    },
+    "./reflection/marshalParams": {
+      "import": "./lib/reflection/marshalParams.mjs",
+      "require": "./lib/reflection/marshalParams.cjs"
+    },
+    "./reflection/reifyRFO": {
+      "import": "./lib/reflection/reifyRFO.mjs",
+      "require": "./lib/reflection/reifyRFO.cjs"
+    },
+    "./reflection/reifyRO": {
+      "import": "./lib/reflection/reifyRO.mjs",
+      "require": "./lib/reflection/reifyRO.cjs"
+    },
+    "./reflection/ReservedWords": {
+      "import": "./lib/reflection/ReservedWords.mjs",
+      "require": "./lib/reflection/ReservedWords.cjs"
+    },
+    "./reflection/Tokenizer": {
+      "import": "./lib/reflection/Tokenizer.mjs",
+      "require": "./lib/reflection/Tokenizer.cjs"
+    },
+    "./renderers/dom": {
+      "import": "./lib/renderers/dom/index.mjs",
+      "require": "./lib/renderers/dom/index.cjs"
+    },
+    "./renderers/dom/applyLayout": {
+      "import": "./lib/renderers/dom/applyLayout.mjs",
+      "require": "./lib/renderers/dom/applyLayout.cjs"
+    },
+    "./renderers/dom/assignAttributes": {
+      "import": "./lib/renderers/dom/assignAttributes.mjs",
+      "require": "./lib/renderers/dom/assignAttributes.cjs"
+    },
+    "./renderers/dom/assignClass": {
+      "import": "./lib/renderers/dom/assignClass.mjs",
+      "require": "./lib/renderers/dom/assignClass.cjs"
+    },
+    "./renderers/dom/assignStyle": {
+      "import": "./lib/renderers/dom/assignStyle.mjs",
+      "require": "./lib/renderers/dom/assignStyle.cjs"
+    },
+    "./renderers/dom/createRightClickMenu": {
+      "import": "./lib/renderers/dom/createRightClickMenu.mjs",
+      "require": "./lib/renderers/dom/createRightClickMenu.cjs"
+    },
+    "./renderers/dom/createSvgElement": {
+      "import": "./lib/renderers/dom/createSvgElement.mjs",
+      "require": "./lib/renderers/dom/createSvgElement.cjs"
+    },
+    "./renderers/dom/createTextNode": {
+      "import": "./lib/renderers/dom/createTextNode.mjs",
+      "require": "./lib/renderers/dom/createTextNode.cjs"
+    },
+    "./renderers/dom/domInjectStylesheet": {
+      "import": "./lib/renderers/dom/domInjectStylesheet.mjs",
+      "require": "./lib/renderers/dom/domInjectStylesheet.cjs"
+    },
+    "./renderers/dom/Events": {
+      "import": "./lib/renderers/dom/Events.mjs",
+      "require": "./lib/renderers/dom/Events.cjs"
+    },
+    "./renderers/dom/getElementSize": {
+      "import": "./lib/renderers/dom/getElementSize.mjs",
+      "require": "./lib/renderers/dom/getElementSize.cjs"
+    },
+    "./renderers/dom/getLocalDomEventPosition": {
+      "import": "./lib/renderers/dom/getLocalDomEventPosition.mjs",
+      "require": "./lib/renderers/dom/getLocalDomEventPosition.cjs"
+    },
+    "./renderers/dom/getTypeAsString": {
+      "import": "./lib/renderers/dom/getTypeAsString.mjs",
+      "require": "./lib/renderers/dom/getTypeAsString.cjs"
+    },
+    "./renderers/dom/getWindowsBrowserVersion": {
+      "import": "./lib/renderers/dom/getWindowsBrowserVersion.mjs",
+      "require": "./lib/renderers/dom/getWindowsBrowserVersion.cjs"
+    },
+    "./renderers/dom/HaikuDOMRenderer": {
+      "import": "./lib/renderers/dom/HaikuDOMRenderer.mjs",
+      "require": "./lib/renderers/dom/HaikuDOMRenderer.cjs"
+    },
+    "./renderers/dom/insertTextChild": {
+      "import": "./lib/renderers/dom/insertTextChild.mjs",
+      "require": "./lib/renderers/dom/insertTextChild.cjs"
+    },
+    "./renderers/dom/isBlankString": {
+      "import": "./lib/renderers/dom/isBlankString.mjs",
+      "require": "./lib/renderers/dom/isBlankString.cjs"
+    },
+    "./renderers/dom/isEdge": {
+      "import": "./lib/renderers/dom/isEdge.mjs",
+      "require": "./lib/renderers/dom/isEdge.cjs"
+    },
+    "./renderers/dom/isEmptyChild": {
+      "import": "./lib/renderers/dom/isEmptyChild.mjs",
+      "require": "./lib/renderers/dom/isEmptyChild.cjs"
+    },
+    "./renderers/dom/isIE": {
+      "import": "./lib/renderers/dom/isIE.mjs",
+      "require": "./lib/renderers/dom/isIE.cjs"
+    },
+    "./renderers/dom/isMobile": {
+      "import": "./lib/renderers/dom/isMobile.mjs",
+      "require": "./lib/renderers/dom/isMobile.cjs"
+    },
+    "./renderers/dom/isTextNode": {
+      "import": "./lib/renderers/dom/isTextNode.mjs",
+      "require": "./lib/renderers/dom/isTextNode.cjs"
+    },
+    "./renderers/dom/normalizeName": {
+      "import": "./lib/renderers/dom/normalizeName.mjs",
+      "require": "./lib/renderers/dom/normalizeName.cjs"
+    },
+    "./renderers/dom/removeElement": {
+      "import": "./lib/renderers/dom/removeElement.mjs",
+      "require": "./lib/renderers/dom/removeElement.cjs"
+    },
+    "./renderers/dom/replaceElementWithText": {
+      "import": "./lib/renderers/dom/replaceElementWithText.mjs",
+      "require": "./lib/renderers/dom/replaceElementWithText.cjs"
+    },
+    "./StateTransitionManager": {
+      "import": "./lib/StateTransitionManager.mjs",
+      "require": "./lib/StateTransitionManager.cjs"
+    },
+    "./Transitions": {
+      "import": "./lib/Transitions.mjs",
+      "require": "./lib/Transitions.cjs"
+    },
+    "./vendor/array-unique": {
+      "import": "./lib/vendor/array-unique/index.mjs",
+      "require": "./lib/vendor/array-unique/index.cjs"
+    },
+    "./vendor/assign": {
+      "import": "./lib/vendor/assign/index.mjs",
+      "require": "./lib/vendor/assign/index.cjs"
+    },
+    "./vendor/color-names": {
+      "import": "./lib/vendor/color-names/index.mjs",
+      "require": "./lib/vendor/color-names/index.cjs"
+    },
+    "./vendor/color-string": {
+      "import": "./lib/vendor/color-string/index.mjs",
+      "require": "./lib/vendor/color-string/index.cjs"
+    },
+    "./vendor/gl-mat4/invert": {
+      "import": "./lib/vendor/gl-mat4/invert.mjs",
+      "require": "./lib/vendor/gl-mat4/invert.cjs"
+    },
+    "./vendor/just-curves": {
+      "import": "./lib/vendor/just-curves/index.mjs",
+      "require": "./lib/vendor/just-curves/index.cjs"
+    },
+    "./vendor/just-curves/curves": {
+      "import": "./lib/vendor/just-curves/curves/index.mjs",
+      "require": "./lib/vendor/just-curves/curves/index.cjs"
+    },
+    "./vendor/just-curves/curves/ease": {
+      "import": "./lib/vendor/just-curves/curves/ease.mjs",
+      "require": "./lib/vendor/just-curves/curves/ease.cjs"
+    },
+    "./vendor/just-curves/curves/easeIn": {
+      "import": "./lib/vendor/just-curves/curves/easeIn.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeIn.cjs"
+    },
+    "./vendor/just-curves/curves/easeInBack": {
+      "import": "./lib/vendor/just-curves/curves/easeInBack.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInBack.cjs"
+    },
+    "./vendor/just-curves/curves/easeInBounce": {
+      "import": "./lib/vendor/just-curves/curves/easeInBounce.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInBounce.cjs"
+    },
+    "./vendor/just-curves/curves/easeInCirc": {
+      "import": "./lib/vendor/just-curves/curves/easeInCirc.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInCirc.cjs"
+    },
+    "./vendor/just-curves/curves/easeInCubic": {
+      "import": "./lib/vendor/just-curves/curves/easeInCubic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInCubic.cjs"
+    },
+    "./vendor/just-curves/curves/easeInElastic": {
+      "import": "./lib/vendor/just-curves/curves/easeInElastic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInElastic.cjs"
+    },
+    "./vendor/just-curves/curves/easeInExpo": {
+      "import": "./lib/vendor/just-curves/curves/easeInExpo.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInExpo.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOut": {
+      "import": "./lib/vendor/just-curves/curves/easeInOut.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOut.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutBack": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutBack.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutBack.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutBounce": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutBounce.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutBounce.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutCirc": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutCirc.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutCirc.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutCubic": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutCubic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutCubic.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutElastic": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutElastic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutElastic.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutExpo": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutExpo.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutExpo.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutQuad": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuad.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuad.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutQuart": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuart.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuart.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutQuint": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuint.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuint.cjs"
+    },
+    "./vendor/just-curves/curves/easeInOutSine": {
+      "import": "./lib/vendor/just-curves/curves/easeInOutSine.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInOutSine.cjs"
+    },
+    "./vendor/just-curves/curves/easeInQuad": {
+      "import": "./lib/vendor/just-curves/curves/easeInQuad.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInQuad.cjs"
+    },
+    "./vendor/just-curves/curves/easeInQuart": {
+      "import": "./lib/vendor/just-curves/curves/easeInQuart.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInQuart.cjs"
+    },
+    "./vendor/just-curves/curves/easeInQuint": {
+      "import": "./lib/vendor/just-curves/curves/easeInQuint.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInQuint.cjs"
+    },
+    "./vendor/just-curves/curves/easeInSine": {
+      "import": "./lib/vendor/just-curves/curves/easeInSine.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeInSine.cjs"
+    },
+    "./vendor/just-curves/curves/easeOut": {
+      "import": "./lib/vendor/just-curves/curves/easeOut.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOut.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutBack": {
+      "import": "./lib/vendor/just-curves/curves/easeOutBack.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutBack.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutBounce": {
+      "import": "./lib/vendor/just-curves/curves/easeOutBounce.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutBounce.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutCirc": {
+      "import": "./lib/vendor/just-curves/curves/easeOutCirc.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutCirc.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutCubic": {
+      "import": "./lib/vendor/just-curves/curves/easeOutCubic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutCubic.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutElastic": {
+      "import": "./lib/vendor/just-curves/curves/easeOutElastic.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutElastic.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutExpo": {
+      "import": "./lib/vendor/just-curves/curves/easeOutExpo.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutExpo.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutQuad": {
+      "import": "./lib/vendor/just-curves/curves/easeOutQuad.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutQuad.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutQuart": {
+      "import": "./lib/vendor/just-curves/curves/easeOutQuart.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutQuart.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutQuint": {
+      "import": "./lib/vendor/just-curves/curves/easeOutQuint.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutQuint.cjs"
+    },
+    "./vendor/just-curves/curves/easeOutSine": {
+      "import": "./lib/vendor/just-curves/curves/easeOutSine.mjs",
+      "require": "./lib/vendor/just-curves/curves/easeOutSine.cjs"
+    },
+    "./vendor/just-curves/curves/linear": {
+      "import": "./lib/vendor/just-curves/curves/linear.mjs",
+      "require": "./lib/vendor/just-curves/curves/linear.cjs"
+    },
+    "./vendor/just-curves/curves/stepEnd": {
+      "import": "./lib/vendor/just-curves/curves/stepEnd.mjs",
+      "require": "./lib/vendor/just-curves/curves/stepEnd.cjs"
+    },
+    "./vendor/just-curves/curves/stepStart": {
+      "import": "./lib/vendor/just-curves/curves/stepStart.mjs",
+      "require": "./lib/vendor/just-curves/curves/stepStart.cjs"
+    },
+    "./vendor/just-curves/internal": {
+      "import": "./lib/vendor/just-curves/internal/index.mjs",
+      "require": "./lib/vendor/just-curves/internal/index.cjs"
+    },
+    "./vendor/just-curves/internal/constants": {
+      "import": "./lib/vendor/just-curves/internal/constants.mjs",
+      "require": "./lib/vendor/just-curves/internal/constants.cjs"
+    },
+    "./vendor/just-curves/internal/cssEasings": {
+      "import": "./lib/vendor/just-curves/internal/cssEasings.mjs",
+      "require": "./lib/vendor/just-curves/internal/cssEasings.cjs"
+    },
+    "./vendor/just-curves/internal/cubicBezier": {
+      "import": "./lib/vendor/just-curves/internal/cubicBezier.mjs",
+      "require": "./lib/vendor/just-curves/internal/cubicBezier.cjs"
+    },
+    "./vendor/just-curves/internal/frames": {
+      "import": "./lib/vendor/just-curves/internal/frames.mjs",
+      "require": "./lib/vendor/just-curves/internal/frames.cjs"
+    },
+    "./vendor/just-curves/internal/math": {
+      "import": "./lib/vendor/just-curves/internal/math.mjs",
+      "require": "./lib/vendor/just-curves/internal/math.cjs"
+    },
+    "./vendor/just-curves/internal/steps": {
+      "import": "./lib/vendor/just-curves/internal/steps.mjs",
+      "require": "./lib/vendor/just-curves/internal/steps.cjs"
+    },
+    "./vendor/just-curves/types": {
+      "import": "./lib/vendor/just-curves/types.mjs",
+      "require": "./lib/vendor/just-curves/types.cjs"
+    },
+    "./vendor/modernizr": {
+      "import": "./lib/vendor/modernizr/index.mjs",
+      "require": "./lib/vendor/modernizr/index.cjs"
+    },
+    "./vendor/performance-now": {
+      "import": "./lib/vendor/performance-now/index.mjs",
+      "require": "./lib/vendor/performance-now/index.cjs"
+    },
+    "./vendor/raf": {
+      "import": "./lib/vendor/raf/index.mjs",
+      "require": "./lib/vendor/raf/index.cjs"
+    },
+    "./vendor/seedrandom": {
+      "import": "./lib/vendor/seedrandom/index.mjs",
+      "require": "./lib/vendor/seedrandom/index.cjs"
+    },
+    "./vendor/svg-path-reversal/SVGPathReversal": {
+      "import": "./lib/vendor/svg-path-reversal/SVGPathReversal.mjs",
+      "require": "./lib/vendor/svg-path-reversal/SVGPathReversal.cjs"
+    },
+    "./vendor/svg-points": {
+      "import": "./lib/vendor/svg-points/index.mjs",
+      "require": "./lib/vendor/svg-points/index.cjs"
+    },
+    "./vendor/svg-points/toPath": {
+      "import": "./lib/vendor/svg-points/toPath.mjs",
+      "require": "./lib/vendor/svg-points/toPath.cjs"
+    },
+    "./vendor/svg-points/toPoints": {
+      "import": "./lib/vendor/svg-points/toPoints.mjs",
+      "require": "./lib/vendor/svg-points/toPoints.cjs"
+    },
+    "./vendor/svg-points/types": {
+      "import": "./lib/vendor/svg-points/types.mjs",
+      "require": "./lib/vendor/svg-points/types.cjs"
+    },
+    "./package.json": "./package.json"
   }
 }

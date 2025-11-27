@@ -4,15 +4,15 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "lib",
     "preserveConstEnums": true,
     "rootDir": "src",
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ESNext",
+    "target": "esnext",
     "types": [
       "node"
     ],
