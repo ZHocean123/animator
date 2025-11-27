@@ -1,7 +1,8 @@
+/* eslint-disable node/prefer-global/process */
 import * as net from 'node:net'
 
 const DEFAULT_PORT_SEARCH_START = 45032
-let DEFAULT_HOST = global.process.env.HAIKU_PLUMBING_HOST || '0.0.0.0'
+let DEFAULT_HOST = process.env.HAIKU_PLUMBING_HOST || '0.0.0.0'
 const ADDRESS_IN_USE_CODE = 'EADDRINUSE'
 const DNS_ERROR_CODE = 'ENOTFOUND'
 
@@ -37,7 +38,7 @@ export default function findOpenPort(
       }
 
       if (err && err.code === DNS_ERROR_CODE && inHost !== '0.0.0.0') {
-        DEFAULT_HOST = global.process.env.HAIKU_PLUMBING_HOST = '0.0.0.0'
+        DEFAULT_HOST = process.env.HAIKU_PLUMBING_HOST = '0.0.0.0'
         return findOpenPort(port, DEFAULT_HOST, cb)
       }
 

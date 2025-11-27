@@ -1,6 +1,8 @@
 function patternPropertyNodeValueToValue(node: any): any {
-  if (node.type === 'Identifier') return node.name
-  if (node.type === 'ObjectPattern') return objectPatternNodeToObject({}, node)
+  if (node.type === 'Identifier')
+    return node.name
+  if (node.type === 'ObjectPattern')
+    return objectPatternNodeToObject({}, node)
   if (node.type === 'ArrayPattern') {
     const arr: any[] = []
     for (let i = 0; i < node.elements.length; i++) {

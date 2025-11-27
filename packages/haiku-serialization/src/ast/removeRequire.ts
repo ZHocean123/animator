@@ -9,6 +9,7 @@ export default function removeRequire(ast: any, identifierName: string, modulePa
       identCount += 1
     }
   })
-  if (identCount > 1) return
-  ast.program.body = _.filter(ast.program.body, (stmt) => !matchesRequire(stmt, identifierName, modulePath))
+  if (identCount > 1)
+    return
+  ast.program.body = _.filter(ast.program.body, stmt => !matchesRequire(stmt, identifierName, modulePath))
 }

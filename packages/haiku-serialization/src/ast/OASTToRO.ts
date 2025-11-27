@@ -22,7 +22,8 @@ export default function OASTToRO(oast: any): any {
     }
     return { __value: aout }
   }
-  if (oast.type === 'Identifier') return { __reference: oast.name }
+  if (oast.type === 'Identifier')
+    return { __reference: oast.name }
   if (isFunctionNode(oast)) {
     return {
       __function: {
@@ -34,14 +35,17 @@ export default function OASTToRO(oast: any): any {
       },
     }
   }
-  if (oast.type === 'NullLiteral') return null
-  if (oast.type === 'UnaryExpression') return { __value: computeUnaryExpression(oast) }
+  if (oast.type === 'NullLiteral')
+    return null
+  if (oast.type === 'UnaryExpression')
+    return { __value: computeUnaryExpression(oast) }
   if (oast.type === 'CallExpression') {
     if (oast.callee && oast.callee.type === 'MemberExpression') {
       if (oast.callee.object.name === 'Haiku' && oast.callee.property.name === 'inject') {
         if (oast.arguments[0]) {
           const rfo = OASTToRO(oast.arguments[0])
-          if (rfo && rfo.__function) rfo.__function.injectee = true
+          if (rfo && rfo.__function)
+            rfo.__function.injectee = true
           return rfo
         }
       }

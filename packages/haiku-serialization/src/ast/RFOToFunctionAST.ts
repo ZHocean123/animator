@@ -18,7 +18,8 @@ export default function RFOToFunctionAST(rfo: any, key?: any) {
       ast = { type: 'ArrowFunctionExpression', params: paramsToFunctionASTParams(rfo.params), body: functionBodyStringToFunctionBodyAST(rfo.body) }
       break
   }
-  if (rfo.injectee) return wrapInHaikuInject(ast)
+  if (rfo.injectee)
+    return wrapInHaikuInject(ast)
   return ast
 }
 

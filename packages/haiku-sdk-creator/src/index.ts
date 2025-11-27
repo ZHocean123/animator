@@ -40,15 +40,17 @@ export {
 
 export { default as EnvoyClient } from './envoy/EnvoyClient'
 
-export * from './envoy/EnvoyLogger'
+export { default as EnvoyLogger } from './envoy/EnvoyLogger'
 
-export * from './envoy/EnvoyServer'
+export { default as EnvoyServer } from './envoy/EnvoyServer'
 // Exporter exports
 export {
   ExporterFormat,
   type ExporterRequest,
 } from './exporter'
 export * from './exporter/ExporterHandler'
+
+export * from './glass/index'
 
 // Services exports
 export {
@@ -65,7 +67,6 @@ export {
   type Tour,
   type TourState,
 } from './tour'
-
 export * from './tour/TourHandler'
 
 // Note: Some modules may need to be imported directly from their files:

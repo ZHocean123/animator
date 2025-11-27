@@ -1,4 +1,4 @@
-type Item = {
+export interface Item {
   hasAttr: (name: string) => boolean
   attr: (name: string) => { value: string }
 }

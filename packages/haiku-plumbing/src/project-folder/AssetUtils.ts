@@ -2,8 +2,7 @@ import type * as Watcher from '../Watcher'
 import * as path from 'node:path'
 import { ensureFileSync, existsSync, mkdirpSync, readFileSync, writeFileSync } from 'fs-extra'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
-// @ts-ignore
-import { LOCKS } from 'haiku-serializationbll/Lock'
+import { LOCKS } from 'haiku-serialization'
 
 const IMAGE_DATA_INDICATOR = 'data:image/'
 const BASE64_DELIMITER = ';base64,'

@@ -1,10 +1,8 @@
-'use strict'
+import collections from 'svgo/plugins/_collections'
 
 export const type = 'perItemReverse'
 export const active = true
 export const description = 'collapses useless groups'
-
-const collections = require('svgo/plugins/_collections')
 const attrsInheritable: string[] = collections.inheritableAttrs
 const animationElems: string[] = collections.elemsGroups.animation
 
@@ -27,11 +25,16 @@ export function fn(item: any) {
             )
           ) {
             g.eachAttr((attr: any) => {
-              if (g.content.some(hasAnimatedAttr, attr.name)) return
-              if (!inner.hasAttr(attr.name)) inner.addAttr(attr)
-              else if (attr.name == 'transform') inner.attr(attr.name).value = `${attr.value} ${inner.attr(attr.name).value}`
-              else if (inner.hasAttr(attr.name, 'inherit')) inner.attr(attr.name).value = attr.value
-              else if (!attrsInheritable.includes(attr.name) && !inner.hasAttr(attr.name, attr.value)) return
+              if (g.content.some(hasAnimatedAttr, attr.name))
+                return
+              if (!inner.hasAttr(attr.name))
+                inner.addAttr(attr)
+              else if (attr.name == 'transform')
+                inner.attr(attr.name).value = `${attr.value} ${inner.attr(attr.name).value}`
+              else if (inner.hasAttr(attr.name, 'inherit'))
+                inner.attr(attr.name).value = attr.value
+              else if (!attrsInheritable.includes(attr.name) && !inner.hasAttr(attr.name, attr.value))
+                return
               g.removeAttr(attr.name)
             })
           }
@@ -39,7 +42,8 @@ export function fn(item: any) {
         if (!g.hasAttr() && !g.content.some((item: any) => item.isElem(animationElems))) {
           item.spliceContent(i, 1, g.content)
         }
-      } else if (isFeaturedSwitch(g)) {
+      }
+      else if (isFeaturedSwitch(g)) {
         item.spliceContent(i, 1, g.content)
       }
     })

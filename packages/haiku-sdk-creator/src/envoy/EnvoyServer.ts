@@ -1,13 +1,12 @@
+import type { WebSocket } from 'ws'
 import type {
   Datagram,
   EnvoyEvent,
   EnvoyOptions,
 } from '.'
 import type EnvoyHandler from './EnvoyHandler'
-
-// @ts-ignore
 import * as qs from 'qs'
-import * as WebSocket from 'ws'
+import { WebSocketServer } from 'ws'
 import {
   DatagramIntent,
   DEFAULT_ENVOY_OPTIONS,
@@ -31,10 +30,10 @@ const AWAIT_READY_TIMEOUT = 100
 const WS_POLICY_VIOLATION_CODE = 1008
 
 export default class EnvoyServer {
-  host: string
-  port: number
+  host: string | null
+  port: number | null
 
-  private server: WebSocket.Server
+  private server?: WebSocketServer
   private isServerReady: boolean
   private handlerRegistry: Map<string, HandlerTuple>
   private clientRegistry: Map<string, IdentifiableWebSocket>
@@ -52,22 +51,22 @@ export default class EnvoyServer {
     this.logger = mergedOptions.logger || new EnvoyLogger('info', mergedOptions.logger)
 
     // If present, the passed-in port will be checked for availability, otherwise one will be chosen for us
-    findOpenPort(mergedOptions.port, mergedOptions.host, (portErr: Error, host: string, port: number) => {
+    findOpenPort(mergedOptions.port!, mergedOptions.host!, (portErr, host, port) => {
       if (portErr) {
         throw portErr
       }
 
       this.logger.info(`[haiku envoy server] found open port ${port}; establishing on ${mergedOptions.host}`)
 
-      this.server = new WebSocket.Server(
+      this.server = new WebSocketServer(
         {
-          host,
+          host: host ? String(host) : undefined,
           port,
         },
         () => {
           this.isServerReady = true
-          this.host = host
-          this.port = port
+          this.host = host ? String(host) : null
+          this.port = port ?? null
 
           this.logger.info(`[haiku envoy server] ready and listening on port ${this.port} on ${this.host}`)
         },
@@ -78,7 +77,7 @@ export default class EnvoyServer {
         this.logger.warn(`[haiku envoy server] caught error: ${err}`)
       })
 
-      this.server.on('connection', (client: IdentifiableWebSocket, request: any) => {
+      this.server.on('connection', (client: WebSocket & { id: string }, request) => {
         const params = getWebsocketConnectionRequestParams(client, request)
 
         if (mergedOptions.token && params.token !== mergedOptions.token) {
@@ -115,7 +114,7 @@ export default class EnvoyServer {
    * @description Close the server.
    */
   close(): void {
-    this.server.close()
+    this.server?.close()
   }
 
   /**
@@ -161,12 +160,12 @@ export default class EnvoyServer {
    * // Incoming requests will trigger methods on sparkleHandler
    * myEnvoyServer.bindHandler("Sparkles", sparkleHandler)
    */
-  bindHandler(channel: string, handlerClass: any, handlerInstance?: any) {
+  bindHandler(channel: string, HandlerClass: any, handlerInstance?: any) {
     // TODO: support spawning a new process/worker for this handler.
-    const instance = handlerInstance || new handlerClass()
+    const instance = handlerInstance || new HandlerClass()
     this.handlerRegistry.set(channel, {
       instance,
-      proto: handlerClass.prototype,
+      proto: HandlerClass.prototype,
     })
   }
 
@@ -294,7 +293,7 @@ export default class EnvoyServer {
   }
 }
 
-function getWebsocketConnectionRequestParams(client: IdentifiableWebSocket, request: any) {
+function getWebsocketConnectionRequestParams(client: WebSocket, request: any) {
   const url = request.url || ''
   const query = url.split('?')[1] || ''
   const params = qs.parse(query)

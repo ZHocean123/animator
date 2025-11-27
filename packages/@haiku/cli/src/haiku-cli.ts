@@ -16,8 +16,8 @@ import * as _ from 'lodash'
 
 // @ts-ignore
 import * as prependFile from 'prepend-file'
-import { Nib } from './nib'
 
+import { Nib } from './nib'
 // tslint:disable-next-line:no-var-requires
 const pkg = require('./../package.json')
 

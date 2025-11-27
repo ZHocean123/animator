@@ -101,3 +101,5 @@ export default class SustainedWarningChecker {
     return Array.from(new Set(identifierList))
   }
 }
+
+export { SustainedWarningChecker }

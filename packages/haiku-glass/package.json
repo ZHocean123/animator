@@ -55,5 +55,19 @@
     "dev": "tsdown --watch",
     "develop": "tsdown --watch",
     "start": "cross-env AUTOSTART=main electron --enable-logging --remote-debugging-port=9222 ./lib/electron.js"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./electron": {
+      "import": "./lib/electron.mjs",
+      "require": "./lib/electron.cjs"
+    },
+    "./package.json": "./package.json"
   }
 }

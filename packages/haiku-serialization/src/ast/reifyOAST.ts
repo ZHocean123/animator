@@ -1,5 +1,5 @@
-import OASTToRO from './OASTToRO'
 import reifyRO from '@haiku/core/lib/reflection/reifyRO'
+import OASTToRO from './OASTToRO'
 
 export default function reifyOAST(oast: any, referenceEvaluator?: any, skipFunctionReification?: boolean) {
   const ro = OASTToRO(oast)

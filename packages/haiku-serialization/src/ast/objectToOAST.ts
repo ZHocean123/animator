@@ -2,7 +2,8 @@ import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent'
 import expressionToOASTComponent from './expressionToOASTComponent'
 
 function canUseShorthand(obj: any, keyChain: string[]): boolean {
-  if (keyChain.length !== 4 || keyChain[0] !== 'timelines') return false
+  if (keyChain.length !== 4 || keyChain[0] !== 'timelines')
+    return false
   const keys = Object.keys(obj)
   return (
     keys.length === 1 && keys[0] === '0'
@@ -17,7 +18,8 @@ export default function objectToOAST(obj: any, keyChain: string[] = []): any {
   }
   const oast: any = { type: 'ObjectExpression', properties: [] }
   for (const key in obj) {
-    if (key === undefined) continue
+    if (key === undefined)
+      continue
     const keyexp = expressionToOASTComponent(key)
     keyChain.push(key as any)
     const valueexp = expressionToOASTComponent(obj[key], key as any, keyChain)

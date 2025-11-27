@@ -9,8 +9,8 @@ import * as lodash from 'lodash'
 import * as React from 'react'
 import * as stripindent from 'strip-indent'
 import AutoCompleter from './AutoCompleter'
-const haikuMode = require('./modes/haiku')
 
+const haikuMode = require('./modes/haiku')
 import zIndex from './styles/zIndex'
 
 const MAX_AUTOCOMPLETION_ENTRIES = 8

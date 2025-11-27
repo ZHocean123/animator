@@ -4,12 +4,6 @@
   "description": "Serialization utilities",
   "author": "Matthew Trost <matthew@haiku.ai>",
   "license": "UNLICENSED",
-  "files": [
-    "lib"
-  ],
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
@@ -17,6 +11,12 @@
     },
     "./package.json": "./package.json"
   },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "pnpm test:all",
     "test:all": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" | tap-spec || true",
