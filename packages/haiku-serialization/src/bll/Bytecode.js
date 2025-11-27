@@ -7,7 +7,7 @@ const enhance = require('@haiku/core/lib/reflection/enhance').default
 const { xmlToMana, default: convertManaLayout } = require('haiku-common')
 const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
 const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default
-const { logger } = require('haiku-serialization')
+const logger = require('../utils/LoggerInstance')
 
 const HAIKU_ID_ATTRIBUTE = 'haiku-id'
 const HAIKU_TITLE_ATTRIBUTE = 'haiku-title'

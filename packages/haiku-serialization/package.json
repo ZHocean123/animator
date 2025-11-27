@@ -2,6 +2,8 @@
   "name": "haiku-serialization",
   "version": "5.1.2",
   "description": "Serialization utilities",
+  "author": "Matthew Trost <matthew@haiku.ai>",
+  "license": "UNLICENSED",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
@@ -19,8 +21,6 @@
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
-  "author": "Matthew Trost <matthew@haiku.ai>",
-  "license": "UNLICENSED",
   "dependencies": {
     "@babel/core": "7.0.0",
     "@babel/generator": "7.0.0",
@@ -29,7 +29,6 @@
     "@haiku/core": "workspace:*",
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
-    "haiku-formats": "workspace:*",
     "async": "^2.5.0",
     "camelcase": "^4.1.0",
     "colors": "1.1.2",
@@ -42,6 +41,7 @@
     "fuzzy-string-matching": "^1.0.2",
     "gl-matrix": "^2.4.0",
     "haiku-common": "workspace:*",
+    "haiku-formats": "workspace:*",
     "haiku-fs-extra": "workspace:*",
     "haiku-sdk-creator": "workspace:*",
     "haiku-ui-common": "workspace:*",

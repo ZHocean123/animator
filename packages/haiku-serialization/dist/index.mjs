@@ -634,13 +634,13 @@ var require_OASTToRO = /* @__PURE__ */ __commonJS({ "src/ast/OASTToRO.js": ((exp
 //#endregion
 //#region src/utils/HaikuHomeDir.js
 var require_HaikuHomeDir = /* @__PURE__ */ __commonJS({ "src/utils/HaikuHomeDir.js": ((exports, module) => {
-	const os$2 = __require("node:os");
+	const os$3 = __require("node:os");
 	const path$19 = __require("node:path");
 	const async$2 = __require("async");
 	const fse$8 = __require("fs-extra");
 	const out = {};
 	let didTakeTourCache = null;
-	const HOMEDIR_PATH = path$19.join(os$2.homedir(), ".haiku");
+	const HOMEDIR_PATH = path$19.join(os$3.homedir(), ".haiku");
 	out.HOMEDIR_PATH = HOMEDIR_PATH;
 	out.HOMEDIR_AUTH_PATH = path$19.join(HOMEDIR_PATH, "auth");
 	out.HOMEDIR_PROJECTS_PATH = path$19.join(HOMEDIR_PATH, "projects");
@@ -668,7 +668,7 @@ var require_HaikuHomeDir = /* @__PURE__ */ __commonJS({ "src/utils/HaikuHomeDir.
 		try {
 			return fse$8.lstatSync(abspath).isDirectory();
 		} catch (exception) {
-			logger$20.warn(exception);
+			logger$21.warn(exception);
 			return false;
 		}
 	}
@@ -704,7 +704,7 @@ var require_HaikuHomeDir = /* @__PURE__ */ __commonJS({ "src/utils/HaikuHomeDir.
 		});
 	};
 	module.exports = out;
-	const logger$20 = require_LoggerInstance();
+	const logger$21 = require_LoggerInstance();
 }) });
 
 //#endregion
@@ -1022,8 +1022,8 @@ var require_LoggerInstance = /* @__PURE__ */ __commonJS({ "src/utils/LoggerInsta
 	const { HOMEDIR_LOGS_PATH } = require_HaikuHomeDir();
 	const { Logger: Logger$1 } = require_Logger();
 	fs$3.mkdirpSync(HOMEDIR_LOGS_PATH);
-	const logger$19 = new Logger$1(HOMEDIR_LOGS_PATH, "haiku-debug.log");
-	module.exports = logger$19;
+	const logger$20 = new Logger$1(HOMEDIR_LOGS_PATH, "haiku-debug.log");
+	module.exports = logger$20;
 }) });
 
 //#endregion
@@ -1034,7 +1034,7 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 	const fsm = __require("fuzzy-string-matching");
 	const uniq = __require("lodash").uniq;
 	const FORBIDDEN_EXPRESSION_TOKENS = __require("@haiku/core/lib/HaikuComponent").default.FORBIDDEN_EXPRESSION_TOKENS;
-	const logger$18 = require_LoggerInstance();
+	const logger$19 = require_LoggerInstance();
 	const PARSER = new Parser({
 		sourceType: "script",
 		strictMode: true
@@ -1061,22 +1061,22 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 			return list;
 		}
 	}
-	function isTokenStreamInvalid(tokens$1, options) {
-		if (tokens$1.length < 1) return { annotation: "Expression is has no content" };
-		if (tokens$1.length === 1 && tokens$1[0].type === "Keyword" && tokens$1[0].value === "return") return { annotation: "Expression is incomplete" };
+	function isTokenStreamInvalid(tokens$2, options) {
+		if (tokens$2.length < 1) return { annotation: "Expression is has no content" };
+		if (tokens$2.length === 1 && tokens$2[0].type === "Keyword" && tokens$2[0].value === "return") return { annotation: "Expression is incomplete" };
 		if (options.skipForbiddensCheck) return false;
 		let foundReturn = false;
 		let foundForbiddenToken = false;
 		let otherWarning = false;
-		for (let i$1 = 0; i$1 < tokens$1.length; i$1++) {
-			const token$1 = tokens$1[i$1];
-			const parent = tokens$1[i$1 - 1];
-			const grandparent = tokens$1[i$1 - 2];
-			if (token$1.type === "Keyword") {
-				if (token$1.value === "return") foundReturn = true;
+		for (let i$1 = 0; i$1 < tokens$2.length; i$1++) {
+			const token$2 = tokens$2[i$1];
+			const parent = tokens$2[i$1 - 1];
+			const grandparent = tokens$2[i$1 - 2];
+			if (token$2.type === "Keyword") {
+				if (token$2.value === "return") foundReturn = true;
 			}
-			if (token$1.type === "Identifier" || token$1.type === "Keyword") {
-				if (token$1.value === "random") {
+			if (token$2.type === "Identifier" || token$2.type === "Keyword") {
+				if (token$2.value === "random") {
 					if (parent && parent.value === ".") {
 						if (grandparent && grandparent.value === "Math") {
 							otherWarning = "Instead of Math.random(), use $helpers.rand()";
@@ -1084,7 +1084,7 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 						}
 					}
 				}
-				if (token$1.value === "now") {
+				if (token$2.value === "now") {
 					if (parent && parent.value === ".") {
 						if (grandparent && grandparent.value === "Date") {
 							otherWarning = "Instead of Date.now(), use $helpers.now()";
@@ -1092,8 +1092,8 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 						}
 					}
 				}
-				if (FORBIDDEN_EXPRESSION_TOKENS[token$1.value]) {
-					foundForbiddenToken = token$1;
+				if (FORBIDDEN_EXPRESSION_TOKENS[token$2.value]) {
+					foundForbiddenToken = token$2;
 					break;
 				}
 			}
@@ -1192,9 +1192,9 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 		try {
 			const warnings = [];
 			const cst = PARSER._parseAst(expr);
-			let tokens$1 = PARSER._processTokens(cst, expr);
-			tokens$1 = tokens$1.slice(8);
-			tokens$1.splice(tokens$1.length - 4);
+			let tokens$2 = PARSER._processTokens(cst, expr);
+			tokens$2 = tokens$2.slice(8);
+			tokens$2.splice(tokens$2.length - 4);
 			const candidates = [];
 			const declarations = {};
 			const references = [];
@@ -1230,11 +1230,11 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 			let completions;
 			if (target && (target.type === "Identifier" || target.type === "MemberExpression")) completions = populateCompletions(target, injectables, keywords, declarations);
 			else completions = [];
-			const tokenInvalidity = isTokenStreamInvalid(tokens$1, options);
+			const tokenInvalidity = isTokenStreamInvalid(tokens$2, options);
 			if (tokenInvalidity) warnings.push(tokenInvalidity);
 			return {
 				cst,
-				tokens: tokens$1,
+				tokens: tokens$2,
 				declarations,
 				references,
 				params,
@@ -1244,7 +1244,7 @@ var require_parseExpression = /* @__PURE__ */ __commonJS({ "src/ast/parseExpress
 				source: expr
 			};
 		} catch (error) {
-			logger$18.warn("[parse expression]", error.message);
+			logger$19.warn("[parse expression]", error.message);
 			return { error };
 		}
 	}
@@ -1455,7 +1455,7 @@ var require_BaseModel = /* @__PURE__ */ __commonJS({ "src/bll/BaseModel.js": ((e
 	const lodash$6 = __require("lodash");
 	const CryptoUtils$3 = require_CryptoUtils();
 	const EmitterManager$1 = require_EmitterManager();
-	const logger$17 = require_LoggerInstance();
+	const logger$18 = require_LoggerInstance();
 	const Cache$2 = require_Cache();
 	const DiskStorage$1 = require_DiskStorage();
 	const MemoryStorage$1 = require_MemoryStorage();
@@ -1715,7 +1715,7 @@ var require_BaseModel = /* @__PURE__ */ __commonJS({ "src/bll/BaseModel.js": ((e
 	BaseModel$26.__sync = false;
 	BaseModel$26.receiveSync = ({ syncIntent, className, primaryKey, objectAttributes }) => {
 		if (!BaseModel$26.__sync) {
-			logger$17.warn(`BaseModel sync not ready to ${syncIntent} ${className} ${primaryKey}`);
+			logger$18.warn(`BaseModel sync not ready to ${syncIntent} ${className} ${primaryKey}`);
 			return;
 		}
 		if (!BaseModel$26.SYNC_INTENTS[syncIntent]) throw new Error(`BaseModel sync intent invalid; cannot receive`);
@@ -1728,7 +1728,7 @@ var require_BaseModel = /* @__PURE__ */ __commonJS({ "src/bll/BaseModel.js": ((e
 					objectAttributes
 				});
 				if (instance) instance.emit("local-model:handle-sync", { syncIntent });
-				else logger$17.warn(`BaseModel sync could not ${syncIntent} ${className} ${primaryKey}`);
+				else logger$18.warn(`BaseModel sync could not ${syncIntent} ${className} ${primaryKey}`);
 				break;
 			case BaseModel$26.SYNC_INTENTS.destroy:
 				instance = BaseModel$26.instanceFromModelSpec({
@@ -1738,7 +1738,7 @@ var require_BaseModel = /* @__PURE__ */ __commonJS({ "src/bll/BaseModel.js": ((e
 				if (instance) {
 					instance.destroy();
 					instance.emit("local-model:handle-sync", { syncIntent });
-				} else logger$17.warn(`BaseModel sync could not ${syncIntent} ${className} ${primaryKey}`);
+				} else logger$18.warn(`BaseModel sync could not ${syncIntent} ${className} ${primaryKey}`);
 				break;
 		}
 	};
@@ -1959,7 +1959,7 @@ var require_Lock = /* @__PURE__ */ __commonJS({ "src/bll/Lock.js": ((exports, mo
 var require_ActionStack = /* @__PURE__ */ __commonJS({ "src/bll/ActionStack.js": ((exports, module) => {
 	const { Experiment: Experiment$7, experimentIsEnabled: experimentIsEnabled$7 } = __require("haiku-common");
 	const lodash$5 = __require("lodash");
-	const logger$16 = require_LoggerInstance();
+	const logger$17 = require_LoggerInstance();
 	const BaseModel$25 = require_BaseModel();
 	const Lock$5 = require_Lock();
 	const TIMER_TIMEOUT = 64;
@@ -2148,9 +2148,9 @@ var require_ActionStack = /* @__PURE__ */ __commonJS({ "src/bll/ActionStack.js":
 		orderedAction(method, metadata, cb) {
 			if (this.shouldOrderRemoteUpdate(metadata)) {
 				if (this.actionStackIndices[metadata.from] !== metadata.actionStackIndex) {
-					logger$16.info(`[action stack] received out-of-order ${method}; deferring until other actions complete`);
-					logger$16.info(`[action stack] requested index: ${metadata.actionStackIndex}`);
-					logger$16.info(`[action stack] current index: ${this.actionStackIndices[metadata.from]}`);
+					logger$17.info(`[action stack] received out-of-order ${method}; deferring until other actions complete`);
+					logger$17.info(`[action stack] requested index: ${metadata.actionStackIndex}`);
+					logger$17.info(`[action stack] current index: ${this.actionStackIndices[metadata.from]}`);
 					return setTimeout(() => {
 						this.orderedAction(method, metadata, cb);
 					}, TIMER_TIMEOUT);
@@ -2183,7 +2183,7 @@ var require_ActionStack = /* @__PURE__ */ __commonJS({ "src/bll/ActionStack.js":
 						did = true;
 						this.addRedoable(inverter, ac);
 					}
-					if (did) logger$16.info(`[action stack] inversion :::`, metadata.cursor, inverter.method, this.getUndoables().length, "<~u|r~>", this.getRedoables().length);
+					if (did) logger$17.info(`[action stack] inversion :::`, metadata.cursor, inverter.method, this.getUndoables().length, "<~u|r~>", this.getRedoables().length);
 				}
 			}));
 			if (SNAPSHOTTED_UNDOABLES[method]) return ac.pushBytecodeSnapshot(() => finish({
@@ -2195,7 +2195,7 @@ var require_ActionStack = /* @__PURE__ */ __commonJS({ "src/bll/ActionStack.js":
 		undo(options, metadata, cb) {
 			this.forceAccumulation();
 			if (this.getUndoables().length < 1) return cb();
-			logger$16.info(`[action stack] undo (us=${this.getUndoables().length})`);
+			logger$17.info(`[action stack] undo (us=${this.getUndoables().length})`);
 			return Lock$5.request(Lock$5.LOCKS.ActionStackUndoRedo, false, (release) => {
 				const undoable = this.popUndoable(this.project.getCurrentActiveComponent());
 				if (!undoable) {
@@ -2221,7 +2221,7 @@ var require_ActionStack = /* @__PURE__ */ __commonJS({ "src/bll/ActionStack.js":
 		redo(options, metadata, cb) {
 			this.forceAccumulation();
 			if (this.getRedoables().length < 1) return cb();
-			logger$16.info(`[action stack] redo (rs=${this.getRedoables().length})`);
+			logger$17.info(`[action stack] redo (rs=${this.getRedoables().length})`);
 			return Lock$5.request(Lock$5.LOCKS.ActionStackUndoRedo, false, (release) => {
 				const redoable = this.popRedoable(this.project.getCurrentActiveComponent());
 				if (!redoable) {
@@ -4595,7 +4595,7 @@ var require_Template = /* @__PURE__ */ __commonJS({ "src/bll/Template.js": ((exp
 var require_ModuleWrapper = /* @__PURE__ */ __commonJS({ "src/bll/ModuleWrapper.js": ((exports, module) => {
 	const fs$2 = __require("node:fs");
 	const path$14 = __require("node:path");
-	const logger$15 = require_LoggerInstance();
+	const logger$16 = require_LoggerInstance();
 	const overrideModulesLoaded$1 = require_overrideModulesLoaded();
 	const BaseModel$23 = require_BaseModel();
 	const Lock$4 = require_Lock();
@@ -4692,13 +4692,13 @@ var require_ModuleWrapper = /* @__PURE__ */ __commonJS({ "src/bll/ModuleWrapper.
 				try {
 					this.load();
 				} catch (exception) {
-					logger$15.warn(`[module wrapper] cannot load ${this.getAbspath()}`);
-					logger$15.warn(exception);
+					logger$16.warn(`[module wrapper] cannot load ${this.getAbspath()}`);
+					logger$16.warn(exception);
 					this.exp = {};
 					this._hasLoadedAtLeastOnce = true;
 					return this.update(this.exp, () => {
 						if (!this.isExternalModule) {
-							logger$15.warn(`[module wrapper] ***forcing flush content of ${this.getAbspath()}***`);
+							logger$16.warn(`[module wrapper] ***forcing flush content of ${this.getAbspath()}***`);
 							this.file.maybeFlushContentForceSync();
 						}
 						release();
@@ -4765,7 +4765,7 @@ var require_ModuleWrapper = /* @__PURE__ */ __commonJS({ "src/bll/ModuleWrapper.
 		try {
 			return JSON.parse(__reference);
 		} catch (exception) {
-			logger$15.warn("[module wrapper]", exception);
+			logger$16.warn("[module wrapper]", exception);
 			return null;
 		}
 	};
@@ -4796,7 +4796,7 @@ var require_ModuleWrapper = /* @__PURE__ */ __commonJS({ "src/bll/ModuleWrapper.
 			cleared[key] = true;
 			MODULE_CACHE_HOT[key] = null;
 		}
-		logger$15.info(`[module wrapper] cleared hot cache`, cleared);
+		logger$16.info(`[module wrapper] cleared hot cache`, cleared);
 	};
 	ModuleWrapper$7.clearRequireCache = (dirname) => {
 		const cleared = {};
@@ -4809,7 +4809,7 @@ var require_ModuleWrapper = /* @__PURE__ */ __commonJS({ "src/bll/ModuleWrapper.
 			cleared[key] = true;
 			delete __require.cache[key];
 		}
-		logger$15.info(`[module wrapper] cleared require cache`, cleared);
+		logger$16.info(`[module wrapper] cleared require cache`, cleared);
 	};
 	ModuleWrapper$7.doesRelpathLookLikeLocalComponent = (relpath) => {
 		const parts = path$14.normalize(relpath).split(path$14.sep);
@@ -4943,10 +4943,10 @@ var require_Expression = /* @__PURE__ */ __commonJS({ "src/bll/Expression.js": (
 	Expression$3.isUnitToken = (str) => {
 		return Expression$3.isPxUnit(str) || Expression$3.isRadiansUnit(str) || Expression$3.isDegreesUnit(str);
 	};
-	Expression$3.normalizeTokensWithNumericFirstToken = (tokens$1, orig) => {
-		if (tokens$1.length < 2) return tokens$1[0];
-		if (tokens$1.length > 2) return orig;
-		if (Expression$3.isUnitToken(tokens$1[1])) return tokens$1[0];
+	Expression$3.normalizeTokensWithNumericFirstToken = (tokens$2, orig) => {
+		if (tokens$2.length < 2) return tokens$2[0];
+		if (tokens$2.length > 2) return orig;
+		if (Expression$3.isUnitToken(tokens$2[1])) return tokens$2[0];
 		return orig;
 	};
 	Expression$3.normalizeParsedValue = (parsedValue, propertyName) => {
@@ -4964,18 +4964,18 @@ var require_Expression = /* @__PURE__ */ __commonJS({ "src/bll/Expression.js": (
 	Expression$3.isPxUnit = (unit) => {
 		return unit === "px" || unit === "pixels";
 	};
-	function rotationTokenHandler(tokens$1, raw) {
-		if (tokens$1.length < 1) return 1;
-		const num = Expression$3.normalizeParsedValue(Number(tokens$1[0]));
-		const unit = tokens$1[1];
+	function rotationTokenHandler(tokens$2, raw) {
+		if (tokens$2.length < 1) return 1;
+		const num = Expression$3.normalizeParsedValue(Number(tokens$2[0]));
+		const unit = tokens$2[1];
 		if (typeof unit !== "string") return num;
 		if (Expression$3.isRadiansUnit(unit)) return num;
 		if (Expression$3.isDegreesUnit(unit)) return num * (Math.PI / 180);
 		return num;
 	}
-	function pxTokenHandler(tokens$1, raw) {
-		if (tokens$1.length < 1) return 1;
-		return Expression$3.normalizeParsedValue(Number(tokens$1[0]));
+	function pxTokenHandler(tokens$2, raw) {
+		if (tokens$2.length < 1) return 1;
+		return Expression$3.normalizeParsedValue(Number(tokens$2[0]));
 	}
 	Expression$3.TOKEN_HANDLERS = {
 		"rotation.x": rotationTokenHandler,
@@ -5148,7 +5148,7 @@ var require_State = /* @__PURE__ */ __commonJS({ "src/bll/State.js": ((exports, 
 //#region src/bll/TimelineProperty.js
 var require_TimelineProperty = /* @__PURE__ */ __commonJS({ "src/bll/TimelineProperty.js": ((exports, module) => {
 	const { getFallback: getFallback$1 } = __require("@haiku/core/lib/HaikuComponent");
-	const { logger: logger$14 } = __require("haiku-serialization");
+	const logger$15 = require_LoggerInstance();
 	const TimelineProperty$7 = {};
 	TimelineProperty$7.getSelectorForComponentId = (componentId) => {
 		return `haiku:${componentId}`;
@@ -5215,9 +5215,9 @@ var require_TimelineProperty = /* @__PURE__ */ __commonJS({ "src/bll/TimelinePro
 			if (hostInstance) {
 				const { computedValue } = hostInstance.grabValue(timelineName, componentId, hostInstance.findElementsByHaikuId(componentId)[0], outputName, propertiesGroup[outputName], time, !hostInstance.shouldPerformFullFlush(), true);
 				if (computedValue !== void 0 && computedValue !== null) return computedValue;
-			} else logger$14.warn(`[timeline property] host instance and value builder may be required to compute a value for ${outputName}`);
+			} else logger$15.warn(`[timeline property] host instance and value builder may be required to compute a value for ${outputName}`);
 		} catch (exception) {
-			logger$14.warn(`[timeline property] unable to compute dynamic value for ${timelineName} ${componentId} ${outputName} ${time} [${exception.message}]`);
+			logger$15.warn(`[timeline property] unable to compute dynamic value for ${timelineName} ${componentId} ${outputName} ${time} [${exception.message}]`);
 		}
 		return TimelineProperty$7.getFallbackValue(elementName, outputName);
 	};
@@ -5315,7 +5315,7 @@ var require_Bytecode = /* @__PURE__ */ __commonJS({ "src/bll/Bytecode.js": ((exp
 	const { xmlToMana: xmlToMana$1, default: convertManaLayout } = __require("haiku-common");
 	const expressionToRO$3 = __require("@haiku/core/lib/reflection/expressionToRO").default;
 	const reifyRO = __require("@haiku/core/lib/reflection/reifyRO").default;
-	const { logger: logger$13 } = __require("haiku-serialization");
+	const logger$14 = require_LoggerInstance();
 	const HAIKU_ID_ATTRIBUTE$3 = "haiku-id";
 	const HAIKU_TITLE_ATTRIBUTE$3 = "haiku-title";
 	const DEFAULT_TIMELINE_NAME$1 = "Default";
@@ -5331,7 +5331,7 @@ var require_Bytecode = /* @__PURE__ */ __commonJS({ "src/bll/Bytecode.js": ((exp
 		return val === void 0;
 	}
 	function referenceEvaluatorMissing(arg) {
-		logger$13.warn("[bytecode] reference evaluator is not implemented");
+		logger$14.warn("[bytecode] reference evaluator is not implemented");
 		return arg;
 	}
 	function ensureManaChildrenArray(mana) {
@@ -5626,7 +5626,7 @@ var require_Bytecode = /* @__PURE__ */ __commonJS({ "src/bll/Bytecode.js": ((exp
 	Bytecode$5.decycle = (reified, { cleanManaOptions = {}, doCleanMana }) => {
 		const decycled = {};
 		if (!reified) {
-			logger$13.warn(`Decycle received falsy bytecode`);
+			logger$14.warn(`Decycle received falsy bytecode`);
 			return decycled;
 		}
 		if (reified.metadata) decycled.metadata = reified.metadata;
@@ -6065,6 +6065,63 @@ var require_fileManipulation = /* @__PURE__ */ __commonJS({ "src/utils/fileManip
 }) });
 
 //#endregion
+//#region src/utils/mixpanel.js
+var require_mixpanel = /* @__PURE__ */ __commonJS({ "src/utils/mixpanel.js": ((exports, module) => {
+	const os$2 = __require("node:os");
+	const Mixpanel$2 = __require("mixpanel");
+	const logger$13 = require_LoggerInstance();
+	const tokens$1 = {
+		development: "53f3639f564804dcb710fd18511d1c0b",
+		production: "6f31d4f99cf71024ce27c3e404a79a61"
+	};
+	const token$1 = process.env.NODE_ENV === "production" ? tokens$1.production : tokens$1.development;
+	const mixpanel$2 = Mixpanel$2.init(token$1, { protocol: "https" });
+	mixpanel$2.token = token$1;
+	const defaultPayload$1 = {
+		app: "haiku",
+		arch: os$2.arch(),
+		platform: os$2.platform(),
+		type: os$2.type(),
+		process: typeof window === "undefined" ? "renderer" : "main",
+		node_env: process.env.NODE_ENV,
+		release_environment: process.env.NODE_ENV,
+		release_branch: process.env.HAIKU_RELEASE_BRANCH,
+		release_platform: process.env.HAIKU_RELEASE_PLATFORM,
+		release_version: process.env.HAIKU_RELEASE_VERSION,
+		distinct_id: void 0
+	};
+	mixpanel$2.mergeToPayload = function mergeToPayload(keepPayload) {
+		return Object.assign(defaultPayload$1, keepPayload);
+	};
+	function _getPayload$1(eventName, eventPayload) {
+		return Object.assign({}, defaultPayload$1, eventPayload);
+	}
+	function _safeStringify$1(obj) {
+		try {
+			return JSON.stringify(obj);
+		} catch (exception) {
+			return null;
+		}
+	}
+	mixpanel$2.haikuTrack = function haikuTrack(eventName, eventPayload) {
+		const finalPayload = _getPayload$1(eventName, eventPayload);
+		logger$13.info("[mixpanel]", eventName);
+		return mixpanel$2.track(eventName, finalPayload);
+	};
+	const trackedEvents$1 = {};
+	mixpanel$2.haikuTrackOnce = function haikuTrackOnce(eventName, eventPayload) {
+		const payloadString = _safeStringify$1(_getPayload$1(eventName, eventPayload));
+		if (payloadString) {
+			if (!trackedEvents$1[payloadString]) {
+				trackedEvents$1[payloadString] = true;
+				mixpanel$2.haikuTrack(eventName, eventPayload);
+			}
+		}
+	};
+	module.exports = mixpanel$2;
+}) });
+
+//#endregion
 //#region src/utils/randomAlphabetical.js
 var require_randomAlphabetical = /* @__PURE__ */ __commonJS({ "src/utils/randomAlphabetical.js": ((exports, module) => {
 	const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -6083,10 +6140,10 @@ var require_Figma = /* @__PURE__ */ __commonJS({ "src/bll/Figma.js": ((exports, 
 	const { URL, URLSearchParams } = __require("node:url");
 	const { inkstone } = __require("@haiku/sdk-inkstone");
 	const fse$6 = __require("haiku-fs-extra");
-	const { mixpanel: mixpanel$1 } = __require("haiku-serialization");
 	const request = __require("request");
 	const { sanitize } = require_fileManipulation();
 	const logger$12 = require_LoggerInstance();
+	const mixpanel$1 = require_mixpanel();
 	const randomAlphabetical$1 = require_randomAlphabetical();
 	const API_BASE = "https://api.figma.com/v1/";
 	const FIGMA_URL = "https://www.figma.com/";
@@ -6121,12 +6178,12 @@ var require_Figma = /* @__PURE__ */ __commonJS({ "src/bll/Figma.js": ((exports, 
 	*  Collection of static class methods and constants related to Figma assets.
 	*/
 	var Figma$3 = class Figma$3 {
-		constructor({ token: token$1, requestLib = request }) {
-			this._token = token$1;
+		constructor({ token: token$2, requestLib = request }) {
+			this._token = token$2;
 			this._requestLib = requestLib;
 		}
-		set token(token$1) {
-			this._token = token$1;
+		set token(token$2) {
+			this._token = token$2;
 		}
 		get token() {
 			return this._token;
@@ -9146,7 +9203,8 @@ var require_Timeline = /* @__PURE__ */ __commonJS({ "src/bll/Timeline.js": ((exp
 	const BaseModel$16 = require_BaseModel();
 	const MathUtils$2 = require_MathUtils();
 	const { formatSeconds } = __require("haiku-ui-common").default;
-	const { logger: logger$7, TimelineProperty: TimelineProperty$4 } = __require("haiku-serialization");
+	const TimelineProperty$4 = require_TimelineProperty();
+	const logger$7 = require_LoggerInstance();
 	const DURATION_DRAG_INCREASE = 20;
 	const DURATION_DRAG_TIMEOUT = 300;
 	const DURATION_MOD_TIMEOUT = 100;
@@ -10419,7 +10477,7 @@ var require_Keyframe = /* @__PURE__ */ __commonJS({ "src/bll/Keyframe.js": ((exp
 //#endregion
 //#region src/bll/Row.js
 var require_Row = /* @__PURE__ */ __commonJS({ "src/bll/Row.js": ((exports, module) => {
-	const { TimelineProperty: TimelineProperty$3 } = __require("haiku-serialization");
+	const { TimelineProperty: TimelineProperty$3 } = require_TimelineProperty();
 	const BaseModel$14 = require_BaseModel();
 	const NAVIGATION_DIRECTIONS = {
 		SAME: 0,
@@ -16895,9 +16953,9 @@ var require_semver = /* @__PURE__ */ __commonJS({ "../../node_modules/.pnpm/semv
 	];
 	function makeSafeRe(value) {
 		for (var i$1 = 0; i$1 < safeRegexReplacements.length; i$1++) {
-			var token$1 = safeRegexReplacements[i$1][0];
+			var token$2 = safeRegexReplacements[i$1][0];
 			var max = safeRegexReplacements[i$1][1];
-			value = value.split(token$1 + "*").join(token$1 + "{0," + max + "}").split(token$1 + "+").join(token$1 + "{1," + max + "}");
+			value = value.split(token$2 + "*").join(token$2 + "{0," + max + "}").split(token$2 + "+").join(token$2 + "{1," + max + "}");
 		}
 		return value;
 	}
@@ -18467,8 +18525,8 @@ var require_Extensions = /* @__PURE__ */ __commonJS({ "../../node_modules/.pnpm/
 		const extensions = {};
 		value.split(",").forEach((v) => {
 			const params = v.split(";");
-			const token$1 = params.shift().trim();
-			const paramsList = extensions[token$1] = extensions[token$1] || [];
+			const token$2 = params.shift().trim();
+			const paramsList = extensions[token$2] = extensions[token$2] || [];
 			const parsedParams = {};
 			params.forEach((param) => {
 				const parts = param.trim().split("=");
@@ -18493,11 +18551,11 @@ var require_Extensions = /* @__PURE__ */ __commonJS({ "../../node_modules/.pnpm/
 	* @public
 	*/
 	const format = (value) => {
-		return Object.keys(value).map((token$1) => {
-			var paramsList = value[token$1];
+		return Object.keys(value).map((token$2) => {
+			var paramsList = value[token$2];
 			if (!Array.isArray(paramsList)) paramsList = [paramsList];
 			return paramsList.map((params) => {
-				return [token$1].concat(Object.keys(params).map((k) => {
+				return [token$2].concat(Object.keys(params).map((k) => {
 					var p = params[k];
 					if (!Array.isArray(p)) p = [p];
 					return p.map((v) => v === true ? k : `${k}=${v}`).join("; ");
@@ -20917,7 +20975,7 @@ var require_Mixpanel = /* @__PURE__ */ __commonJS({ "src/utils/Mixpanel.js": ((e
 //#endregion
 //#region src/utils/requestElementCoordinates.js
 var require_requestElementCoordinates = /* @__PURE__ */ __commonJS({ "src/utils/requestElementCoordinates.js": ((exports, module) => {
-	const { logger: logger$1 } = __require("haiku-serialization");
+	const { logger: logger$1 } = require_LoggerInstance();
 	module.exports = function requestElementCoordinates$1({ currentWebview, requestedWebview, selector, shouldNotifyEnvoy, tourClient }, maxNumberOfTries = 15, currentNumberOfTries = 0) {
 		if (currentWebview !== requestedWebview) return;
 		if (document.getElementById("js-helper-project-loader")) return setTimeout(() => {
@@ -21018,7 +21076,7 @@ var require_Websocket = /* @__PURE__ */ __commonJS({ "src/ws/Websocket.js": ((ex
 		CLOSING: 2,
 		CLOSED: 3
 	};
-	function Websocket$1(url$2, folder, clientType, clientAlias, WebSocket$4, token$1) {
+	function Websocket$1(url$2, folder, clientType, clientAlias, WebSocket$4, token$2) {
 		EventEmitter.call(this);
 		this.WebSocket = WebSocket$4;
 		if (!this.WebSocket && typeof window !== "undefined") this.WebSocket = window.WebSocket;
@@ -21028,7 +21086,7 @@ var require_Websocket = /* @__PURE__ */ __commonJS({ "src/ws/Websocket.js": ((ex
 		if (!folder) logger.warn("[websocket] received no folder argument");
 		this.url = `${url$2}?type=${clientType}&alias=${clientAlias}`;
 		if (folder) this.url += `&folder=${folder}`;
-		if (token$1) this.url += `&token=${token$1}`;
+		if (token$2) this.url += `&token=${token$2}`;
 		this.folder = folder;
 		this.requests = {};
 		this.workers = { connection: setInterval(() => {
@@ -21187,6 +21245,7 @@ var import_Expression = /* @__PURE__ */ __toESM(require_Expression());
 var import_Figma = /* @__PURE__ */ __toESM(require_Figma());
 var import_File = /* @__PURE__ */ __toESM(require_File());
 var import_FontComponent = /* @__PURE__ */ __toESM(require_FontComponent());
+var import_toTitleCase = /* @__PURE__ */ __toESM(require_toTitleCase());
 var import_Illustrator = /* @__PURE__ */ __toESM(require_Illustrator());
 var import_ImageComponent = /* @__PURE__ */ __toESM(require_ImageComponent());
 var import_InstalledComponent = /* @__PURE__ */ __toESM(require_InstalledComponent());
@@ -21202,13 +21261,12 @@ var import_Row = /* @__PURE__ */ __toESM(require_Row());
 var import_SelectionMarquee = /* @__PURE__ */ __toESM(require_SelectionMarquee());
 var import_Sketch = /* @__PURE__ */ __toESM(require_Sketch());
 var import_State = /* @__PURE__ */ __toESM(require_State());
+var import_DiskStorage = /* @__PURE__ */ __toESM(require_DiskStorage());
+var import_MemoryStorage = /* @__PURE__ */ __toESM(require_MemoryStorage());
 var import_Template = /* @__PURE__ */ __toESM(require_Template());
 var import_Timeline = /* @__PURE__ */ __toESM(require_Timeline());
 var import_TimelineProperty = /* @__PURE__ */ __toESM(require_TimelineProperty());
 var import_TransformCache = /* @__PURE__ */ __toESM(require_TransformCache());
-var import_DiskStorage = /* @__PURE__ */ __toESM(require_DiskStorage());
-var import_MemoryStorage = /* @__PURE__ */ __toESM(require_MemoryStorage());
-var import_toTitleCase = /* @__PURE__ */ __toESM(require_toTitleCase());
 var import_getSvgOptimizer = /* @__PURE__ */ __toESM(require_getSvgOptimizer());
 var import_CryptoUtils = /* @__PURE__ */ __toESM(require_CryptoUtils());
 var import_EmitterManager = /* @__PURE__ */ __toESM(require_EmitterManager());

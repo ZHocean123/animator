@@ -2,21 +2,22 @@
   "name": "haiku-formats",
   "version": "5.1.2",
   "description": "Formatting-related utilities for Haiku.",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "import": "./lib/*.mjs",
+      "require": "./lib/*.cjs"
+    }
+  },
   "main": "lib/index.cjs",
   "module": "lib/index.mjs",
   "types": "lib/index.d.cts",
-  "exports": {
-    ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs",
-      "types": "./lib/index.d.ts"
-    },
-    "./*": {
-      "import": "./lib/*.mjs",
-      "require": "./lib/*.cjs",
-      "types": "./lib/*.d.ts"
-    }
-  },
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
@@ -35,16 +36,18 @@
   "authors": [
     "Sasha Joseph <sasha@haiku.ai>"
   ],
-  "license": "UNLICENSED",
-  "dependencies": {
+  "peerDependencies": {
     "@haiku/core": "workspace:*",
+    "haiku-common": "workspace:*",
+    "haiku-sdk-creator": "workspace:*",
+    "haiku-serialization": "workspace:*"
+
+  },
+  "dependencies": {
     "bezier-easing": "^2.0.3",
     "ffmpeg-static": "^2.3.0",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^4.0.2",
-    "haiku-common": "workspace:*",
-    "haiku-sdk-creator": "workspace:*",
-    "haiku-serialization": "workspace:*",
     "image-size": "^0.6.3",
     "lodash": "^4.17.4"
   },
@@ -56,21 +59,21 @@
     "@types/fs-extra": "^4.0.8",
     "@types/image-size": "^0.0.29",
     "@types/lodash": "^4.14.108",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "async": "^2.5.0",
     "cross-env": "^5.1.6",
+    "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
+    "leaked-handles": "^5.2.0",
+    "lottie-web": "5.1.20",
+    "nodemon": "1.11.0",
     "nyc": "^13.0.1",
     "tap-spec": "^4.1.2",
     "tape": "^4.9.0",
+    "ts-loader": "^4.4.2",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1",
-    "leaked-handles": "^5.2.0",
-    "haiku-testing": "workspace:*",
-    "lottie-web": "5.1.20",
-    "nodemon": "1.11.0",
-    "ts-loader": "^4.4.2",
     "walk-sync": "^0.3.2",
     "webpack": "^4.16.0",
     "webpack-cli": "^3.0.8",

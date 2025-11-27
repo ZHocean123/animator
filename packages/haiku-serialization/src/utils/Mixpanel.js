@@ -1,3 +1,4 @@
+/* eslint-disable node/prefer-global/process */
 const os = require('node:os')
 const Mixpanel = require('mixpanel')
 const logger = require('./LoggerInstance')
