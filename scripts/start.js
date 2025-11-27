@@ -1,23 +1,25 @@
-const async = require('async');
-const lodash = require('lodash');
-const cp = require('child_process');
-const fse = require('fs-extra');
-const inquirer = require('inquirer');
-const path = require('path');
-const argv = require('yargs').argv;
-const log = require('./helpers/log');
-const spawn = require('cross-spawn');
-const os = require('os');
+/* eslint-disable node/prefer-global/process */
+const cp = require('node:child_process')
+const path = require('node:path')
+const async = require('async')
+const fse = require('fs-extra')
+const inquirer = require('inquirer')
+const lodash = require('lodash')
+const argv = require('yargs').argv
+const os = require('node:os')
+const spawn = require('cross-spawn')
+const log = require('./helpers/log')
 
-const allPackages = require('./helpers/packages')();
-const groups = lodash.keyBy(allPackages, 'shortname');
-const ROOT = path.join(__dirname, '..');
-const plumbingPackage = groups.plumbing;
-const blankProject = path.join(plumbingPackage.abspath, 'test/fixtures/projects/blank-project/');
+const allPackages = require('./helpers/packages')()
 
-let mainProcess;
+const groups = lodash.keyBy(allPackages, 'shortname')
+const ROOT = path.join(__dirname, '..')
+const plumbingPackage = groups.plumbing
+const blankProject = path.join(plumbingPackage.abspath, 'test/fixtures/projects/blank-project/')
 
-global.process.env.NODE_ENV = global.process.env.NODE_ENV || 'development';
+let mainProcess
+
+globalThis.process.env.NODE_ENV = globalThis.process.env.NODE_ENV || 'development'
 
 /**
  * Run this script when you want to start local development
@@ -28,25 +30,25 @@ const DEFAULTS = {
   devChoice: 'everything',
   folderChoice: 'none',
   skipInitialBuild: false,
-};
+}
 
-const inputs = lodash.assign({}, DEFAULTS, argv);
-delete inputs._;
-delete inputs.$0;
+const inputs = lodash.assign({}, DEFAULTS, argv)
+delete inputs._
+delete inputs.$0
 
 // List of arguments following the command
-const args = argv._;
+const args = argv._
 
-const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim();
-log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`);
+const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim()
+log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`)
 if (!inputs.branch) {
-  inputs.branch = branch;
+  inputs.branch = branch
 }
 
 const FOLDER_CHOICES = {
-  default: null,
-  none: null,
-  blank: blankProject,
+  'default': null,
+  'none': null,
+  'blank': blankProject,
   'blank-noclean': blankProject,
   'primitives-misc-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/primitives-misc-1'),
   'nan-errorz-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/nan-errorz'),
@@ -85,51 +87,56 @@ const FOLDER_CHOICES = {
   'playstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/playstate'),
   'substate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/substate'),
   'repstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repstate'),
-};
-
-// Support:
-//   yarn start --default
-//   yarn start default
-//   yarn start --preset=default
-if (argv.default === true) {
-  argv.preset = 'default';
-} else if (!argv.hasOwnProperty('preset') && args.length > 0) {
-  argv.preset = args[0];
 }
 
 // Support:
-//   yarn start haiku://..
+//   pnpm start --default
+//   pnpm start default
+//   pnpm start --preset=default
+if (argv.default === true) {
+  argv.preset = 'default'
+}
+else if (!Object.prototype.hasOwnProperty.call(argv, 'preset') && args.length > 0) {
+  argv.preset = args[0]
+}
+
+// Support:
+//   pnpm start haiku://..
 //
 // We pass only first haiku:// protocol URI to creator
 // On Windows and Linux, custom protocol handler is passed as argument
-const haikuURI = args.find((arg) => arg.startsWith('haiku://'));
+const haikuURI = args.find(arg => arg.startsWith('haiku://'))
 
 const availablePresets = {
-  glass: 'primitives-misc-1-glass',
-  timeline: 'complex-timeline',
-  blank: 'blank',
+  'glass': 'primitives-misc-1-glass',
+  'timeline': 'complex-timeline',
+  'blank': 'blank',
   'blank-noclean': 'blank-noclean',
-};
+}
 
-if (FOLDER_CHOICES.hasOwnProperty(argv.preset)) {
-  inputs.folderChoice = argv.preset;
-} else if (availablePresets[argv.preset]) {
-  inputs.devChoice = argv.preset;
-  inputs.folderChoice = availablePresets[argv.preset] || global.process.env.HAIKU_PROJECT_FOLDER;
-} else if (argv.preset === 'fast') {
-  inputs.skipInitialBuild = true;
-} else {
-  delete argv.preset;
+if (Object.prototype.hasOwnProperty.call(FOLDER_CHOICES, argv.preset)) {
+  inputs.folderChoice = argv.preset
+}
+else if (availablePresets[argv.preset]) {
+  inputs.devChoice = argv.preset
+  inputs.folderChoice = availablePresets[argv.preset] || globalThis.process.env.HAIKU_PROJECT_FOLDER
+}
+else if (argv.preset === 'fast') {
+  inputs.skipInitialBuild = true
+}
+else {
+  delete argv.preset
 }
 
 if (argv.preset) {
-  log.hat('running automatically with preset ' + argv.preset);
-  runAutomatic();
-} else {
-  runInteractive();
+  log.hat(`running automatically with preset ${argv.preset}`)
+  runAutomatic()
+}
+else {
+  runInteractive()
 }
 
-function runInteractive () {
+function runInteractive() {
   async.series([
     (cb) => {
       inquirer.prompt([
@@ -138,9 +145,9 @@ function runInteractive () {
           name: 'devChoice',
           message: 'What do you want to develop?',
           choices: [
-            {name: 'the whole chimichanga', value: 'everything'},
-            {name: 'just glass', value: 'glass'},
-            {name: 'just timeline', value: 'timeline'},
+            { name: 'the whole chimichanga', value: 'everything' },
+            { name: 'just glass', value: 'glass' },
+            { name: 'just timeline', value: 'timeline' },
           ],
           default: inputs.devChoice,
         },
@@ -149,21 +156,21 @@ function runInteractive () {
           name: 'folderChoice',
           message: 'Project folder (select "none" to use the dashboard)',
           choices: [
-            {name: 'none', value: 'none'},
-            {name: 'a fresh blank project', value: 'blank'},
-            {name: 'the previous "blank" project including content', value: 'blank-noclean'},
-            {name: 'primitives (glass)', value: 'primitives-glass'},
-            {name: 'AliensRepro (glass)', value: 'AliensRepro-glass'},
-            {name: 'percybanking (glass)', value: 'percy-glass'},
-            {name: 'statetransitions (core)', value: 'statetransitions-core'},
-            {name: 'simple (glass)', value: 'simple-gl'},
-            {name: 'SuperComplex (glass)', value: 'SuperComplex-glass'},
-            {name: 'Apr91 (glass)', value: 'Apr91-glass'},
-            {name: 'complex (timeline)', value: 'complex-timeline'},
-            {name: 'SuperComplex (timeline)', value: 'SuperComplex-timeline'},
-            {name: 'AliensRepro (timeline)', value: 'AliensRepro-timeline'},
-            {name: 'Move (timeline)', value: 'Move-timeline'},
-            {name: 'metapoem2 (timeline)', value: 'metapoem2-timeline'},
+            { name: 'none', value: 'none' },
+            { name: 'a fresh blank project', value: 'blank' },
+            { name: 'the previous "blank" project including content', value: 'blank-noclean' },
+            { name: 'primitives (glass)', value: 'primitives-glass' },
+            { name: 'AliensRepro (glass)', value: 'AliensRepro-glass' },
+            { name: 'percybanking (glass)', value: 'percy-glass' },
+            { name: 'statetransitions (core)', value: 'statetransitions-core' },
+            { name: 'simple (glass)', value: 'simple-gl' },
+            { name: 'SuperComplex (glass)', value: 'SuperComplex-glass' },
+            { name: 'Apr91 (glass)', value: 'Apr91-glass' },
+            { name: 'complex (timeline)', value: 'complex-timeline' },
+            { name: 'SuperComplex (timeline)', value: 'SuperComplex-timeline' },
+            { name: 'AliensRepro (timeline)', value: 'AliensRepro-timeline' },
+            { name: 'Move (timeline)', value: 'Move-timeline' },
+            { name: 'metapoem2 (timeline)', value: 'metapoem2-timeline' },
           ],
           default: inputs.folderChoice,
         },
@@ -174,13 +181,13 @@ function runInteractive () {
           default: inputs.dev,
         },
       ]).then((answers) => {
-        lodash.assign(inputs, answers);
-        return cb();
-      });
+        lodash.assign(inputs, answers)
+        return cb()
+      })
     },
 
     (cb) => {
-      log.log(`inputs were: ${JSON.stringify(inputs, null, 2)}`);
+      log.log(`inputs were: ${JSON.stringify(inputs, null, 2)}`)
       inquirer.prompt([
         {
           type: 'confirm',
@@ -190,134 +197,139 @@ function runInteractive () {
         },
       ]).then((answers) => {
         if (answers.doProceed) {
-          log.log('ok, proceeding...');
-          return cb();
+          log.log('ok, proceeding...')
+          return cb()
         }
 
-        log.log('bailed');
-        global.process.exit();
-      });
+        log.log('bailed')
+        globalThis.process.exit()
+      })
     },
   ], (err) => {
     if (err) {
-      throw err;
+      throw err
     }
-    runAutomatic();
-  });
+    runAutomatic()
+  })
 }
 
-function runAutomatic () {
-  setup();
-  go();
+function runAutomatic() {
+  setup()
+  go()
 }
 
 // TODO: Duplicated from distro-configure.js. Move it to
 // right place
-function getReleasePlatform () {
+function getReleasePlatform() {
   switch (os.platform()) {
     case 'darwin':
-      return 'mac';
+      return 'mac'
     case 'win32':
-      return 'windows';
+      return 'windows'
     case 'linux':
-      return 'linux';
+      return 'linux'
     default:
-      throw new Error('Unknown operating system');
+      throw new Error('Unknown operating system')
   }
 }
 
-function getReleaseArchitecture () {
-  return os.arch();
+function getReleaseArchitecture() {
+  return os.arch()
 }
 
-function setup () {
-  log.hat(`preparing to develop locally`, 'cyan');
+function setup() {
+  log.hat(`preparing to develop locally`, 'cyan')
 
-  if (global.process.env.DEV === undefined) {
-    global.process.env.DEV = (inputs.dev) ? '0' : undefined;
+  if (globalThis.process.env.DEV === undefined) {
+    globalThis.process.env.DEV = (inputs.dev) ? '0' : undefined
   }
 
-  global.process.env.HAIKU_SKIP_AUTOUPDATE = '1';
-  global.process.env.HAIKU_PLUMBING_PORT = '1024';
+  globalThis.process.env.HAIKU_SKIP_AUTOUPDATE = '1'
+  globalThis.process.env.HAIKU_PLUMBING_PORT = '1024'
 
   // These are just stubbed out for completeness' sake
-  global.process.env.HAIKU_RELEASE_ENVIRONMENT = process.env.NODE_ENV;
-  global.process.env.HAIKU_RELEASE_BRANCH = 'master';
-  global.process.env.HAIKU_RELEASE_PLATFORM = getReleasePlatform();
-  global.process.env.HAIKU_RELEASE_ARCHITECTURE = getReleaseArchitecture();
-  global.process.env.HAIKU_RELEASE_VERSION = require('./../package.json').version;
-  global.process.env.HAIKU_AUTOUPDATE_SERVER = 'http://localhost:3002';
+  globalThis.process.env.HAIKU_RELEASE_ENVIRONMENT = process.env.NODE_ENV
+  globalThis.process.env.HAIKU_RELEASE_BRANCH = 'master'
+  globalThis.process.env.HAIKU_RELEASE_PLATFORM = getReleasePlatform()
+  globalThis.process.env.HAIKU_RELEASE_ARCHITECTURE = getReleaseArchitecture()
+  globalThis.process.env.HAIKU_RELEASE_VERSION = require('./../package.json').version
+  globalThis.process.env.HAIKU_AUTOUPDATE_SERVER = 'http://localhost:3002'
 
   if (inputs.devChoice === 'everything') {
-    global.process.env.HAIKU_PLUMBING_URL = 'http://0.0.0.0:1024';
+    globalThis.process.env.HAIKU_PLUMBING_URL = 'http://0.0.0.0:1024'
     if (inputs.folderChoice === 'blank') {
-      fse.removeSync(blankProject);
-      fse.mkdirpSync(blankProject);
-      fse.outputFileSync(path.join(blankProject, '.keep'), '');
+      fse.removeSync(blankProject)
+      fse.mkdirpSync(blankProject)
+      fse.outputFileSync(path.join(blankProject, '.keep'), '')
     }
-  } else {
-    global.process.env.MOCK_ENVOY = true;
+  }
+  else {
+    globalThis.process.env.MOCK_ENVOY = true
   }
 }
 
-function go () {
+function go() {
   if (inputs.skipInitialBuild) {
-    log.hat('skipping initial build');
-  } else {
-    log.hat('first building everything');
+    log.hat('skipping initial build')
+  }
+  else {
+    log.hat('first building everything')
     // Use tsdown build script if available, fallback to compile-all
-    const buildCommand = fse.existsSync(path.join(ROOT, 'scripts/build-with-tsdown.js')) ?
-      'pnpm run build-all' : 'pnpm run compile-all';
-    cp.execSync(buildCommand, {cwd: ROOT, stdio: 'inherit'});
+    const buildCommand = fse.existsSync(path.join(ROOT, 'scripts/build-with-tsdown.js'))
+      ? 'pnpm run build-all'
+      : 'pnpm run compile-all'
+    cp.execSync(buildCommand, { cwd: ROOT, stdio: 'inherit' })
   }
 
-  log.hat('starting local development', 'green');
+  log.hat('starting local development', 'green')
 
-  const chosenFolder = FOLDER_CHOICES[inputs.folderChoice];
+  const chosenFolder = FOLDER_CHOICES[inputs.folderChoice]
   if (chosenFolder) {
-    global.process.env.HAIKU_PROJECT_FOLDER = chosenFolder;
+    globalThis.process.env.HAIKU_PROJECT_FOLDER = chosenFolder
   }
 
-  let cwd = ROOT;
-  const binaryArgs = [];
+  let cwd = ROOT
+  const binaryArgs = []
   switch (inputs.devChoice) {
     case 'everything':
-      global.process.env.HAIKU_DEBUG = '1';
-      binaryArgs.push('electron', '--inspect=9220', '--remote-debugging-port=9222', '.');
+      globalThis.process.env.HAIKU_DEBUG = '1'
+      binaryArgs.push('electron', '--inspect=9220', '--remote-debugging-port=9222', '.')
 
       // Fix drag and drop linux bug on debug build. A Heisenbug according to
       // https://github.com/electron/electron/issues/12820
-      if (global.process.env.HAIKU_RELEASE_ENVIRONMENT === 'development' && getReleasePlatform() === 'linux') {
-        log.hat('Disable GPU accel as workaround for drag and drop bug');
-        binaryArgs.push('--disable-gpu');
+      if (globalThis.process.env.HAIKU_RELEASE_ENVIRONMENT === 'development' && getReleasePlatform() === 'linux') {
+        log.hat('Disable GPU accel as workaround for drag and drop bug')
+        binaryArgs.push('--disable-gpu')
       }
 
       // On Windows and Linux, custom protocol handler is
       // passed as argument, so here we forward it
       if (haikuURI) {
-        binaryArgs.push(haikuURI);
+        binaryArgs.push(haikuURI)
       }
-      break;
+      break
     case 'glass':
-      cwd = groups.glass.abspath;
-      binaryArgs.push('start');
-      break;
+      cwd = groups.glass.abspath
+      binaryArgs.push('start')
+      break
     case 'timeline':
-      cwd = groups.timeline.abspath;
-      binaryArgs.push('start');
-      break;
+      cwd = groups.timeline.abspath
+      binaryArgs.push('start')
+      break
   }
 
+  console.log('binaryArgs', binaryArgs)
+
   // Allow anything in .env to override the environment variables we set here.
-  require('dotenv').config();
-  log.hat('Note: NOT watching for code changes. To watch for code changes, run yarn dev-all in a new tab.');
-  mainProcess = spawn('yarn', binaryArgs, {cwd, env: global.process.env, stdio: 'inherit'});
+  require('dotenv').config()
+  log.hat('Note: NOT watching for code changes. To watch for code changes, run pnpm dev-all in a new tab.')
+  mainProcess = spawn('pnpm', binaryArgs, { cwd, env: globalThis.process.env, stdio: 'inherit' })
 
-  global.process.on('exit', () => {
+  globalThis.process.on('exit', () => {
     if (mainProcess && !mainProcess.killed) {
-      mainProcess.kill('SIGTERM');
+      mainProcess.kill('SIGTERM')
     }
-  });
+  })
 
-  mainProcess.on('exit', global.process.exit);
+  mainProcess.on('exit', globalThis.process.exit)
 }

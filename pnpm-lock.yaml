@@ -623,8 +623,8 @@ importers:
         specifier: ^5.1.6
         version: 5.2.1
       electron:
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: ^28.3.3
+        version: 28.3.3
       haiku-testing:
         specifier: workspace:*
         version: link:../haiku-testing
@@ -779,6 +779,9 @@ importers:
       '@types/fs-extra':
         specifier: ^4.0.8
         version: 4.0.15
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.1
       '@types/node-fetch':
         specifier: ^2.1.1
         version: 2.6.13
@@ -792,8 +795,8 @@ importers:
         specifier: ^5.1.6
         version: 5.2.1
       electron:
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: ^28.3.3
+        version: 28.3.3
       haiku-testing:
         specifier: workspace:*
         version: link:../haiku-testing
@@ -1041,7 +1044,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       electron:
-        specifier: ^28.0.0
+        specifier: ^28.3.3
         version: 28.3.3
       haiku-testing:
         specifier: workspace:*
@@ -1198,8 +1201,8 @@ importers:
         specifier: ^5.1.6
         version: 5.2.1
       electron:
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: ^28.3.3
+        version: 28.3.3
       haiku-creator:
         specifier: workspace:*
         version: link:../haiku-creator
@@ -1422,7 +1425,7 @@ importers:
         version: 2.1.0
       standard:
         specifier: ^10.0.2
-        version: 10.0.3
+        version: 10.0.3(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))
       svgo:
         specifier: ^1.0.5
         version: 1.3.2
@@ -1604,8 +1607,8 @@ importers:
         specifier: ^5.1.6
         version: 5.2.1
       electron:
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: ^28.3.3
+        version: 28.3.3
       haiku-testing:
         specifier: workspace:*
         version: link:../haiku-testing
@@ -1716,8 +1719,8 @@ importers:
         specifier: ^5.1.6
         version: 5.2.1
       electron:
-        specifier: 2.0.8
-        version: 2.0.8
+        specifier: ^28.3.3
+        version: 28.3.3
       haiku-testing:
         specifier: workspace:*
         version: link:../haiku-testing
@@ -4728,11 +4731,6 @@ packages:
     engines: {node: '>=10.12.0'}
     hasBin: true
 
-  electron-download@3.3.0:
-    resolution: {integrity: sha512-F/p1+fwr/UAMl6NXp2w6Ke5x5WReguHp6EDm/1tIIqUyXfOW7JezoMoAUNL0ZaKDDCbciydllMwq8qq/f9ks0w==}
-    deprecated: Please use @electron/get moving forward.
-    hasBin: true
-
   electron-download@4.1.1:
     resolution: {integrity: sha512-FjEWG9Jb/ppK/2zToP+U5dds114fM1ZOJqMAR4aXXL5CvyPE9fiqBK/9YcwC9poIFQTEJk/EM/zyRwziziRZrg==}
     engines: {node: '>= 4.0'}
@@ -4753,10 +4751,6 @@ packages:
 
   electron-updater@3.2.3:
     resolution: {integrity: sha512-QkLS+hYyTTHzZ2gGtTyQQ3kY5zQaEf/VwJW+UP37CPi58/VNUOx0xNA9iChwwYa6mzeEyo1xhrS1XjePwkeTbA==}
-
-  electron@2.0.8:
-    resolution: {integrity: sha512-pbeGFbwijb5V3Xy/KMcwIp59eA9igg2br+7EHbbwQoa3HRDF5JjTrciX7OiscCA52+ze2n4q38S4lXPqRitgIA==}
-    hasBin: true
 
   electron@28.3.3:
     resolution: {integrity: sha512-ObKMLSPNhomtCOBAxFS8P2DW/4umkh72ouZUlUKzXGtYuPzgr1SYhskhFWgzAsPtUzhL2CzyV2sfbHcEW4CXqw==}
@@ -5683,9 +5677,6 @@ packages:
     resolution: {integrity: sha512-yhd2OV0HnHt2oitlp+X9hl2ReX4X/7kQeL7/72qzPHTZj5eUPGzAKOvEglU02Fa1OeG2rSy/aKB4WGVaLiF8tw==}
     engines: {node: '>=6 <7 || >=8'}
 
-  fs-extra@0.30.0:
-    resolution: {integrity: sha512-UvSPKyhMn6LEd/WpUaV9C9t3zATuqoqfWc3QdPhPLb58prN9tqYPlPWi8Krxi44loBoUzlobqZ3+8tGpxxSzwA==}
-
   fs-extra@10.1.0:
     resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
     engines: {node: '>=12'}
@@ -6129,10 +6120,6 @@ packages:
 
   hoist-non-react-statics@3.3.0:
     resolution: {integrity: sha512-0XsbTXxgiaCDYDIWFcwkmerZPSwywfUqYmwT4jzewKTQSWoE6FCMoUVOeBJWK3E/CrWbxRG3m5GzY4lnIwGRBA==}
-
-  home-path@1.0.7:
-    resolution: {integrity: sha512-tM1pVa+u3ZqQwIkXcWfhUlY3HWS3TsnKsfi2OHHvnhkX52s9etyktPyy1rQotkr0euWimChDq+QkQuDe8ngUlQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -9724,9 +9711,6 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  sumchecker@1.3.1:
-    resolution: {integrity: sha512-ZfWTnMBdeHaXR7ncH96vRUI07B+wLuXxGPGUMR+EM4QJRJoD535ALIdpc+vHB8eA+1DXJztu3CgHZ1zEhbDF4A==}
-
   sumchecker@2.0.2:
     resolution: {integrity: sha512-16O54scwFPgX60Of/+QJSufmklGqnHZyBK6uewBvtcp3VxT5RM65c/OnGCeEPnjBF8TJoO5Pf6gHAOXfxIjNpA==}
     engines: {node: '>= 4.0'}
@@ -11127,7 +11111,7 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.5
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -14083,10 +14067,6 @@ snapshots:
     optionalDependencies:
       supports-color: 3.1.2
 
-  debug@2.6.9:
-    dependencies:
-      ms: 2.0.0
-
   debug@2.6.9(supports-color@6.1.0):
     dependencies:
       ms: 2.0.0
@@ -14100,10 +14080,6 @@ snapshots:
   debug@4.3.4:
     dependencies:
       ms: 2.1.2
-
-  debug@4.4.3:
-    dependencies:
-      ms: 2.1.3
 
   debug@4.4.3(supports-color@5.5.0):
     dependencies:
@@ -14508,20 +14484,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-download@3.3.0:
-    dependencies:
-      debug: 2.6.9(supports-color@6.1.0)
-      fs-extra: 0.30.0
-      home-path: 1.0.7
-      minimist: 1.2.8
-      nugget: 2.2.0
-      path-exists: 2.1.0
-      rc: 1.2.8
-      semver: 5.7.2
-      sumchecker: 1.3.1
-    transitivePeerDependencies:
-      - supports-color
-
   electron-download@4.1.1:
     dependencies:
       debug: 3.2.7
@@ -14576,14 +14538,6 @@ snapshots:
       pako: 1.0.11
       semver: 5.7.2
       source-map-support: 0.5.21
-    transitivePeerDependencies:
-      - supports-color
-
-  electron@2.0.8:
-    dependencies:
-      '@types/node': 22.19.1
-      electron-download: 3.3.0
-      extract-zip: 1.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -14876,14 +14830,6 @@ snapshots:
       eslint-plugin-promise: 3.5.0
       eslint-plugin-standard: 3.0.1(eslint@3.19.0)
 
-  eslint-config-standard@10.2.1(eslint-plugin-import@2.2.0(eslint@3.19.0))(eslint-plugin-node@4.2.3(eslint@3.19.0))(eslint-plugin-promise@3.5.0)(eslint-plugin-standard@3.0.1(eslint@3.19.0))(eslint@3.19.0):
-    dependencies:
-      eslint: 3.19.0
-      eslint-plugin-import: 2.2.0(eslint@3.19.0)
-      eslint-plugin-node: 4.2.3(eslint@3.19.0)
-      eslint-plugin-promise: 3.5.0
-      eslint-plugin-standard: 3.0.1(eslint@3.19.0)
-
   eslint-flat-config-utils@2.1.4:
     dependencies:
       pathe: 2.0.3
@@ -14895,7 +14841,7 @@ snapshots:
 
   eslint-import-resolver-node@0.2.3:
     dependencies:
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@6.1.0)
       object-assign: 4.1.1
       resolve: 1.22.11
     transitivePeerDependencies:
@@ -14916,15 +14862,6 @@ snapshots:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
-      eslint: 3.19.0
-      eslint-import-resolver-node: 0.2.3
-    transitivePeerDependencies:
-      - supports-color
-
-  eslint-module-utils@2.12.1(eslint-import-resolver-node@0.2.3)(eslint@3.19.0):
-    dependencies:
-      debug: 3.2.7
-    optionalDependencies:
       eslint: 3.19.0
       eslint-import-resolver-node: 0.2.3
     transitivePeerDependencies:
@@ -14982,24 +14919,6 @@ snapshots:
       pkg-up: 1.0.0
     optionalDependencies:
       '@typescript-eslint/parser': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
-    transitivePeerDependencies:
-      - eslint-import-resolver-typescript
-      - eslint-import-resolver-webpack
-      - supports-color
-
-  eslint-plugin-import@2.2.0(eslint@3.19.0):
-    dependencies:
-      builtin-modules: 1.1.1
-      contains-path: 0.1.0
-      debug: 2.6.9
-      doctrine: 1.5.0
-      eslint: 3.19.0
-      eslint-import-resolver-node: 0.2.3
-      eslint-module-utils: 2.12.1(eslint-import-resolver-node@0.2.3)(eslint@3.19.0)
-      has: 1.0.4
-      lodash.cond: 4.5.2
-      minimatch: 3.1.2
-      pkg-up: 1.0.0
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -15312,7 +15231,7 @@ snapshots:
       babel-code-frame: 6.26.0
       chalk: 1.1.3
       concat-stream: 1.6.2
-      debug: 2.6.9
+      debug: 2.6.9(supports-color@6.1.0)
       doctrine: 2.1.0
       escope: 3.6.0
       espree: 3.5.4
@@ -15899,14 +15818,6 @@ snapshots:
       bluebird-lst: 1.0.9
       fs-extra: 7.0.1
 
-  fs-extra@0.30.0:
-    dependencies:
-      graceful-fs: 4.2.11
-      jsonfile: 2.4.0
-      klaw: 1.3.1
-      path-is-absolute: 1.0.1
-      rimraf: 2.7.1
-
   fs-extra@10.1.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -16466,8 +16377,6 @@ snapshots:
   hoist-non-react-statics@3.3.0:
     dependencies:
       react-is: 16.13.1
-
-  home-path@1.0.7: {}
 
   homedir-polyfill@1.0.3:
     dependencies:
@@ -20482,23 +20391,6 @@ snapshots:
     dependencies:
       concat-stream: 2.0.0
 
-  standard@10.0.3:
-    dependencies:
-      eslint: 3.19.0
-      eslint-config-standard: 10.2.1(eslint-plugin-import@2.2.0(eslint@3.19.0))(eslint-plugin-node@4.2.3(eslint@3.19.0))(eslint-plugin-promise@3.5.0)(eslint-plugin-standard@3.0.1(eslint@3.19.0))(eslint@3.19.0)
-      eslint-config-standard-jsx: 4.0.2(eslint-plugin-react@6.10.3(eslint@3.19.0))(eslint@3.19.0)
-      eslint-plugin-import: 2.2.0(eslint@3.19.0)
-      eslint-plugin-node: 4.2.3(eslint@3.19.0)
-      eslint-plugin-promise: 3.5.0
-      eslint-plugin-react: 6.10.3(eslint@3.19.0)
-      eslint-plugin-standard: 3.0.1(eslint@3.19.0)
-      standard-engine: 7.0.0
-    transitivePeerDependencies:
-      - '@typescript-eslint/parser'
-      - eslint-import-resolver-typescript
-      - eslint-import-resolver-webpack
-      - supports-color
-
   standard@10.0.3(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3)):
     dependencies:
       eslint: 3.19.0
@@ -20667,13 +20559,6 @@ snapshots:
   strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
-
-  sumchecker@1.3.1:
-    dependencies:
-      debug: 2.6.9(supports-color@6.1.0)
-      es6-promise: 4.2.8
-    transitivePeerDependencies:
-      - supports-color
 
   sumchecker@2.0.2:
     dependencies:

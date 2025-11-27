@@ -1,15 +1,10 @@
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
-
-// 获取当前文件的目录路径
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(__filename, '..');
+import { resolve } from 'node:path'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   // 不继承 baseConfig 的 entry，单独配置
   // 包特定入口 - 使用单一 index.ts 文件作为入口
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/entry.js'],
 
   // 包特定输出
   outDir: resolve(__dirname, 'lib'),
@@ -20,15 +15,33 @@ export default defineConfig({
     'react',
     'react-dom',
     // Node.js built-ins
-    'fs', 'path', 'os', 'crypto', 'util', 'events', 'stream',
-    'child_process', 'url', 'querystring', 'http', 'https', 'net',
-    'tls', 'dns', 'zlib',
+    'fs',
+    'path',
+    'os',
+    'crypto',
+    'util',
+    'events',
+    'stream',
+    'child_process',
+    'url',
+    'querystring',
+    'http',
+    'https',
+    'net',
+    'tls',
+    'dns',
+    'zlib',
     // External dependencies
-    'ffmpeg-static', 'fluent-ffmpeg', 'image-size', 'bezier-easing', 'lottie-web',
-    '@haiku/*', 'haiku-*',
+    'ffmpeg-static',
+    'fluent-ffmpeg',
+    'image-size',
+    'bezier-easing',
+    'lottie-web',
+    '@haiku/*',
+    'haiku-*',
     'async',
   ],
-  
+
   // 路径别名
   alias: {},
 
@@ -46,4 +59,4 @@ export default defineConfig({
   tsconfig: './tsconfig.json',
 
   exports: true,
-});
+})

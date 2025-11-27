@@ -1,25 +1,24 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "allowJs": false,
-    "declaration": true,
-    "declarationDir": "lib",
+    "target": "esnext",
+    "rootDir": "src",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "noImplicitAny": true,
-    "outDir": "lib",
-    "preserveConstEnums": true,
-    "rootDir": "src",
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "esnext",
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
     "types": [
       "node"
     ],
-    "typeRoots": [
-      "node_modules/@types/"
-    ]
+    "allowJs": false,
+    "noImplicitAny": true,
+    "declaration": true,
+    "declarationDir": "lib",
+    "outDir": "lib",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

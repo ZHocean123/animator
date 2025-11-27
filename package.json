@@ -1,11 +1,11 @@
 {
   "name": "haiku-mono",
-  "private": true,
   "version": "5.1.2",
+  "private": true,
   "description": "Haiku Animator",
-  "main": "index.js",
   "author": "Haiku Systems Inc.",
   "license": "AGPL",
+  "main": "index.js",
   "scripts": {
     "add-experiment": "node ./scripts/add-experiment.js",
     "republish-projects": "node ./scripts/republish-projects.js",
@@ -31,25 +31,6 @@
     "dev-all": "node ./scripts/dev-with-tsdown.js",
     "verify-compatibility": "node ./scripts/verify-build-compatibility.js"
   },
-  "pnpm": {
-    "overrides": {
-      "@haiku/core": "^5.0.0",
-      "@types/react": "^18.2.0",
-      "@types/node": "^22.0.0"
-    },
-    "ignoredBuiltDependencies": [
-      "aws-sdk",
-      "core-js",
-      "electron-chromedriver",
-      "es5-ext",
-      "fsevents",
-      "radium",
-      "spectron"
-    ],
-    "onlyBuiltDependencies": [
-      "electron"
-    ]
-  },
   "dependencies": {
     "@haiku/cli": "workspace:*",
     "@haiku/core": "workspace:*",
@@ -68,8 +49,10 @@
     "haiku-ui-common": "workspace:*"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
     "@electron/notarize": "^1.2.2",
     "@electron/rebuild": "^3.2.9",
+    "@eslint-react/eslint-plugin": "^2.2.4",
     "async": "^3.2.4",
     "aws-sdk": "^2.1491.0",
     "cli-color": "^2.0.3",
@@ -81,6 +64,9 @@
     "electron": "^28.3.3",
     "electron-builder": "^24.9.1",
     "eslint": "^9.39.1",
+    "eslint-plugin-format": "^1.0.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "fs-extra": "^11.1.1",
     "git-branch": "^2.0.1",
     "glob": "^11.0.0",
@@ -104,12 +90,26 @@
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.17.4",
     "webpack": "^5.89.0",
-    "yargs": "^17.7.2",
-    "@antfu/eslint-config": "^6.2.0",
-    "eslint-plugin-format": "^1.0.2",
-    "@eslint-react/eslint-plugin": "^2.2.4",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24"
+    "yargs": "^17.7.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@haiku/core": "^5.0.0",
+      "@types/node": "^22.0.0",
+      "@types/react": "^18.2.0"
+    },
+    "ignoredBuiltDependencies": [
+      "aws-sdk",
+      "core-js",
+      "electron-chromedriver",
+      "es5-ext",
+      "fsevents",
+      "radium",
+      "spectron"
+    ],
+    "onlyBuiltDependencies": [
+      "electron"
+    ]
   },
   "standard": {
     "ignore": [

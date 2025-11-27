@@ -36,7 +36,7 @@ class BytecodeErrorPopup extends React.Component {
       return
     }
 
-    const lineNum = '?'
+    let lineNum = '?'
     let errorMessage = error.toString()
     if (error.name === 'ReferenceError') {
       const res = error.stack.match(/\(.*?:(.*?):.*?\)/)
