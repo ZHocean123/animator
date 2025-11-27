@@ -1,6 +1,8 @@
 const tape = require('tape');
-const objectToOAST = require('../../src/ast/objectToOAST');
-const generateCode = require('../../src/ast/generateCode');
+process.env.TS_NODE_PROJECT = require('path').join(__dirname, '../../tsconfig.tests.json');
+require('ts-node/register');
+const objectToOAST = require('../../src/ast/objectToOAST.ts').default;
+const generateCode = require('../../src/ast/generateCode.ts').default;
 
 tape.test('ast', (suite) => {
   suite.test('objectToOAST', (test) => {

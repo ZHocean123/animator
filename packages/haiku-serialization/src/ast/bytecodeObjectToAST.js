@@ -1,4 +1,4 @@
-const objectToOAST = require('./objectToOAST')
+const objectToOAST = require('./objectToOAST').default
 
 function buildRequireStatement(identifier, modpath) {
   return {

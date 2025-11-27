@@ -1,7 +1,7 @@
-const removeRequire = require('./removeRequire')
-const traverseAST = require('./traverseAST')
-const upsertRequire = require('./upsertRequire')
-const wrapInHaikuInject = require('./wrapInHaikuInject')
+const removeRequire = require('./removeRequire').default
+const traverseAST = require('./traverseAST').default
+const upsertRequire = require('./upsertRequire').default
+const wrapInHaikuInject = require('./wrapInHaikuInject').default
 
 /**
  * @function normalizeBytecodeAST

@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const matchesRequire = require('./matchesRequire')
-const traverseAST = require('./traverseAST')
+const matchesRequire = require('./matchesRequire').default
+const traverseAST = require('./traverseAST').default
 
 /**
  * @function removeRequire

@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const matchesRequire = require('./matchesRequire')
+const matchesRequire = require('./matchesRequire').default
 
 /**
  * @function upsertRequire

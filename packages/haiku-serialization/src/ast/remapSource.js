@@ -1,6 +1,6 @@
-const generateCode = require('./generateCode')
-const parseCode = require('./parseCode')
-const traverseAST = require('./traverseAST')
+const generateCode = require('./generateCode').default
+const parseCode = require('./parseCode').default
+const traverseAST = require('./traverseAST').default
 
 function remapSource(source, remapper) {
   if (!remapper) {

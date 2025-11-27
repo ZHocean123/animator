@@ -1,4 +1,4 @@
-const objectPatternNodeToObject = require('./objectPatternNodeToObject')
+const objectPatternNodeToObject = require('./objectPatternNodeToObject').default
 
 const unknowns = 0
 

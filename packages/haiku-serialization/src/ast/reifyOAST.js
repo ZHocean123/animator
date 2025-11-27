@@ -1,4 +1,4 @@
-const OASTToRO = require('./OASTToRO')
+const OASTToRO = require('./OASTToRO').default
 const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default
 
 function reifyOAST(oast, referenceEvaluator, skipFunctionReification) {
