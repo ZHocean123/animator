@@ -1,9 +1,8 @@
 const path = require('node:path')
 const fse = require('haiku-fs-extra')
 
-const {
-  HOMEDIR_MODEL_STORAGE_PATH,
-} = require('./../../utils/HaikuHomeDir')
+const Home = require('./../../utils/HaikuHomeDir').default
+const { HOMEDIR_MODEL_STORAGE_PATH } = Home
 
 fse.mkdirpSync(HOMEDIR_MODEL_STORAGE_PATH)
 

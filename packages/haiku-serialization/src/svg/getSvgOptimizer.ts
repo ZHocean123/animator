@@ -1,9 +1,9 @@
-const Svgo = require('svgo')
-const customPlugins = require('./plugins')
+import Svgo from 'svgo'
+import customPlugins from './plugins'
 
-let singleton
+let singleton: any
 
-const plugins = [
+const plugins: any[] = [
   'removeMetadata',
   'removeTitle',
   'removeDesc',
@@ -19,14 +19,9 @@ const plugins = [
   customPlugins,
 ]
 
-module.exports = () => {
+export default () => {
   if (!singleton) {
-    singleton = new Svgo({
-      full: true,
-      floatPrecision: 3,
-      plugins,
-    })
+    singleton = new (Svgo as any)({ full: true, floatPrecision: 3, plugins })
   }
-
   return singleton
 }

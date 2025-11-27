@@ -4,10 +4,11 @@ const { URL, URLSearchParams } = require('node:url')
 const { inkstone } = require('@haiku/sdk-inkstone')
 const fse = require('haiku-fs-extra')
 const request = require('request')
-const { sanitize } = require('../utils/fileManipulation')
-const logger = require('../utils/LoggerInstance')
+const fileManipulation = require('../utils/fileManipulation').default
+const { sanitize } = fileManipulation
+const logger = require('../utils/LoggerInstance').default
 const mixpanel = require('../utils/mixpanel')
-const randomAlphabetical = require('../utils/randomAlphabetical')
+const randomAlphabetical = require('../utils/randomAlphabetical').default
 
 const API_BASE = 'https://api.figma.com/v1/'
 const FIGMA_URL = 'https://www.figma.com/'

@@ -3,7 +3,7 @@ const path = require('node:path')
 const fse = require('haiku-fs-extra')
 const { PNG } = require('pngjs')
 const sketchUtils = require('../utils/sketchUtils')
-const logger = require('./../utils/LoggerInstance')
+const logger = require('./../utils/LoggerInstance').default
 const BaseModel = require('./BaseModel')
 
 const LOOKS_LIKE_SLICE = /\.sketch\.contents\/slices\//

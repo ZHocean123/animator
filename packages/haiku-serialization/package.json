@@ -75,7 +75,12 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
+    "@types/async": "^2.4.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/fs-extra": "^4.0.15",
     "@types/gl-matrix": "^2.4.0",
+    "@types/node": "^22.19.1",
+    "@types/winston": "^2.4.4",
     "cross-env": "^5.1.6",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",

@@ -3,7 +3,7 @@ const BaseModel = require('./BaseModel')
 const MathUtils = require('./MathUtils')
 const { formatSeconds } = require('haiku-ui-common').default
 const TimelineProperty = require('../bll/TimelineProperty')
-const logger = require('../utils/LoggerInstance')
+const logger = require('../utils/LoggerInstance').default
 
 const DURATION_DRAG_INCREASE = 20 // Increase by this much per each duration increase
 const DURATION_DRAG_TIMEOUT = 300 // Wait this long before increasing the duration

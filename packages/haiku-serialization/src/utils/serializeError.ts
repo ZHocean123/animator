@@ -1,7 +1,6 @@
-module.exports = function serializeError(err) {
-  if (!err) {
+export default function serializeError(err?: (Error & { code?: string | number, type?: string }) | null) {
+  if (!err)
     return null
-  }
   return {
     name: err.name,
     message: err.message,

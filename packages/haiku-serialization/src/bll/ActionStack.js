@@ -2,7 +2,7 @@ const { Experiment, experimentIsEnabled } = require('haiku-common')
 
 const lodash = require('lodash')
 
-const logger = require('./../utils/LoggerInstance')
+const logger = require('./../utils/LoggerInstance').default
 const BaseModel = require('./BaseModel')
 const Lock = require('./Lock')
 

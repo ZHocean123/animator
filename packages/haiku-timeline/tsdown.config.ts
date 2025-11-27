@@ -1,8 +1,4 @@
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { resolve } from 'node:path'
 
 export default {
   entry: [
@@ -53,19 +49,19 @@ export default {
     'src/components/FrameAction.jsx',
     'src/components/TimelineDraggable.jsx',
     'src/components/TransitionBody.jsx',
-    'src/components/PropertyRowHeading.jsx'
+    'src/components/PropertyRowHeading.jsx',
   ],
   outDir: 'lib',
   format: ['cjs', 'esm'],
   clean: true,
   watch: false,
   tsconfig: resolve(__dirname, 'tsconfig.json'),
-  dts: true,
+  dts: false,
   sourcemap: true,
   minify: false,
   esbuild: {
     loader: 'jsx',
     jsxFactory: 'React.createElement',
-    jsxFragment: 'React.Fragment'
-  }
-};
+    jsxFragment: 'React.Fragment',
+  },
+}

@@ -1,9 +1,9 @@
 {
   "name": "haiku-timeline",
+  "type": "module",
   "version": "5.1.2",
   "private": true,
   "license": "UNLICENSED",
-  "type": "module",
   "authors": [
     "Matthew Trost <matthew@haiku.ai>",
     "Taylor Poe <taylor@haiku.ai>",
@@ -55,6 +55,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-        "typescript": "^3.0.3"
+    "typescript": "^3.0.3"
   }
 }

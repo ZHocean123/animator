@@ -4,8 +4,9 @@ const path = require('node:path')
 const { isMac, isWindows } = require('haiku-common')
 const fse = require('haiku-fs-extra')
 const uuid = require('uuid')
-const { stringifyPath } = require('../utils/fileManipulation')
-const logger = require('../utils/LoggerInstance')
+const fileManipulation = require('../utils/fileManipulation').default
+const { stringifyPath } = fileManipulation
+const logger = require('../utils/LoggerInstance').default
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/

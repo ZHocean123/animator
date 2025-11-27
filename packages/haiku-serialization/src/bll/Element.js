@@ -11,7 +11,7 @@ const Matrix = require('gl-matrix')
 const { Experiment, experimentIsEnabled } = require('haiku-common')
 const polygonOverlap = require('polygon-overlap')
 const titlecase = require('titlecase')
-const logger = require('./../utils/LoggerInstance')
+const logger = require('./../utils/LoggerInstance').default
 const BaseModel = require('./BaseModel')
 const TransformCache = require('./TransformCache')
 

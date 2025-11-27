@@ -1,7 +1,7 @@
 const util = require('node:util')
 const EventEmitter = require('node:events').EventEmitter
-const logger = require('./../utils/LoggerInstance')
-const serializeError = require('./../utils/serializeError')
+const logger = require('./../utils/LoggerInstance').default
+const serializeError = require('./../utils/serializeError').default
 
 const STATES = {
   CONNECTING: 0, // The connection is not yet open.

@@ -9,7 +9,7 @@ const { default: convertManaLayout } = require('haiku-common')
 const { manaToXml } = require('haiku-common')
 const assign = require('lodash.assign')
 const defaults = require('lodash.defaults')
-const CryptoUtils = require('./../utils/CryptoUtils')
+const CryptoUtils = require('./../utils/CryptoUtils').default
 const BaseModel = require('./BaseModel')
 
 const GROUP_DELIMITER = '.'

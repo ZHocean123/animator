@@ -1,6 +1,6 @@
 const fs = require('node:fs')
 const path = require('node:path')
-const logger = require('./../utils/LoggerInstance')
+const logger = require('./../utils/LoggerInstance').default
 const overrideModulesLoaded = require('./../utils/overrideModulesLoaded')
 const BaseModel = require('./BaseModel')
 const Lock = require('./Lock')

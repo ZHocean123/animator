@@ -1,8 +1,8 @@
 const { EventEmitter } = require('node:events')
 const lodash = require('lodash')
-const CryptoUtils = require('./../utils/CryptoUtils')
-const EmitterManager = require('./../utils/EmitterManager')
-const logger = require('./../utils/LoggerInstance')
+const CryptoUtils = require('./../utils/CryptoUtils').default
+const EmitterManager = require('./../utils/EmitterManager').default
+const logger = require('./../utils/LoggerInstance').default
 const Cache = require('./Cache')
 const DiskStorage = require('./storage/DiskStorage')
 const MemoryStorage = require('./storage/MemoryStorage')
