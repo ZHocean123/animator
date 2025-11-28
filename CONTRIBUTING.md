@@ -24,12 +24,14 @@
 ### 2. 安装步骤
 
 1. **克隆仓库**
+
    ```bash
    git clone https://github.com/HaikuTeam/animator.git
    cd animator
    ```
 
 2. **安装 Node.js 22**
+
    ```bash
    nvm install 22
    nvm alias default 22
@@ -37,13 +39,14 @@
    ```
 
 3. **安装 Yarn**
+
    ```bash
    curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
    ```
 
 4. **安装项目依赖**
    ```bash
-   yarn install && yarn setup
+   pnpm install && pnpm setup
    ```
 
 ### 3. 验证安装
@@ -53,10 +56,10 @@
 node --version  # 应显示 v22.x.x
 
 # 检查构建系统
-yarn build-all
+pnpm build-all
 
 # 运行测试
-yarn test-all
+pnpm test-all
 ```
 
 ## 代码贡献流程
@@ -85,10 +88,10 @@ yarn test-all
 
 ```bash
 # 检查代码风格
-yarn lint-all
+pnpm lint-all
 
 # 自动修复可修复的问题
-yarn fix
+pnpm fix
 ```
 
 ### 提交信息规范
@@ -104,6 +107,7 @@ type(scope): description
 ```
 
 类型包括：
+
 - `feat`: 新功能
 - `fix`: 错误修复
 - `docs`: 文档更新
@@ -113,6 +117,7 @@ type(scope): description
 - `chore`: 构建过程或辅助工具的变动
 
 示例：
+
 ```
 feat(core): add new animation export feature
 
@@ -128,14 +133,14 @@ Closes #123
 
 ```bash
 # 运行所有测试
-yarn test-all
+pnpm test-all
 
 # 运行特定包的测试
 cd packages/[package-name]
-yarn test
+pnpm test
 
 # 生成测试覆盖率报告
-yarn test-report
+pnpm test-report
 ```
 
 ### 编写测试
@@ -153,18 +158,18 @@ Haiku Animator 使用 tsdown 作为主要构建系统，这是一个基于 esbui
 
 ```bash
 # 构建所有包
-yarn build-all
+pnpm build-all
 
 # 开发模式（带文件监听）
-yarn dev-all
+pnpm dev-all
 
 # 构建特定包
 cd packages/[package-name]
-yarn build
+pnpm build
 
 # 开发模式特定包
 cd packages/[package-name]
-yarn dev
+pnpm dev
 ```
 
 ### 构建配置
@@ -178,18 +183,20 @@ yarn dev
 ### 开发工作流
 
 1. **启动开发服务器**
+
    ```bash
-   yarn start
+   pnpm start
    ```
 
 2. **监听文件变化**
+
    ```bash
-   yarn watch-all
+   pnpm watch-all
    ```
 
 3. **构建项目**
    ```bash
-   yarn build-all
+   pnpm build-all
    ```
 
 ## 调试

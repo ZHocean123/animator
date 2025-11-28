@@ -31,7 +31,7 @@ if (!process.env.NODE_ENV) {
 // Try to use tsdown build command first, fallback to compile if not available
 const groups = lodash.keyBy(allPackages, 'name');
 const packageInfo = groups[pkg];
-const buildCommand = packageInfo && packageInfo.pkg && packageInfo.pkg.scripts.build ? 'pnpm run build' : 'yarn compile';
+const buildCommand = packageInfo && packageInfo.pkg && packageInfo.pkg.scripts.build ? 'pnpm run build' : 'pnpm compile';
 cp.execSync(buildCommand, {cwd: PACKAGE_PATH, stdio: 'inherit'});
 
 if (argv.uglify) {

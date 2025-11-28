@@ -7,13 +7,13 @@ Testing utilities for Haiku.
 After cloning the repo:
 
 ```
-$ yarn install
+$ pnpm install
 ```
 
 Then develop with:
 
 ```
-$ yarn develop
+$ pnpm develop
 ```
 
 ## Tests
@@ -21,7 +21,7 @@ $ yarn develop
 Run the tests with:
 
 ```
-$ yarn test
+$ pnpm test
 ```
 
 ## Linting
@@ -29,11 +29,11 @@ $ yarn test
 Lint with:
 
 ```
-$ yarn lint
+$ pnpm lint
 ```
 
 Autofix lint errors with:
 
 ```
-$ yarn fix
+$ pnpm fix
 ```

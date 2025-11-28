@@ -2,6 +2,8 @@
   "name": "@haiku/sdk-client",
   "version": "5.1.2",
   "description": "Haiku SDK for Client",
+  "author": "Zack Brown <zack@haiku.ai>",
+  "license": "UNLICENSED",
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
@@ -9,23 +11,24 @@
     },
     "./package.json": "./package.json"
   },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsdown",
     "develop": "tsdown --watch",
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
-  "files": [
-    "lib/**/*"
-  ],
-  "author": "Zack Brown <zack@haiku.ai>",
-  "license": "UNLICENSED",
   "dependencies": {
     "@haiku/sdk-inkstone": "workspace:*",
     "dedent": "^0.7.0",
@@ -53,8 +56,5 @@
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
     "typescript": "^5.3.0"
-  },
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.cts"
+  }
 }

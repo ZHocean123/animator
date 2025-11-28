@@ -8,4 +8,4 @@ if environ.get('SKIP_HAIKU_HOOKS', '0') == '1':
   sys.exit(0)
 
 print 'Syncing dependencies....'
-subprocess.call(['yarn', 'install'])
+subprocess.call(['pnpm', 'install'])

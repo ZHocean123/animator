@@ -1,13 +1,13 @@
 # @haiku/cli
-  
+
 > The Haiku CLI
 
 ## Installation
 
-Via yarn:
+Via pnpm:
 
 ```
-$ yarn global add @haiku/cli
+$ pnpm global add @haiku/cli
 ```
 
 Via npm:

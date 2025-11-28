@@ -2598,7 +2598,7 @@
     "52cc25834726c411cea1c03ccf87dba743339975": {
       "project": "haiku-bytecode",
       "label": "feat",
-      "message": "Add 'yarn go' for starting up with sane defaults"
+      "message": "Add 'pnpm go' for starting up with sane defaults"
     },
     "4bb182396705e716b15982bb5c2639a24326e0e8": {
       "project": "haiku-bytecode",
@@ -2668,7 +2668,7 @@
     "3118fed3213e676e97cb86c9ee52a09f8d2bc0a9": {
       "project": "haiku-bytecode",
       "label": "fix",
-      "message": "When using yarn to run npm yarn ends up setting env var that conflicts with npm's"
+      "message": "When using pnpm to run npm pnpm ends up setting env var that conflicts with npm's"
     },
     "6fd387e844be7e88aa01b70a1f9747a8be479f4e": {
       "project": "haiku-bytecode",
@@ -2971,7 +2971,7 @@
     "b0f0a05165416d60377d15876353120f1099adb9": {
       "project": "haiku-player",
       "label": "fix",
-      "message": "`yarn sync` should link/unlink pkgname, not name."
+      "message": "`pnpm sync` should link/unlink pkgname, not name."
     },
     "4636629beece7f286eb3419b37e97b7a6452571c": {
       "project": "haiku-player",
@@ -3575,7 +3575,7 @@
     "8a8a0159c5c41e3d0a749b49ac3d042898aecce3": {
       "project": "@haiku/player",
       "label": "fix",
-      "message": "Get `yarn push` working fully."
+      "message": "Get `pnpm push` working fully."
     },
     "d6b3fd88441e1add1c236206ee72cea9ff21346f": {
       "project": "@haiku/player",
@@ -3730,7 +3730,7 @@
     "107bc422c662b82e3adccbe15e3fd9a371fa2224": {
       "project": "@haiku/player",
       "label": "fix",
-      "message": "Get build working with yarn workspaces."
+      "message": "Get build working with pnpm workspaces."
     },
     "56e7f48032941c46fa93ad29c49ba68a3c339094": {
       "project": "@haiku/player",
@@ -4342,7 +4342,7 @@
     "87d7168a03616ddd9cebed5d62ea3bf594859d09": {
       "project": "@haiku/sdk-client",
       "label": "fix",
-      "message": "always push to mono during `yarn push` before splitting to standalones."
+      "message": "always push to mono during `pnpm push` before splitting to standalones."
     },
     "70fe48e63c30e8530e481476018d13aefe626e31": {
       "project": "@haiku/sdk-client",
@@ -6460,7 +6460,7 @@
     "1a50d8ff9a835e213adcc3c6648fbd76e5e2a050": {
       "project": "@haiku/sdk-client",
       "label": "fix",
-      "message": "spell out yarn in self-link to avoid macOS conflict."
+      "message": "spell out pnpm in self-link to avoid macOS conflict."
     },
     "8376d5c35c0c56f989ac9ff734dea5ab25771915": {
       "project": "@haiku/sdk-client",
@@ -6642,7 +6642,7 @@
     "7f0e78d51e519da6bf51e1e5b8da344e06f2f135": {
       "project": "@haiku/sdk-client",
       "label": "fix",
-      "message": "spell out yarn in self-link to avoid macOS conflict."
+      "message": "spell out pnpm in self-link to avoid macOS conflict."
     }
   },
   "3.3.2": {
@@ -8052,7 +8052,7 @@
     "695c71ecdaff710c85dfa32a1da816a7564cdc8c": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "restore yarn setup to original glory."
+      "message": "restore pnpm setup to original glory."
     },
     "11ff6b4a06bb39e43f1d8e5b7caf9a37ea719432": {
       "project": "haiku-testing",
@@ -8867,7 +8867,7 @@
     "8ae3a9fb5ea2b7728e4dbe762aa3a067ae769869": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "backward-incompatible yarn"
+      "message": "backward-incompatible pnpm"
     },
     "d36fdeb16a1ae7cee2f18e7fe24df1313544634d": {
       "project": "haiku-testing",
@@ -9342,7 +9342,7 @@
     "905e019c8e46f5947a58e08051b3f56aa77161eb": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "reroll yarn.lock"
+      "message": "reroll pnpm.lock"
     },
     "065e60b9989b665f905d3d1f67a809a6f69e915c": {
       "project": "haiku-testing",
@@ -9429,17 +9429,17 @@
     "7c7dffc644993de30ee34c581b9d892b260be943": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "reroll yarn.lock"
+      "message": "reroll pnpm.lock"
     },
     "fa8fb4f4522faab75ca5a41b5d572b93aa7af0f7": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "reroll yarn.lock"
+      "message": "reroll pnpm.lock"
     },
     "a1d74f9232d10e037524968f5471ceb0a6ec6369": {
       "project": "haiku-testing",
       "label": "fix",
-      "message": "reroll yarn.lock"
+      "message": "reroll pnpm.lock"
     },
     "9b5fdadcebfe6ed648ae69f5c6b7263420358390": {
       "project": "haiku-testing",

@@ -252,14 +252,14 @@ void yarnInstallUnixLike() {
     sh '''#!/bin/bash -x
         . $HOME/.bash_profile
         if [ ! -d node_modules ]; then
-            yarn install --frozen-lockfile --force
+            pnpm install --frozen-lockfile --force
         fi'''
 }
 
 void yarnRun(String command) {
     sh '''#!/bin/bash -x
         . $HOME/.bash_profile
-        ''' + "yarn ${command}"
+        ''' + "pnpm ${command}"
 }
 
 void nodeRun(String command) {

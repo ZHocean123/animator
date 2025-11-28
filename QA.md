@@ -5,11 +5,11 @@ If you find a bug, file it in Asana and label it here.
 Put your initials to the right of any items you have checked.
 
 Use the following legend:
-  🔴=showstopper (use only for defects that should block release syndication)
-  🐛=minor bug (use for known bugs, bugs already in prod, or small stuff)
-  💚=fixed issue
+🔴=showstopper (use only for defects that should block release syndication)
+🐛=minor bug (use for known bugs, bugs already in prod, or small stuff)
+💚=fixed issue
 
-- - - -
+---
 
 Tour
 
@@ -364,8 +364,6 @@ Eventually the "other" option (for GIF) becomes clickable and shows correct info
 If I try to publish while offline, it fails immediately instead of appearing to try to publish
 If I am over my private project limit and try to publish a private project, I receive a public opt-in warning
 
-
-
 Cut/Copy/Paste (Stage)
 
 I can cut/copy elements on stage using keyboard controls
@@ -443,9 +441,9 @@ Text selection doesn't keep appearing/reappearing as I type in an expression fie
 Choosing an expression autocomplete entry doesn't obliterate the part of text I've just typed
 I can change the name of a state used by an expression, and an error will indicate the orphaned identifier
 If I have an expression bound to time or interactivity, this continues to work even if playback is paused
-In Preview Mode, the `$user.mouse.y` position is calculated correctly with respect to the share page artboard box
-In Preview Mode, the `$user.mouse.y` position is calculated correctly when the stage has been zoomed/panned
-I can enter `rotation.x,y,z` `0,0,0` (defaults) and not see any change in rotation reflected
+In Preview Mode, the `$user.mouse.y`position is calculated correctly with respect to the share page artboard box
+In Preview Mode, the`$user.mouse.y`position is calculated correctly when the stage has been zoomed/panned
+I can enter`rotation.x,y,z` `0,0,0` (defaults) and not see any change in rotation reflected
 
 States
 
@@ -559,8 +557,6 @@ I can undo/redo changes within a child, and those also reflect in the host
 I can set the playback value to `'once'` or `'stop'` or `100` and these all work correctly
 I can set the playback value to `'play+100'` or `'-100'` to stagger animation times, and these all work correctly
 I can set the playback value for a grandchild via a child, and it works correctly from the host
-
-
 
 Sketch
 
@@ -709,8 +705,6 @@ I am able to deselect a previously selected segment holding Shift and clicking o
 I am able to deselect a segment by right-clicking a tween
 I am able to deselect a segment by right-clicking a keyframe
 
-
-
 CLI
 
 I can use Haiku CLI to login and logout
@@ -765,8 +759,6 @@ I can do all of the above edits at keyframe n>0
 I can add a keyframe to create a tween (path morph) for any of the above edits between 0..n>0
 When I directly edit vertices, I see the updated property/keyframe change in the Timeline
 I can directly edit shape attributes like `d` in the Timeline, and see the change reflect on Stage
-
-
 
 Multi-select/Multi-transform
 
@@ -846,7 +838,7 @@ During a code reload due to an on-disk change the timeline does not animate, and
 Release Collateral
 
 I can download and extract the .zip archive of the release
-The CLI npm package works (`$ yarn global add @haiku/cli`)
+The CLI npm package works (`$ pnpm global add @haiku/cli`)
 Core CDN links work (`http://code.haiku.ai/scripts/core/HaikuCore.<{version}|latest>[.min].js (http://code.haiku.ai/scripts/core/HaikuCore.%3C%7Bversion%7D|latest%3E[.min].js) (http://code.haiku.ai/scripts/core/HaikuCore.%3C%7Bversion%7D|latest%3E[.min].js)`)
 Core standalone repo has latest https://github.com/HaikuTeam/core
 Core npm package is up to date https://www.npmjs.com/package/@haiku/core
@@ -863,11 +855,9 @@ Publishing produces a static bundle at code/main/static.json which renders corre
 Changes made in Sketch after first publish also appear correctly on the published share page
 A GIF shows up in Slack when the link is shared in Slack
 
+---
 
-
-- - - -
-
-*The items below require special setup/access and are not required for normal QA.*
+_The items below require special setup/access and are not required for normal QA._
 
 Distro
 
@@ -882,7 +872,7 @@ If dev, mono can launch Glass individually
 If dev, mono can launch Timeline individually
 I can refresh creator, load the same project, and go back to editing as normal
 Plumbing logs show up correctly for actions
-If dev, I can test `haiku://` URLs using `yarn start <url>`
+If dev, I can test `haiku://` URLs using `pnpm start <url>`
 If prod, I can open the app via open `haiku://:`
 
 Core
@@ -894,7 +884,7 @@ All of the test/demo examples render/behave correctly in Chrome
 All of the test/demo examples render/behave correctly in Safari
 All of the test/demo examples render/behave correctly in Firefox
 All of the test/demo examples render/behave correctly in Edge
-All of the test/demo examples render/behave correctly in IE11*
+All of the test/demo examples render/behave correctly in IE11\*
 
 Errors/Notifications
 
@@ -950,11 +940,9 @@ User secret credentials are not included in the log
 For subcomponents, the `sizeAbsolute.x/y` value is set to `auto`
 When opening a project, removing `~/.haiku/auth`, then navigating back to project dash I'm logged out
 
+---
 
-
-- - - -
-
-*When doing a Haiku SLAM, consider all of the following:*
+_When doing a Haiku SLAM, consider all of the following:_
 
 Build a real piece of UI (something you might see in an app, website, or game)
 Create at least one Action

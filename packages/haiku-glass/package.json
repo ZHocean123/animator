@@ -27,7 +27,7 @@
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' | tap-spec",
-    "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
     "compile": "tsdown",
     "compile-declarations": "tsdown -p tsconfig.declarations.json",
     "build": "tsdown",

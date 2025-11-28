@@ -8,14 +8,15 @@
       "Bash(findstr:*)",
       "Bash(pnpm run compile)",
       "Bash(powershell:*)",
-      "Bash(yarn build:*)",
+      "Bash(pnpm build:*)",
       "Bash(npx tsdown:*)",
-      "Bash(yarn build-all:*)",
+      "Bash(pnpm build-all:*)",
       "Bash(for:*)",
       "Bash(do sed:*)",
       "Bash(echo:*)",
       "Bash(done)",
-      "Bash(yarn compile:*)"
+      "Bash(pnpm compile:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

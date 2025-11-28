@@ -7,13 +7,13 @@ SDK into Haiku.
 After cloning the repo:
 
 ```
-$ yarn install
+$ pnpm install
 ```
 
 Then develop with:
 
 ```
-$ yarn run develop
+$ pnpm run develop
 ```
 
 ## Tests
@@ -21,5 +21,5 @@ $ yarn run develop
 Run the tests with:
 
 ```
-$ yarn run lint && yarn test
+$ pnpm run lint && pnpm test
 ```

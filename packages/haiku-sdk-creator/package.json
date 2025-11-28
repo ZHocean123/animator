@@ -2,6 +2,11 @@
   "name": "haiku-sdk-creator",
   "version": "5.1.2",
   "description": "SDK into Haiku",
+  "authors": [
+    "Zack Brown <zack@haiku.ai>",
+    "Matthew Trost <matthew@haiku.ai>"
+  ],
+  "license": "UNLICENSED",
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
@@ -9,23 +14,21 @@
     },
     "./package.json": "./package.json"
   },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "pnpm lint --fix",
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc yarn ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
     "compile": "tsdown",
     "build": "tsdown",
     "dev": "tsdown --watch",
     "develop": "tsdown --watch"
   },
-  "authors": [
-    "Zack Brown <zack@haiku.ai>",
-    "Matthew Trost <matthew@haiku.ai>"
-  ],
-  "license": "UNLICENSED",
   "dependencies": {
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
@@ -37,16 +40,13 @@
   "devDependencies": {
     "@types/ws": "^8.5.10",
     "cross-env": "^7.0.3",
+    "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
+    "leaked-handles": "^5.2.0",
     "nyc": "^15.1.0",
     "tap-spec": "^5.0.0",
     "tape": "^5.7.2",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
-    "leaked-handles": "^5.2.0",
-    "haiku-testing": "workspace:*"
-  },
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.cts"
+    "tsconfig-paths": "^4.2.0"
+  }
 }

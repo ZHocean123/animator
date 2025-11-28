@@ -5,6 +5,7 @@
 **状态**: ✅ 已完成
 
 项目已成功完成从 tsc 到 tsdown 的迁移，包括：
+
 - ✅ 创建了根级别和包级别的 tsdown 配置文件
 - ✅ 更新了构建脚本以使用 tsdown
 - ✅ 实现了新的开发工作流
@@ -13,7 +14,9 @@
 ## 1. 当前项目结构分析
 
 ### 1.1 项目概述
+
 Haiku Animator 是一个基于 Yarn Workspaces 的 monorepo 项目，包含以下核心包：
+
 - `haiku-plumbing`: 核心序列化和进程管理
 - `haiku-glass`: UI 组件库
 - `haiku-creator`: 主应用程序
@@ -27,6 +30,7 @@ Haiku Animator 是一个基于 Yarn Workspaces 的 monorepo 项目，包含以�
 - `haiku-vendor-legacy`: 遗留第三方库
 
 ### 1.2 当前构建流程
+
 - 使用 TypeScript 3.0.3 和 tsc 作为编译器
 - 各包独立编译，输出到 `lib` 目录
 - 使用 `tsc-watch` 进行开发时监听
@@ -38,10 +42,11 @@ Haiku Animator 是一个基于 Yarn Workspaces 的 monorepo 项目，包含以�
 ### 2.1 tsdown 配置方案
 
 #### 2.1.1 根目录配置
+
 ```typescript
+import { resolve } from 'node:path'
 // tsdown.config.ts
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   entry: {
@@ -61,17 +66,18 @@ export default defineConfig({
   plugins: [
     // 插件配置
   ],
-});
+})
 ```
 
 #### 2.1.2 包级别配置
+
 每个包可以有自己的 `tsdown.config.ts`，继承根配置：
 
 ```typescript
+import { resolve } from 'node:path'
 // packages/haiku-plumbing/tsdown.config.ts
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
-import baseConfig from '../../tsdown.config';
+import { defineConfig } from 'tsdown'
+import baseConfig from '../../tsdown.config'
 
 export default defineConfig({
   ...baseConfig,
@@ -85,12 +91,13 @@ export default defineConfig({
     'electron',
     // 包特定的外部依赖
   ],
-});
+})
 ```
 
 ### 2.2 多包项目构建流程
 
 #### 2.2.1 构建策略
+
 ```mermaid
 graph TD
     A[检测依赖关系] --> B[按拓扑顺序构建]
@@ -101,40 +108,44 @@ graph TD
 ```
 
 #### 2.2.2 构建脚本设计
+
 ```typescript
 // scripts/build-with-tsdown.ts
-import { execSync } from 'child_process';
-import { resolve } from 'path';
-import { getPackagesInBuildOrder } from './helpers/packages';
+import { execSync } from 'node:child_process'
+import { resolve } from 'node:path'
+import { getPackagesInBuildOrder } from './helpers/packages'
 
 async function buildAll() {
-  const packages = getPackagesInBuildOrder();
-  
+  const packages = getPackagesInBuildOrder()
+
   for (const pkg of packages) {
-    console.log(`Building ${pkg.name}...`);
-    process.chdir(pkg.abspath);
-    
+    console.log(`Building ${pkg.name}...`)
+    process.chdir(pkg.abspath)
+
     // 检查是否有 tsdown.config.ts
     if (await fileExists('tsdown.config.ts')) {
-      execSync('tsdown', { stdio: 'inherit' });
-    } else {
-      console.log(`Skipping ${pkg.name} (no tsdown.config.ts)`);
+      execSync('tsdown', { stdio: 'inherit' })
+    }
+    else {
+      console.log(`Skipping ${pkg.name} (no tsdown.config.ts)`)
     }
   }
 }
 
-buildAll().catch(console.error);
+buildAll().catch(console.error)
 ```
 
 ### 2.3 开发环境和生产环境构建策略
 
 #### 2.3.1 开发环境
+
 - 启用源码映射
 - 快速增量编译
 - 热重载支持
 - 详细错误信息
 
 #### 2.3.2 生产环境
+
 - 代码压缩和优化
 - 移除调试信息
 - 依赖树优化
@@ -144,7 +155,7 @@ buildAll().catch(console.error);
 
 ```typescript
 // webpack.tsdown-integration.js
-const TsdownPlugin = require('tsdown-webpack-plugin');
+const TsdownPlugin = require('tsdown-webpack-plugin')
 
 module.exports = {
   // ... 其他 webpack 配置
@@ -162,7 +173,7 @@ module.exports = {
       // tsdown 配置选项
     }),
   ],
-};
+}
 ```
 
 ## 3. 新的 TypeScript 配置架构
@@ -170,6 +181,7 @@ module.exports = {
 ### 3.1 适配 tsdown 的 tsconfig.json 配置
 
 #### 3.1.1 基础配置
+
 ```json
 // tsconfig.base.json
 {
@@ -204,6 +216,7 @@ module.exports = {
 ```
 
 #### 3.1.2 包特定配置
+
 ```json
 // packages/haiku-plumbing/tsconfig.json
 {
@@ -234,6 +247,7 @@ module.exports = {
 ### 3.2 共享配置管理
 
 #### 3.2.1 配置继承结构
+
 ```
 tsconfig.base.json (根目录基础配置)
 ├── tsconfig.node.json (Node.js 环境配置)
@@ -245,6 +259,7 @@ tsconfig.base.json (根目录基础配置)
 ```
 
 #### 3.2.2 类型定义和路径映射
+
 ```json
 // tsconfig.paths.json
 {
@@ -267,46 +282,48 @@ tsconfig.base.json (根目录基础配置)
 ### 4.1 开发服务器启动方式
 
 #### 4.1.1 统一开发服务器
+
 ```typescript
 // scripts/dev-server.ts
-import { createServer } from 'http';
-import { watch } from 'chokidar';
-import { buildPackage } from './build-utils';
+import { createServer } from 'node:http'
+import { watch } from 'chokidar'
+import { buildPackage } from './build-utils'
 
 class DevServer {
-  private watchers: Map<string, any> = new Map();
-  
+  private watchers: Map<string, any> = new Map()
+
   async start() {
     // 启动各包的开发服务器
-    const packages = await this.getPackages();
-    
+    const packages = await this.getPackages()
+
     for (const pkg of packages) {
-      await this.startPackageWatcher(pkg);
+      await this.startPackageWatcher(pkg)
     }
-    
+
     // 启动主开发服务器
-    this.startMainServer();
+    this.startMainServer()
   }
-  
+
   private async startPackageWatcher(pkg: PackageInfo) {
-    const watcher = watch(`${pkg.abspath}/src/**/*.{ts,tsx,js,jsx}`);
-    
+    const watcher = watch(`${pkg.abspath}/src/**/*.{ts,tsx,js,jsx}`)
+
     watcher.on('change', async (path) => {
-      console.log(`File changed: ${path}`);
-      await buildPackage(pkg);
-      this.notifyClients(pkg.name);
-    });
-    
-    this.watchers.set(pkg.name, watcher);
+      console.log(`File changed: ${path}`)
+      await buildPackage(pkg)
+      this.notifyClients(pkg.name)
+    })
+
+    this.watchers.set(pkg.name, watcher)
   }
 }
 
-new DevServer().start();
+new DevServer().start()
 ```
 
 ### 4.2 热重载和增量编译实现
 
 #### 4.2.1 tsdown 增量编译配置
+
 ```typescript
 // tsdown.config.ts
 export default defineConfig({
@@ -324,12 +341,13 @@ export default defineConfig({
       overlay: true,
     },
   },
-});
+})
 ```
 
 ### 4.3 调试配置调整
 
 #### 4.3.1 VS Code 调试配置
+
 ```json
 // .vscode/launch.json
 {
@@ -368,29 +386,31 @@ export default defineConfig({
 ### 4.4 测试运行器集成
 
 #### 4.4.1 测试配置
+
 ```typescript
 // scripts/test-with-tsdown.ts
-import { execSync } from 'child_process';
-import { resolve } from 'path';
+import { execSync } from 'node:child_process'
+import { resolve } from 'node:path'
 
 async function runTests(packageName?: string) {
   if (packageName) {
     // 运行特定包的测试
-    process.chdir(`packages/${packageName}`);
-    execSync('tsdown --watch', { stdio: 'inherit' });
-    execSync('tape "test/**/*.test.ts" | tap-spec', { stdio: 'inherit' });
-  } else {
+    process.chdir(`packages/${packageName}`)
+    execSync('tsdown --watch', { stdio: 'inherit' })
+    execSync('tape "test/**/*.test.ts" | tap-spec', { stdio: 'inherit' })
+  }
+  else {
     // 运行所有包的测试
-    const packages = await getTestablePackages();
-    
+    const packages = await getTestablePackages()
+
     for (const pkg of packages) {
-      console.log(`Running tests for ${pkg.name}...`);
-      await runTests(pkg.name);
+      console.log(`Running tests for ${pkg.name}...`)
+      await runTests(pkg.name)
     }
   }
 }
 
-runTests(process.argv[2]).catch(console.error);
+runTests(process.argv[2]).catch(console.error)
 ```
 
 ## 5. 新的项目结构设计
@@ -444,7 +464,7 @@ export default defineConfig({
     only: false,
     respectExternal: true,
   },
-});
+})
 ```
 
 ## 6. 新的依赖管理设计
@@ -467,6 +487,7 @@ export default defineConfig({
 ### 6.2 与现有依赖的兼容性处理
 
 #### 6.2.1 依赖版本映射
+
 ```json
 {
   "resolutions": {
@@ -480,13 +501,14 @@ export default defineConfig({
 ```
 
 #### 6.2.2 兼容性适配器
+
 ```typescript
 // scripts/compatibility-adapter.ts
 export function adaptLegacyImports(code: string): string {
   // 适配旧的导入方式
   return code
     .replace(/from ['"]haiku-([^'"]+)['"]/g, 'from @haiku/$1')
-    .replace(/require\(['"]haiku-([^'"]+)['"]\)/g, 'require("@haiku/$1")');
+    .replace(/require\(['"]haiku-([^'"]+)['"]\)/g, 'require("@haiku/$1")')
 }
 ```
 
@@ -522,7 +544,7 @@ graph TB
         C --> D[热重载]
         D --> E[开发服务器]
     end
-    
+
     subgraph "构建流程"
         F[依赖分析] --> G[拓扑排序]
         G --> H[并行构建]
@@ -530,20 +552,20 @@ graph TB
         I --> J[代码生成]
         J --> K[产物输出]
     end
-    
+
     subgraph "配置管理"
         L[基础配置] --> M[环境配置]
         M --> N[包配置]
         N --> O[构建配置]
     end
-    
+
     subgraph "输出产物"
         P[JavaScript 文件]
         Q[类型声明文件]
         R[源码映射文件]
         S[资源文件]
     end
-    
+
     E --> F
     O --> F
     K --> P
@@ -555,42 +577,43 @@ graph TB
 ## 8. 关键配置文件示例
 
 ### 8.1 根目录 tsdown.config.ts
+
 ```typescript
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
+import { resolve } from 'node:path'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   // 入口配置
   entry: {
     // 根据需要配置根级别入口
   },
-  
+
   // 输出配置
   outDir: 'dist',
   format: ['cjs', 'esm'],
-  
+
   // TypeScript 配置
   tsconfig: 'tsconfig.base.json',
-  
+
   // 插件配置
   plugins: [
     // 可以添加自定义插件
   ],
-  
+
   // 路径别名
   alias: {
     '@': resolve(__dirname, 'src'),
     '@shared': resolve(__dirname, 'shared'),
     '@packages': resolve(__dirname, 'packages'),
   },
-  
+
   // 外部依赖
   external: [
     'electron',
     'react',
     'react-dom',
   ],
-  
+
   // 开发服务器配置
   server: {
     port: 3000,
@@ -600,41 +623,42 @@ export default defineConfig({
       overlay: true,
     },
   },
-  
+
   // 监听配置
   watch: {
     buildDelay: 100,
     clearScreen: false,
   },
-  
+
   // 构建选项
   clean: true,
   dts: true,
   sourcemap: true,
   minify: false, // 生产环境通过环境变量控制
-});
+})
 ```
 
 ### 8.2 包级别 tsdown.config.ts 示例
+
 ```typescript
+import { resolve } from 'node:path'
 // packages/haiku-plumbing/tsdown.config.ts
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
-import baseConfig from '../../tsdown.config';
+import { defineConfig } from 'tsdown'
+import baseConfig from '../../tsdown.config'
 
 export default defineConfig({
   ...baseConfig,
-  
+
   // 包特定入口
   entry: {
     index: resolve(__dirname, 'src/index.ts'),
     master: resolve(__dirname, 'src/Master.ts'),
     plumbing: resolve(__dirname, 'src/Plumbing.ts'),
   },
-  
+
   // 包特定输出
   outDir: resolve(__dirname, 'lib'),
-  
+
   // 包特定外部依赖
   external: [
     ...baseConfig.external,
@@ -642,94 +666,98 @@ export default defineConfig({
     'chokidar',
     'ws',
   ],
-  
+
   // 包特定别名
   alias: {
     ...baseConfig.alias,
     '@plumbing': resolve(__dirname, 'src'),
     '@formats': resolve(__dirname, '../haiku-formats/src'),
   },
-  
+
   // 包特定插件
   plugins: [
     // 可以添加包特定的插件
   ],
-});
+})
 ```
 
 ### 8.3 构建脚本示例
+
 ```typescript
 // scripts/build-with-tsdown.ts
-import { execSync } from 'child_process';
-import { existsSync } from 'fs';
-import { resolve } from 'path';
-import { getPackagesInBuildOrder } from './helpers/packages';
+import { execSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { getPackagesInBuildOrder } from './helpers/packages'
 
 interface PackageInfo {
-  name: string;
-  abspath: string;
-  hasTsdownConfig: boolean;
+  name: string
+  abspath: string
+  hasTsdownConfig: boolean
 }
 
 async function buildPackage(pkg: PackageInfo): Promise<void> {
-  console.log(`Building ${pkg.name}...`);
-  
+  console.log(`Building ${pkg.name}...`)
+
   if (!pkg.hasTsdownConfig) {
-    console.log(`Skipping ${pkg.name} (no tsdown.config.ts)`);
-    return;
+    console.log(`Skipping ${pkg.name} (no tsdown.config.ts)`)
+    return
   }
-  
+
   try {
-    process.chdir(pkg.abspath);
-    
+    process.chdir(pkg.abspath)
+
     // 设置环境变量
     const env = {
       ...process.env,
       NODE_ENV: 'production',
       TSUP_CONFIG: 'tsdown.config.ts',
-    };
-    
+    }
+
     // 执行构建
     execSync('tsdown', {
       stdio: 'inherit',
       env,
-    });
-    
-    console.log(`✓ Built ${pkg.name}`);
-  } catch (error) {
-    console.error(`✗ Failed to build ${pkg.name}:`, error);
-    throw error;
+    })
+
+    console.log(`✓ Built ${pkg.name}`)
+  }
+  catch (error) {
+    console.error(`✗ Failed to build ${pkg.name}:`, error)
+    throw error
   }
 }
 
 async function buildAll(): Promise<void> {
-  console.log('Starting build process...');
-  
+  console.log('Starting build process...')
+
   try {
-    const packages = await getPackagesInBuildOrder();
-    
+    const packages = await getPackagesInBuildOrder()
+
     for (const pkg of packages) {
-      await buildPackage(pkg);
+      await buildPackage(pkg)
     }
-    
-    console.log('✓ All packages built successfully');
-  } catch (error) {
-    console.error('✗ Build failed:', error);
-    process.exit(1);
+
+    console.log('✓ All packages built successfully')
+  }
+  catch (error) {
+    console.error('✗ Build failed:', error)
+    process.exit(1)
   }
 }
 
 // 如果直接运行此脚本
 if (require.main === module) {
-  buildAll().catch(console.error);
+  buildAll().catch(console.error)
 }
 
-export { buildAll, buildPackage };
+export { buildAll, buildPackage }
 ```
 
 ## 9. 目录结构调整建议
 
 ### 9.1 推荐的新目录结构
+
 ```
 haiku-animator/
 ├── .vscode/
@@ -776,6 +804,7 @@ haiku-animator/
 ```
 
 ### 9.2 迁移步骤
+
 1. 创建新的配置目录结构
 2. 迁移现有配置文件到新位置
 3. 更新构建脚本以使用新配置
@@ -786,6 +815,7 @@ haiku-animator/
 ## 10. 与现有系统的集成方案
 
 ### 10.1 CI/CD 集成
+
 ```yaml
 # .github/workflows/build.yml
 name: Build with tsdown
@@ -795,85 +825,88 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22'
-        cache: 'yarn'
-    
-    - name: Install dependencies
-      run: yarn install
-    
-    - name: Build with tsdown
-      run: yarn build:tsdown
-    
-    - name: Run tests
-      run: yarn test:tsdown
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build with tsdown
+        run: pnpm build:tsdown
+
+      - name: Run tests
+        run: pnpm test:tsdown
 ```
 
 ### 10.2 现有构建脚本适配
+
 ```javascript
 // scripts/compile-all.js (适配版本)
-const { execSync } = require('child_process');
-const { existsSync } = require('fs');
-const path = require('path');
+const { execSync } = require('node:child_process')
+const { existsSync } = require('node:fs')
+const path = require('node:path')
 
 function buildWithTsdown(packagePath) {
-  const configPath = path.join(packagePath, 'tsdown.config.ts');
-  
+  const configPath = path.join(packagePath, 'tsdown.config.ts')
+
   if (existsSync(configPath)) {
-    console.log(`Building ${packagePath} with tsdown...`);
-    execSync('tsdown', { cwd: packagePath, stdio: 'inherit' });
-  } else {
-    console.log(`Skipping ${packagePath} (no tsdown.config.ts)`);
+    console.log(`Building ${packagePath} with tsdown...`)
+    execSync('tsdown', { cwd: packagePath, stdio: 'inherit' })
+  }
+  else {
+    console.log(`Skipping ${packagePath} (no tsdown.config.ts)`)
   }
 }
 
 // 保持与现有脚本的兼容性
-module.exports = { buildWithTsdown };
+module.exports = { buildWithTsdown }
 ```
 
 ### 10.3 渐进式迁移策略
+
 ```typescript
 // scripts/migration-helper.ts
 export class MigrationHelper {
   static async migratePackage(packageName: string): Promise<void> {
-    const pkgPath = `packages/${packageName}`;
-    
+    const pkgPath = `packages/${packageName}`
+
     // 1. 检查是否已经迁移
     if (await this.isMigrated(pkgPath)) {
-      console.log(`${packageName} is already migrated`);
-      return;
+      console.log(`${packageName} is already migrated`)
+      return
     }
-    
+
     // 2. 创建 tsdown.config.ts
-    await this.createTsdownConfig(pkgPath);
-    
+    await this.createTsdownConfig(pkgPath)
+
     // 3. 更新 package.json 脚本
-    await this.updatePackageScripts(pkgPath);
-    
+    await this.updatePackageScripts(pkgPath)
+
     // 4. 测试构建
-    await this.testBuild(pkgPath);
-    
-    console.log(`✓ Migrated ${packageName} to tsdown`);
+    await this.testBuild(pkgPath)
+
+    console.log(`✓ Migrated ${packageName} to tsdown`)
   }
-  
+
   private static async isMigrated(pkgPath: string): Promise<boolean> {
-    return existsSync(path.join(pkgPath, 'tsdown.config.ts'));
+    return existsSync(path.join(pkgPath, 'tsdown.config.ts'))
   }
-  
+
   private static async createTsdownConfig(pkgPath: string): Promise<void> {
     // 创建基于现有 tsconfig.json 的 tsdown 配置
   }
-  
+
   private static async updatePackageScripts(pkgPath: string): Promise<void> {
     // 更新 package.json 中的构建脚本
   }
-  
+
   private static async testBuild(pkgPath: string): Promise<void> {
     // 测试新的构建流程
   }
@@ -885,6 +918,7 @@ export class MigrationHelper {
 ### 11.1 迁移步骤
 
 #### 阶段 1：准备工作
+
 1. **环境升级**
    - 升级 Node.js 到 22.x
    - 升级 TypeScript 到 5.x
@@ -896,6 +930,7 @@ export class MigrationHelper {
    - 配置开发环境
 
 #### 阶段 2：试点迁移
+
 1. **选择试点包**
    - 选择依赖较少的包作为试点
    - 推荐选择 `haiku-formats` 或 `haiku-fs-extra`
@@ -906,6 +941,7 @@ export class MigrationHelper {
    - 测试构建和开发流程
 
 #### 阶段 3：批量迁移
+
 1. **按依赖顺序迁移**
    - 从底层依赖开始
    - 逐个包进行迁移
@@ -917,6 +953,7 @@ export class MigrationHelper {
    - 更新 CI/CD 配置
 
 #### 阶段 4：优化和清理
+
 1. **性能优化**
    - 调整构建配置
    - 优化增量编译
@@ -930,6 +967,7 @@ export class MigrationHelper {
 ### 11.2 注意事项
 
 #### 11.2.1 兼容性问题
+
 1. **路径映射**
    - 确保 tsdown 的路径映射与 tsconfig.json 一致
    - 测试所有导入路径是否正常工作
@@ -943,6 +981,7 @@ export class MigrationHelper {
    - 验证跨包类型引用
 
 #### 11.2.2 性能考虑
+
 1. **构建时间**
    - 监控构建时间变化
    - 调整并行构建策略
@@ -954,6 +993,7 @@ export class MigrationHelper {
    - 优化大型包的构建
 
 #### 11.2.3 开发体验
+
 1. **错误处理**
    - 确保错误信息清晰有用
    - 配置源码映射以便调试
@@ -965,6 +1005,7 @@ export class MigrationHelper {
    - 确保状态保持正确
 
 ### 11.3 回滚计划
+
 1. **备份策略**
    - 保留原始配置文件
    - 使用版本控制标记迁移点
@@ -991,6 +1032,7 @@ export class MigrationHelper {
 5. **迁移策略**：渐进式迁移方案，降低风险
 
 通过这个架构，Haiku Animator 项目将获得：
+
 - 更快的构建速度
 - 更好的开发体验
 - 更现代的工具链

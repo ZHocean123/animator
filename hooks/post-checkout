@@ -16,7 +16,7 @@ with open(path.join('packages', 'haiku-common', 'config', 'experiments.json')) a
 
 if sys.argv[1] != sys.argv[2]:
   print 'Syncing dependencies....'
-  subprocess.call(['yarn', 'install'])
+  subprocess.call(['pnpm', 'install'])
 
 print 'The following experiments are enabled:'
 print '\n'.join([
