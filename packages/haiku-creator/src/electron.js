@@ -1,15 +1,17 @@
+/* eslint-disable node/prefer-global/process */
 import * as EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import http from 'node:http'
 import https from 'node:https'
 import * as path from 'node:path'
-import { parse } from 'node:url'
+import { URL } from 'node:url'
 
 import { inherits } from 'node:util'
 import { app, BrowserWindow, ipcMain, protocol, session, systemPreferences } from 'electron'
 import * as ElectronProxyAgent from 'electron-proxy-agent'
 
-import { isMac, isProxied, isWindows, ProxyType, TopMenu } from 'haiku-common'
+import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
+import TopMenu from 'haiku-common/electron/TopMenu'
 import { ensureTrailingSlash, logger, mixpanel } from 'haiku-serialization'
 import * as qs from 'qs'
 
@@ -17,7 +19,13 @@ if (!app) {
   throw new Error('You can only run electron.js from an electron process')
 }
 
-app.setName('Haiku Animator')
+// 运行安全：在 Electron 主进程中设置应用名称，若不可用则跳过
+try {
+  if (app && typeof app.setName === 'function') {
+    app.setName('Haiku Animator')
+  }
+}
+catch {}
 app.setAsDefaultProtocolClient('haiku')
 
 const { dialog } = require('electron')
@@ -94,7 +102,7 @@ function handleUrl(url) {
     return
   }
   logger.info(`[creator] handling custom protocol URL ${url}`)
-  const parsedUrl = parse(url)
+  const parsedUrl = new URL(url)
   browserWindow.webContents.send(`open-url:${parsedUrl.host}`, parsedUrl.pathname, qs.parse(parsedUrl.query))
 }
 
@@ -126,8 +134,8 @@ const appUrl = `file://${path.join(__dirname, '..', 'index.html')}`
 // Plumbing starts up this process, and it uses HAIKU_ENV to forward to us data about
 // how it has been set up, e.g. what ports it is using for websocket server, envoy, etc.
 // This is sent into the DOM part of the app at did-finish load; see below.
-const haiku = global.process.env.HAIKU_ENV
-  ? JSON.parse(global.process.env.HAIKU_ENV)
+const haiku = globalThis.process.env.HAIKU_ENV
+  ? JSON.parse(globalThis.process.env.HAIKU_ENV)
   : {}
 
 //////////
@@ -153,12 +161,12 @@ if (!haiku.plumbing) {
 }
 
 if (!haiku.plumbing.url) {
-  if (global.process.env.NODE_ENV !== 'test' && !global.process.env.HAIKU_PLUMBING_PORT) {
+  if (globalThis.process.env.NODE_ENV !== 'test' && !globalThis.process.env.HAIKU_PLUMBING_PORT) {
     throw new Error(`Oops! You must define a HAIKU_PLUMBING_PORT env var!`)
   }
 
   // tslint:disable-next-line:max-line-length
-  haiku.plumbing.url = `http://${global.process.env.HAIKU_PLUMBING_HOST || '0.0.0.0'}:${global.process.env.HAIKU_PLUMBING_PORT}/?token=${process.env.HAIKU_WS_SECURITY_TOKEN}`
+  haiku.plumbing.url = `http://${globalThis.process.env.HAIKU_PLUMBING_HOST || '0.0.0.0'}:${globalThis.process.env.HAIKU_PLUMBING_PORT}/?token=${process.env.HAIKU_WS_SECURITY_TOKEN}`
 }
 
 function createWindow() {
@@ -260,9 +268,9 @@ function createWindow() {
       }
 
       browserWindow.webContents.send('haiku', haiku)
-      if (global.process.env.HAIKU_INITIAL_URL) {
-        handleUrl(global.process.env.HAIKU_INITIAL_URL)
-        delete global.process.env.HAIKU_INITIAL_URL
+      if (globalThis.process.env.HAIKU_INITIAL_URL) {
+        handleUrl(globalThis.process.env.HAIKU_INITIAL_URL)
+        delete globalThis.process.env.HAIKU_INITIAL_URL
       }
     })
   })
@@ -316,7 +324,7 @@ function windowsCheckForUpdates() {
         }
       })
       .catch((error) => {
-        console.log(error)
+        logger.error(error)
       })
   })
 }

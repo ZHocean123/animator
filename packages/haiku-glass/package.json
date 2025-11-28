@@ -48,8 +48,8 @@
     "qs": "^6.11.2",
     "radium": "^0.26.2",
     "raven-js": "^3.27.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
@@ -58,7 +58,7 @@
     "@typescript-eslint/parser": "^6.18.1",
     "async": "^3.2.4",
     "cross-env": "^7.0.3",
-    "electron": "^28.3.3",
+    "electron": "catalog:",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "jsdom": "^22.1.0",

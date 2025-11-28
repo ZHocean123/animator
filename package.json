@@ -37,6 +37,7 @@
     "@haiku/player": "^3.0.4",
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
+    "@rolldown/binding-win32-x64-msvc": "1.0.0-beta.52",
     "haiku-common": "workspace:*",
     "haiku-creator": "workspace:*",
     "haiku-formats": "workspace:*",
@@ -61,7 +62,7 @@
     "dependency-graph": "^0.11.0",
     "derequire": "^2.1.1",
     "dotenv": "^16.3.1",
-    "electron": "^28.3.3",
+    "electron": "catalog:",
     "electron-builder": "^24.9.1",
     "eslint": "^9.39.1",
     "eslint-plugin-format": "^1.0.2",
@@ -86,7 +87,7 @@
     "tape": "^5.7.2",
     "tsc-watch": "^6.0.4",
     "tsdown": "^0.16.7",
-    "typescript": "^5.3.3",
+    "typescript": "catalog:",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.17.4",
     "webpack": "^5.89.0",
@@ -96,7 +97,7 @@
     "overrides": {
       "@haiku/core": "^5.0.0",
       "@types/node": "^22.0.0",
-      "@types/react": "^18.2.0"
+      "@types/react": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "aws-sdk",

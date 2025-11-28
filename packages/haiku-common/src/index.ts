@@ -4,8 +4,6 @@
  * 主入口文件，聚合所有公共 API
  */
 
-// Electron
-export { default as TopMenu } from './electron/TopMenu'
 // Environment modules
 export * from './environments'
 

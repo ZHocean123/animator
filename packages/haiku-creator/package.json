@@ -11,6 +11,10 @@
       "import": "./lib/index.mjs",
       "require": "./lib/index.cjs"
     },
+    "./electron": {
+      "import": "./lib/electron.mjs",
+      "require": "./lib/electron.cjs"
+    },
     "./entry": {
       "import": "./lib/entry.mjs",
       "require": "./lib/entry.cjs"
@@ -30,7 +34,7 @@
     "compile": "tsdown",
     "compile-declarations": "tsdown -p tsconfig.declarations.json",
     "develop": "tsdown --watch",
-    "start": "electron ./lib/electron.js"
+    "start": "electron ./lib/electron.cjs"
   },
   "dependencies": {
     "@babel/parser": "7.0.0",
@@ -81,7 +85,7 @@
     "@types/qs": "^6.5.1",
     "@types/uuid": "^3.2.1",
     "cross-env": "^5.1.6",
-    "electron": "^28.3.3",
+    "electron": "catalog:",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
@@ -90,6 +94,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-    "typescript": "^5.3.0"
+    "typescript": "catalog:"
   }
 }

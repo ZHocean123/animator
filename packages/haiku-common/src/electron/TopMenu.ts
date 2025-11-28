@@ -1,3 +1,4 @@
+/* eslint-disable node/prefer-global/process */
 import type { MenuItemConstructorOptions } from 'electron'
 import type { PlumbingProject } from '../types'
 import { app, Menu, shell } from 'electron'
@@ -7,7 +8,7 @@ import { isMac, isWindows } from '../environments/os'
 import { Experiment, experimentIsEnabled } from '../experiments'
 import { TourUtils } from '../types/enums'
 
-// app.setName('Haiku Animator')
+app.setName('Haiku Animator')
 
 export interface UndoState {
   canUndo: boolean
@@ -70,7 +71,7 @@ export default class TopMenu {
     let didChange = false
 
     for (const key in this.options) {
-      if (nextOptions[key] !== undefined && !isEqual(nextOptions[key], this.options[key])) {
+      if (nextOptions[key as keyof TopMenuOptions] !== undefined && !isEqual(nextOptions[key as keyof TopMenuOptions], this.options[key as keyof TopMenuOptions])) {
         didChange = true
         break
       }
@@ -122,7 +123,7 @@ export default class TopMenu {
       )
     }
 
-    if (global.process.env.NODE_ENV !== 'production') {
+    if (globalThis.process.env.NODE_ENV !== 'production') {
       developerMenuItems.push(
         {
           label: 'Open Dev Tools',

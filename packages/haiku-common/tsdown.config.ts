@@ -1,27 +1,18 @@
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { defineConfig } from 'tsdown'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-export default {
-  entry: ['src/index.ts'],
+export default defineConfig({
+  entry: ['src/index.ts', 'src/electron/TopMenu.ts'],
   outDir: 'lib',
   format: ['cjs', 'esm'],
+  skipNodeModulesBundle: true,
+  platform: 'node',
   clean: true,
   watch: false,
-  tsconfig: resolve(__dirname, 'tsconfig.json'),
   dts: true,
   sourcemap: true,
   exports: true,
   minify: false,
-  // 确保生成单一的入口文件
-  rollupOptions: {
-    output: {
-      manualChunks: undefined,
-    },
-  },
-  external:[
-    'electron'
-  ]
-};
+  external: [
+    'electron',
+  ],
+})

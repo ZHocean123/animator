@@ -11,6 +11,10 @@
       "import": "./lib/index.mjs",
       "require": "./lib/index.cjs"
     },
+    "./electron/TopMenu": {
+      "import": "./lib/electron/TopMenu.mjs",
+      "require": "./lib/electron/TopMenu.cjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./lib/index.cjs",
@@ -28,6 +32,9 @@
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
+  "peerDependencies": {
+    "electron": "catalog:"
+  },
   "dependencies": {
     "@haiku/core": "workspace:*",
     "@types/node": "^22.19.1",
@@ -36,7 +43,6 @@
   },
   "devDependencies": {
     "cross-env": "^5.1.6",
-    "electron": "^28.3.3",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
@@ -45,6 +51,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-    "typescript": "^5.3.0"
+    "typescript": "catalog:"
   }
 }

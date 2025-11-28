@@ -16,7 +16,16 @@
       "Bash(echo:*)",
       "Bash(done)",
       "Bash(pnpm compile:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "Bash(\"d:/codespace/animator/node_modules/.pnpm/electron@28.3.3/node_modules/electron/dist/electron.exe\" --version)",
+      "Bash(\"d:/codespace/animator/node_modules/.pnpm/electron@28.3.3/node_modules/electron/dist/electron.exe\" --help:*)",
+      "Bash(timeout 3:*)",
+      "Bash(timeout 30 pnpm go:*)",
+      "Bash(readlink:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(ELECTRON_OVERRIDE_DIST_PATH=D:/codespace/animator/node_modules/.pnpm/electron@28.3.3/node_modules/electron/dist pnpm go:*)",
+      "Bash(electron:*)"
     ],
     "deny": [],
     "ask": []

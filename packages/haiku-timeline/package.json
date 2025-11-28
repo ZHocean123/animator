@@ -242,7 +242,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.1.6",
-    "electron": "^28.3.3",
+    "electron": "catalog:",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "jsdom": "^11.1.0",
@@ -252,6 +252,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.1.0",
     "tsconfig-paths": "^3.3.2",
-    "typescript": "^5.3.0"
+    "typescript": "catalog:"
   }
 }

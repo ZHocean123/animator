@@ -631,8 +631,8 @@
   ],
   "peerDependencies": {
     "@angular/core": "^18.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@angular/core": "^18.0.0",
@@ -653,8 +653,6 @@
     "nodemon": "^3.0.1",
     "nyc": "^15.1.0",
     "opn": "^6.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
     "rollup": "^4.9.5",
     "rollup-plugin-commonjs": "^10.1.0",
