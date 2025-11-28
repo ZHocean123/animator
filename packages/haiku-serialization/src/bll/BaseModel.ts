@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events'
-import lodash from 'lodash'
+import * as lodash from 'lodash'
 import CryptoUtils from './../utils/CryptoUtils'
 import EmitterManager from './../utils/EmitterManager'
 import logger from './../utils/LoggerInstance'
@@ -44,7 +44,7 @@ export default class BaseModel extends EventEmitter {
       }
     }
     this.__sync = false
-    this.syncDebounced = (lodash as any).debounce(() => { this.sync() }, SYNC_DEBOUNCE_TIME)
+    this.syncDebounced = lodash.debounce(() => { this.sync() }, SYNC_DEBOUNCE_TIME)
     this.parent = null
     this.children = []
     this.cache = new Cache()
@@ -77,7 +77,7 @@ export default class BaseModel extends EventEmitter {
   emit(...args: any[]) { (super.emit as any).call(this, ...args); (this.constructor as any).emit(args[0], this, ...args.slice(1)) }
   mark() { this.__marked = true; return true }
   sweep() { if (this.__marked) { this.destroy(); return true } return false }
-  generateUniqueId() { return (lodash as any).uniqueId((this.constructor as any).name) }
+  generateUniqueId() { return lodash.uniqueId((this.constructor as any).name) }
   forceUpdate() { this.setUpdateTimestamp(); this.cache.clear(); return this }
   setUpdateTimestamp() { this.__updated = Date.now(); return this }
   getUpdateTimestamp() { return this.__updated }
@@ -219,7 +219,7 @@ const KNOWN_MODEL_CLASSES: Record<string, any> = {}
     klass.emitter = new EventEmitter()
     klass.emit = (klass.emitter as any).emit.bind(klass.emitter)
     klass.on = (klass.emitter as any).on.bind(klass.emitter)
-    (lodash as any).defaults(klass.DEFAULT_OPTIONS, (BaseModel as any).DEFAULT_OPTIONS)
+    lodash.defaults(klass.DEFAULT_OPTIONS, (BaseModel as any).DEFAULT_OPTIONS)
     klass.extended = true
     ;(BaseModel as any).extensions.push(klass)
   }
