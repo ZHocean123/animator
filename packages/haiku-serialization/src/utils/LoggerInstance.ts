@@ -1,7 +1,10 @@
-import fs from 'haiku-fs-extra'
-import { HOMEDIR_LOGS_PATH } from './HaikuHomeDir'
+import * as fs from 'haiku-fs-extra'
+import { HaikuHomeDir } from './HaikuHomeDir'
 import { Logger } from './Logger'
 
-fs.mkdirpSync(HOMEDIR_LOGS_PATH)
-const logger = new Logger(HOMEDIR_LOGS_PATH, 'haiku-debug.log')
+// Create logs directory if it doesn't exist
+fs.mkdirpSync(HaikuHomeDir.HOMEDIR_LOGS_PATH)
+
+// Create and export logger instance
+const logger = new Logger(HaikuHomeDir.HOMEDIR_LOGS_PATH, 'haiku-debug.log')
 export default logger

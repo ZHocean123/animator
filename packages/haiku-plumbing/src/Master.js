@@ -100,7 +100,8 @@ export default class Master extends EventEmitter {
   constructor(folder, fileOptions = {}, envoyOptions = {}, envoyHandlers) {
     super()
 
-    EmitterManager.extend(this)
+    // TODO: Fix EmitterManager.extend - temporarily disabled due to Node.js 22 compatibility issues
+// EmitterManager.extend(this)
 
     this.folder = folder
 

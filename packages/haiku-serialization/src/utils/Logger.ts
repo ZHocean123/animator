@@ -1,128 +1,218 @@
 /* eslint-disable no-console */
+// 导入类型定义
+import type {
+  LoggerClass,
+  LoggerOptions,
+  LogMessage,
+  WinstonFileTransportOptions,
+} from './types'
 import { EventEmitter } from 'node:events'
 import * as path from 'node:path'
 import jsonStringify from 'fast-safe-stringify'
 import { isProduction, isWindows } from 'haiku-common'
+
 import * as winston from 'winston'
-import 'colors'
 
-export interface HaikuLogInfo {
-  timestamp?: string
-  view?: string
-  level?: string
-  tag?: string
-  durationMs?: number
-  message: unknown | unknown[]
-  noFormat?: boolean
-  doNotLogOnFile?: boolean
-}
+// 导入colors以启用字符串扩展
+import 'colors' // TODO: use non-string-extending module
 
-export function formatJsonLogToString(message: HaikuLogInfo): string {
-  if (message.noFormat)
-    return String((message as any).message)
-  const msg = message.message
-  if (Array.isArray(msg)) {
-    const formatted = msg.map(m => (typeof m === 'string' ? m : jsonStringify(m))).join(' ')
-    ;(message as any).message = formatted
+/**
+ * 格式化JSON日志消息为字符串
+ * @param message 日志消息对象
+ * @returns 格式化后的字符串
+ */
+function formatJsonLogToString(message: LogMessage): string {
+  if (message.noFormat) {
+    return message.message as string
   }
-  return `${message.timestamp}|${(message.view || '?').padEnd(8)}|${message.level || ''}${message.tag ? `|${message.tag}` : ''}${message.durationMs ? `|d=${message.durationMs}` : ''}|${message.message}`
+
+  if (Array.isArray(message.message)) {
+    message.message = message.message.map((msg: string | any) => {
+      if (typeof msg === 'string') {
+        return msg
+      }
+      return jsonStringify(msg)
+    }).join(' ')
+  }
+
+  // Pading is done to visually align on file
+  return `${message.timestamp}|${message.view?.padEnd(8)}|${message.level}${message.tag ? `|${message.tag}` : ''}${message.durationMs ? `|d=${message.durationMs}` : ''}|${message.message}`
 }
 
-const haikuFormat = winston.format.printf((info: any) => {
-  return formatJsonLogToString(info as HaikuLogInfo)
+/**
+ * 控制日志消息格式输出
+ */
+const haikuFormat = winston.format.printf((info: LogMessage, _opts?: any): string => {
+  return formatJsonLogToString(info)
 })
 
-const ignoreDoNotWriteToFile = winston.format((info: any) => {
-  if (info.doNotLogOnFile)
-    return false as any
+// 忽略具有 { doNotLogOnFile: true } 的日志消息
+// 需要避免在管道中重复写入日志文件
+const ignoreDoNotWriteToFile = winston.format((info: any, _opts?: any): any => {
+  if (info.doNotLogOnFile) {
+    return false
+  }
   return info
 })
 
-const DEFAULTS = {
+const DEFAULTS: LoggerOptions = {
   maxsize: 1000000,
   maxFiles: 1,
   colorize: true,
 }
 
-export class Logger extends EventEmitter {
-  private logger: winston.Logger
-  public view = '?'
+class Logger extends EventEmitter implements LoggerClass {
+  public readonly logger: any
+  public view: string
 
-  constructor(folder?: string, relpath?: string, options: Partial<typeof DEFAULTS> = {}) {
-    super(options as any)
-    const config = Object.assign({}, DEFAULTS, options)
-    const transports: winston.transport[] = []
+  constructor(folder?: string, relpath?: string, options: LoggerOptions = {}) {
+    super()
+
+    const config: LoggerOptions = Object.assign({}, DEFAULTS, options)
+
+    const transports: any[] = []
 
     if (folder && relpath) {
       const filename = path.join(folder, relpath)
-      transports.push(
-        new (winston.transports as any).File({
-          filename,
-          tailable: true,
-          maxsize: config.maxsize,
-          maxFiles: config.maxFiles,
-          colorize: (config as any).colorize,
-          level: 'info',
-          json: false,
-          format: winston.format.combine(ignoreDoNotWriteToFile(), haikuFormat),
-        }),
-      )
+      transports.push(new winston.transports.File({
+        filename,
+        tailable: true,
+        maxsize: config.maxsize,
+        maxFiles: config.maxFiles,
+        colorize: config.colorize,
+        level: 'info',
+        json: false,
+        format: winston.format.combine(
+          ignoreDoNotWriteToFile(),
+          haikuFormat,
+        ),
+      } as WinstonFileTransportOptions))
     }
 
+    // 在生产环境中，我们不需要将日志发送到开发控制台
+    // 在Windows上，我们的日志库(winston)在stdout上有问题
     if (!isProduction() && !isWindows()) {
-      transports.push(
-        new (winston.transports as any).Console({
-          format: winston.format.combine(haikuFormat),
-        }),
-      )
+      transports.push(new winston.transports.Console({
+        format: winston.format.combine(
+          haikuFormat,
+        ),
+      }))
     }
 
     this.logger = winston.createLogger({
-      format: winston.format.combine(winston.format.timestamp()),
+      format: winston.format.combine(
+        winston.format.timestamp(),
+      ),
       transports,
     })
+
+    // 允许消费者配置我们记录日志的视图前缀
+    this.view = '?'
   }
 
-  raw(jsonMessage: HaikuLogInfo) {
-    this.logger.log(jsonMessage as any)
+  raw(jsonMessage: any): void {
+    this.logger.log(jsonMessage)
   }
 
-  info(...args: unknown[]) {
-    this.logger.info(args as any, { view: this.view } as any)
+  info(...args: any[]): void {
+    this.logger.info(args, { view: this.view })
   }
 
-  traceInfo(tag: string, message: unknown, attachedObject?: unknown) {
-    this.logger.info(message as any, { view: this.view, tag, attachedObject } as any)
+  traceInfo(tag: string, message: string, attachedObject?: any): void {
+    this.logger.info(message, { view: this.view, tag, attachedObject })
   }
 
-  debug(...args: unknown[]) {
-    this.logger.debug(args as any, { view: this.view } as any)
+  debug(...args: any[]): void {
+    this.logger.debug(args, { view: this.view })
   }
 
-  warn(...args: unknown[]) {
-    this.logger.warn(args as any, { view: this.view } as any)
+  warn(...args: any[]): void {
+    this.logger.warn(args, { view: this.view })
   }
 
-  error(...args: unknown[]) {
-    this.logger.error(args as any, { view: this.view } as any)
+  error(...args: any[]): void {
+    this.logger.error(args, { view: this.view })
   }
 
-  assert(...args: unknown[]) { console.assert(...(args as any)) }
-  count(...args: unknown[]) { console.count(...(args as any)) }
-  countReset(...args: unknown[]) { console.countReset(...(args as any)) }
-  dir(...args: unknown[]) { console.dir(...(args as any)) }
-  dirxml(...args: unknown[]) { console.dirxml && (console as any).dirxml(...(args as any)) }
-  exception(...args: unknown[]) { (console as any).exception && (console as any).exception(...(args as any)) }
-  group(...args: unknown[]) { console.group(...(args as any)) }
-  groupCollapsed(...args: unknown[]) { console.groupCollapsed(...(args as any)) }
-  groupEnd(...args: unknown[]) { console.groupEnd(...(args as any)) }
-  profileEnd(...args: unknown[]) { console.profileEnd && (console as any).profileEnd(...(args as any)) }
-  select(...args: unknown[]) { (console as any).select && (console as any).select(...(args as any)) }
-  table(...args: unknown[]) { console.table(...(args as any)) }
-  time(...args: unknown[]) { this.logger.profile && (this.logger as any).profile(args as any, { view: this.view }) }
-  timeLog(...args: unknown[]) { console.timeLog && (console as any).timeLog(...(args as any)) }
-  timeEnd(...args: unknown[]) { this.logger.profile && (this.logger as any).profile(args as any, { view: this.view }) }
-  trace(...args: unknown[]) { console.trace(...(args as any)) }
+  /**
+   * 不被winston支持的方法回退到console
+   */
+
+  assert(...args: any[]): void {
+    console.assert(...args)
+  }
+
+  count(...args: any[]): void {
+    console.count(...args)
+  }
+
+  countReset(...args: any[]): void {
+    console.countReset(...args)
+  }
+
+  dir(...args: any[]): void {
+    console.dir(...args)
+  }
+
+  dirxml(...args: any[]): void {
+    console.dirxml(...args)
+  }
+
+  exception(...args: any[]): void {
+    // 使用console.error作为console.exception的替代，因为console.exception不是标准API
+    console.error(...args)
+  }
+
+  group(...args: any[]): void {
+    if (typeof console.group === 'function') {
+      console.group(...args)
+    }
+  }
+
+  groupCollapsed(...args: any[]): void {
+    if (typeof console.groupCollapsed === 'function') {
+      console.groupCollapsed(...args)
+    }
+  }
+
+  groupEnd(_args: any[]): void {
+    if (typeof console.groupEnd === 'function') {
+      console.groupEnd()
+    }
+  }
+
+  profileEnd(...args: any[]): void {
+    // console.profileEnd不是标准API，使用console.log作为替代
+    console.profileEnd ? console.profileEnd(...args) : console.log(...args)
+  }
+
+  select(...args: any[]): void {
+    // console.select不是标准API，使用console.log作为替代
+    console.log(...args)
+  }
+
+  table(...args: any[]): void {
+    console.table(...args)
+  }
+
+  time(...args: any[]): void {
+    this.logger.profile(args, { view: this.view })
+  }
+
+  timeLog(...args: any[]): void {
+    if (typeof console.timeLog === 'function') {
+      console.timeLog(...args)
+    }
+  }
+
+  timeEnd(...args: any[]): void {
+    this.logger.profile(args, { view: this.view })
+  }
+
+  trace(...args: any[]): void {
+    console.trace(...args)
+  }
 }
 
-export default { Logger, formatJsonLogToString }
+export { formatJsonLogToString, Logger }
+export default Logger

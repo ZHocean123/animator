@@ -5,9 +5,10 @@ export default defineConfig({
   outDir: 'lib',
   format: ['esm', 'cjs'],
   clean: true,
-  dts: true,
+  dts: false,
   exports: true,
   external: [
     'haiku-formats',
+    '@haiku/core',
   ],
 })

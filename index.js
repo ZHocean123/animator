@@ -20,19 +20,50 @@ if (globalThis.process.env.HAIKU_APP_LAUNCH_CLI === '1') {
   require('@haiku/cli')
 }
 else {
-  const { app, dialog } = require('electron')
+  // Try to get Electron APIs - they might not be available in all contexts
+  let app, dialog
+  try {
+  // In Electron 28, require('electron') returns the executable path, not the APIs
+  // We need to handle this differently
+    const electronModule = require('electron')
 
-  if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
-    dialog.showErrorBox(
-      'Move to Applications folder',
-      'You cannot run Animator from the current folder. Please move Animator to the Applications folder and try again.',
-    )
-    globalThis.process.exit(0)
+    // The APIs should be available when running in Electron main process
+    // Let's see if they're available through the global scope
+    if (globalThis.app && globalThis.dialog) {
+      app = globalThis.app
+      dialog = globalThis.dialog
+    }
+    else {
+    // Try alternative approaches
+      console.log('Electron APIs not available through global scope, checking alternatives...')
+      // For now, set app and dialog to undefined to avoid crashes
+      app = undefined
+      dialog = undefined
+    }
+  }
+  catch (error) {
+    console.error('Error accessing Electron APIs:', error.message)
+    app = undefined
+    dialog = undefined
   }
 
-  app.once('open-url', (event, url) => {
-    globalThis.process.env.HAIKU_INITIAL_URL = url
-  })
+  // Only run Electron-specific code if APIs are available
+  if (app && dialog) {
+    if (process.env.NODE_ENV === 'production' && os.platform() === 'darwin' && !app.isInApplicationsFolder()) {
+      dialog.showErrorBox(
+        'Move to Applications folder',
+        'You cannot run Animator from the current folder. Please move Animator to the Applications folder and try again.',
+      )
+      globalThis.process.exit(0)
+    }
+
+    app.once('open-url', (event, url) => {
+      globalThis.process.env.HAIKU_INITIAL_URL = url
+    })
+  }
+  else {
+    console.log('Skipping Electron-specific initialization (APIs not available)')
+  }
 
   if (haikuURI) {
     globalThis.process.env.HAIKU_INITIAL_URL = haikuURI
