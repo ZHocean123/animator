@@ -1,4 +1,3 @@
-import { ipcRenderer, remote } from 'electron'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import { EnvoyClient, ERROR_CHANNEL, EXPORTER_CHANNEL, USER_CHANNEL, UserSettings } from 'haiku-sdk-creator'
 
@@ -353,13 +352,15 @@ class Timeline extends React.Component {
 
       switch (message.name) {
         case 'global-menu:open-dev-tools':
-          remote.getCurrentWebContents().openDevTools()
+          window.electronAPI.webContents.openDevTools()
           break
 
         case 'global-menu:close-dev-tools':
-          if (remote.getCurrentWebContents().isDevToolsFocused()) {
-            remote.getCurrentWebContents().closeDevTools()
-          }
+          window.electronAPI.webContents.isDevToolsFocused().then((isFocused) => {
+            if (isFocused) {
+              window.electronAPI.webContents.closeDevTools()
+            }
+          })
           break
 
         case 'global-menu:set-active-component':

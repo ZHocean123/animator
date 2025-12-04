@@ -7,7 +7,7 @@ import * as path from 'node:path'
 import { URL } from 'node:url'
 
 import { inherits } from 'node:util'
-import { app, BrowserWindow, ipcMain, protocol, session, systemPreferences } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences } from 'electron'
 import * as ElectronProxyAgent from 'electron-proxy-agent'
 
 import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
@@ -171,6 +171,76 @@ if (!haiku.plumbing.url) {
   haiku.plumbing.url = `http://${globalThis.process.env.HAIKU_PLUMBING_HOST || '0.0.0.0'}:${globalThis.process.env.HAIKU_PLUMBING_PORT}/?token=${process.env.HAIKU_WS_SECURITY_TOKEN}`
 }
 
+/**
+ * 设置 IPC handlers 用于替代 electron.remote
+ * @param {BrowserWindow} win - 主窗口实例
+ */
+function setupIPCHandlers(win) {
+  // 窗口操作
+  ipcMain.handle('window:destroy', () => {
+    if (win && !win.isDestroyed()) {
+      win.destroy()
+    }
+  })
+
+  ipcMain.handle('window:close', () => {
+    if (win && !win.isDestroyed()) {
+      win.close()
+    }
+  })
+
+  ipcMain.handle('window:open-dev-tools', () => {
+    if (win && !win.isDestroyed()) {
+      win.webContents.openDevTools()
+    }
+  })
+
+  ipcMain.handle('window:close-dev-tools', () => {
+    if (win && !win.isDestroyed()) {
+      win.webContents.closeDevTools()
+    }
+  })
+
+  ipcMain.handle('window:is-dev-tools-focused', () => {
+    if (win && !win.isDestroyed()) {
+      return win.webContents.isDevToolsFocused()
+    }
+    return false
+  })
+
+  // 对话框操作
+  ipcMain.handle('dialog:show-open-dialog', async (_event, options) => {
+    return await dialog.showOpenDialog(win, options)
+  })
+
+  ipcMain.handle('dialog:show-save-dialog', async (_event, options) => {
+    return await dialog.showSaveDialog(win, options)
+  })
+
+  // webview 开发者工具操作（通过 event.sender 获取发送者的 webContents）
+  ipcMain.handle('webview:open-dev-tools', (event) => {
+    const webContents = event.sender
+    if (webContents) {
+      webContents.openDevTools()
+    }
+  })
+
+  ipcMain.handle('webview:close-dev-tools', (event) => {
+    const webContents = event.sender
+    if (webContents) {
+      webContents.closeDevTools()
+    }
+  })
+
+  ipcMain.handle('webview:is-dev-tools-focused', (event) => {
+    const webContents = event.sender
+    if (webContents) {
+      return webContents.isDevToolsFocused()
+    }
+    return false
+  })
+}
+
 function createWindow() {
   // Before doing anything, ensure we are not in a second instance of the app, if we are, let's short-cirtuit
   // and let the open instance handle the request.
@@ -211,7 +281,17 @@ function createWindow() {
     minWidth: 700,
     minHeight: 650,
     backgroundColor: '#343f41',
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
+      webviewTag: true,
+      preload: path.join(__dirname, 'preload', 'creator-preload.js'),
+    },
   })
+
+  // 设置 IPC handlers 用于替代 remote 模块
+  setupIPCHandlers(browserWindow)
 
   const topmenu = new TopMenu(browserWindow.webContents)
 

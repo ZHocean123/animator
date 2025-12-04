@@ -180,7 +180,9 @@ class Stage extends React.Component {
 
     this.webview.setAttribute('src', url)
     this.webview.setAttribute('id', 'glass-webview')
-    this.webview.setAttribute('nodeintegration', true)
+    // 安全配置：使用 contextIsolation 和 preload 替代 nodeintegration
+    this.webview.setAttribute('webpreferences', 'contextIsolation=yes, nodeIntegration=no')
+    this.webview.setAttribute('preload', `file://${path.join(__dirname, '..', 'preload', 'webview-preload.js')}`)
     this.webview.style.width = '100%'
     this.webview.style.height = '100%'
 

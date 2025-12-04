@@ -28,7 +28,8 @@
       "Bash(electron:*)",
       "Bash(git stash:*)",
       "Bash(timeout 60 pnpm go:*)",
-      "Bash(timeout 90 pnpm go:*)"
+      "Bash(timeout 90 pnpm go:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

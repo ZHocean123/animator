@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import { inkstone } from '@haiku/sdk-inkstone'
-import { clipboard, ipcRenderer, remote, shell, webFrame } from 'electron'
+import { clipboard, shell, webFrame } from 'electron'
 import * as EventEmitter from 'event-emitter'
 import { buildProxyUrl, describeProxyFromUrl, getAccountUrl, isMac, isWindows, shouldEmitErrors } from 'haiku-common'
 
@@ -48,8 +48,6 @@ process.env.HAIKU_SUBPROCESS = 'creator'
 const { mixpanel } = require('haiku-serialization')
 
 const pkg = require('./../../package.json')
-
-const { dialog } = remote
 
 function isNumeric(n) {
   return !Number.isNaN(Number.parseFloat(n)) && Number.isFinite(n)
@@ -172,10 +170,9 @@ export default class Creator extends React.Component {
     // Callback for post-authentication
     this._postAuthCallback = undefined
 
-    const win = remote.getCurrentWindow()
-
+    // 使用 electronAPI 替代 remote.getCurrentWindow()
     if (process.env.DEV === '1' || process.env.DEV === 'creator') {
-      win.openDevTools()
+      window.electronAPI.window.openDevTools()
     }
 
     window.onerror = (message) => {
@@ -216,8 +213,8 @@ export default class Creator extends React.Component {
       }
     })
 
-    ipcRenderer.on('global-menu:open-dev-tools', lodash.debounce(() => {
-      remote.getCurrentWindow().openDevTools()
+    window.electronAPI.on('global-menu:open-dev-tools', lodash.debounce(() => {
+      window.electronAPI.window.openDevTools()
       this.props.websocket.send({
         type: 'relay',
         from: 'creator',
@@ -232,9 +229,10 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:close-dev-tools', lodash.debounce(() => {
-      if (remote.getCurrentWindow().isDevToolsFocused()) {
-        remote.getCurrentWindow().closeDevTools()
+    window.electronAPI.on('global-menu:close-dev-tools', lodash.debounce(async () => {
+      const isFocused = await window.electronAPI.window.isDevToolsFocused()
+      if (isFocused) {
+        window.electronAPI.window.closeDevTools()
       }
       this.props.websocket.send({
         type: 'relay',
@@ -250,7 +248,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:carbonite-snapshot', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:carbonite-snapshot', lodash.debounce(() => {
       if (global.sentryReporter && this.error) {
         this.error.clearLastUploadTime().then(() => {
           // Call Carbonite in the BLL.
@@ -275,22 +273,22 @@ export default class Creator extends React.Component {
       }
     }, 1000, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:open-finder', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:open-finder', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-finder`)
       this.openFinder()
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:open-terminal', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:open-terminal', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-terminal`)
       this.openTerminal()
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:open-text-editor', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:open-text-editor', lodash.debounce(() => {
       logger.info(`[creator] global-menu:open-text-editor`)
       this.openTextEditor()
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:check-updates', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:check-updates', lodash.debounce(() => {
       logger.info(`[creator] global-menu:check-updates`)
       if (isMac()) {
         this.setState({
@@ -303,21 +301,21 @@ export default class Creator extends React.Component {
       }
 
       if (isWindows()) {
-        ipcRenderer.send('app:check-updates')
+        window.electronAPI.send('app:check-updates')
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:show-changelog', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:show-changelog', lodash.debounce(() => {
       logger.info(`[creator] global-menu:show-changelog`)
       this.showChangelogModal()
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:set-active-component', lodash.debounce((ipcEvent, scenename) => {
+    window.electronAPI.on('global-menu:set-active-component', lodash.debounce((ipcEvent, scenename) => {
       logger.info(`[creator] global-menu:set-active-component`)
       this.tryToChangeCurrentActiveComponent(scenename)
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:zoom-in', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:zoom-in', lodash.debounce(() => {
       logger.info(`[creator] global-menu:zoom-in`)
       // Timeline will send to Glass if it doesn't want to zoom
       this.props.websocket.send({
@@ -328,7 +326,7 @@ export default class Creator extends React.Component {
       })
     }, 50, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:zoom-out', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:zoom-out', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to zoom
       logger.info(`[creator] global-menu:zoom-out`)
       this.props.websocket.send({
@@ -339,7 +337,7 @@ export default class Creator extends React.Component {
       })
     }, 50, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:reset-viewport', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:reset-viewport', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to zoom
       logger.info(`[creator] global-menu:reset-viewport`)
       this.props.websocket.send({
@@ -350,7 +348,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:group', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:group', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to group
       logger.info(`[creator] global-menu:group`)
       this.props.websocket.send({
@@ -361,7 +359,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:ungroup', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:ungroup', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to ungroup
       logger.info(`[creator] global-menu:ungroup`)
       this.props.websocket.send({
@@ -372,7 +370,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:undo', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:undo', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to undo
       logger.info(`[creator] global-menu:undo`)
       this.props.websocket.send({
@@ -384,7 +382,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:redo', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:redo', lodash.debounce(() => {
       // Timeline will send to Glass if it doesn't want to undo
       logger.info(`[creator] global-menu:redo`)
       this.props.websocket.send({
@@ -396,7 +394,7 @@ export default class Creator extends React.Component {
       })
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:copy', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:copy', lodash.debounce(() => {
       // Only delegate copy if we don't have anything in selection
       if (!this.isTextSelected()) {
         logger.info(`[creator] global-menu:copy`)
@@ -412,7 +410,7 @@ export default class Creator extends React.Component {
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:cut', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:cut', lodash.debounce(() => {
       // Only delegate cut if we don't have anything in selection
       if (!this.isTextSelected()) {
         logger.info(`[creator] global-menu:cut`)
@@ -425,7 +423,7 @@ export default class Creator extends React.Component {
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:selectAll', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:selectAll', lodash.debounce(() => {
       // Only select all if we haven't activated a text element
       if (!this.isTextInputFocused()) {
         logger.info(`[creator] global-menu:selectAll`)
@@ -438,7 +436,7 @@ export default class Creator extends React.Component {
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('global-menu:paste', lodash.debounce(() => {
+    window.electronAPI.on('global-menu:paste', lodash.debounce(() => {
       // Only paste if we haven't activated a text element
       if (!this.isTextInputFocused()) {
         logger.info(`[creator] global-menu:paste`)
@@ -451,7 +449,7 @@ export default class Creator extends React.Component {
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
 
-    ipcRenderer.on('open-url:fork', (_, forkPath) => {
+    window.electronAPI.on('open-url:fork', (_, forkPath) => {
       // Incoming path should have format: /:organizationName/:projectName
       const matches = forkPath.match(/^\/(\w+)\/(\w+)$/)
       if (matches) {
@@ -459,11 +457,11 @@ export default class Creator extends React.Component {
       }
     })
 
-    ipcRenderer.on('global-menu:show-new-project-modal', () => {
+    window.electronAPI.on('global-menu:show-new-project-modal', () => {
       this.showNewProjectModal()
     })
 
-    ipcRenderer.on('global-menu:preview', () => {
+    window.electronAPI.on('global-menu:preview', () => {
       this.togglePreviewMode()
     })
 
@@ -822,7 +820,7 @@ export default class Creator extends React.Component {
 
     this.envoyClient.get(EXPORTER_CHANNEL).then((exporterChannel) => {
       this.envoyExporter = exporterChannel
-      ipcRenderer.on('global-menu:save-as', (_, extension, request) => {
+      window.electronAPI.on('global-menu:save-as', (_, extension, request) => {
         switch (extension) {
           case 'gif':
             request.format = ExporterFormat.AnimatedGif
@@ -909,7 +907,7 @@ export default class Creator extends React.Component {
 
       tourChannel.on('tour:requestShowStep', this.setGlassInteractionToEditMode)
 
-      ipcRenderer.on('global-menu:start-tour', this.startTourFromGlobalMenu)
+      window.electronAPI.on('global-menu:start-tour', this.startTourFromGlobalMenu)
 
       window.addEventListener('resize', lodash.throttle(() => {
         tourChannel.updateLayout()
@@ -1027,7 +1025,7 @@ export default class Creator extends React.Component {
   }
 
   restart = () => {
-    ipcRenderer.send('restart')
+    window.electronAPI.send('restart')
   }
 
   handleInteractionModeChange(interactionMode) {
@@ -1110,7 +1108,7 @@ export default class Creator extends React.Component {
 
     this.user.authenticate(username, password).then(({ user, organization }) => {
       mixpanel.haikuTrack('creator:user-authenticated', { username: user.Username })
-      ipcRenderer.send('topmenu:update', { isUserAuthenticated: true })
+      window.electronAPI.send('topmenu:update', { isUserAuthenticated: true })
     }).catch((error) => {
       cb(error)
     })
@@ -1170,7 +1168,7 @@ export default class Creator extends React.Component {
     this.setState(silent ? {} : { areProjectsLoading: true }, () => {
       this.envoyProject.getProjectsList().then((projectsList) => {
         this.setState({ areProjectsLoading: false, hasLoadedOnce: true, projectsList })
-        ipcRenderer.send('topmenu:update', { projectsList, isProjectOpen: false, isUserAuthenticated: this.state.isUserAuthenticated })
+        window.electronAPI.send('topmenu:update', { projectsList, isProjectOpen: false, isUserAuthenticated: this.state.isUserAuthenticated })
         return cb(null, projectsList)
       }).catch((error) => {
         mixpanel.haikuTrack('creator:project-list:unable-to-retrieve', {
@@ -1196,7 +1194,7 @@ export default class Creator extends React.Component {
   }
 
   onProjectsList = (projectsList) => {
-    ipcRenderer.send('topmenu:update', { projectsList })
+    window.electronAPI.send('topmenu:update', { projectsList })
   }
 
   createProject(projectName, duplicate = false, callback) {
@@ -1257,7 +1255,7 @@ export default class Creator extends React.Component {
     })
 
     // Async: ensure our web+haikuroot:// URLs work as expected.
-    ipcRenderer.send('protocol:register', projectObject.projectPath)
+    window.electronAPI.send('protocol:register', projectObject.projectPath)
 
     return this.props.websocket.request({ method: 'bootstrapProject', params: [projectObject] }, (err) => {
       if (err) {
@@ -1328,7 +1326,7 @@ export default class Creator extends React.Component {
                   this.state.projectModel.setCurrentActiveComponent('main', { from: 'creator' }, () => { })
                 }
 
-                ipcRenderer.send('topmenu:update', { isProjectOpen: true })
+                window.electronAPI.send('topmenu:update', { isProjectOpen: true })
               })
             })
 
@@ -1392,7 +1390,7 @@ export default class Creator extends React.Component {
   }
 
   updateMenu() {
-    ipcRenderer.send('topmenu:update', this.state.projectModel.describeTopMenu())
+    window.electronAPI.send('topmenu:update', this.state.projectModel.describeTopMenu())
   }
 
   handleActiveComponentReady() {
@@ -1554,7 +1552,7 @@ export default class Creator extends React.Component {
         // If we get a bunch of errors of the same kind, that's most likely a bad problem
         if (existing.count >= 25) {
           if (process.env.NODE_ENV === 'production') {
-            remote.getCurrentWindow().close()
+            window.electronAPI.window.close()
           }
         }
         else {
@@ -1627,7 +1625,7 @@ export default class Creator extends React.Component {
         isUserAuthenticated: user && organization,
       })
       this.teardownMaster({ shouldFinishTour: true })
-      ipcRenderer.send('topmenu:update', { subComponents: [], undoState: { canUndo: false, canRedo: false }, isProjectOpen: false })
+      window.electronAPI.send('topmenu:update', { subComponents: [], undoState: { canUndo: false, canRedo: false }, isProjectOpen: false })
     })
   }
 
@@ -1711,7 +1709,7 @@ export default class Creator extends React.Component {
   }
 
   teardownMaster({ shouldFinishTour }, cb) {
-    ipcRenderer.send('protocol:unregister')
+    window.electronAPI.send('protocol:unregister')
     this.setState({ tearingDown: true })
     // Delete identifier not found notice on teardown
     this.deleteIdentifierNotFoundNotice()
@@ -1792,7 +1790,7 @@ export default class Creator extends React.Component {
           option: 'logout',
         })
 
-        ipcRenderer.send('topmenu:update', {
+        window.electronAPI.send('topmenu:update', {
           projectsList: [],
           isSaving: false,
           isProjectOpen: false,

@@ -2,8 +2,6 @@ import { MockWebsocket, Websocket } from 'haiku-serialization'
 import { createRoot } from 'react-dom/client'
 import Creator from './react/Creator'
 
-const remote = require('electron').remote
-
 function _fixPlumbingUrl(url) {
   return url.replace(/^http/, 'ws')
 }
@@ -30,10 +28,8 @@ export default function dom(haiku) {
     : new MockWebsocket()
 
   websocket.on('close', () => {
-    const currentWindow = remote.getCurrentWindow()
-    if (currentWindow) {
-      currentWindow.destroy()
-    }
+    // 使用 electronAPI 替代 remote.getCurrentWindow().destroy()
+    window.electronAPI.window.destroy()
   })
 
   createRoot(document.getElementById('mount')).render(

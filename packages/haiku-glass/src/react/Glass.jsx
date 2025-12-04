@@ -5,7 +5,7 @@ import { distance, splitSegmentInSVGPoints } from '@haiku/core/lib/helpers/PathU
 import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
 import HaikuDOMRenderer from '@haiku/core/lib/renderers/dom'
 import { calculateValue } from '@haiku/core/lib/Transitions'
-import { clipboard, ipcRenderer, remote, shell } from 'electron'
+import { clipboard, shell } from 'electron'
 import { buildPathLUT, closestNormalPointOnLineSegment, DEFAULT_LINE_SELECTION_THRESHOLD, Experiment, experimentIsEnabled, isMac, isPointAlongStroke, isPointInsidePrimitive, isWindows, transform2DPoint } from 'haiku-common'
 
 import * as fse from 'haiku-fs-extra'
@@ -554,14 +554,16 @@ export class Glass extends React.Component {
 
       switch (message.name) {
         case 'global-menu:open-dev-tools': {
-          remote.getCurrentWebContents().openDevTools()
+          window.electronAPI.webContents.openDevTools()
           break
         }
 
         case 'global-menu:close-dev-tools': {
-          if (remote.getCurrentWebContents().isDevToolsFocused()) {
-            remote.getCurrentWebContents().closeDevTools()
-          }
+          window.electronAPI.webContents.isDevToolsFocused().then((isFocused) => {
+            if (isFocused) {
+              window.electronAPI.webContents.closeDevTools()
+            }
+          })
           break
         }
 
@@ -3610,7 +3612,8 @@ export class Glass extends React.Component {
         label: 'Inspect Element',
         enabled: proxy.doesManageSingleElement(),
         onClick: (event) => {
-          if (remote) {
+          // 检查是否在 Electron 环境中
+          if (window.electronAPI) {
             const publicComponentModel = this.getActiveComponent().$instance
             const internalElementModel = proxy.getElement()
 
