@@ -1,5 +1,5 @@
 /* eslint-disable node/prefer-global/process */
-import * as EventEmitter from 'node:events'
+import { EventEmitter } from 'node:events'
 import * as fs from 'node:fs'
 import http from 'node:http'
 import https from 'node:https'
@@ -27,71 +27,6 @@ try {
 }
 catch {}
 app.setAsDefaultProtocolClient('haiku')
-
-const { dialog } = require('electron')
-
-//////////
-// BEGIN HACK:  take over the electron process, patch user through a sequence of dialogs to
-/// ///         select the active folder; pass the selected folder directly into plumbing.
-///            This bypasses all network hooks and was a relatively easy way to prepare this for open-sourcing.
-
-// You enter a dimly lit room.  Ahead are three options:
-let activeFolder = ''
-const mode = dialog.showMessageBox({
-  message: 'Welcome to Haiku Animator!',
-  type: 'question',
-  buttons: ['New project...', 'Open project...', 'Exit'],
-})
-
-if (mode === 0) { // You choose to create a new project.  You take a deep breath, then:
-  let folderIsEmpty = false
-  let folder = ''
-  while (!folderIsEmpty) {
-    dialog.showMessageBox({
-      message: 'On the coming screen, select an empty directory for this project.',
-      type: 'info',
-      buttons: ['OK'],
-    })
-
-    const files = dialog.showOpenDialog({ properties: ['openDirectory', 'showHiddenFiles', 'createDirectory'] })
-
-    // User canceled! Game over.
-    if (!files || !files.length) {
-      process.kill(0)
-    }
-
-    folder = files[0]
-
-    folderIsEmpty = fs.readdirSync(folder).length === 0
-  }
-
-  // with an assurance that folderIsEmpty, we can proceed to mount a new project to `folder`
-  activeFolder = folder
-}
-else if (mode === 1) { // You are sure that Open is the way to go.  Without hesitation, you charge ahead:
-  dialog.showMessageBox({
-    message: 'On the coming screen, select a directory containing a Haiku Animator project. \r\n\r\nFor legacy commercial projects, check ~/.haiku/projects',
-    type: 'info',
-    buttons: ['OK'],
-  })
-
-  const files = dialog.showOpenDialog({ properties: ['openDirectory', 'showHiddenFiles'] })
-
-  // User canceled!  Game over.
-  if (!files || !files.length) {
-    process.kill(0)
-  }
-
-  // payload
-  activeFolder = files[0]
-}
-else { // You turn around and head back from whence you came.
-  process.kill(0)
-}
-
-//////////
-// END HACK (hard-coded folder)
-/////
 
 // Haiku main window
 let browserWindow = null
@@ -138,19 +73,86 @@ const haiku = globalThis.process.env.HAIKU_ENV
   ? JSON.parse(globalThis.process.env.HAIKU_ENV)
   : {}
 
-//////////
-// BEGIN HACK:  (part 2)
-//////
-///
+app.on('ready', () => {
+  const { dialog } = require('electron')
 
-// hook up folder selected by dialog GUI above.
-// plumbing special-cases the situation where `haiku.folder` is
-// specified and bypasses all network hooks
-haiku.folder = activeFolder
+  //////////
+  // BEGIN HACK:  take over the electron process, patch user through a sequence of dialogs to
+  /// ///         select the active folder; pass the selected folder directly into plumbing.
+  ///            This bypasses all network hooks and was a relatively easy way to prepare this for open-sourcing.
 
-//////////
-// END HACK (part 2)
-/////
+  // You enter a dimly lit room.  Ahead are three options:
+  let activeFolder = ''
+  const mode = dialog.showMessageBox({
+    message: 'Welcome to Haiku Animator!',
+    type: 'question',
+    buttons: ['New project...', 'Open project...', 'Exit'],
+  })
+
+  if (mode === 0) { // You choose to create a new project.  You take a deep breath, then:
+    let folderIsEmpty = false
+    let folder = ''
+    while (!folderIsEmpty) {
+      dialog.showMessageBox({
+        message: 'On the coming screen, select an empty directory for this project.',
+        type: 'info',
+        buttons: ['OK'],
+      })
+
+      const files = dialog.showOpenDialog({ properties: ['openDirectory', 'showHiddenFiles', 'createDirectory'] })
+
+      // User canceled! Game over.
+      if (!files || !files.length) {
+        process.kill(0)
+      }
+
+      folder = files[0]
+
+      folderIsEmpty = fs.readdirSync(folder).length === 0
+    }
+
+    // with an assurance that folderIsEmpty, we can proceed to mount a new project to `folder`
+    activeFolder = folder
+  }
+  else if (mode === 1) { // You are sure that Open is the way to go.  Without hesitation, you charge ahead:
+    dialog.showMessageBox({
+      message: 'On the coming screen, select a directory containing a Haiku Animator project. \r\n\r\nFor legacy commercial projects, check ~/.haiku/projects',
+      type: 'info',
+      buttons: ['OK'],
+    })
+
+    const files = dialog.showOpenDialog({ properties: ['openDirectory', 'showHiddenFiles'] })
+
+    // User canceled!  Game over.
+    if (!files || !files.length) {
+      process.kill(0)
+    }
+
+    // payload
+    activeFolder = files[0]
+  }
+  else { // You turn around and head back from whence you came.
+    process.kill(0)
+  }
+
+  //////////
+  // END HACK (hard-coded folder)
+  /////
+
+  //////////
+  // BEGIN HACK:  (part 2)
+  //////
+  ///
+
+  // hook up folder selected by dialog GUI above.
+  // plumbing special-cases the situation where `haiku.folder` is
+  // specified and bypasses all network hooks
+  haiku.folder = activeFolder
+
+  //////////
+  // END HACK (part 2)
+  /////
+})
 
 app.on('window-all-closed', () => {
   app.quit()

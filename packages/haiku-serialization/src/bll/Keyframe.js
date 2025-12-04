@@ -1,8 +1,16 @@
 const HaikuComponent = require('@haiku/core/lib/HaikuComponent').default
 const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
 const Curve = require('@haiku/core/lib/api').Curve
-const { isDecomposableCurve, getCurveInterpolationPoints } = require('haiku-formats')
 const BaseModel = require('./BaseModel')
+
+// 延迟加载 haiku-formats 以避免循环依赖
+let _haikuFormats = null
+function getHaikuFormats() {
+  if (!_haikuFormats) {
+    _haikuFormats = require('haiku-formats')
+  }
+  return _haikuFormats
+}
 
 /**
  * @class Keyframe
@@ -249,6 +257,7 @@ class Keyframe extends BaseModel {
    * @description Return if the current curve body is composed of multiple Bezier Curves.
    */
   hasDecomposableCurve() {
+    const { isDecomposableCurve } = getHaikuFormats()
     return this.hasCurveBody() && isDecomposableCurve(this.getCurve())
   }
 
@@ -258,6 +267,7 @@ class Keyframe extends BaseModel {
    */
   getCurveInterpolationPoints() {
     if (this.isTransitionSegment()) {
+      const { getCurveInterpolationPoints } = getHaikuFormats()
       return getCurveInterpolationPoints(this.getCurve())
     }
   }

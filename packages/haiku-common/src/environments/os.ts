@@ -24,7 +24,7 @@ const getOperatingSystem: () => OperatingSystem = () => {
       return OperatingSystem.Web
     default:
       // This should really be an error. For now, we force mac as default for tests etc.
-      return OperatingSystem.Mac
+      return OperatingSystem.Windows
   }
 }
 

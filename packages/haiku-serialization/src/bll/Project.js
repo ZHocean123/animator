@@ -13,7 +13,6 @@ const {
 const async = require('async')
 const { Experiment, experimentIsEnabled } = require('haiku-common')
 const fse = require('haiku-fs-extra')
-const { EnvoyClient, EnvoyLogger, GLASS_CHANNEL } = require('haiku-sdk-creator')
 const jss = require('json-stable-stringify')
 const lodash = require('lodash')
 const WebSocket = require('ws')
@@ -22,6 +21,15 @@ const ActionStack = require('./ActionStack')
 const BaseModel = require('./BaseModel')
 const toTitleCase = require('./helpers/toTitleCase')
 const Lock = require('./Lock')
+
+// 延迟加载 haiku-sdk-creator 以避免循环依赖
+let _sdkCreator = null
+function getSdkCreator() {
+  if (!_sdkCreator) {
+    _sdkCreator = require('haiku-sdk-creator')
+  }
+  return _sdkCreator
+}
 
 const SILENT_METHODS = {
   hoverElement: true,
@@ -139,6 +147,7 @@ class Project extends BaseModel {
         || WebSocket
       )
 
+      const { EnvoyClient, EnvoyLogger, GLASS_CHANNEL } = getSdkCreator()
       this._envoyClient = new EnvoyClient(Object.assign({
         WebSocket: websocketClient,
         logger: new EnvoyLogger('warn'),

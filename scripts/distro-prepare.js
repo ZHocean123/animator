@@ -16,8 +16,8 @@ const DISTRO_DIR = 'source' // Location of distro source code to push
 
 const YARN_INSTALL_FLAGS = [
   '--frozen-lockfile', // Force use of dependencies from pnpm.lock
-  '--non-interactive', // Don't prompt (just in case)
-  '--force', // Clean out any stripped-out dependencies
+  // '--non-interactive', // Don't prompt (just in case)
+  // '--force', // Clean out any stripped-out dependencies
   '--ignore-scripts', // Don't trigger any preinstall/postinstall behaviors.
 ].join(' ')
 

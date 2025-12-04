@@ -1,33 +1,33 @@
-const argv = require('yargs').argv;
-const fse = require('fs-extra');
-const os = require('os');
-const path = require('path');
-const lodash = require('lodash');
-const inquirer = require('inquirer');
-const log = require('./helpers/log');
-const writeHackyDynamicDistroConfig = require('./helpers/writeHackyDynamicDistroConfig');
-const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction');
+const argv = require('yargs').argv
+const os = require('node:os')
+const path = require('node:path')
+const fse = require('fs-extra')
+const inquirer = require('inquirer')
+const lodash = require('lodash')
+const forceNodeEnvProduction = require('./helpers/forceNodeEnvProduction')
+const log = require('./helpers/log')
+const writeHackyDynamicDistroConfig = require('./helpers/writeHackyDynamicDistroConfig')
 
-let ROOT = path.join(__dirname, '..');
-let ENVS = {development: true, production: true};
+let ROOT = path.join(__dirname, '..')
+let ENVS = { development: true, production: true }
 
-forceNodeEnvProduction();
+forceNodeEnvProduction()
 
-function getReleasePlatform () {
+function getReleasePlatform() {
   switch (os.platform()) {
     case 'darwin':
-      return 'mac';
+      return 'mac'
     case 'win32':
-      return 'windows';
+      return 'windows'
     case 'linux':
-      return 'linux';
+      return 'linux'
     default:
-      throw new Error('Unknown operating system');
+      throw new Error('Unknown operating system')
   }
 }
 
-function getReleaseArchitecture () {
-  return os.arch();
+function getReleaseArchitecture() {
+  return os.arch()
 }
 
 let inputs = lodash.assign({
@@ -40,10 +40,10 @@ let inputs = lodash.assign({
   platform: getReleasePlatform(),
   architecture: getReleaseArchitecture(),
   version: fse.readJsonSync(path.join(ROOT, 'package.json')).version,
-}, argv);
+}, argv)
 
-delete inputs.$0;
-delete inputs._;
+delete inputs.$0
+delete inputs._
 
 if (!argv['non-interactive']) {
   inquirer.prompt([
@@ -72,21 +72,21 @@ if (!argv['non-interactive']) {
       default: inputs.shout,
     },
   ]).then((answers) => {
-    lodash.assign(inputs, answers);
+    lodash.assign(inputs, answers)
 
     if (inputs.uglify === false && inputs.environment === 'production') {
-      throw new Error(`refusing to create a non-obfuscated build for 'production'`);
+      throw new Error(`refusing to create a non-obfuscated build for 'production'`)
     }
 
     if (!ENVS[inputs.environment]) {
-      throw new Error(`the 'environment' tag must be a member of ${JSON.stringify(ENVS)}`);
+      throw new Error(`the 'environment' tag must be a member of ${JSON.stringify(ENVS)}`)
     }
 
     if (!inputs.version) {
-      throw new Error(`a 'version' semver tag is required`);
+      throw new Error(`a 'version' semver tag is required`)
     }
 
-    log.log(`using these inputs: ${JSON.stringify(inputs, null, 2)}`);
+    log.log(`using these inputs: ${JSON.stringify(inputs, null, 2)}`)
     inquirer.prompt([
       {
         type: 'confirm',
@@ -96,16 +96,18 @@ if (!argv['non-interactive']) {
       },
     ]).then((goForConfigureAnswers) => {
       if (goForConfigureAnswers.proceed) {
-        writeHackyDynamicDistroConfig(inputs);
-      } else {
-        process.exit();
+        writeHackyDynamicDistroConfig(inputs)
       }
-    });
+      else {
+        process.exit()
+      }
+    })
   }).catch((exception) => {
-    log.log(exception);
-    process.exit();
-  });
-} else {
-  console.log(JSON.stringify(inputs));
-  writeHackyDynamicDistroConfig(inputs);
+    log.log(exception)
+    process.exit()
+  })
+}
+else {
+  console.log(JSON.stringify(inputs))
+  writeHackyDynamicDistroConfig(inputs)
 }
