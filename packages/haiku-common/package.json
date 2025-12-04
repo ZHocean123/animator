@@ -8,12 +8,12 @@
   "license": "UNLICENSED",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./electron/TopMenu": {
-      "import": "./lib/electron/TopMenu.mjs",
-      "require": "./lib/electron/TopMenu.cjs"
+      "require": "./lib/electron/TopMenu.cjs",
+      "import": "./lib/electron/TopMenu.mjs"
     },
     "./package.json": "./package.json"
   },

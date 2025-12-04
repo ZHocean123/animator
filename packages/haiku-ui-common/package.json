@@ -8,8 +8,8 @@
   "license": "UNLICENSED",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -39,10 +39,10 @@
     "memoize-one": "5.0.0",
     "numeral": "^2.0.6",
     "radium": "0.18.1",
-    "react": "15.6.2",
+    "react": "catalog:",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.0",
-    "react-dom": "15.6.2",
+    "react-dom": "catalog:",
     "react-popover": "^0.4.18",
     "react-syntax-highlighter": "^7.0.0"
   },

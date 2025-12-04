@@ -6,7 +6,8 @@ import { SHARED_STYLES } from '../../../SharedStyles'
 import { ExternalLink } from '../../ExternalLink'
 import { PUBLISH_SHARED } from './PublishStyles'
 
-const { dialog } = remote
+// 延迟获取 dialog，避免在 remote 不可用时崩溃
+const getDialog = () => remote?.dialog
 
 export interface LottieProps {
   entry: string
@@ -26,6 +27,10 @@ export default class Lottie extends React.PureComponent<LottieProps> {
     // Bit of a hack—until we can actually pass down Envoy Exporter listeners the right way.
     // #FIXME
     const originalPath = join(this.props.folder, 'code', 'main', 'lottie.json')
+    const dialog = getDialog()
+    if (!dialog) {
+      return
+    }
     dialog.showSaveDialog(
       undefined,
       {

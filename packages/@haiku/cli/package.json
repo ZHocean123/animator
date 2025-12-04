@@ -5,20 +5,20 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./haiku-cli": {
-      "import": "./lib/haiku-cli.mjs",
-      "require": "./lib/haiku-cli.cjs"
+      "require": "./lib/haiku-cli.cjs",
+      "import": "./lib/haiku-cli.mjs"
     },
     "./nib": {
-      "import": "./lib/nib/index.mjs",
-      "require": "./lib/nib/index.cjs"
+      "require": "./lib/nib/index.cjs",
+      "import": "./lib/nib/index.mjs"
     },
     "./nib/nib": {
-      "import": "./lib/nib/nib.mjs",
-      "require": "./lib/nib/nib.cjs"
+      "require": "./lib/nib/nib.cjs",
+      "import": "./lib/nib/nib.mjs"
     },
     "./package.json": "./package.json"
   },

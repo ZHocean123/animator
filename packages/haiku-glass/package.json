@@ -9,12 +9,12 @@
   ],
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./electron": {
-      "import": "./lib/electron.mjs",
-      "require": "./lib/electron.cjs"
+      "require": "./lib/electron.cjs",
+      "import": "./lib/electron.mjs"
     },
     "./package.json": "./package.json"
   },

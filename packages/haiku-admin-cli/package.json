@@ -5,20 +5,20 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./admin-cli": {
-      "import": "./lib/admin-cli.mjs",
-      "require": "./lib/admin-cli.cjs"
+      "require": "./lib/admin-cli.cjs",
+      "import": "./lib/admin-cli.mjs"
     },
     "./sdk": {
-      "import": "./lib/sdk/index.mjs",
-      "require": "./lib/sdk/index.cjs"
+      "require": "./lib/sdk/index.cjs",
+      "import": "./lib/sdk/index.mjs"
     },
     "./sdk/admin-sdk": {
-      "import": "./lib/sdk/admin-sdk.mjs",
-      "require": "./lib/sdk/admin-sdk.cjs"
+      "require": "./lib/sdk/admin-sdk.cjs",
+      "import": "./lib/sdk/admin-sdk.mjs"
     },
     "./package.json": "./package.json"
   },

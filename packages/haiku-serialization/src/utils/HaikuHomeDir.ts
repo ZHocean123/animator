@@ -1,6 +1,7 @@
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as fse from 'fs-extra'
+import logger from './LoggerInstance'
 
 /**
  * 项目信息接口
@@ -88,9 +89,7 @@ class HaikuHomeDir {
       return fse.lstatSync(abspath).isDirectory()
     }
     catch (exception) {
-      import('./LoggerInstance').then(({ default: logger }) => {
-        logger.warn(exception)
-      })
+      logger.warn(exception)
       return false
     }
   }
@@ -181,25 +180,40 @@ class HaikuHomeDir {
   }
 }
 
-// 导出兼容CommonJS的接口
-const out = {
-  HOMEDIR_PATH: HaikuHomeDir.HOMEDIR_PATH,
-  HOMEDIR_AUTH_PATH: HaikuHomeDir.HOMEDIR_AUTH_PATH,
-  HOMEDIR_PROJECTS_PATH: HaikuHomeDir.HOMEDIR_PROJECTS_PATH,
-  HOMEDIR_LOGS_PATH: HaikuHomeDir.HOMEDIR_LOGS_PATH,
-  HOMEDIR_MODEL_STORAGE_PATH: HaikuHomeDir.HOMEDIR_MODEL_STORAGE_PATH,
-  HOMEDIR_CRASH_REPORTS_PATH: HaikuHomeDir.HOMEDIR_CRASH_REPORTS_PATH,
-  HOMEDIR_MANIFEST_PATH: HaikuHomeDir.HOMEDIR_MANIFEST_PATH,
-  HOMEDIR_TOUR_PATH: HaikuHomeDir.HOMEDIR_TOUR_PATH,
-  HOMEDIR_SKETCH_DIALOG_PATH: HaikuHomeDir.HOMEDIR_SKETCH_DIALOG_PATH,
-  didTakeTour: HaikuHomeDir.didTakeTour,
-  createTourFile: HaikuHomeDir.createTourFile,
-  didAskedForSketch: HaikuHomeDir.didAskedForSketch,
-  createSketchDialogFile: HaikuHomeDir.createSketchDialogFile,
-  enumerateAllProjectsByOrganization: HaikuHomeDir.enumerateAllProjectsByOrganization,
+// 命名导出，供其他模块直接导入
+export const HOMEDIR_PATH = HaikuHomeDir.HOMEDIR_PATH
+export const HOMEDIR_AUTH_PATH = HaikuHomeDir.HOMEDIR_AUTH_PATH
+export const HOMEDIR_PROJECTS_PATH = HaikuHomeDir.HOMEDIR_PROJECTS_PATH
+export const HOMEDIR_LOGS_PATH = HaikuHomeDir.HOMEDIR_LOGS_PATH
+export const HOMEDIR_MODEL_STORAGE_PATH = HaikuHomeDir.HOMEDIR_MODEL_STORAGE_PATH
+export const HOMEDIR_CRASH_REPORTS_PATH = HaikuHomeDir.HOMEDIR_CRASH_REPORTS_PATH
+export const HOMEDIR_MANIFEST_PATH = HaikuHomeDir.HOMEDIR_MANIFEST_PATH
+export const HOMEDIR_TOUR_PATH = HaikuHomeDir.HOMEDIR_TOUR_PATH
+export const HOMEDIR_SKETCH_DIALOG_PATH = HaikuHomeDir.HOMEDIR_SKETCH_DIALOG_PATH
+export const didTakeTour = HaikuHomeDir.didTakeTour.bind(HaikuHomeDir)
+export const createTourFile = HaikuHomeDir.createTourFile.bind(HaikuHomeDir)
+export const didAskedForSketch = HaikuHomeDir.didAskedForSketch.bind(HaikuHomeDir)
+export const createSketchDialogFile = HaikuHomeDir.createSketchDialogFile.bind(HaikuHomeDir)
+export const enumerateAllProjectsByOrganization = HaikuHomeDir.enumerateAllProjectsByOrganization.bind(HaikuHomeDir)
+
+// 默认导出保持向后兼容
+export default {
+  HOMEDIR_PATH,
+  HOMEDIR_AUTH_PATH,
+  HOMEDIR_PROJECTS_PATH,
+  HOMEDIR_LOGS_PATH,
+  HOMEDIR_MODEL_STORAGE_PATH,
+  HOMEDIR_CRASH_REPORTS_PATH,
+  HOMEDIR_MANIFEST_PATH,
+  HOMEDIR_TOUR_PATH,
+  HOMEDIR_SKETCH_DIALOG_PATH,
+  didTakeTour,
+  createTourFile,
+  didAskedForSketch,
+  createSketchDialogFile,
+  enumerateAllProjectsByOrganization,
 }
 
-export default out
 export { HaikuHomeDir }
 export type {
   AsyncCallback,

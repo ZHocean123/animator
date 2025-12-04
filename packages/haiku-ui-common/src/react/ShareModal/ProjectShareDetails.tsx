@@ -1,5 +1,5 @@
 import * as os from 'node:os'
-import * as Color from 'color'
+import Color from 'color'
 import { shell } from 'electron'
 import * as React from 'react'
 import Palette from '../../Palette'

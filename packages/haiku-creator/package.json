@@ -8,16 +8,16 @@
   "license": "PROPRIETARY",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./electron": {
-      "import": "./lib/electron.mjs",
-      "require": "./lib/electron.cjs"
+      "require": "./lib/electron.cjs",
+      "import": "./lib/electron.mjs"
     },
     "./entry": {
-      "import": "./lib/entry.mjs",
-      "require": "./lib/entry.cjs"
+      "require": "./lib/entry.cjs",
+      "import": "./lib/entry.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -66,9 +66,9 @@
     "qs": "6.4.0",
     "radium": "0.18.1",
     "raven-js": "3.21.0",
-    "react": "15.6.2",
+    "react": "catalog:",
     "react-animations": "0.1.0",
-    "react-dom": "15.6.2",
+    "react-dom": "catalog:",
     "react-drag-and-drop": "2.4.0",
     "react-draggable": "2.2.3",
     "react-list": "^0.8.9",

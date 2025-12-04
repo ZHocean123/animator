@@ -1,12 +1,4 @@
 const path = require('node:path')
-const async = require('async')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const fse = require('haiku-fs-extra')
-const jss = require('json-stable-stringify')
-const lodash = require('lodash')
-const WebSocket = require('ws')
-const EnvoyClient = require('haiku-sdk-creator/lib/envoy/EnvoyClient').default
-const EnvoyLogger = require('haiku-sdk-creator/lib/envoy/EnvoyLogger').default
 const { InteractionMode } = require('@haiku/core/lib/helpers/interactionModes')
 const {
   getSafeProjectName,
@@ -17,8 +9,14 @@ const {
   getProjectNameLowerCase,
   readPackageJson,
   getAngularSelectorName,
-} = require('@haiku/sdk-client/lib/ProjectDefinitions')
-const { GLASS_CHANNEL } = require('haiku-sdk-creator/lib/glass')
+} = require('@haiku/sdk-client')
+const async = require('async')
+const { Experiment, experimentIsEnabled } = require('haiku-common')
+const fse = require('haiku-fs-extra')
+const { EnvoyClient, EnvoyLogger, GLASS_CHANNEL } = require('haiku-sdk-creator')
+const jss = require('json-stable-stringify')
+const lodash = require('lodash')
+const WebSocket = require('ws')
 const logger = require('./../utils/LoggerInstance')
 const ActionStack = require('./ActionStack')
 const BaseModel = require('./BaseModel')

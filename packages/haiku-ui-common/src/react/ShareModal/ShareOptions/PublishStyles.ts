@@ -1,5 +1,5 @@
 import type * as React from 'react'
-import * as Color from 'color'
+import Color from 'color'
 import Palette from '../../../Palette'
 
 export const PUBLISH_SHARED: React.CSSProperties = {

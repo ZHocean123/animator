@@ -6,6 +6,7 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   clean: true,
   dts: false,
+  sourcemap: true,
   exports: true,
   external: [
     'haiku-formats',

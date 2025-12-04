@@ -25,7 +25,10 @@
       "Bash(readlink:*)",
       "Bash(cmd.exe:*)",
       "Bash(ELECTRON_OVERRIDE_DIST_PATH=D:/codespace/animator/node_modules/.pnpm/electron@28.3.3/node_modules/electron/dist pnpm go:*)",
-      "Bash(electron:*)"
+      "Bash(electron:*)",
+      "Bash(git stash:*)",
+      "Bash(timeout 60 pnpm go:*)",
+      "Bash(timeout 90 pnpm go:*)"
     ],
     "deny": [],
     "ask": []

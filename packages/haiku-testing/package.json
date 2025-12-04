@@ -5,16 +5,16 @@
   "license": "UNLICENSED",
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./assertions": {
-      "import": "./lib/assertions.mjs",
-      "require": "./lib/assertions.cjs"
+      "require": "./lib/assertions.cjs",
+      "import": "./lib/assertions.mjs"
     },
     "./mock": {
-      "import": "./lib/mock.mjs",
-      "require": "./lib/mock.cjs"
+      "require": "./lib/mock.cjs",
+      "import": "./lib/mock.mjs"
     },
     "./package.json": "./package.json"
   },

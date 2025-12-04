@@ -1,5 +1,3 @@
-import { resolve } from 'node:path'
-
 export default {
   entry: [
     'src/index.jsx',
@@ -64,4 +62,9 @@ export default {
     jsxFactory: 'React.createElement',
     jsxFragment: 'React.Fragment',
   },
+  external: [
+    'electron',
+    'react',
+    'react-dom',
+  ],
 }

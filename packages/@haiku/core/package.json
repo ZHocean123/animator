@@ -23,588 +23,588 @@
   ],
   "exports": {
     "./adapters/angular-dom/HaikuAngularDOMAdapter": {
-      "import": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.mjs",
-      "require": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.cjs"
+      "require": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.cjs",
+      "import": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.mjs"
     },
     "./adapters/dom": {
-      "import": "./lib/adapters/dom/index.mjs",
-      "require": "./lib/adapters/dom/index.cjs"
+      "require": "./lib/adapters/dom/index.cjs",
+      "import": "./lib/adapters/dom/index.mjs"
     },
     "./adapters/dom/HaikuDOMAdapter": {
-      "import": "./lib/adapters/dom/HaikuDOMAdapter.mjs",
-      "require": "./lib/adapters/dom/HaikuDOMAdapter.cjs"
+      "require": "./lib/adapters/dom/HaikuDOMAdapter.cjs",
+      "import": "./lib/adapters/dom/HaikuDOMAdapter.mjs"
     },
     "./adapters/react-dom": {
-      "import": "./lib/adapters/react-dom/index.mjs",
-      "require": "./lib/adapters/react-dom/index.cjs"
+      "require": "./lib/adapters/react-dom/index.cjs",
+      "import": "./lib/adapters/react-dom/index.mjs"
     },
     "./adapters/react-dom/EventsDict": {
-      "import": "./lib/adapters/react-dom/EventsDict.mjs",
-      "require": "./lib/adapters/react-dom/EventsDict.cjs"
+      "require": "./lib/adapters/react-dom/EventsDict.cjs",
+      "import": "./lib/adapters/react-dom/EventsDict.mjs"
     },
     "./adapters/react-dom/HaikuReactDOMAdapter": {
-      "import": "./lib/adapters/react-dom/HaikuReactDOMAdapter.mjs",
-      "require": "./lib/adapters/react-dom/HaikuReactDOMAdapter.cjs"
+      "require": "./lib/adapters/react-dom/HaikuReactDOMAdapter.cjs",
+      "import": "./lib/adapters/react-dom/HaikuReactDOMAdapter.mjs"
     },
     "./adapters/vue-dom": {
-      "import": "./lib/adapters/vue-dom/index.mjs",
-      "require": "./lib/adapters/vue-dom/index.cjs"
+      "require": "./lib/adapters/vue-dom/index.cjs",
+      "import": "./lib/adapters/vue-dom/index.mjs"
     },
     "./adapters/vue-dom/HaikuVueDOMAdapter": {
-      "import": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.mjs",
-      "require": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.cjs"
+      "require": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.cjs",
+      "import": "./lib/adapters/vue-dom/HaikuVueDOMAdapter.mjs"
     },
     "./api": {
-      "import": "./lib/api/index.mjs",
-      "require": "./lib/api/index.cjs"
+      "require": "./lib/api/index.cjs",
+      "import": "./lib/api/index.mjs"
     },
     "./Config": {
-      "import": "./lib/Config.mjs",
-      "require": "./lib/Config.cjs"
+      "require": "./lib/Config.cjs",
+      "import": "./lib/Config.mjs"
     },
     "./HaikuBase": {
-      "import": "./lib/HaikuBase.mjs",
-      "require": "./lib/HaikuBase.cjs"
+      "require": "./lib/HaikuBase.cjs",
+      "import": "./lib/HaikuBase.mjs"
     },
     "./HaikuClock": {
-      "import": "./lib/HaikuClock.mjs",
-      "require": "./lib/HaikuClock.cjs"
+      "require": "./lib/HaikuClock.cjs",
+      "import": "./lib/HaikuClock.mjs"
     },
     "./HaikuComponent": {
-      "import": "./lib/HaikuComponent.mjs",
-      "require": "./lib/HaikuComponent.cjs"
+      "require": "./lib/HaikuComponent.cjs",
+      "import": "./lib/HaikuComponent.mjs"
     },
     "./HaikuContext": {
-      "import": "./lib/HaikuContext.mjs",
-      "require": "./lib/HaikuContext.cjs"
+      "require": "./lib/HaikuContext.cjs",
+      "import": "./lib/HaikuContext.mjs"
     },
     "./HaikuElement": {
-      "import": "./lib/HaikuElement.mjs",
-      "require": "./lib/HaikuElement.cjs"
+      "require": "./lib/HaikuElement.cjs",
+      "import": "./lib/HaikuElement.mjs"
     },
     "./HaikuGlobal": {
-      "import": "./lib/HaikuGlobal.mjs",
-      "require": "./lib/HaikuGlobal.cjs"
+      "require": "./lib/HaikuGlobal.cjs",
+      "import": "./lib/HaikuGlobal.mjs"
     },
     "./HaikuHelpers": {
-      "import": "./lib/HaikuHelpers.mjs",
-      "require": "./lib/HaikuHelpers.cjs"
+      "require": "./lib/HaikuHelpers.cjs",
+      "import": "./lib/HaikuHelpers.mjs"
     },
     "./HaikuNode": {
-      "import": "./lib/HaikuNode.mjs",
-      "require": "./lib/HaikuNode.cjs"
+      "require": "./lib/HaikuNode.cjs",
+      "import": "./lib/HaikuNode.mjs"
     },
     "./HaikuTimeline": {
-      "import": "./lib/HaikuTimeline.mjs",
-      "require": "./lib/HaikuTimeline.cjs"
+      "require": "./lib/HaikuTimeline.cjs",
+      "import": "./lib/HaikuTimeline.mjs"
     },
     "./helpers/ColorUtils": {
-      "import": "./lib/helpers/ColorUtils.mjs",
-      "require": "./lib/helpers/ColorUtils.cjs"
+      "require": "./lib/helpers/ColorUtils.cjs",
+      "import": "./lib/helpers/ColorUtils.mjs"
     },
     "./helpers/compareSemver": {
-      "import": "./lib/helpers/compareSemver.mjs",
-      "require": "./lib/helpers/compareSemver.cjs"
+      "require": "./lib/helpers/compareSemver.cjs",
+      "import": "./lib/helpers/compareSemver.mjs"
     },
     "./helpers/consoleErrorOnce": {
-      "import": "./lib/helpers/consoleErrorOnce.mjs",
-      "require": "./lib/helpers/consoleErrorOnce.cjs"
+      "require": "./lib/helpers/consoleErrorOnce.cjs",
+      "import": "./lib/helpers/consoleErrorOnce.mjs"
     },
     "./helpers/getActionsMaxTime": {
-      "import": "./lib/helpers/getActionsMaxTime.mjs",
-      "require": "./lib/helpers/getActionsMaxTime.cjs"
+      "require": "./lib/helpers/getActionsMaxTime.cjs",
+      "import": "./lib/helpers/getActionsMaxTime.mjs"
     },
     "./helpers/getParsedProperty": {
-      "import": "./lib/helpers/getParsedProperty.mjs",
-      "require": "./lib/helpers/getParsedProperty.cjs"
+      "require": "./lib/helpers/getParsedProperty.cjs",
+      "import": "./lib/helpers/getParsedProperty.mjs"
     },
     "./helpers/getTimelineMaxTime": {
-      "import": "./lib/helpers/getTimelineMaxTime.mjs",
-      "require": "./lib/helpers/getTimelineMaxTime.cjs"
+      "require": "./lib/helpers/getTimelineMaxTime.cjs",
+      "import": "./lib/helpers/getTimelineMaxTime.mjs"
     },
     "./helpers/interactionModes": {
-      "import": "./lib/helpers/interactionModes.mjs",
-      "require": "./lib/helpers/interactionModes.cjs"
+      "require": "./lib/helpers/interactionModes.cjs",
+      "import": "./lib/helpers/interactionModes.mjs"
     },
     "./helpers/isMatrixableTransformArray": {
-      "import": "./lib/helpers/isMatrixableTransformArray.mjs",
-      "require": "./lib/helpers/isMatrixableTransformArray.cjs"
+      "require": "./lib/helpers/isMatrixableTransformArray.cjs",
+      "import": "./lib/helpers/isMatrixableTransformArray.mjs"
     },
     "./helpers/isMutableProperty": {
-      "import": "./lib/helpers/isMutableProperty.mjs",
-      "require": "./lib/helpers/isMutableProperty.cjs"
+      "require": "./lib/helpers/isMutableProperty.cjs",
+      "import": "./lib/helpers/isMutableProperty.mjs"
     },
     "./helpers/KeyframeUtils": {
-      "import": "./lib/helpers/KeyframeUtils.mjs",
-      "require": "./lib/helpers/KeyframeUtils.cjs"
+      "require": "./lib/helpers/KeyframeUtils.cjs",
+      "import": "./lib/helpers/KeyframeUtils.mjs"
     },
     "./helpers/migrateAutoSizing": {
-      "import": "./lib/helpers/migrateAutoSizing.mjs",
-      "require": "./lib/helpers/migrateAutoSizing.cjs"
+      "require": "./lib/helpers/migrateAutoSizing.cjs",
+      "import": "./lib/helpers/migrateAutoSizing.mjs"
     },
     "./helpers/parseCssValueString": {
-      "import": "./lib/helpers/parseCssValueString.mjs",
-      "require": "./lib/helpers/parseCssValueString.cjs"
+      "require": "./lib/helpers/parseCssValueString.cjs",
+      "import": "./lib/helpers/parseCssValueString.mjs"
     },
     "./helpers/PathUtils": {
-      "import": "./lib/helpers/PathUtils.mjs",
-      "require": "./lib/helpers/PathUtils.cjs"
+      "require": "./lib/helpers/PathUtils.cjs",
+      "import": "./lib/helpers/PathUtils.mjs"
     },
     "./helpers/PRNG": {
-      "import": "./lib/helpers/PRNG.mjs",
-      "require": "./lib/helpers/PRNG.cjs"
+      "require": "./lib/helpers/PRNG.cjs",
+      "import": "./lib/helpers/PRNG.mjs"
     },
     "./helpers/reactToMana": {
-      "import": "./lib/helpers/reactToMana.mjs",
-      "require": "./lib/helpers/reactToMana.cjs"
+      "require": "./lib/helpers/reactToMana.cjs",
+      "import": "./lib/helpers/reactToMana.mjs"
     },
     "./helpers/StringUtils": {
-      "import": "./lib/helpers/StringUtils.mjs",
-      "require": "./lib/helpers/StringUtils.cjs"
+      "require": "./lib/helpers/StringUtils.cjs",
+      "import": "./lib/helpers/StringUtils.mjs"
     },
     "./helpers/SVGPoints": {
-      "import": "./lib/helpers/SVGPoints.mjs",
-      "require": "./lib/helpers/SVGPoints.cjs"
+      "require": "./lib/helpers/SVGPoints.cjs",
+      "import": "./lib/helpers/SVGPoints.mjs"
     },
     "./helpers/transformValueIsEssentiallyInt": {
-      "import": "./lib/helpers/transformValueIsEssentiallyInt.mjs",
-      "require": "./lib/helpers/transformValueIsEssentiallyInt.cjs"
+      "require": "./lib/helpers/transformValueIsEssentiallyInt.cjs",
+      "import": "./lib/helpers/transformValueIsEssentiallyInt.mjs"
     },
     "./Interpolate": {
-      "import": "./lib/Interpolate.mjs",
-      "require": "./lib/Interpolate.cjs"
+      "require": "./lib/Interpolate.cjs",
+      "import": "./lib/Interpolate.mjs"
     },
     "./layout/applyCssLayout": {
-      "import": "./lib/layout/applyCssLayout.mjs",
-      "require": "./lib/layout/applyCssLayout.cjs"
+      "require": "./lib/layout/applyCssLayout.cjs",
+      "import": "./lib/layout/applyCssLayout.mjs"
     },
     "./layout/formatTransform": {
-      "import": "./lib/layout/formatTransform.mjs",
-      "require": "./lib/layout/formatTransform.cjs"
+      "require": "./lib/layout/formatTransform.cjs",
+      "import": "./lib/layout/formatTransform.mjs"
     },
     "./layout/scopeOfElement": {
-      "import": "./lib/layout/scopeOfElement.mjs",
-      "require": "./lib/layout/scopeOfElement.cjs"
+      "require": "./lib/layout/scopeOfElement.cjs",
+      "import": "./lib/layout/scopeOfElement.mjs"
     },
     "./Layout3D": {
-      "import": "./lib/Layout3D.mjs",
-      "require": "./lib/Layout3D.cjs"
+      "require": "./lib/Layout3D.cjs",
+      "import": "./lib/Layout3D.mjs"
     },
     "./Migration": {
-      "import": "./lib/Migration.mjs",
-      "require": "./lib/Migration.cjs"
+      "require": "./lib/Migration.cjs",
+      "import": "./lib/Migration.mjs"
     },
     "./reflection/enhance": {
-      "import": "./lib/reflection/enhance.mjs",
-      "require": "./lib/reflection/enhance.cjs"
+      "require": "./lib/reflection/enhance.cjs",
+      "import": "./lib/reflection/enhance.mjs"
     },
     "./reflection/expressionToRO": {
-      "import": "./lib/reflection/expressionToRO.mjs",
-      "require": "./lib/reflection/expressionToRO.cjs"
+      "require": "./lib/reflection/expressionToRO.cjs",
+      "import": "./lib/reflection/expressionToRO.mjs"
     },
     "./reflection/functionSpecificationToFunction": {
-      "import": "./lib/reflection/functionSpecificationToFunction.mjs",
-      "require": "./lib/reflection/functionSpecificationToFunction.cjs"
+      "require": "./lib/reflection/functionSpecificationToFunction.cjs",
+      "import": "./lib/reflection/functionSpecificationToFunction.mjs"
     },
     "./reflection/functionToRFO": {
-      "import": "./lib/reflection/functionToRFO.mjs",
-      "require": "./lib/reflection/functionToRFO.cjs"
+      "require": "./lib/reflection/functionToRFO.cjs",
+      "import": "./lib/reflection/functionToRFO.mjs"
     },
     "./reflection/inject": {
-      "import": "./lib/reflection/inject.mjs",
-      "require": "./lib/reflection/inject.cjs"
+      "require": "./lib/reflection/inject.cjs",
+      "import": "./lib/reflection/inject.mjs"
     },
     "./reflection/isComplexValue": {
-      "import": "./lib/reflection/isComplexValue.mjs",
-      "require": "./lib/reflection/isComplexValue.cjs"
+      "require": "./lib/reflection/isComplexValue.cjs",
+      "import": "./lib/reflection/isComplexValue.mjs"
     },
     "./reflection/isFunction": {
-      "import": "./lib/reflection/isFunction.mjs",
-      "require": "./lib/reflection/isFunction.cjs"
+      "require": "./lib/reflection/isFunction.cjs",
+      "import": "./lib/reflection/isFunction.mjs"
     },
     "./reflection/isSerializableScalar": {
-      "import": "./lib/reflection/isSerializableScalar.mjs",
-      "require": "./lib/reflection/isSerializableScalar.cjs"
+      "require": "./lib/reflection/isSerializableScalar.cjs",
+      "import": "./lib/reflection/isSerializableScalar.mjs"
     },
     "./reflection/isSerializedFunction": {
-      "import": "./lib/reflection/isSerializedFunction.mjs",
-      "require": "./lib/reflection/isSerializedFunction.cjs"
+      "require": "./lib/reflection/isSerializedFunction.cjs",
+      "import": "./lib/reflection/isSerializedFunction.mjs"
     },
     "./reflection/JavaScriptIdentifier": {
-      "import": "./lib/reflection/JavaScriptIdentifier.mjs",
-      "require": "./lib/reflection/JavaScriptIdentifier.cjs"
+      "require": "./lib/reflection/JavaScriptIdentifier.cjs",
+      "import": "./lib/reflection/JavaScriptIdentifier.mjs"
     },
     "./reflection/marshalParams": {
-      "import": "./lib/reflection/marshalParams.mjs",
-      "require": "./lib/reflection/marshalParams.cjs"
+      "require": "./lib/reflection/marshalParams.cjs",
+      "import": "./lib/reflection/marshalParams.mjs"
     },
     "./reflection/reifyRFO": {
-      "import": "./lib/reflection/reifyRFO.mjs",
-      "require": "./lib/reflection/reifyRFO.cjs"
+      "require": "./lib/reflection/reifyRFO.cjs",
+      "import": "./lib/reflection/reifyRFO.mjs"
     },
     "./reflection/reifyRO": {
-      "import": "./lib/reflection/reifyRO.mjs",
-      "require": "./lib/reflection/reifyRO.cjs"
+      "require": "./lib/reflection/reifyRO.cjs",
+      "import": "./lib/reflection/reifyRO.mjs"
     },
     "./reflection/ReservedWords": {
-      "import": "./lib/reflection/ReservedWords.mjs",
-      "require": "./lib/reflection/ReservedWords.cjs"
+      "require": "./lib/reflection/ReservedWords.cjs",
+      "import": "./lib/reflection/ReservedWords.mjs"
     },
     "./reflection/Tokenizer": {
-      "import": "./lib/reflection/Tokenizer.mjs",
-      "require": "./lib/reflection/Tokenizer.cjs"
+      "require": "./lib/reflection/Tokenizer.cjs",
+      "import": "./lib/reflection/Tokenizer.mjs"
     },
     "./renderers/dom": {
-      "import": "./lib/renderers/dom/index.mjs",
-      "require": "./lib/renderers/dom/index.cjs"
+      "require": "./lib/renderers/dom/index.cjs",
+      "import": "./lib/renderers/dom/index.mjs"
     },
     "./renderers/dom/applyLayout": {
-      "import": "./lib/renderers/dom/applyLayout.mjs",
-      "require": "./lib/renderers/dom/applyLayout.cjs"
+      "require": "./lib/renderers/dom/applyLayout.cjs",
+      "import": "./lib/renderers/dom/applyLayout.mjs"
     },
     "./renderers/dom/assignAttributes": {
-      "import": "./lib/renderers/dom/assignAttributes.mjs",
-      "require": "./lib/renderers/dom/assignAttributes.cjs"
+      "require": "./lib/renderers/dom/assignAttributes.cjs",
+      "import": "./lib/renderers/dom/assignAttributes.mjs"
     },
     "./renderers/dom/assignClass": {
-      "import": "./lib/renderers/dom/assignClass.mjs",
-      "require": "./lib/renderers/dom/assignClass.cjs"
+      "require": "./lib/renderers/dom/assignClass.cjs",
+      "import": "./lib/renderers/dom/assignClass.mjs"
     },
     "./renderers/dom/assignStyle": {
-      "import": "./lib/renderers/dom/assignStyle.mjs",
-      "require": "./lib/renderers/dom/assignStyle.cjs"
+      "require": "./lib/renderers/dom/assignStyle.cjs",
+      "import": "./lib/renderers/dom/assignStyle.mjs"
     },
     "./renderers/dom/createRightClickMenu": {
-      "import": "./lib/renderers/dom/createRightClickMenu.mjs",
-      "require": "./lib/renderers/dom/createRightClickMenu.cjs"
+      "require": "./lib/renderers/dom/createRightClickMenu.cjs",
+      "import": "./lib/renderers/dom/createRightClickMenu.mjs"
     },
     "./renderers/dom/createSvgElement": {
-      "import": "./lib/renderers/dom/createSvgElement.mjs",
-      "require": "./lib/renderers/dom/createSvgElement.cjs"
+      "require": "./lib/renderers/dom/createSvgElement.cjs",
+      "import": "./lib/renderers/dom/createSvgElement.mjs"
     },
     "./renderers/dom/createTextNode": {
-      "import": "./lib/renderers/dom/createTextNode.mjs",
-      "require": "./lib/renderers/dom/createTextNode.cjs"
+      "require": "./lib/renderers/dom/createTextNode.cjs",
+      "import": "./lib/renderers/dom/createTextNode.mjs"
     },
     "./renderers/dom/domInjectStylesheet": {
-      "import": "./lib/renderers/dom/domInjectStylesheet.mjs",
-      "require": "./lib/renderers/dom/domInjectStylesheet.cjs"
+      "require": "./lib/renderers/dom/domInjectStylesheet.cjs",
+      "import": "./lib/renderers/dom/domInjectStylesheet.mjs"
     },
     "./renderers/dom/Events": {
-      "import": "./lib/renderers/dom/Events.mjs",
-      "require": "./lib/renderers/dom/Events.cjs"
+      "require": "./lib/renderers/dom/Events.cjs",
+      "import": "./lib/renderers/dom/Events.mjs"
     },
     "./renderers/dom/getElementSize": {
-      "import": "./lib/renderers/dom/getElementSize.mjs",
-      "require": "./lib/renderers/dom/getElementSize.cjs"
+      "require": "./lib/renderers/dom/getElementSize.cjs",
+      "import": "./lib/renderers/dom/getElementSize.mjs"
     },
     "./renderers/dom/getLocalDomEventPosition": {
-      "import": "./lib/renderers/dom/getLocalDomEventPosition.mjs",
-      "require": "./lib/renderers/dom/getLocalDomEventPosition.cjs"
+      "require": "./lib/renderers/dom/getLocalDomEventPosition.cjs",
+      "import": "./lib/renderers/dom/getLocalDomEventPosition.mjs"
     },
     "./renderers/dom/getTypeAsString": {
-      "import": "./lib/renderers/dom/getTypeAsString.mjs",
-      "require": "./lib/renderers/dom/getTypeAsString.cjs"
+      "require": "./lib/renderers/dom/getTypeAsString.cjs",
+      "import": "./lib/renderers/dom/getTypeAsString.mjs"
     },
     "./renderers/dom/getWindowsBrowserVersion": {
-      "import": "./lib/renderers/dom/getWindowsBrowserVersion.mjs",
-      "require": "./lib/renderers/dom/getWindowsBrowserVersion.cjs"
+      "require": "./lib/renderers/dom/getWindowsBrowserVersion.cjs",
+      "import": "./lib/renderers/dom/getWindowsBrowserVersion.mjs"
     },
     "./renderers/dom/HaikuDOMRenderer": {
-      "import": "./lib/renderers/dom/HaikuDOMRenderer.mjs",
-      "require": "./lib/renderers/dom/HaikuDOMRenderer.cjs"
+      "require": "./lib/renderers/dom/HaikuDOMRenderer.cjs",
+      "import": "./lib/renderers/dom/HaikuDOMRenderer.mjs"
     },
     "./renderers/dom/insertTextChild": {
-      "import": "./lib/renderers/dom/insertTextChild.mjs",
-      "require": "./lib/renderers/dom/insertTextChild.cjs"
+      "require": "./lib/renderers/dom/insertTextChild.cjs",
+      "import": "./lib/renderers/dom/insertTextChild.mjs"
     },
     "./renderers/dom/isBlankString": {
-      "import": "./lib/renderers/dom/isBlankString.mjs",
-      "require": "./lib/renderers/dom/isBlankString.cjs"
+      "require": "./lib/renderers/dom/isBlankString.cjs",
+      "import": "./lib/renderers/dom/isBlankString.mjs"
     },
     "./renderers/dom/isEdge": {
-      "import": "./lib/renderers/dom/isEdge.mjs",
-      "require": "./lib/renderers/dom/isEdge.cjs"
+      "require": "./lib/renderers/dom/isEdge.cjs",
+      "import": "./lib/renderers/dom/isEdge.mjs"
     },
     "./renderers/dom/isEmptyChild": {
-      "import": "./lib/renderers/dom/isEmptyChild.mjs",
-      "require": "./lib/renderers/dom/isEmptyChild.cjs"
+      "require": "./lib/renderers/dom/isEmptyChild.cjs",
+      "import": "./lib/renderers/dom/isEmptyChild.mjs"
     },
     "./renderers/dom/isIE": {
-      "import": "./lib/renderers/dom/isIE.mjs",
-      "require": "./lib/renderers/dom/isIE.cjs"
+      "require": "./lib/renderers/dom/isIE.cjs",
+      "import": "./lib/renderers/dom/isIE.mjs"
     },
     "./renderers/dom/isMobile": {
-      "import": "./lib/renderers/dom/isMobile.mjs",
-      "require": "./lib/renderers/dom/isMobile.cjs"
+      "require": "./lib/renderers/dom/isMobile.cjs",
+      "import": "./lib/renderers/dom/isMobile.mjs"
     },
     "./renderers/dom/isTextNode": {
-      "import": "./lib/renderers/dom/isTextNode.mjs",
-      "require": "./lib/renderers/dom/isTextNode.cjs"
+      "require": "./lib/renderers/dom/isTextNode.cjs",
+      "import": "./lib/renderers/dom/isTextNode.mjs"
     },
     "./renderers/dom/normalizeName": {
-      "import": "./lib/renderers/dom/normalizeName.mjs",
-      "require": "./lib/renderers/dom/normalizeName.cjs"
+      "require": "./lib/renderers/dom/normalizeName.cjs",
+      "import": "./lib/renderers/dom/normalizeName.mjs"
     },
     "./renderers/dom/removeElement": {
-      "import": "./lib/renderers/dom/removeElement.mjs",
-      "require": "./lib/renderers/dom/removeElement.cjs"
+      "require": "./lib/renderers/dom/removeElement.cjs",
+      "import": "./lib/renderers/dom/removeElement.mjs"
     },
     "./renderers/dom/replaceElementWithText": {
-      "import": "./lib/renderers/dom/replaceElementWithText.mjs",
-      "require": "./lib/renderers/dom/replaceElementWithText.cjs"
+      "require": "./lib/renderers/dom/replaceElementWithText.cjs",
+      "import": "./lib/renderers/dom/replaceElementWithText.mjs"
     },
     "./StateTransitionManager": {
-      "import": "./lib/StateTransitionManager.mjs",
-      "require": "./lib/StateTransitionManager.cjs"
+      "require": "./lib/StateTransitionManager.cjs",
+      "import": "./lib/StateTransitionManager.mjs"
     },
     "./Transitions": {
-      "import": "./lib/Transitions.mjs",
-      "require": "./lib/Transitions.cjs"
+      "require": "./lib/Transitions.cjs",
+      "import": "./lib/Transitions.mjs"
     },
     "./vendor/array-unique": {
-      "import": "./lib/vendor/array-unique/index.mjs",
-      "require": "./lib/vendor/array-unique/index.cjs"
+      "require": "./lib/vendor/array-unique/index.cjs",
+      "import": "./lib/vendor/array-unique/index.mjs"
     },
     "./vendor/assign": {
-      "import": "./lib/vendor/assign/index.mjs",
-      "require": "./lib/vendor/assign/index.cjs"
+      "require": "./lib/vendor/assign/index.cjs",
+      "import": "./lib/vendor/assign/index.mjs"
     },
     "./vendor/color-names": {
-      "import": "./lib/vendor/color-names/index.mjs",
-      "require": "./lib/vendor/color-names/index.cjs"
+      "require": "./lib/vendor/color-names/index.cjs",
+      "import": "./lib/vendor/color-names/index.mjs"
     },
     "./vendor/color-string": {
-      "import": "./lib/vendor/color-string/index.mjs",
-      "require": "./lib/vendor/color-string/index.cjs"
+      "require": "./lib/vendor/color-string/index.cjs",
+      "import": "./lib/vendor/color-string/index.mjs"
     },
     "./vendor/gl-mat4/invert": {
-      "import": "./lib/vendor/gl-mat4/invert.mjs",
-      "require": "./lib/vendor/gl-mat4/invert.cjs"
+      "require": "./lib/vendor/gl-mat4/invert.cjs",
+      "import": "./lib/vendor/gl-mat4/invert.mjs"
     },
     "./vendor/just-curves": {
-      "import": "./lib/vendor/just-curves/index.mjs",
-      "require": "./lib/vendor/just-curves/index.cjs"
+      "require": "./lib/vendor/just-curves/index.cjs",
+      "import": "./lib/vendor/just-curves/index.mjs"
     },
     "./vendor/just-curves/curves": {
-      "import": "./lib/vendor/just-curves/curves/index.mjs",
-      "require": "./lib/vendor/just-curves/curves/index.cjs"
+      "require": "./lib/vendor/just-curves/curves/index.cjs",
+      "import": "./lib/vendor/just-curves/curves/index.mjs"
     },
     "./vendor/just-curves/curves/ease": {
-      "import": "./lib/vendor/just-curves/curves/ease.mjs",
-      "require": "./lib/vendor/just-curves/curves/ease.cjs"
+      "require": "./lib/vendor/just-curves/curves/ease.cjs",
+      "import": "./lib/vendor/just-curves/curves/ease.mjs"
     },
     "./vendor/just-curves/curves/easeIn": {
-      "import": "./lib/vendor/just-curves/curves/easeIn.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeIn.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeIn.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeIn.mjs"
     },
     "./vendor/just-curves/curves/easeInBack": {
-      "import": "./lib/vendor/just-curves/curves/easeInBack.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInBack.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInBack.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInBack.mjs"
     },
     "./vendor/just-curves/curves/easeInBounce": {
-      "import": "./lib/vendor/just-curves/curves/easeInBounce.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInBounce.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInBounce.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInBounce.mjs"
     },
     "./vendor/just-curves/curves/easeInCirc": {
-      "import": "./lib/vendor/just-curves/curves/easeInCirc.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInCirc.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInCirc.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInCirc.mjs"
     },
     "./vendor/just-curves/curves/easeInCubic": {
-      "import": "./lib/vendor/just-curves/curves/easeInCubic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInCubic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInCubic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInCubic.mjs"
     },
     "./vendor/just-curves/curves/easeInElastic": {
-      "import": "./lib/vendor/just-curves/curves/easeInElastic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInElastic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInElastic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInElastic.mjs"
     },
     "./vendor/just-curves/curves/easeInExpo": {
-      "import": "./lib/vendor/just-curves/curves/easeInExpo.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInExpo.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInExpo.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInExpo.mjs"
     },
     "./vendor/just-curves/curves/easeInOut": {
-      "import": "./lib/vendor/just-curves/curves/easeInOut.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOut.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOut.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOut.mjs"
     },
     "./vendor/just-curves/curves/easeInOutBack": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutBack.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutBack.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutBack.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutBack.mjs"
     },
     "./vendor/just-curves/curves/easeInOutBounce": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutBounce.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutBounce.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutBounce.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutBounce.mjs"
     },
     "./vendor/just-curves/curves/easeInOutCirc": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutCirc.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutCirc.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutCirc.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutCirc.mjs"
     },
     "./vendor/just-curves/curves/easeInOutCubic": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutCubic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutCubic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutCubic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutCubic.mjs"
     },
     "./vendor/just-curves/curves/easeInOutElastic": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutElastic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutElastic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutElastic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutElastic.mjs"
     },
     "./vendor/just-curves/curves/easeInOutExpo": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutExpo.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutExpo.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutExpo.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutExpo.mjs"
     },
     "./vendor/just-curves/curves/easeInOutQuad": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutQuad.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutQuad.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuad.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuad.mjs"
     },
     "./vendor/just-curves/curves/easeInOutQuart": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutQuart.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutQuart.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuart.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuart.mjs"
     },
     "./vendor/just-curves/curves/easeInOutQuint": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutQuint.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutQuint.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutQuint.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutQuint.mjs"
     },
     "./vendor/just-curves/curves/easeInOutSine": {
-      "import": "./lib/vendor/just-curves/curves/easeInOutSine.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInOutSine.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInOutSine.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInOutSine.mjs"
     },
     "./vendor/just-curves/curves/easeInQuad": {
-      "import": "./lib/vendor/just-curves/curves/easeInQuad.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInQuad.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInQuad.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInQuad.mjs"
     },
     "./vendor/just-curves/curves/easeInQuart": {
-      "import": "./lib/vendor/just-curves/curves/easeInQuart.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInQuart.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInQuart.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInQuart.mjs"
     },
     "./vendor/just-curves/curves/easeInQuint": {
-      "import": "./lib/vendor/just-curves/curves/easeInQuint.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInQuint.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInQuint.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInQuint.mjs"
     },
     "./vendor/just-curves/curves/easeInSine": {
-      "import": "./lib/vendor/just-curves/curves/easeInSine.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeInSine.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeInSine.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeInSine.mjs"
     },
     "./vendor/just-curves/curves/easeOut": {
-      "import": "./lib/vendor/just-curves/curves/easeOut.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOut.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOut.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOut.mjs"
     },
     "./vendor/just-curves/curves/easeOutBack": {
-      "import": "./lib/vendor/just-curves/curves/easeOutBack.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutBack.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutBack.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutBack.mjs"
     },
     "./vendor/just-curves/curves/easeOutBounce": {
-      "import": "./lib/vendor/just-curves/curves/easeOutBounce.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutBounce.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutBounce.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutBounce.mjs"
     },
     "./vendor/just-curves/curves/easeOutCirc": {
-      "import": "./lib/vendor/just-curves/curves/easeOutCirc.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutCirc.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutCirc.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutCirc.mjs"
     },
     "./vendor/just-curves/curves/easeOutCubic": {
-      "import": "./lib/vendor/just-curves/curves/easeOutCubic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutCubic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutCubic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutCubic.mjs"
     },
     "./vendor/just-curves/curves/easeOutElastic": {
-      "import": "./lib/vendor/just-curves/curves/easeOutElastic.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutElastic.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutElastic.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutElastic.mjs"
     },
     "./vendor/just-curves/curves/easeOutExpo": {
-      "import": "./lib/vendor/just-curves/curves/easeOutExpo.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutExpo.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutExpo.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutExpo.mjs"
     },
     "./vendor/just-curves/curves/easeOutQuad": {
-      "import": "./lib/vendor/just-curves/curves/easeOutQuad.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutQuad.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutQuad.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutQuad.mjs"
     },
     "./vendor/just-curves/curves/easeOutQuart": {
-      "import": "./lib/vendor/just-curves/curves/easeOutQuart.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutQuart.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutQuart.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutQuart.mjs"
     },
     "./vendor/just-curves/curves/easeOutQuint": {
-      "import": "./lib/vendor/just-curves/curves/easeOutQuint.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutQuint.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutQuint.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutQuint.mjs"
     },
     "./vendor/just-curves/curves/easeOutSine": {
-      "import": "./lib/vendor/just-curves/curves/easeOutSine.mjs",
-      "require": "./lib/vendor/just-curves/curves/easeOutSine.cjs"
+      "require": "./lib/vendor/just-curves/curves/easeOutSine.cjs",
+      "import": "./lib/vendor/just-curves/curves/easeOutSine.mjs"
     },
     "./vendor/just-curves/curves/linear": {
-      "import": "./lib/vendor/just-curves/curves/linear.mjs",
-      "require": "./lib/vendor/just-curves/curves/linear.cjs"
+      "require": "./lib/vendor/just-curves/curves/linear.cjs",
+      "import": "./lib/vendor/just-curves/curves/linear.mjs"
     },
     "./vendor/just-curves/curves/stepEnd": {
-      "import": "./lib/vendor/just-curves/curves/stepEnd.mjs",
-      "require": "./lib/vendor/just-curves/curves/stepEnd.cjs"
+      "require": "./lib/vendor/just-curves/curves/stepEnd.cjs",
+      "import": "./lib/vendor/just-curves/curves/stepEnd.mjs"
     },
     "./vendor/just-curves/curves/stepStart": {
-      "import": "./lib/vendor/just-curves/curves/stepStart.mjs",
-      "require": "./lib/vendor/just-curves/curves/stepStart.cjs"
+      "require": "./lib/vendor/just-curves/curves/stepStart.cjs",
+      "import": "./lib/vendor/just-curves/curves/stepStart.mjs"
     },
     "./vendor/just-curves/internal": {
-      "import": "./lib/vendor/just-curves/internal/index.mjs",
-      "require": "./lib/vendor/just-curves/internal/index.cjs"
+      "require": "./lib/vendor/just-curves/internal/index.cjs",
+      "import": "./lib/vendor/just-curves/internal/index.mjs"
     },
     "./vendor/just-curves/internal/constants": {
-      "import": "./lib/vendor/just-curves/internal/constants.mjs",
-      "require": "./lib/vendor/just-curves/internal/constants.cjs"
+      "require": "./lib/vendor/just-curves/internal/constants.cjs",
+      "import": "./lib/vendor/just-curves/internal/constants.mjs"
     },
     "./vendor/just-curves/internal/cssEasings": {
-      "import": "./lib/vendor/just-curves/internal/cssEasings.mjs",
-      "require": "./lib/vendor/just-curves/internal/cssEasings.cjs"
+      "require": "./lib/vendor/just-curves/internal/cssEasings.cjs",
+      "import": "./lib/vendor/just-curves/internal/cssEasings.mjs"
     },
     "./vendor/just-curves/internal/cubicBezier": {
-      "import": "./lib/vendor/just-curves/internal/cubicBezier.mjs",
-      "require": "./lib/vendor/just-curves/internal/cubicBezier.cjs"
+      "require": "./lib/vendor/just-curves/internal/cubicBezier.cjs",
+      "import": "./lib/vendor/just-curves/internal/cubicBezier.mjs"
     },
     "./vendor/just-curves/internal/frames": {
-      "import": "./lib/vendor/just-curves/internal/frames.mjs",
-      "require": "./lib/vendor/just-curves/internal/frames.cjs"
+      "require": "./lib/vendor/just-curves/internal/frames.cjs",
+      "import": "./lib/vendor/just-curves/internal/frames.mjs"
     },
     "./vendor/just-curves/internal/math": {
-      "import": "./lib/vendor/just-curves/internal/math.mjs",
-      "require": "./lib/vendor/just-curves/internal/math.cjs"
+      "require": "./lib/vendor/just-curves/internal/math.cjs",
+      "import": "./lib/vendor/just-curves/internal/math.mjs"
     },
     "./vendor/just-curves/internal/steps": {
-      "import": "./lib/vendor/just-curves/internal/steps.mjs",
-      "require": "./lib/vendor/just-curves/internal/steps.cjs"
+      "require": "./lib/vendor/just-curves/internal/steps.cjs",
+      "import": "./lib/vendor/just-curves/internal/steps.mjs"
     },
     "./vendor/just-curves/types": {
-      "import": "./lib/vendor/just-curves/types.mjs",
-      "require": "./lib/vendor/just-curves/types.cjs"
+      "require": "./lib/vendor/just-curves/types.cjs",
+      "import": "./lib/vendor/just-curves/types.mjs"
     },
     "./vendor/modernizr": {
-      "import": "./lib/vendor/modernizr/index.mjs",
-      "require": "./lib/vendor/modernizr/index.cjs"
+      "require": "./lib/vendor/modernizr/index.cjs",
+      "import": "./lib/vendor/modernizr/index.mjs"
     },
     "./vendor/performance-now": {
-      "import": "./lib/vendor/performance-now/index.mjs",
-      "require": "./lib/vendor/performance-now/index.cjs"
+      "require": "./lib/vendor/performance-now/index.cjs",
+      "import": "./lib/vendor/performance-now/index.mjs"
     },
     "./vendor/raf": {
-      "import": "./lib/vendor/raf/index.mjs",
-      "require": "./lib/vendor/raf/index.cjs"
+      "require": "./lib/vendor/raf/index.cjs",
+      "import": "./lib/vendor/raf/index.mjs"
     },
     "./vendor/seedrandom": {
-      "import": "./lib/vendor/seedrandom/index.mjs",
-      "require": "./lib/vendor/seedrandom/index.cjs"
+      "require": "./lib/vendor/seedrandom/index.cjs",
+      "import": "./lib/vendor/seedrandom/index.mjs"
     },
     "./vendor/svg-path-reversal/SVGPathReversal": {
-      "import": "./lib/vendor/svg-path-reversal/SVGPathReversal.mjs",
-      "require": "./lib/vendor/svg-path-reversal/SVGPathReversal.cjs"
+      "require": "./lib/vendor/svg-path-reversal/SVGPathReversal.cjs",
+      "import": "./lib/vendor/svg-path-reversal/SVGPathReversal.mjs"
     },
     "./vendor/svg-points": {
-      "import": "./lib/vendor/svg-points/index.mjs",
-      "require": "./lib/vendor/svg-points/index.cjs"
+      "require": "./lib/vendor/svg-points/index.cjs",
+      "import": "./lib/vendor/svg-points/index.mjs"
     },
     "./vendor/svg-points/toPath": {
-      "import": "./lib/vendor/svg-points/toPath.mjs",
-      "require": "./lib/vendor/svg-points/toPath.cjs"
+      "require": "./lib/vendor/svg-points/toPath.cjs",
+      "import": "./lib/vendor/svg-points/toPath.mjs"
     },
     "./vendor/svg-points/toPoints": {
-      "import": "./lib/vendor/svg-points/toPoints.mjs",
-      "require": "./lib/vendor/svg-points/toPoints.cjs"
+      "require": "./lib/vendor/svg-points/toPoints.cjs",
+      "import": "./lib/vendor/svg-points/toPoints.mjs"
     },
     "./vendor/svg-points/types": {
-      "import": "./lib/vendor/svg-points/types.mjs",
-      "require": "./lib/vendor/svg-points/types.cjs"
+      "require": "./lib/vendor/svg-points/types.cjs",
+      "import": "./lib/vendor/svg-points/types.mjs"
     },
     "./package.json": "./package.json"
   },
