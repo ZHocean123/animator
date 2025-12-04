@@ -1,11 +1,11 @@
-var fs = require('graceful-fs')
-var path = require('path')
-var copyFileSync = require('./copy-file-sync')
-var mkdir = require('../mkdirs')
+let path = require('node:path')
+let fs = require('graceful-fs')
+let mkdir = require('../mkdirs')
+let copyFileSync = require('./copy-file-sync')
 
-function copySync (src, dest, options) {
+function copySync(src, dest, options) {
   if (typeof options === 'function' || options instanceof RegExp) {
-    options = {filter: options}
+    options = { filter: options }
   }
 
   options = options || {}
@@ -20,35 +20,42 @@ function copySync (src, dest, options) {
 
   // Warn about using preserveTimestamps on 32-bit node:
   if (options.preserveTimestamps && process.arch === 'ia32') {
-    console.warn('fs-extra: Using the preserveTimestamps option in 32-bit node is not recommended;\n' +
-    'see https://github.com/jprichardson/node-fs-extra/issues/269')
+    console.warn('fs-extra: Using the preserveTimestamps option in 32-bit node is not recommended;\n'
+      + 'see https://github.com/jprichardson/node-fs-extra/issues/269')
   }
 
-  var stats = (options.recursive && !options.dereference) ? fs.lstatSync(src) : fs.statSync(src)
-  var destFolder = path.dirname(dest)
-  var destFolderExists = fs.existsSync(destFolder)
-  var performCopy = false
+  let stats = (options.recursive && !options.dereference) ? fs.lstatSync(src) : fs.statSync(src)
+  let destFolder = path.dirname(dest)
+  let destFolderExists = fs.existsSync(destFolder)
+  let performCopy = false
 
   if (stats.isFile()) {
     if (options.filter instanceof RegExp) {
       console.warn('Warning: fs-extra: Passing a RegExp filter is deprecated, use a function')
       performCopy = options.filter.test(src)
-    } else if (typeof options.filter === 'function') performCopy = options.filter(src)
+    }
+    else if (typeof options.filter === 'function') {
+      performCopy = options.filter(src)
+    }
 
     if (performCopy) {
-      if (!destFolderExists) mkdir.mkdirsSync(destFolder)
-      copyFileSync(src, dest, {clobber: options.clobber, preserveTimestamps: options.preserveTimestamps})
+      if (!destFolderExists)
+        mkdir.mkdirsSync(destFolder)
+      copyFileSync(src, dest, { clobber: options.clobber, preserveTimestamps: options.preserveTimestamps })
     }
-  } else if (stats.isDirectory()) {
-    if (!fs.existsSync(dest)) mkdir.mkdirsSync(dest)
-    var contents = fs.readdirSync(src)
-    contents.forEach(function (content) {
-      var opts = options
+  }
+  else if (stats.isDirectory()) {
+    if (!fs.existsSync(dest))
+      mkdir.mkdirsSync(dest)
+    let contents = fs.readdirSync(src)
+    contents.forEach((content) => {
+      let opts = options
       opts.recursive = true
       copySync(path.join(src, content), path.join(dest, content), opts)
     })
-  } else if (options.recursive && stats.isSymbolicLink()) {
-    var srcPath = fs.readlinkSync(src)
+  }
+  else if (options.recursive && stats.isSymbolicLink()) {
+    let srcPath = fs.readlinkSync(src)
     fs.symlinkSync(srcPath, dest)
   }
 }

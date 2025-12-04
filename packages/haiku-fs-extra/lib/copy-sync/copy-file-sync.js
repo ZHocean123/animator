@@ -1,17 +1,19 @@
-var fs = require('graceful-fs')
+let fs = require('graceful-fs')
+let Buffer = require('node:buffer').Buffer
 
-var BUF_LENGTH = 64 * 1024
-var _buff = new Buffer(BUF_LENGTH)
+let BUF_LENGTH = 64 * 1024
+let _buff = Buffer.alloc(BUF_LENGTH)
 
-function copyFileSync (srcFile, destFile, options) {
-  var clobber = options.clobber
-  var preserveTimestamps = options.preserveTimestamps
+function copyFileSync(srcFile, destFile, options) {
+  let clobber = options.clobber
+  let preserveTimestamps = options.preserveTimestamps
 
   if (fs.existsSync(destFile)) {
     if (clobber) {
       fs.unlinkSync(destFile)
-    } else {
-      var err = new Error('EEXIST: ' + destFile + ' already exists.')
+    }
+    else {
+      let err = new Error(`EEXIST: ${destFile} already exists.`)
       err.code = 'EEXIST'
       err.errno = -17
       err.path = destFile
@@ -19,11 +21,11 @@ function copyFileSync (srcFile, destFile, options) {
     }
   }
 
-  var fdr = fs.openSync(srcFile, 'r')
-  var stat = fs.fstatSync(fdr)
-  var fdw = fs.openSync(destFile, 'w', stat.mode)
-  var bytesRead = 1
-  var pos = 0
+  let fdr = fs.openSync(srcFile, 'r')
+  let stat = fs.fstatSync(fdr)
+  let fdw = fs.openSync(destFile, 'w', stat.mode)
+  let bytesRead = 1
+  let pos = 0
 
   while (bytesRead > 0) {
     bytesRead = fs.readSync(fdr, _buff, 0, BUF_LENGTH, pos)
