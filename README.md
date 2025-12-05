@@ -16,6 +16,7 @@ Some features:
 ## Recent Updates
 
 - **Node.js 22 Support**: Upgraded from Node.js 8.15.1 to Node.js 22 for better performance, security, and modern JavaScript features
+- **Electron**: 39.2.5
 - **tsdown Build System**: Migrated from TypeScript compiler (tsc) to tsdown for faster builds and improved development experience
 - **Enhanced TypeScript Configuration**: Updated to use modern TypeScript features and stricter type checking
 

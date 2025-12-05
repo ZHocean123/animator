@@ -5,6 +5,7 @@ export default defineConfig({
   // 包特定入口 - 使用单一 index.ts 文件作为入口
   entry: ['src/index.ts', 'src/entry.js', 'src/electron.js'],
   platform: 'node',
+  sourcemap: true,
 
   // 包特定输出
   outDir: 'lib',

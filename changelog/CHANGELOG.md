@@ -46,6 +46,17 @@
  * hammer out some deps issues
  * use pre-compiled templates in Vue adapter
 
+## 5.2.0
+
+### Dependencies
+* Upgraded Electron from 28.3.3 to 39.2.5
+* Upgraded electron-updater from 3.2.3 to 6.6.2
+* Updated API usage to remove deprecated `electron.remote` calls
+
+### Bug Fixes
+* Fixed compatibility issues with Electron 39 APIs
+* Updated auto-update functionality to work with new Electron version
+
 ## 4.5.0
 
 ### Bug Fixes
