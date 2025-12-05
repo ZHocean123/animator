@@ -43,6 +43,9 @@ importers:
       '@haiku/sdk-inkstone':
         specifier: workspace:*
         version: link:packages/@haiku/sdk-inkstone
+      '@rolldown/binding-linux-x64-gnu':
+        specifier: 1.0.0-beta.53
+        version: 1.0.0-beta.53
       '@rolldown/binding-win32-x64-msvc':
         specifier: 1.0.0-beta.53
         version: 1.0.0-beta.53
@@ -2414,6 +2417,12 @@ packages:
 
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.52':
     resolution: {integrity: sha512-klahlb2EIFltSUubn/VLjuc3qxp1E7th8ukayPfdkcKvvYcQ5rJztgx8JsJSuAKVzKtNTqUGOhy4On71BuyV8g==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [linux]
+
+  '@rolldown/binding-linux-x64-gnu@1.0.0-beta.53':
+    resolution: {integrity: sha512-qL+63WKVQs1CMvFedlPt0U9PiEKJOAL/bsHMKUDS6Vp2Q+YAv/QLPu8rcvkfIMvQ0FPU2WL0aX4eWwF6e/GAnA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
@@ -11780,6 +11789,8 @@ snapshots:
 
   '@rolldown/binding-linux-x64-gnu@1.0.0-beta.52':
     optional: true
+
+  '@rolldown/binding-linux-x64-gnu@1.0.0-beta.53': {}
 
   '@rolldown/binding-linux-x64-musl@1.0.0-beta.51':
     optional: true

@@ -37,6 +37,7 @@
     "@haiku/player": "^3.0.4",
     "@haiku/sdk-client": "workspace:*",
     "@haiku/sdk-inkstone": "workspace:*",
+    "@rolldown/binding-linux-x64-gnu": "1.0.0-beta.53",
     "@rolldown/binding-win32-x64-msvc": "1.0.0-beta.53",
     "haiku-common": "workspace:*",
     "haiku-creator": "workspace:*",
