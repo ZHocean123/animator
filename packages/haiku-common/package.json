@@ -42,15 +42,16 @@
     "haiku-vendor-legacy": "workspace:*"
   },
   "devDependencies": {
-    "cross-env": "^5.1.6",
+    "@types/node": "^22.19.1",
+    "cross-env": "^7.0.3",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
-    "nyc": "^13.0.1",
-    "tap-spec": "^4.1.2",
-    "tape": "^4.9.0",
-    "ts-node": "^6.1.0",
-    "tsconfig-paths": "^3.3.2",
+    "nyc": "^15.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "catalog:"
   }
 }

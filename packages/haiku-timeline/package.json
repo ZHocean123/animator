@@ -11,196 +11,196 @@
   ],
   "exports": {
     ".": {
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./components/ActiveComponentIndicator": {
-      "require": "./lib/components/ActiveComponentIndicator.cjs",
-      "import": "./lib/components/ActiveComponentIndicator.mjs"
+      "import": "./lib/components/ActiveComponentIndicator.mjs",
+      "require": "./lib/components/ActiveComponentIndicator.cjs"
     },
     "./components/AutoCompleter": {
-      "require": "./lib/components/AutoCompleter.cjs",
-      "import": "./lib/components/AutoCompleter.mjs"
+      "import": "./lib/components/AutoCompleter.mjs",
+      "require": "./lib/components/AutoCompleter.cjs"
     },
     "./components/BezierPopup": {
-      "require": "./lib/components/BezierPopup.cjs",
-      "import": "./lib/components/BezierPopup.mjs"
+      "import": "./lib/components/BezierPopup.mjs",
+      "require": "./lib/components/BezierPopup.cjs"
     },
     "./components/ClusterInputField": {
-      "require": "./lib/components/ClusterInputField.cjs",
-      "import": "./lib/components/ClusterInputField.mjs"
+      "import": "./lib/components/ClusterInputField.mjs",
+      "require": "./lib/components/ClusterInputField.cjs"
     },
     "./components/ClusterRow": {
-      "require": "./lib/components/ClusterRow.cjs",
-      "import": "./lib/components/ClusterRow.mjs"
+      "import": "./lib/components/ClusterRow.mjs",
+      "require": "./lib/components/ClusterRow.cjs"
     },
     "./components/ClusterRowHeading": {
-      "require": "./lib/components/ClusterRowHeading.cjs",
-      "import": "./lib/components/ClusterRowHeading.mjs"
+      "import": "./lib/components/ClusterRowHeading.mjs",
+      "require": "./lib/components/ClusterRowHeading.cjs"
     },
     "./components/CollapsedPropertyTimelineSegments": {
-      "require": "./lib/components/CollapsedPropertyTimelineSegments.cjs",
-      "import": "./lib/components/CollapsedPropertyTimelineSegments.mjs"
+      "import": "./lib/components/CollapsedPropertyTimelineSegments.mjs",
+      "require": "./lib/components/CollapsedPropertyTimelineSegments.cjs"
     },
     "./components/ComponentHeadingRow": {
-      "require": "./lib/components/ComponentHeadingRow.cjs",
-      "import": "./lib/components/ComponentHeadingRow.mjs"
+      "import": "./lib/components/ComponentHeadingRow.mjs",
+      "require": "./lib/components/ComponentHeadingRow.cjs"
     },
     "./components/ComponentHeadingRowHeading": {
-      "require": "./lib/components/ComponentHeadingRowHeading.cjs",
-      "import": "./lib/components/ComponentHeadingRowHeading.mjs"
+      "import": "./lib/components/ComponentHeadingRowHeading.mjs",
+      "require": "./lib/components/ComponentHeadingRowHeading.cjs"
     },
     "./components/ComponentRows": {
-      "require": "./lib/components/ComponentRows.cjs",
-      "import": "./lib/components/ComponentRows.mjs"
+      "import": "./lib/components/ComponentRows.mjs",
+      "require": "./lib/components/ComponentRows.cjs"
     },
     "./components/ConstantBody": {
-      "require": "./lib/components/ConstantBody.cjs",
-      "import": "./lib/components/ConstantBody.mjs"
+      "import": "./lib/components/ConstantBody.mjs",
+      "require": "./lib/components/ConstantBody.cjs"
     },
     "./components/ControlsArea": {
-      "require": "./lib/components/ControlsArea.cjs",
-      "import": "./lib/components/ControlsArea.mjs"
+      "import": "./lib/components/ControlsArea.mjs",
+      "require": "./lib/components/ControlsArea.cjs"
     },
     "./components/EventHandlerTriggerer": {
-      "require": "./lib/components/EventHandlerTriggerer.cjs",
-      "import": "./lib/components/EventHandlerTriggerer.mjs"
+      "import": "./lib/components/EventHandlerTriggerer.mjs",
+      "require": "./lib/components/EventHandlerTriggerer.cjs"
     },
     "./components/ExpressionInput": {
-      "require": "./lib/components/ExpressionInput.cjs",
-      "import": "./lib/components/ExpressionInput.mjs"
+      "import": "./lib/components/ExpressionInput.mjs",
+      "require": "./lib/components/ExpressionInput.cjs"
     },
     "./components/FrameAction": {
-      "require": "./lib/components/FrameAction.cjs",
-      "import": "./lib/components/FrameAction.mjs"
+      "import": "./lib/components/FrameAction.mjs",
+      "require": "./lib/components/FrameAction.cjs"
     },
     "./components/FrameActionsGrid": {
-      "require": "./lib/components/FrameActionsGrid.cjs",
-      "import": "./lib/components/FrameActionsGrid.mjs"
+      "import": "./lib/components/FrameActionsGrid.mjs",
+      "require": "./lib/components/FrameActionsGrid.cjs"
     },
     "./components/Gauge": {
-      "require": "./lib/components/Gauge.cjs",
-      "import": "./lib/components/Gauge.mjs"
+      "import": "./lib/components/Gauge.mjs",
+      "require": "./lib/components/Gauge.cjs"
     },
     "./components/GaugeTimeReadout": {
-      "require": "./lib/components/GaugeTimeReadout.cjs",
-      "import": "./lib/components/GaugeTimeReadout.mjs"
+      "import": "./lib/components/GaugeTimeReadout.mjs",
+      "require": "./lib/components/GaugeTimeReadout.cjs"
     },
     "./components/icons/RepeatIconSVG": {
-      "require": "./lib/components/icons/RepeatIconSVG.cjs",
-      "import": "./lib/components/icons/RepeatIconSVG.mjs"
+      "import": "./lib/components/icons/RepeatIconSVG.mjs",
+      "require": "./lib/components/icons/RepeatIconSVG.cjs"
     },
     "./components/InvisibleKeyframeDragger": {
-      "require": "./lib/components/InvisibleKeyframeDragger.cjs",
-      "import": "./lib/components/InvisibleKeyframeDragger.mjs"
+      "import": "./lib/components/InvisibleKeyframeDragger.mjs",
+      "require": "./lib/components/InvisibleKeyframeDragger.cjs"
     },
     "./components/Marquee": {
-      "require": "./lib/components/Marquee.cjs",
-      "import": "./lib/components/Marquee.mjs"
+      "import": "./lib/components/Marquee.mjs",
+      "require": "./lib/components/Marquee.cjs"
     },
     "./components/modes/haiku": {
-      "require": "./lib/components/modes/haiku.cjs",
-      "import": "./lib/components/modes/haiku.mjs"
+      "import": "./lib/components/modes/haiku.mjs",
+      "require": "./lib/components/modes/haiku.cjs"
     },
     "./components/PlaybackButtons": {
-      "require": "./lib/components/PlaybackButtons.cjs",
-      "import": "./lib/components/PlaybackButtons.mjs"
+      "import": "./lib/components/PlaybackButtons.mjs",
+      "require": "./lib/components/PlaybackButtons.cjs"
     },
     "./components/PostMaxKeyframeArea": {
-      "require": "./lib/components/PostMaxKeyframeArea.cjs",
-      "import": "./lib/components/PostMaxKeyframeArea.mjs"
+      "import": "./lib/components/PostMaxKeyframeArea.mjs",
+      "require": "./lib/components/PostMaxKeyframeArea.cjs"
     },
     "./components/PropertiesPanelResizer": {
-      "require": "./lib/components/PropertiesPanelResizer.cjs",
-      "import": "./lib/components/PropertiesPanelResizer.mjs"
+      "import": "./lib/components/PropertiesPanelResizer.mjs",
+      "require": "./lib/components/PropertiesPanelResizer.cjs"
     },
     "./components/PropertyInputField": {
-      "require": "./lib/components/PropertyInputField.cjs",
-      "import": "./lib/components/PropertyInputField.mjs"
+      "import": "./lib/components/PropertyInputField.mjs",
+      "require": "./lib/components/PropertyInputField.cjs"
     },
     "./components/PropertyManager": {
-      "require": "./lib/components/PropertyManager.cjs",
-      "import": "./lib/components/PropertyManager.mjs"
+      "import": "./lib/components/PropertyManager.mjs",
+      "require": "./lib/components/PropertyManager.cjs"
     },
     "./components/PropertyRow": {
-      "require": "./lib/components/PropertyRow.cjs",
-      "import": "./lib/components/PropertyRow.mjs"
+      "import": "./lib/components/PropertyRow.mjs",
+      "require": "./lib/components/PropertyRow.cjs"
     },
     "./components/PropertyRowHeading": {
-      "require": "./lib/components/PropertyRowHeading.cjs",
-      "import": "./lib/components/PropertyRowHeading.mjs"
+      "import": "./lib/components/PropertyRowHeading.mjs",
+      "require": "./lib/components/PropertyRowHeading.cjs"
     },
     "./components/PropertyTimelineSegments": {
-      "require": "./lib/components/PropertyTimelineSegments.cjs",
-      "import": "./lib/components/PropertyTimelineSegments.mjs"
+      "import": "./lib/components/PropertyTimelineSegments.mjs",
+      "require": "./lib/components/PropertyTimelineSegments.cjs"
     },
     "./components/RowManager": {
-      "require": "./lib/components/RowManager.cjs",
-      "import": "./lib/components/RowManager.mjs"
+      "import": "./lib/components/RowManager.mjs",
+      "require": "./lib/components/RowManager.cjs"
     },
     "./components/RowSegments": {
-      "require": "./lib/components/RowSegments.cjs",
-      "import": "./lib/components/RowSegments.mjs"
+      "import": "./lib/components/RowSegments.mjs",
+      "require": "./lib/components/RowSegments.cjs"
     },
     "./components/ScrollView": {
-      "require": "./lib/components/ScrollView.cjs",
-      "import": "./lib/components/ScrollView.mjs"
+      "import": "./lib/components/ScrollView.mjs",
+      "require": "./lib/components/ScrollView.cjs"
     },
     "./components/ScrubberInterior": {
-      "require": "./lib/components/ScrubberInterior.cjs",
-      "import": "./lib/components/ScrubberInterior.mjs"
+      "import": "./lib/components/ScrubberInterior.mjs",
+      "require": "./lib/components/ScrubberInterior.cjs"
     },
     "./components/SimplifiedFrameGrid": {
-      "require": "./lib/components/SimplifiedFrameGrid.cjs",
-      "import": "./lib/components/SimplifiedFrameGrid.mjs"
+      "import": "./lib/components/SimplifiedFrameGrid.mjs",
+      "require": "./lib/components/SimplifiedFrameGrid.cjs"
     },
     "./components/SoloKeyframe": {
-      "require": "./lib/components/SoloKeyframe.cjs",
-      "import": "./lib/components/SoloKeyframe.mjs"
+      "import": "./lib/components/SoloKeyframe.mjs",
+      "require": "./lib/components/SoloKeyframe.cjs"
     },
     "./components/styles/keyframeShared": {
-      "require": "./lib/components/styles/keyframeShared.cjs",
-      "import": "./lib/components/styles/keyframeShared.mjs"
+      "import": "./lib/components/styles/keyframeShared.mjs",
+      "require": "./lib/components/styles/keyframeShared.cjs"
     },
     "./components/styles/popoverShared": {
-      "require": "./lib/components/styles/popoverShared.cjs",
-      "import": "./lib/components/styles/popoverShared.mjs"
+      "import": "./lib/components/styles/popoverShared.mjs",
+      "require": "./lib/components/styles/popoverShared.cjs"
     },
     "./components/styles/propertyEditorShared": {
-      "require": "./lib/components/styles/propertyEditorShared.cjs",
-      "import": "./lib/components/styles/propertyEditorShared.mjs"
+      "import": "./lib/components/styles/propertyEditorShared.mjs",
+      "require": "./lib/components/styles/propertyEditorShared.cjs"
     },
     "./components/styles/zIndex": {
-      "require": "./lib/components/styles/zIndex.cjs",
-      "import": "./lib/components/styles/zIndex.mjs"
+      "import": "./lib/components/styles/zIndex.mjs",
+      "require": "./lib/components/styles/zIndex.cjs"
     },
     "./components/Timeline": {
-      "require": "./lib/components/Timeline.cjs",
-      "import": "./lib/components/Timeline.mjs"
+      "import": "./lib/components/Timeline.mjs",
+      "require": "./lib/components/Timeline.cjs"
     },
     "./components/TimelineDraggable": {
-      "require": "./lib/components/TimelineDraggable.cjs",
-      "import": "./lib/components/TimelineDraggable.mjs"
+      "import": "./lib/components/TimelineDraggable.mjs",
+      "require": "./lib/components/TimelineDraggable.cjs"
     },
     "./components/TimelineRangeScrollbar": {
-      "require": "./lib/components/TimelineRangeScrollbar.cjs",
-      "import": "./lib/components/TimelineRangeScrollbar.mjs"
+      "import": "./lib/components/TimelineRangeScrollbar.mjs",
+      "require": "./lib/components/TimelineRangeScrollbar.cjs"
     },
     "./components/TimelineRangeScrollbarPlayheadIndicator": {
-      "require": "./lib/components/TimelineRangeScrollbarPlayheadIndicator.cjs",
-      "import": "./lib/components/TimelineRangeScrollbarPlayheadIndicator.mjs"
+      "import": "./lib/components/TimelineRangeScrollbarPlayheadIndicator.mjs",
+      "require": "./lib/components/TimelineRangeScrollbarPlayheadIndicator.cjs"
     },
     "./components/TrackedExporterRequests": {
-      "require": "./lib/components/TrackedExporterRequests.cjs",
-      "import": "./lib/components/TrackedExporterRequests.mjs"
+      "import": "./lib/components/TrackedExporterRequests.mjs",
+      "require": "./lib/components/TrackedExporterRequests.cjs"
     },
     "./components/TransitionBody": {
-      "require": "./lib/components/TransitionBody.cjs",
-      "import": "./lib/components/TransitionBody.mjs"
+      "import": "./lib/components/TransitionBody.mjs",
+      "require": "./lib/components/TransitionBody.cjs"
     },
     "./electron": {
-      "require": "./lib/electron.cjs",
-      "import": "./lib/electron.mjs"
+      "import": "./lib/electron.mjs",
+      "require": "./lib/electron.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -222,36 +222,42 @@
   },
   "dependencies": {
     "@haiku/core": "workspace:*",
-    "classnames": "2.2.5",
-    "codemirror": "^5.28.0",
-    "color": "^2.0.1",
+    "@sentry/react": "^7.108.0",
+    "classnames": "^2.5.1",
+    "codemirror": "^5.65.16",
+    "color": "^4.2.3",
     "haiku-common": "workspace:*",
     "haiku-formats": "workspace:*",
     "haiku-fs-extra": "workspace:*",
     "haiku-serialization": "workspace:*",
     "haiku-ui-common": "workspace:*",
-    "lodash": "^4.17.4",
-    "qs": "6.4.0",
-    "radium": "0.18.1",
-    "raven-js": "3.21.0",
+    "lodash": "^4.17.21",
+    "qs": "^6.12.0",
+    "radium": "^0.26.2",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-draggable": "2.2.3",
-    "react-popover": "^0.4.18",
-    "strip-indent": "^2.0.0"
+    "react-draggable": "^4.4.6",
+    "react-popover": "^0.5.10",
+    "strip-indent": "^4.0.0"
   },
   "devDependencies": {
-    "cross-env": "^5.1.6",
+    "@types/classnames": "^2.3.1",
+    "@types/codemirror": "^5.60.15",
+    "@types/lodash": "^4.17.5",
+    "@types/node": "^22.19.1",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "cross-env": "^7.0.3",
     "electron": "catalog:",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
-    "jsdom": "^11.1.0",
+    "jsdom": "^24.1.0",
     "leaked-handles": "^5.2.0",
-    "nyc": "^13.0.1",
-    "tap-spec": "^4.1.2",
-    "tape": "^4.9.0",
-    "ts-node": "^6.1.0",
-    "tsconfig-paths": "^3.3.2",
+    "nyc": "^15.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "catalog:"
   }
 }

@@ -1,10 +1,7 @@
 /* tslint:disable:import-name */
 import * as React from 'react'
-// @ts-ignore
 import jsx from 'react-syntax-highlighter/languages/prism/jsx'
-// @ts-ignore
 import SyntaxHighlighter, { registerLanguage } from 'react-syntax-highlighter/prism-light'
-// @ts-ignore
 import { atomDark } from 'react-syntax-highlighter/styles/prism'
 import Palette from '../Palette'
 

@@ -29,7 +29,10 @@
     "dev": "tsdown --watch",
     "build-all": "node ./scripts/build-with-tsdown.js",
     "dev-all": "node ./scripts/dev-with-tsdown.js",
-    "verify-compatibility": "node ./scripts/verify-build-compatibility.js"
+    "verify-compatibility": "node ./scripts/verify-build-compatibility.js",
+    "electron:dev": "cd packages/haiku-creator && electron-vite dev",
+    "electron:build": "cd packages/haiku-creator && electron-vite build",
+    "electron:preview": "cd packages/haiku-creator && electron-vite preview"
   },
   "dependencies": {
     "@haiku/cli": "workspace:*",
@@ -55,6 +58,7 @@
     "@electron/notarize": "^1.2.2",
     "@electron/rebuild": "^3.2.9",
     "@eslint-react/eslint-plugin": "^2.2.4",
+    "@vitejs/plugin-react": "^4.2.1",
     "async": "^3.2.4",
     "aws-sdk": "^2.1491.0",
     "cli-color": "^2.0.3",
@@ -65,6 +69,7 @@
     "dotenv": "^16.3.1",
     "electron": "catalog:",
     "electron-builder": "^24.9.1",
+    "electron-vite": "^2.3.0",
     "eslint": "^9.39.1",
     "eslint-plugin-format": "^1.0.2",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -91,6 +96,7 @@
     "typescript": "catalog:",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.17.4",
+    "vite": "^5.4.8",
     "webpack": "^5.89.0",
     "yargs": "^17.7.2"
   },
@@ -111,7 +117,8 @@
     ],
     "onlyBuiltDependencies": [
       "electron"
-    ]
+    ],
+    "workspace": true
   },
   "standard": {
     "ignore": [

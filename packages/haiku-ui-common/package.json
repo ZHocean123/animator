@@ -1,5 +1,6 @@
 {
   "name": "haiku-ui-common",
+  "type": "module",
   "version": "5.1.2",
   "description": "Common UI components for Haiku projects.",
   "authors": [
@@ -8,8 +9,8 @@
   "license": "UNLICENSED",
   "exports": {
     ".": {
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -30,41 +31,43 @@
   },
   "dependencies": {
     "better-react-spinkit": "2.0.0-4",
-    "color": "^2.0.1",
-    "decamelize": "^1.2.0",
-    "dedent": "^0.7.0",
+    "color": "^4.2.3",
+    "decamelize": "^6.0.0",
+    "dedent": "^1.0.0",
     "haiku-common": "workspace:*",
     "haiku-sdk-creator": "workspace:*",
     "haiku-serialization": "workspace:*",
-    "memoize-one": "5.0.0",
+    "memoize-one": "^6.0.0",
     "numeral": "^2.0.6",
-    "radium": "0.18.1",
+    "radium": "^0.26.2",
     "react": "catalog:",
-    "react-color": "^2.14.1",
-    "react-copy-to-clipboard": "^5.0.0",
+    "react-color": "^2.19.3",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "catalog:",
-    "react-popover": "^0.4.18",
-    "react-syntax-highlighter": "^7.0.0"
+    "react-popover": "^0.5.10",
+    "react-syntax-highlighter": "^16.1.0"
   },
   "devDependencies": {
     "@haiku/sdk-inkstone": "workspace:*",
-    "@types/color": "^3.0.0",
-    "@types/decamelize": "^1.2.0",
-    "@types/dedent": "^0.7.0",
-    "@types/memoize-one": "^4.1.0",
-    "@types/numeral": "^0.0.22",
-    "@types/react": "15.6.11",
-    "@types/react-color": "^2.14.0",
-    "cross-env": "^5.1.6",
+    "@types/color": "^3.0.6",
+    "@types/decamelize": "^3.0.6",
+    "@types/dedent": "^0.7.2",
+    "@types/memoize-one": "^5.1.2",
+    "@types/node": "^22.19.1",
+    "@types/numeral": "^2.0.5",
+    "@types/react": "catalog:",
+    "@types/react-color": "^3.0.12",
+    "@types/react-syntax-highlighter": "^15.5.11",
+    "cross-env": "^7.0.3",
     "electron": "catalog:",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
     "leaked-handles": "^5.2.0",
-    "nyc": "^13.0.1",
-    "tap-spec": "^4.1.2",
-    "tape": "^4.9.0",
-    "ts-node": "^6.1.0",
-    "tsconfig-paths": "^3.3.2",
+    "nyc": "^15.1.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "catalog:"
   }
 }

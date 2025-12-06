@@ -6,7 +6,7 @@ import { app, dialog } from 'electron'
 import { ditto, download, logger, unzip } from 'haiku-serialization'
 import nodeFetch from 'node-fetch'
 import * as qs from 'qs'
-import { v4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 const DEFAULT_OPTIONS = {
   server: process.env.HAIKU_AUTOUPDATE_SERVER,
@@ -36,8 +36,8 @@ export default {
       }
 
       const tempPath = os.tmpdir()
-      const zipPath = path.join(tempPath, `${v4()}.zip`)
-      const extractPath = path.join(tempPath, v4())
+      const zipPath = path.join(tempPath, `${uuidv4()}.zip`)
+      const extractPath = path.join(tempPath, uuidv4())
       const appPath = path.resolve(app.getPath('exe'), '..', '..')
       logger.info('[autoupdater] About to download an update:', options, url)
       await download(url, zipPath, progressCallback)

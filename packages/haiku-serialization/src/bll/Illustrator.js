@@ -1,15 +1,15 @@
-const {execSync} = require('child_process');
-const fse = require('haiku-fs-extra');
-const {isMac, isWindows} = require('haiku-common');
-const logger = require('../utils/LoggerInstance');
-const {stringifyPath} = require('../utils/fileManipulation');
-const os = require('os');
-const uuid = require('uuid');
-const path = require('path');
+const { execSync } = require('node:child_process')
+const os = require('node:os')
+const path = require('node:path')
+const { isMac, isWindows } = require('haiku-common')
+const fse = require('haiku-fs-extra')
+const { v4: uuidv4 } = require('uuid')
+const { stringifyPath } = require('../utils/fileManipulation')
+const logger = require('../utils/LoggerInstance')
 
-const IS_ILLUSTRATOR_FILE_RE = /\.ai$/;
-const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/;
-let cachedWindowsInstallPath =  null;
+const IS_ILLUSTRATOR_FILE_RE = /\.ai$/
+const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/
+let cachedWindowsInstallPath = null
 
 /**
  * This template script runs inside Illustrator and perform the export of the
@@ -52,113 +52,115 @@ const EXPORTER_SCRIPT = `
     app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
     app.open(srcFile);
   }
-`;
+`
 
 class Illustrator {
   /**
    * Checks if the file provided looks like an Illustrator file.
    * @param {string} abspath
-   * @returns {Boolean}
+   * @returns {boolean}
    */
-  static isIllustratorFile (abspath) {
-    return abspath.match(IS_ILLUSTRATOR_FILE_RE);
+  static isIllustratorFile(abspath) {
+    return abspath.match(IS_ILLUSTRATOR_FILE_RE)
   }
 
   /**
    * Checks if the folder provided looks like a folder that should contain
    * Illustrator assets.
    * @param {string} abspath
-   * @returns {Boolean}
+   * @returns {boolean}
    */
-  static isIllustratorFolder (abspath) {
-    return !!abspath && abspath.match(IS_ILLUSTRATOR_FOLDER_RE);
+  static isIllustratorFolder(abspath) {
+    return !!abspath && abspath.match(IS_ILLUSTRATOR_FOLDER_RE)
   }
 
   /**
    * Import artboards as SVG files from an Illustrator document
    * @param {string} abspath
-   * @returns {Boolean}
+   * @returns {boolean}
    */
-  static importSVG ({abspath, tryToOpenFile}) {
+  static importSVG({ abspath, tryToOpenFile }) {
     if (!Illustrator.isIllustratorFile(abspath)) {
-      return false;
+      return false
     }
 
-    logger.info('[illustrator] got', abspath);
+    logger.info('[illustrator] got', abspath)
 
-    const assetBaseFolder = `${abspath}.contents`;
-    const artboardFolder = path.join(assetBaseFolder, 'artboards/');
+    const assetBaseFolder = `${abspath}.contents`
+    const artboardFolder = path.join(assetBaseFolder, 'artboards/')
 
-    fse.emptyDirSync(assetBaseFolder);
-    fse.mkdirpSync(artboardFolder);
+    fse.emptyDirSync(assetBaseFolder)
+    fse.mkdirpSync(artboardFolder)
 
-    logger.info('[illustrator] running commands');
+    logger.info('[illustrator] running commands')
 
     // We need to create a temporary Illustrator script file with the contents of
     // EXPORTER_SCRIPT to perform the export, this is an attempt to obscure the
     // file name to reduce the chances of an attacker modifying the contents of this
     // file before being executed.
-    const tmpdir = os.tmpdir();
-    const fileName = uuid.v4() + '.jsx';
-    const exportScriptPath = path.join(tmpdir, fileName);
-    const exportScript =
-      EXPORTER_SCRIPT
+    const tmpdir = os.tmpdir()
+    const fileName = `${uuidv4()}.jsx`
+    const exportScriptPath = path.join(tmpdir, fileName)
+    const exportScript
+      = EXPORTER_SCRIPT
         .replace('DESTINATION_PATH', stringifyPath(artboardFolder))
-        .replace('SOURCE_PATH', stringifyPath(abspath));
+        .replace('SOURCE_PATH', stringifyPath(abspath))
 
-    fse.writeFileSync(exportScriptPath, exportScript);
+    fse.writeFileSync(exportScriptPath, exportScript)
 
     if (tryToOpenFile) {
-      execSync(Illustrator.openIllustratorFile(abspath));
+      execSync(Illustrator.openIllustratorFile(abspath))
       // Try to do our best to wait until the file is open before running the
       // script.
-      setTimeout(() => Illustrator.openIllustratorFile(exportScriptPath), 5000);
-    } else {
-      execSync(Illustrator.openIllustratorFile(exportScriptPath));
+      setTimeout(() => Illustrator.openIllustratorFile(exportScriptPath), 5000)
+    }
+    else {
+      execSync(Illustrator.openIllustratorFile(exportScriptPath))
     }
 
-    return true;
+    return true
   }
 
-  static openIllustratorFile (file) {
+  static openIllustratorFile(file) {
     if (isMac()) {
-      return `open -g -b com.adobe.Illustrator ${file}`;
+      return `open -g -b com.adobe.Illustrator ${file}`
     }
 
     if (isWindows()) {
-      return `"${Illustrator.getWindowsIllustratorPath()}" "${file}"`;
+      return `"${Illustrator.getWindowsIllustratorPath()}" "${file}"`
     }
   }
 
-  static getWindowsIllustratorPath () {
+  static getWindowsIllustratorPath() {
     if (cachedWindowsInstallPath) {
-      return cachedWindowsInstallPath;
+      return cachedWindowsInstallPath
     }
 
-    let illustratorPath;
+    let illustratorPath
 
     try {
-      const installedApplications =
-        execSync('reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s')
-        .toString();
+      const installedApplications
+        = execSync('reg QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths" /s')
+          .toString()
 
       illustratorPath = installedApplications
         .split('\n')
-        .find((record) => record.includes('Illustrator') && record.includes('Default'))
-        .match(/([a-zA-Z]\:.+)/g)[0];
-    } catch (error) {
-      logger.info('[illustrator] error finding Illustrator: ', error);
-      return;
+        .find(record => record.includes('Illustrator') && record.includes('Default'))
+        .match(/([a-z]:.+)/gi)[0]
+    }
+    catch (error) {
+      logger.info('[illustrator] error finding Illustrator: ', error)
+      return
     }
 
     if (!illustratorPath) {
-      logger.info('[illustrator] unable to find an Illustrator installation');
-      return;
+      logger.info('[illustrator] unable to find an Illustrator installation')
+      return
     }
 
-    cachedWindowsInstallPath = illustratorPath;
-    return illustratorPath;
+    cachedWindowsInstallPath = illustratorPath
+    return illustratorPath
   }
 }
 
-module.exports = Illustrator;
+module.exports = Illustrator

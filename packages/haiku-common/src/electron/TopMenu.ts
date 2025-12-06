@@ -8,7 +8,10 @@ import { isMac, isWindows } from '../environments/os'
 import { Experiment, experimentIsEnabled } from '../experiments'
 import { TourUtils } from '../types/enums'
 
-app.setName('Haiku Animator')
+// Only set app name if we're in an Electron environment
+if (typeof app !== 'undefined') {
+  app.setName('Haiku Animator')
+}
 
 export interface UndoState {
   canUndo: boolean

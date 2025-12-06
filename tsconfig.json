@@ -1,10 +1,11 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "esnext",
-    "jsx": "react",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "rootDir": "packages",
-    "module": "preserve",
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
       "@admin-cli/*": ["./packages/haiku-admin-cli/src/*"],
@@ -17,24 +18,46 @@
       "@sdk-creator/*": ["./packages/haiku-sdk-creator/src/*"],
       "@sdk-inkstone/*": ["./packages/@haiku/sdk-inkstone/src/*"],
       "@testing/*": ["./packages/haiku-testing/src/*"],
-      "@ui-common/*": ["./packages/haiku-ui-common/src/*"]
+      "@ui-common/*": ["./packages/haiku-ui-common/src/*"],
+      "@/*": ["./packages/haiku-creator/src/*"],
+      "@common": ["./packages/haiku-common/src"],
+      "@plumbing": ["./packages/haiku-plumbing/src"],
+      "@serialization": ["./packages/haiku-serialization/src"],
+      "@creator": ["./packages/haiku-creator/src"]
     },
+    "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types/"
     ],
     "types": [
       "node"
     ],
+    "allowImportingTsExtensions": true,
     "allowJs": false,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "declaration": true,
     "declarationDir": "lib",
+    "noEmit": true,
     "outDir": "lib",
     "preserveConstEnums": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": [
     "./packages/**/*.ts",
     "./packages/haiku-serialization/src/index.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist",
+    "out"
   ]
 }

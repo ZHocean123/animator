@@ -1,12 +1,6 @@
 import { shell } from 'electron'
 import { Changelog } from 'haiku-serialization'
-import AnimatorSVG, {
-  ExternalLinkIconSVG,
-  ModalHeader,
-  ModalWrapper,
-  Palette,
-  PrettyScroll,
-} from 'haiku-ui-common'
+import { AnimatorSVG, ExternalLinkIconSVG, ModalHeader, ModalWrapper, Palette, PrettyScroll } from 'haiku-ui-common'
 import * as marked from 'marked'
 import * as React from 'react'
 import { BTN_STYLES } from '../styles/btnShared'

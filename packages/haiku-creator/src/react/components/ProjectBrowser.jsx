@@ -3,7 +3,7 @@ import { TourUtils } from 'haiku-common'
 import { ProjectError, TOUR_CHANNEL } from 'haiku-sdk-creator'
 
 import { mixpanel } from 'haiku-serialization'
-import { AnimatorSVG, ExternalLink, ExternalLinkSVG, LogOutSVG, Paginator, Palette, PresentIconSVG, UserIconSVG } from 'haiku-ui-common'
+import { AnimatorSVG, ExternalLink, ExternalLinkIconSVG, LogOutSVG, Paginator, Palette, PresentIconSVG, UserIconSVG } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'
 import * as Radium from 'radium'
@@ -294,7 +294,7 @@ class ProjectBrowser extends React.Component {
             >
               Go Pro
               <span style={{ width: 14, height: 14, transform: 'translateY(-2px)', marginLeft: 4 }}>
-                <ExternalLinkSVG color={Palette.SUNSTONE} />
+                <ExternalLinkIconSVG color={Palette.SUNSTONE} />
               </span>
             </div>
           </div>
@@ -679,7 +679,7 @@ class ProjectBrowser extends React.Component {
                 >
                   Go Pro
                   <span style={{ width: 11, height: 11, display: 'inline-block', marginLeft: 4, transform: 'translateY(1px)' }}>
-                    <ExternalLinkSVG color={Palette.LIGHT_BLUE} />
+                    <ExternalLinkIconSVG color={Palette.LIGHT_BLUE} />
                   </span>
                 </span>
               )}
@@ -724,7 +724,7 @@ class ProjectBrowser extends React.Component {
                 >
                   Go Pro
                   <span style={{ width: 14, height: 14, transform: 'translateY(-2px)', marginLeft: 4 }}>
-                    <ExternalLinkSVG color={Palette.SUNSTONE} />
+                    <ExternalLinkIconSVG color={Palette.SUNSTONE} />
                   </span>
                 </span>
               </div>

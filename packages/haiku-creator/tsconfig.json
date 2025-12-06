@@ -1,31 +1,52 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "allowJs": true,
-    "jsx": "react",
-    "lib": [
-      "ES2017",
-      "dom"
-    ],
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "noImplicitAny": true,
-    "outDir": "lib",
-    "preserveConstEnums": true,
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "rootDir": "src",
-    "sourceMap": true,
-    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@common": ["../haiku-common/src"],
+      "@plumbing": ["../haiku-plumbing/src"],
+      "@serialization": ["../haiku-serialization/src"],
+      "@creator": ["./src"]
+    },
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
     "types": [
       "node"
     ],
-    "typeRoots": [
-      "node_modules/@types/"
-    ]
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "outDir": "lib",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist",
+    "out"
   ]
 }
