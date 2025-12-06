@@ -201,11 +201,12 @@ function createWindow() {
     minHeight: 650,
     backgroundColor: '#343f41',
     webPreferences: {
+      devTools: true,
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
       webviewTag: true,
-      preload: path.join(__dirname, 'preload', 'creator-preload.js'),
+      preload: path.join(__dirname, 'preload', 'creator-preload.mjs'),
     },
   })
 

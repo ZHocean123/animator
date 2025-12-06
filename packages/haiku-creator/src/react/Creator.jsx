@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import { inkstone } from '@haiku/sdk-inkstone'
-import { clipboard, shell, webFrame } from 'electron'
+import { clipboard, dialog, shell, webFrame } from 'electron'
 import * as EventEmitter from 'event-emitter'
 import { buildProxyUrl, describeProxyFromUrl, getAccountUrl, isMac, isWindows, shouldEmitErrors } from 'haiku-common'
 
@@ -171,8 +171,16 @@ export default class Creator extends React.Component {
     this._postAuthCallback = undefined
 
     // 使用 electronAPI 替代 remote.getCurrentWindow()
+    // 延迟执行devtools打开，确保preload脚本已完成加载
     if (process.env.DEV === '1' || process.env.DEV === 'creator') {
-      window.electronAPI.window.openDevTools()
+      setTimeout(() => {
+        if (window.electronAPI && window.electronAPI.window && window.electronAPI.window.openDevTools) {
+          window.electronAPI.window.openDevTools()
+        }
+        else {
+          console.warn('[Creator] electronAPI.window.openDevTools not available')
+        }
+      }, 1000) // 等待1秒确保preload脚本加载完成
     }
 
     window.onerror = (message) => {
@@ -448,6 +456,25 @@ export default class Creator extends React.Component {
         })
       }
     }, MENU_ACTION_DEBOUNCE_TIME, { leading: true, trailing: false }))
+
+    // 添加快捷键监听器来手动打开/关闭devtools
+    window.addEventListener('keydown', (event) => {
+      // F12 或 Cmd+Option+I (Mac) 或 Ctrl+Shift+I (Windows/Linux) 打开devtools
+      if (event.key === 'F12'
+        || ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'I')) {
+        event.preventDefault()
+        if (window.electronAPI && window.electronAPI.window && window.electronAPI.window.openDevTools) {
+          window.electronAPI.window.openDevTools()
+        }
+        else {
+          console.warn('[Creator] electronAPI.window.openDevTools not available')
+        }
+      }
+      // ESC 关闭devtools
+      if (event.key === 'Escape' && window.electronAPI && window.electronAPI.window && window.electronAPI.window.closeDevTools) {
+        window.electronAPI.window.closeDevTools()
+      }
+    })
 
     window.electronAPI.on('open-url:fork', (_, forkPath) => {
       // Incoming path should have format: /:organizationName/:projectName

@@ -65,5 +65,9 @@
   ],
   "cSpell.words": [
     "Klass"
+  ],
+  "i18n-ally.localesPaths": [
+    "packages/haiku-creator/out/renderer/monaco-editor/min/language",
+    "packages/haiku-creator/out/renderer/monaco-editor/min/vs/language"
   ]
 }

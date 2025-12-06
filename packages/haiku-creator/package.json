@@ -19,6 +19,10 @@
       "require": "./lib/entry.cjs",
       "import": "./lib/entry.mjs"
     },
+    "./preload/creator-preload": {
+      "require": "./lib/preload/creator-preload.cjs",
+      "import": "./lib/preload/creator-preload.mjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./lib/index.cjs",
@@ -35,7 +39,7 @@
     "compile-declarations": "tsdown -p tsconfig.declarations.json",
     "develop": "tsdown --watch",
     "start": "electron ./lib/electron.cjs",
-    "start1": "tsdown && cross-env NODE_ENV=production HAIKU_PLUMBING_PORT=9221 electron --trace-deprecation ./lib/electron.cjs"
+    "start1": "tsdown && cross-env NODE_ENV=production HAIKU_PLUMBING_PORT=9221 DEV=1 electron --trace-deprecation ./lib/electron.cjs"
   },
   "dependencies": {
     "@babel/parser": "7.0.0",

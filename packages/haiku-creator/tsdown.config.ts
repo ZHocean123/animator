@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   // 不继承 baseConfig 的 entry，单独配置
   // 包特定入口 - 使用单一 index.ts 文件作为入口
-  entry: ['src/index.ts', 'src/entry.js', 'src/electron.js'],
+  entry: ['src/index.ts', 'src/entry.js', 'src/electron.js', 'src/preload/creator-preload.ts'],
   platform: 'node',
   sourcemap: true,
 
