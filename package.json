@@ -30,7 +30,7 @@
     "build-all": "node ./scripts/build-with-tsdown.js",
     "dev-all": "node ./scripts/dev-with-tsdown.js",
     "verify-compatibility": "node ./scripts/verify-build-compatibility.js",
-    "electron:dev": "cd packages/haiku-creator && electron-vite dev",
+    "electron:dev": "cd packages/haiku-creator && pnpm dev",
     "electron:build": "cd packages/haiku-creator && electron-vite build",
     "electron:preview": "cd packages/haiku-creator && electron-vite preview"
   },
@@ -104,7 +104,9 @@
     "overrides": {
       "@haiku/core": "^5.0.0",
       "@types/node": "^22.0.0",
-      "@types/react": "catalog:"
+      "@types/react": "catalog:",
+      "react-transition-group": "^1.1.2",
+      "uuid": "^3.4.0"
     },
     "ignoredBuiltDependencies": [
       "aws-sdk",

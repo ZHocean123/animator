@@ -1,6 +1,9 @@
 import * as path from 'node:path'
+import process from 'node:process'
 import { clone } from 'lodash'
-import { argv } from 'yargs'
+import yargs from 'yargs'
+
+const { argv } = yargs
 
 export default function envInfo() {
   const args = clone(argv._)

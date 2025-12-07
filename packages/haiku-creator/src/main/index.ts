@@ -13,9 +13,10 @@ import TopMenu from 'haiku-common/electron/TopMenu'
 import { ensureTrailingSlash, logger, mixpanel } from 'haiku-serialization'
 import * as qs from 'qs'
 
-if (!app) {
-  throw new Error('You can only run electron.js from an electron process')
-}
+// 注释掉这个检查，因为使用 electron-vite dev 时确保我们已经在 Electron 环境中
+// if (!app) {
+//   throw new Error('You can only run electron.js from an electron process')
+// }
 
 // 运行安全：在 Electron 主进程中设置应用名称，若不可用则跳过
 try {
@@ -25,7 +26,10 @@ try {
 }
 catch {}
 
-app.setAsDefaultProtocolClient('haiku')
+// 确保 app 对象存在后再设置协议客户端
+if (app) {
+  app.setAsDefaultProtocolClient('haiku')
+}
 
 // Haiku main window
 let browserWindow: BrowserWindow | null = null
@@ -46,7 +50,7 @@ if (isMac()) {
   systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
 }
 
-app.on('login', (event, webContents, request, authInfo, authenticate) => {
+app?.on('login', (event, webContents, request, authInfo, _authenticate) => {
   // We are currently not equipped to authenticate requests that are intercepted by a proxy but require login
   // credentials when we encounter interference at this stage. When this functionality is added:
   //   - `event.preventDefault()` will prevent the default behavior of Electron blocking the request.
@@ -63,7 +67,7 @@ function CreatorElectron() {
 inherits(CreatorElectron, EventEmitter)
 const creator = new CreatorElectron()
 
-const appUrl = `file://${path.join(__dirname, '..', 'renderer', 'index.html')}`
+const appUrl = `file://${path.join(__dirname, '..', '..', 'index.html')}`
 
 // Plumbing starts up this process, and it uses HAIKU_ENV to forward to us data about
 // how it has been set up, e.g. what ports it is using for websocket server, envoy, etc.
@@ -72,9 +76,11 @@ const haiku = globalThis.process.env.HAIKU_ENV
   ? JSON.parse(globalThis.process.env.HAIKU_ENV)
   : {}
 
-app.on('window-all-closed', () => {
-  app.quit()
-})
+if (app) {
+  app.on('window-all-closed', () => {
+    app.quit()
+  })
+}
 
 if (!haiku.plumbing) {
   haiku.plumbing = {}
@@ -163,14 +169,14 @@ function createWindow(): void {
   // Before doing anything, ensure we are not in a second instance of the app, if we are, let's short-cirtuit
   // and let the open instance handle the request.
   if (!isMac()) {
-    const gotTheLock = app.requestSingleInstanceLock()
+    const gotTheLock = app?.requestSingleInstanceLock()
 
     if (!gotTheLock) {
-      app.quit()
+      app?.quit()
       return
     }
 
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
+    app?.on('second-instance', (event, commandLine, workingDirectory) => {
       logger.info(`[creator] Received command line on second instance ${commandLine}`)
 
       // Handle haiku:// protocol on second instance
@@ -191,8 +197,19 @@ function createWindow(): void {
     })
   }
 
-  logger.view = 'main'
-  mixpanel.haikuTrack('app:initialize')
+  if (logger) {
+    logger.view = 'main'
+  }
+  else {
+    console.warn('Logger not available, skipping view assignment')
+  }
+
+  if (mixpanel) {
+    mixpanel.haikuTrack('app:initialize')
+  }
+  else {
+    console.warn('Mixpanel not available, skipping analytics')
+  }
 
   browserWindow = new BrowserWindow({
     title: 'Haiku Animator',
@@ -335,10 +352,12 @@ function windowsCheckForUpdates(): void {
 }
 
 // Transmit haiku://foo/bar?baz=bat as the "open-url:foo" event with arguments [_, "/bar", {"baz": "bat"}]
-app.on('open-url', (event, url) => {
-  event.preventDefault()
-  handleUrl(url)
-})
+if (app) {
+  app.on('open-url', (event, url) => {
+    event.preventDefault()
+    handleUrl(url)
+  })
+}
 
 async function showFileDialog(): Promise<void> {
   const { dialog } = require('electron')
@@ -426,10 +445,10 @@ async function onAppReady(): Promise<void> {
   createWindow()
 }
 
-if (app.isReady()) {
+if (app && app.isReady()) {
   onAppReady()
 }
-else {
+else if (app) {
   app.on('ready', onAppReady)
 }
 

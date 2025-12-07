@@ -1,10 +1,10 @@
-import { defineConfig } from 'tsdown';
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'tsdown'
 
 // 获取当前文件的目录路径
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(__filename, '..');
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = resolve(__filename, '..')
 
 export default defineConfig({
   // 不继承 baseConfig 的 entry，单独配置
@@ -21,23 +21,49 @@ export default defineConfig({
     'react',
     'react-dom',
     // Node.js built-ins
-    'fs', 'path', 'os', 'crypto', 'util', 'events', 'stream',
-    'child_process', 'url', 'querystring', 'http', 'https', 'net',
-    'tls', 'dns', 'zlib',
+    'fs',
+    'path',
+    'os',
+    'crypto',
+    'util',
+    'events',
+    'stream',
+    'child_process',
+    'url',
+    'querystring',
+    'http',
+    'https',
+    'net',
+    'tls',
+    'dns',
+    'zlib',
     // External dependencies
-    'nodegit', 'raven', 'electron', 'chokidar', 'tmp', 'ws',
-    'yargs', 'rollup', 'semver', 'simple-git', 'raven', 'chalk',
-    '@haiku/*', 'haiku-*',
-    'remote', 'electron-proxy-agent',
+    'nodegit',
+    'raven',
+    'electron',
+    'chokidar',
+    'tmp',
+    'ws',
+    'yargs',
+    'rollup',
+    'semver',
+    'simple-git',
+    'raven',
+    'chalk',
+    '@haiku/*',
+    'haiku-*',
+    'remote',
+    'electron-proxy-agent',
   ],
-  
+  skipNodeModulesBundle: true,
+
   // 路径别名
   alias: {
     '@plumbing': resolve(__dirname, 'src'),
   },
 
   // 包特定构建选项
-  dts: true,
+  dts: false,
 
   // 保持与现有构建兼容
   format: ['cjs', 'esm'],
@@ -53,4 +79,4 @@ export default defineConfig({
   tsconfig: './tsconfig.json',
 
   exports: true,
-});
+})

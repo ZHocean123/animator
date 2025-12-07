@@ -3,7 +3,7 @@ import * as path from 'node:path'
 /* tslint:disable:no-shadowed-variable max-line-length */
 import * as async from 'async'
 import * as fse from 'haiku-fs-extra'
-import { Lock, logger } from 'haiku-serialization'
+import { LOCKS, logger, request } from 'haiku-serialization'
 import * as lodash from 'lodash'
 import * as semver from 'semver'
 import * as tmp from 'tmp'
@@ -835,7 +835,7 @@ export default class MasterGitProject extends EventEmitter {
       this._isCommittingLocked = true
 
       const abspath = path.join(this.folder, relpath)
-      return Lock.request(Lock.LOCKS.FileReadWrite(abspath), false, (release) => {
+      return request(LOCKS.FileReadWrite(abspath), false, (release) => {
         return this.statusForFile(relpath, (err, status) => {
           // Everything until we commit is now sync so it's safe to turn this off
           this._isCommittingLocked = false

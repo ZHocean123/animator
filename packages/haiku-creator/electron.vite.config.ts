@@ -1,4 +1,5 @@
 import { resolve } from 'node:path'
+import process from 'node:process'
 import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
@@ -12,7 +13,29 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin({
+      // 排除 Node.js 内置模块，避免 generate createRequire
+      exclude: [
+        'node:*',
+        'fs',
+        'path',
+        'url',
+        'util',
+        'events',
+        'http',
+        'https',
+        'os',
+        'crypto',
+        'stream',
+        'child_process',
+        'querystring',
+        'net',
+        'tls',
+        'dns',
+        'zlib',
+        'yargs',
+      ],
+    })],
     build: {
       rollupOptions: {
         input: {
@@ -34,7 +57,29 @@ export default defineConfig({
     },
   },
   preload: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin({
+      // 排除 Node.js 内置模块，避免 generate createRequire
+      exclude: [
+        'node:*',
+        'fs',
+        'path',
+        'url',
+        'util',
+        'events',
+        'http',
+        'https',
+        'os',
+        'crypto',
+        'stream',
+        'child_process',
+        'querystring',
+        'net',
+        'tls',
+        'dns',
+        'zlib',
+        'yargs',
+      ],
+    })],
     build: {
       rollupOptions: {
         input: {
@@ -74,14 +119,13 @@ export default defineConfig({
             // 将Monaco Editor单独打包
             'monaco-editor': ['monaco-editor'],
             // 将UI相关库打包在一起
-            'ui-vendor': ['radium', 'react-color', 'react-popover', 'react-syntax-highlighter'],
+            'ui-vendor': ['radium', 'react-color', 'react-popover'],
             // 将工具库打包在一起
             'utils-vendor': ['lodash', 'uuid', 'color', 'qs'],
             // 将Haiku内部模块打包在一起
-            'haiku-modules': ['haiku-common', 'haiku-serialization', 'haiku-plumbing', 'haiku-ui-common'],
+            'haiku-modules': ['haiku-common', 'haiku-serialization', 'haiku-plumbing', 'haiku-ui-common', 'react-syntax-highlighter'],
           },
         },
-        chunkSizeWarningLimit: 1000,
       },
       minify: isProduction ? 'esbuild' : false,
       sourcemap: isDevelopment ? 'inline' : false,
@@ -121,7 +165,6 @@ export default defineConfig({
     },
     // 确保静态资源正确处理
     publicDir: resolve(__dirname, 'public'),
-    assetsDir: 'assets',
     // 开发服务器配置
     server: {
       port: 3000,

@@ -8,8 +8,11 @@ export default defineConfig({
   dts: false,
   sourcemap: true,
   exports: true,
+  skipNodeModulesBundle: true,
   external: [
     'haiku-formats',
     '@haiku/core',
+    '@haiku/sdk-creator',
+    'haiku-serialization',
   ],
 })

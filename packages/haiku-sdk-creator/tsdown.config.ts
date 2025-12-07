@@ -1,8 +1,8 @@
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 export default {
   entry: ['src/index.ts'],
@@ -15,4 +15,7 @@ export default {
   sourcemap: true,
   minify: false,
   exports: true,
-};
+  external: [
+    'haiku-serialization',
+  ],
+}

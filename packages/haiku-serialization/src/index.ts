@@ -60,11 +60,11 @@ export { default as MemoryStorage } from './bll/storage/MemoryStorage'
 export { default as Template } from './bll/Template'
 export { default as Timeline } from './bll/Timeline'
 export { default as TimelineProperty } from './bll/TimelineProperty'
+
 export { default as TransformCache } from './bll/TransformCache'
-
 export { default as getSvgOptimizer } from './svg/getSvgOptimizer'
-export * from './svg/plugins'
 
+export * from './svg/plugins'
 export { default as CryptoUtils } from './utils/CryptoUtils'
 export { default as EmitterManager } from './utils/EmitterManager'
 export { default as ensureTrailingSlash } from './utils/ensureTrailingSlash'
@@ -80,6 +80,5 @@ export { default as requestElementCoordinates } from './utils/requestElementCoor
 export { default as serializeError } from './utils/serializeError'
 export { default as sketchUtils } from './utils/sketchUtils'
 export { default as walkFiles } from './utils/walkFiles'
-
 export { default as MockWebsocket } from './ws/MockWebsocket'
 export { default as Websocket } from './ws/Websocket'

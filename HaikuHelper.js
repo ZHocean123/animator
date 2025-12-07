@@ -1,7 +1,7 @@
 /* eslint-disable node/prefer-global/process */
 const path = require('node:path')
 const { Plumbing, envInfo, haikuInfo } = require('haiku-plumbing')
-const logger = require('haiku-serialization')
+const { logger } = require('haiku-serialization')
 
 globalThis.eval = function () {
   // noop: eval is forbidden

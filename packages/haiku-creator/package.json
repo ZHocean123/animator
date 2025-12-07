@@ -38,7 +38,7 @@
     "compile": "tsdown",
     "compile-declarations": "tsdown -p tsconfig.declarations.json",
     "develop": "tsdown --watch",
-    "dev": "electron-vite dev",
+    "dev": "cross-env HAIKU_PLUMBING_PORT=9221 DEV=1 electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "start": "electron ./out/main/index.js",

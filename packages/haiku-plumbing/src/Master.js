@@ -22,7 +22,7 @@ import {
   getHaikuCoreVersion,
 } from './project-folder/ProjectDefinitions'
 import saveExport from './publish-hooks/saveExport'
-import Raven from './Raven'
+// import Raven from './Raven'
 import * as Watcher from './Watcher'
 
 if (isMac()) {
@@ -101,7 +101,7 @@ export default class Master extends EventEmitter {
     super()
 
     // TODO: Fix EmitterManager.extend - temporarily disabled due to Node.js 22 compatibility issues
-// EmitterManager.extend(this)
+    // EmitterManager.extend(this)
 
     this.folder = folder
 

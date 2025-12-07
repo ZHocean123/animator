@@ -8,8 +8,6 @@ import * as rollup from 'rollup'
 // @ts-ignore
 import * as commonjs from 'rollup-plugin-commonjs'
 // @ts-ignore
-import * as includePaths from 'rollup-plugin-includepaths'
-// @ts-ignore
 import * as json from 'rollup-plugin-json'
 // @ts-ignore
 import * as nodeResolve from 'rollup-plugin-node-resolve'
@@ -30,31 +28,16 @@ function createBundle(moduleDirectory: string, input: string, name: string, cb: 
   rollup.rollup({
     input,
     plugins: [
-      includePaths({
-        include: {
-          '@haiku/core': require.resolve('@haiku/core'),
-          '@haiku/core/dom': require.resolve('@haiku/core/dom'),
-          '@haiku/core/components/controls/Image/code/main/code':
-            require.resolve('@haiku/core/components/controls/Image/code/main/code'),
-          '@haiku/core/components/controls/Font/code/main/code':
-            require.resolve('@haiku/core/components/controls/Font/code/main/code'),
-          '@haiku/core/components/controls/Text/code/main/code':
-            require.resolve('@haiku/core/components/controls/Text/code/main/code'),
-          // Note how we're pointing legacy player to core here
-          '@haiku/player': require.resolve('@haiku/core'),
-          '@haiku/player/dom': require.resolve('@haiku/core/dom'),
-        },
-      }),
-      nodeResolve({
+      nodeResolve.default({
         jsnext: true,
         main: true,
       }),
-      commonjs({
+      commonjs.default({
         sourceMap: false,
         extensions: ['.js'],
       }),
-      json(),
-      uglify(),
+      json.default(),
+      uglify.default(),
     ],
   }).then((bundle: any) => {
     bundle.generate({
@@ -73,7 +56,7 @@ function createBundle(moduleDirectory: string, input: string, name: string, cb: 
 }
 
 export function createCDNBundles(project: HaikuProject, finish: (err: any) => void) {
-  const organizationName = getOrganizationNameOrFallback(project.organizationName)
+  const organizationName = getOrganizationNameOrFallback(project.organizationName || '')
   const embedName = getEmbedName(organizationName, project.projectName)
   const standaloneName = getStandaloneName(organizationName, project.projectName)
 

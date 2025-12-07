@@ -2,6 +2,7 @@
 export {
   type CrashMetadata,
   ERROR_CHANNEL,
+  ErrorHandler,
   isUserlandCulprit,
   type SentryCallbackData,
   type SentryExtraData,
@@ -61,6 +62,7 @@ export {
 
 export * from './services/ServicesHandler'
 
+export * from './timeline/index'
 // Tour exports
 export {
   type ClientBoundingRect,

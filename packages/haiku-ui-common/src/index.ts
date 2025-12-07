@@ -32,6 +32,16 @@ export { default as Palette } from './Palette'
 export * from './react/Bezier'
 
 export { default as BezierEditor } from './react/Bezier/BezierEditor'
+// Note: Some components may need to be imported directly from their files:
+// - ReactPopoverMenu from './react/PopoverMenu'
+// - ExternalLink from './react/ExternalLink'
+// - LoadingButton from './react/LoadingButton'
+// - LoadingTopBar from './react/LoadingTopBar'
+// - Paginator from './react/Paginator'
+// - RevealPanel from './react/RevealPanel'
+// - Tooltip from './react/Tooltip'
+// - TooltipBasic from './react/TooltipBasic'
+export { CodeBox } from './react/CodeBox'
 export { ExternalLink } from './react/ExternalLink'
 // Note: Using specific exports instead of wildcard to avoid build issues
 export * from './react/icons'
@@ -51,20 +61,10 @@ export * from './react/OtherIcons'
 export { Paginator } from './react/Paginator'
 export { PrettyScroll } from './react/PrettyScroll'
 export { RevealPanel } from './react/RevealPanel'
-export * from './react/ShareModal'
 
+export * from './react/ShareModal'
 export * from './react/ShareModal/ShareOptions'
 export * from './SharedStyles'
-// Note: Some components may need to be imported directly from their files:
-// - ReactPopoverMenu from './react/PopoverMenu'
-// - ExternalLink from './react/ExternalLink'
-// - LoadingButton from './react/LoadingButton'
-// - LoadingTopBar from './react/LoadingTopBar'
-// - Paginator from './react/Paginator'
-// - RevealPanel from './react/RevealPanel'
-// - Tooltip from './react/Tooltip'
-// - TooltipBasic from './react/TooltipBasic'
-// - CodeBox from './react/CodeBox'
 
 // Icons need to be imported directly from their files
 // Inspector panels need to be imported directly from their files

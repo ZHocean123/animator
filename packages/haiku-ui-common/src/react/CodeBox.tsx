@@ -1,14 +1,12 @@
 /* tslint:disable:import-name */
 import * as React from 'react'
-import jsx from 'react-syntax-highlighter/languages/prism/jsx'
-import SyntaxHighlighter, { registerLanguage } from 'react-syntax-highlighter/prism-light'
-import { atomDark } from 'react-syntax-highlighter/styles/prism'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import Palette from '../Palette'
-
-registerLanguage('jsx', jsx)
 
 export interface CodeBoxProps {
   lang?: string
+  children?: string
 }
 
 export class CodeBox extends React.PureComponent<CodeBoxProps> {
@@ -22,7 +20,7 @@ export class CodeBox extends React.PureComponent<CodeBoxProps> {
 
     return (
       <SyntaxHighlighter language={this.props.lang} style={atomDark}>
-        {this.props.children}
+        {this.props.children || ''}
       </SyntaxHighlighter>
     )
   }
