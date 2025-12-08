@@ -1,11 +1,11 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const async = require('async');
-const Project = require('./../../src/bll/Project');
-const Timeline = require('./../../src/bll/Timeline');
 
-tape('Timeline#frameInfo', (t) => {
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import async from 'async';
+import Project from './../../src/bll/Project.js';
+import Timeline from './../../src/bll/Timeline.js';
+
+test('Timeline#frameInfo', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   // Start fresh.
@@ -14,7 +14,7 @@ tape('Timeline#frameInfo', (t) => {
     Timeline.remove(timeline, t);
   }
   return setupTest('timeline-01', (ac, rows, done) => {
-    t.deepEqual(Timeline.count(), 1);
+    t.toEqual(Timeline.count(), 1);
     const timeline = ac.getCurrentTimeline();
     timeline.setTimelinePixelWidth(1000);
     const expectedFrameInfo = {
@@ -38,10 +38,10 @@ tape('Timeline#frameInfo', (t) => {
       scA: 0,
       scB: 1000 / (5000 / (1000 + 300)),
     };
-    t.deepEqual(timeline.getFrameInfo(), expectedFrameInfo);
+    t.toEqual(timeline.getFrameInfo(), expectedFrameInfo);
 
     timeline.setTimelinePixelWidth(1500);
-    t.deepEqual(
+    t.toEqual(
       timeline.getFrameInfo(),
       {
         ...expectedFrameInfo,
@@ -55,10 +55,10 @@ tape('Timeline#frameInfo', (t) => {
     );
 
     timeline.setTimelinePixelWidth(1000);
-    t.deepEqual(timeline.getFrameInfo(), expectedFrameInfo);
+    t.toEqual(timeline.getFrameInfo(), expectedFrameInfo);
 
     timeline.updateVisibleFrameRangeByDelta(500);
-    t.deepEqual(
+    t.toEqual(
       timeline.getFrameInfo(),
       // TODO: Show how these values are derived.
       {

@@ -1,5 +1,5 @@
-const tape = require('tape');
-const TimelineProperty = require('./../../src/bll/TimelineProperty');
+
+import TimelineProperty from './../../src/bll/TimelineProperty.js';
 const HaikuComponent = require('@haiku/core/lib/HaikuComponent').default;
 
 const findElementsByHaikuId = () => {
@@ -28,8 +28,7 @@ const context = {
   renderer,
 };
 
-tape('TimelineProperty.addProperty', function (t) {
-  t.plan(4);
+test('TimelineProperty.addProperty', function (t) {
 
   const timelines = {
     Default: {
@@ -49,7 +48,7 @@ tape('TimelineProperty.addProperty', function (t) {
     0,
   );
 
-  t.equal(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0,"edited":true}}}}}');
+  expect(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0,"edited":true}}}}}');
 
   TimelineProperty.addProperty(
     timelines,
@@ -61,7 +60,7 @@ tape('TimelineProperty.addProperty', function (t) {
     0.5,
   );
 
-  t.equal(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true}}}}}');
+  expect(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true}}}}}');
 
   TimelineProperty.addProperty(
     timelines,
@@ -73,7 +72,7 @@ tape('TimelineProperty.addProperty', function (t) {
     0.75,
   );
 
-  t.equal(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true},"100":{"value":0.75,"edited":true}}}}}');
+  expect(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true},"100":{"value":0.75,"edited":true}}}}}');
 
   TimelineProperty.addProperty(
     timelines,
@@ -86,11 +85,10 @@ tape('TimelineProperty.addProperty', function (t) {
     'linear',
   );
 
-  t.equal(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true},"100":{"value":0.75,"edited":true},"200":{"value":0.95,"curve":"linear","edited":true}}}}}');
+  expect(JSON.stringify(timelines), '{"Default":{"haiku:abcde":{"zilch":{},"opacity":{"0":{"value":0.5,"edited":true},"100":{"value":0.75,"edited":true},"200":{"value":0.95,"curve":"linear","edited":true}}}}}');
 });
 
-tape('TimelineProperty.getAssignedBaselineValueObject', function (t) {
-  t.plan(4);
+test('TimelineProperty.getAssignedBaselineValueObject', function (t) {
 
   const bvo1 = TimelineProperty.getAssignedBaselineValueObject('abcde', 'svg', 'opacity', 'Default', 123, {
     timelines: {
@@ -108,7 +106,7 @@ tape('TimelineProperty.getAssignedBaselineValueObject', function (t) {
       },
     },
   });
-  t.equal(JSON.stringify(bvo1), '{"value":1}');
+  expect(JSON.stringify(bvo1), '{"value":1}');
 
   const bvo2 = TimelineProperty.getAssignedBaselineValueObject('abcde', 'svg', 'opacity', 'Default', 99, {
     timelines: {
@@ -126,7 +124,7 @@ tape('TimelineProperty.getAssignedBaselineValueObject', function (t) {
       },
     },
   });
-  t.equal(JSON.stringify(bvo2), '{"value":0}');
+  expect(JSON.stringify(bvo2), '{"value":0}');
 
   const bvo3 = TimelineProperty.getAssignedBaselineValueObject('abcde', 'svg', 'opacity', 'Default', 100, {
     timelines: {
@@ -144,7 +142,7 @@ tape('TimelineProperty.getAssignedBaselineValueObject', function (t) {
       },
     },
   });
-  t.equal(JSON.stringify(bvo3), '{"value":1}');
+  expect(JSON.stringify(bvo3), '{"value":1}');
 
   const bvo4 = TimelineProperty.getAssignedBaselineValueObject('abcde', 'svg', 'opacity', 'Default', 3333300, {
     timelines: {
@@ -162,11 +160,10 @@ tape('TimelineProperty.getAssignedBaselineValueObject', function (t) {
       },
     },
   });
-  t.equal(JSON.stringify(bvo4), '{"value":4}');
+  expect(JSON.stringify(bvo4), '{"value":4}');
 });
 
-tape('TimelineProperty.getBaselineValue', function (t) {
-  t.plan(6);
+test('TimelineProperty.getBaselineValue', function (t) {
 
   let hostInstance;
   let inputValues;
@@ -192,7 +189,7 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance, inputValues);
-  t.equal(bv, 1, 'first is correct');
+  expect(bv, 1, 'first is correct');
 
   hostInstance = new HaikuComponent({}, context, null, {seed:'0'}, {});
   hostInstance.findElementsByHaikuId = findElementsByHaikuId;
@@ -214,7 +211,7 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance, inputValues);
-  t.equal(bv, 0, 'second is correct');
+  expect(bv, 0, 'second is correct');
 
   // This is the important test - ensuring we load the PREVIOUS keyframe when we have an exact fit!
   hostInstance = new HaikuComponent({}, context, null, {seed:'0'}, {});
@@ -237,7 +234,7 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance, inputValues);
-  t.equal(bv, 0, 'third is correct - got previous keyframe');
+  expect(bv, 0, 'third is correct - got previous keyframe');
 
   hostInstance = new HaikuComponent({}, context, null, {seed:'0'}, {});
   hostInstance.findElementsByHaikuId = findElementsByHaikuId;
@@ -259,7 +256,7 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance);
-  t.equal(bv, 4, 'fourth is correct');
+  expect(bv, 4, 'fourth is correct');
 
   // Another important one: Ensure we use the dom.properties-defined fallback if there is no previous
   hostInstance = new HaikuComponent({}, context, null, {seed:'0'}, {});
@@ -282,7 +279,7 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance);
-  t.equal(bv, 1, 'fifth correct - prop defined fallback ok');
+  expect(bv, 1, 'fifth correct - prop defined fallback ok');
 
   // Another important one: Ensure we use the dom.properties-defined fallback if there is no previous
   hostInstance = new HaikuComponent({}, context, null, {seed:'0'}, {});
@@ -305,5 +302,5 @@ tape('TimelineProperty.getBaselineValue', function (t) {
       },
     },
   }, hostInstance);
-  t.equal(bv, undefined, 'sixth ok - prop defined fallback ok');
+  expect(bv, undefined, 'sixth ok - prop defined fallback ok');
 });

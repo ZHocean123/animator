@@ -1,7 +1,6 @@
-const tape = require('tape');
-const State = require('./../../src/bll/State');
+import State from '../../src/bll/State.js';
 
-tape('State.recast', (t) => {
+test('State.recast', () => {
   const tests = [
     [{value:1}, {value: 1, mock: undefined, type: 'number'}],
     [{value:'1'}, {value: 1, mock: undefined, type: 'number'}],
@@ -36,7 +35,6 @@ tape('State.recast', (t) => {
     [{value:'   16 men and a bottle of rum'}, {value: '   16 men and a bottle of rum', mock: undefined, type: 'string'}],
   ];
   tests.forEach((spec) => {
-    t.deepEqual(State.recast(spec[0]), spec[1]);
+    expect(State.recast(spec[0])).toEqual(spec[1]);
   });
-  t.end();
 });

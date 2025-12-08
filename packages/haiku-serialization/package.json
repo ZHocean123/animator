@@ -20,10 +20,13 @@
   ],
   "scripts": {
     "test": "pnpm test:all",
-    "test:all": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" | tap-spec || true",
-    "test:utils": "cross-env NODE_ENV=test tape \"test/utils/**/*.test.js\" | tap-spec || true",
-    "test:bll": "cross-env NODE_ENV=test tape \"test/bll/**/*.test.js\" | tap-spec || true",
-    "test-report": "cross-env NODE_ENV=test tape \"test/**/**/*.test.js\" > test-result.tap",
+    "test:all": "cross-env NODE_ENV=test vitest run",
+    "test:utils": "cross-env NODE_ENV=test vitest run \"test/utils/**/*.test.js\"",
+    "test:bll": "cross-env NODE_ENV=test vitest run \"test/bll/**/*.test.js\"",
+    "test:ast": "cross-env NODE_ENV=test vitest run \"test/ast/**/*.test.js\"",
+    "test:watch": "cross-env NODE_ENV=test vitest",
+    "test:ui": "cross-env NODE_ENV=test vitest --ui",
+    "test-report": "cross-env NODE_ENV=test vitest run \"test/**/**/*.test.js\" --reporter=verbose > test-result.tap",
     "lint": "eslint src/**/* --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
     "fix": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
@@ -98,9 +101,11 @@
     "@types/prettier": "^3.0.0",
     "@types/uuid": "^9.0.8",
     "@types/winston": "^2.4.4",
+    "@vitest/ui": "^4.0.15",
     "cross-env": "^7.0.3",
     "haiku-testing": "workspace:*",
     "istanbul-reporter-cobertura-haiku": "^1.0.2",
+    "jsdom": "^27.2.0",
     "leaked-handles": "^5.2.0",
     "nyc": "^15.1.0",
     "semver": "^7.6.0",
@@ -110,6 +115,7 @@
     "tape": "^5.7.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^4.0.15"
   }
 }

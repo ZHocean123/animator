@@ -1,7 +1,7 @@
-const tape = require('tape');
-const Expression = require('./../../src/bll/Expression');
 
-tape('Expression.parseValue', (t) => {
+import Expression from '../../src/bll/Expression.js';
+
+test('Expression.parseValue', () => {
   const tests = [
     [1, undefined, 1],
     [[{a:1}], undefined, [{a:1}]],
@@ -66,8 +66,7 @@ tape('Expression.parseValue', (t) => {
     ['undefined', 'shown', undefined],
     ['null', 'shown', null],
   ];
-  t.plan(tests.length);
   tests.forEach((spec) => {
-    t.deepEqual(Expression.parseValue(spec[0], spec[1]), spec[2]);
+    expect(Expression.parseValue(spec[0], spec[1])).toEqual(spec[2]);
   });
 });

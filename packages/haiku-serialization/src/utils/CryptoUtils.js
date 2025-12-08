@@ -1,5 +1,4 @@
 import CryptoJs from 'crypto-js';
-import realSha256 from 'crypto-js/sha256';
 
 function aesDecrypt (str, passcode) {
   return CryptoJs.AES.decrypt(str, passcode).toString(CryptoJs.enc.Utf8);
@@ -22,7 +21,7 @@ function sha256 (input) {
   if (!jsonStr) {
     return null;
   }
-  return realSha256(jsonStr).toString();
+  return CryptoJs.SHA256.encrypt(jsonStr).toString();
 }
 
 export {

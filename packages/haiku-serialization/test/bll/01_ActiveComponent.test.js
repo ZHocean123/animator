@@ -1,17 +1,15 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const {VERSION} = require('@haiku/core/lib/HaikuComponent');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import {VERSION} from '@haiku/core/lib/HaikuComponent';
 
-const Project = require('./../../src/bll/Project');
-const File = require('./../../src/bll/File');
+import Project from '../../src/bll/Project.js';
+import File from '../../src/bll/File.js';
 
 const waitUntilFileProbablyWroteToDisk = (fn) => {
   return setTimeout(fn, 2000); // Disk writes happen on a 500ms interval
 };
 
-tape('ActiveComponent.prototype.instantiateComponent[1](design)', (t) => {
-  t.plan(6);
+test('ActiveComponent.prototype.instantiateComponent[1](design)', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'instantiate-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -19,37 +17,44 @@ tape('ActiveComponent.prototype.instantiateComponent[1](design)', (t) => {
   const userconfig = {};
   const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      t.ok(ac0, 'ac present');
-      return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        t.equal(mana.attributes['haiku-source'], 'designs/Path.svg', 'rel source is in mana attribute');
-        const timeline = ac0.getReifiedBytecode().timelines.Default['haiku:' + mana.attributes['haiku-id']];
-        t.deepEqual(timeline, {'style.position': {0: {value: 'absolute'}}, 'style.margin': {0: {value: '0'}}, 'style.padding': {0: {value: '0'}}, 'style.border': {0: {value: '0'}}, 'sizeAbsolute.x': {0: {value: 99}}, 'sizeMode.x': {0: {value: 1}}, 'sizeAbsolute.y': {0: {value: 69}}, 'sizeMode.y': {0: {value: 1}}, 'translation.x': {0: {edited: true, value: 275}}, 'translation.y': {0: {edited: true, value: 200}}, 'style.zIndex': {0: {value: 1}}}, 'timeline is ok');
-        const subtemplate = ac0.getReifiedBytecode().template.children[0];
-        t.equal(subtemplate.attributes['haiku-id'], mana.attributes['haiku-id'], 'template id ok');
-        return waitUntilFileProbablyWroteToDisk(() => {
-          return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
-            t.error(err, 'no err fetching code');
-            fse.removeSync(folder);
-            t.ok(true);
-          });
+        fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        expect(ac0).toBeTruthy();
+        ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          expect(mana.attributes['haiku-source']).toBe('designs/Path.svg');
+          const timeline = ac0.getReifiedBytecode().timelines.Default['haiku:' + mana.attributes['haiku-id']];
+          expect(timeline).toEqual({'style.position': {0: {value: 'absolute'}}, 'style.margin': {0: {value: '0'}}, 'style.padding': {0: {value: '0'}}, 'style.border': {0: {value: '0'}}, 'sizeAbsolute.x': {0: {value: 99}}, 'sizeMode.x': {0: {value: 1}}, 'sizeAbsolute.y': {0: {value: 69}}, 'sizeMode.y': {0: {value: 1}}, 'translation.x': {0: {edited: true, value: 275}}, 'translation.y': {0: {edited: true, value: 200}}, 'style.zIndex': {0: {value: 1}}});
+          const subtemplate = ac0.getReifiedBytecode().template.children[0];
+          expect(subtemplate.attributes['haiku-id']).toBe(mana.attributes['haiku-id']);
+          setTimeout(() => {
+            File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
+              expect(err).toBeFalsy();
+              fse.removeSync(folder);
+              resolve();
+            });
+          }, 2000);
         });
       });
     });
   });
 });
 
-tape('ActiveComponent.prototype.deleteComponent[1](design)', (t) => {
-  t.plan(9);
+test('ActiveComponent.prototype.deleteComponent[1](design)', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'delete-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -57,34 +62,42 @@ tape('ActiveComponent.prototype.deleteComponent[1](design)', (t) => {
   const userconfig = {};
   const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        t.equal(ac0.getReifiedBytecode().template.children.length, 1, 'has one child');
-        t.equal(ac0.getReifiedBytecode().template.children[0].attributes['haiku-id'], mana.attributes['haiku-id'], 'instantiatee id correct');
-        return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
-          t.error(err, 'no err reading file after inst');
-          const lines = contents.split('\n');
-          t.equal(lines[0], 'var Haiku = require("@haiku/core");', 'haiku require is in place');
-          return ac0.deleteComponents([mana.attributes['haiku-id']], {from: 'test'}, (err) => {
-            t.error(err, 'no err deleting');
-            t.equal(ac0.getReifiedBytecode().template.children.length, 0, 'correct number of children');
-            return waitUntilFileProbablyWroteToDisk(() => {
-              return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
-                t.error(err, 'no err reading file after del');
-                const lines = contents.split('\n');
-                t.equal(lines[0], 'var Haiku = require("@haiku/core");', 'haiku require is in place at line 0');
-                fse.removeSync(folder);
-                t.ok(true);
-              });
+        fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          expect(ac0.getReifiedBytecode().template.children.length).toBe(1);
+          expect(ac0.getReifiedBytecode().template.children[0].attributes['haiku-id']).toBe(mana.attributes['haiku-id']);
+          File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
+            expect(err).toBeFalsy();
+            const lines = contents.split('\n');
+            expect(lines[0]).toBe('var Haiku = require("@haiku/core");');
+            ac0.deleteComponents([mana.attributes['haiku-id']], {from: 'test'}, (err) => {
+              expect(err).toBeFalsy();
+              expect(ac0.getReifiedBytecode().template.children.length).toBe(0);
+              setTimeout(() => {
+                File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents) => {
+                  expect(err).toBeFalsy();
+                  const lines = contents.split('\n');
+                  expect(lines[0]).toBe('var Haiku = require("@haiku/core");');
+                  fse.removeSync(folder);
+                  resolve();
+                });
+              }, 2000);
             });
           });
         });
@@ -93,8 +106,7 @@ tape('ActiveComponent.prototype.deleteComponent[1](design)', (t) => {
   });
 });
 
-tape('ActiveComponent.prototype.mergeDesign[2](design)', (t) => {
-  t.plan(1);
+test('ActiveComponent.prototype.mergeDesign[2](design)', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'merge-design-02');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -102,46 +114,56 @@ tape('ActiveComponent.prototype.mergeDesign[2](design)', (t) => {
   const userconfig = {};
   const fileOptions = {doShallowWorkOnly: false, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      fse.outputFileSync(path.join(folder, 'designs/Circle.svg'), CIRCLE_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, (err, mana) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        return waitUntilFileProbablyWroteToDisk(() => {
-          return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents1) => {
-            if (err) {
- throw err;
+        fse.outputFileSync(path.join(folder, 'designs/Circle.svg'), CIRCLE_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
 }
-            fse.outputFileSync(path.join(folder, 'designs/Circle.svg'), CIRCLE_SVG_2); // Other one
-            return project.mergeDesigns({'designs/Circle.svg': true}, {from: 'test'}, (err) => {
+          setTimeout(() => {
+            File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents1) => {
               if (err) {
- throw err;
+ reject(err);
+return;
 }
-              return waitUntilFileProbablyWroteToDisk(() => {
-                return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents2) => {
-                  if (err) {
- throw err;
+              fse.outputFileSync(path.join(folder, 'designs/Circle.svg'), CIRCLE_SVG_2); // Other one
+              project.mergeDesigns({'designs/Circle.svg': true}, {from: 'test'}, (err) => {
+                if (err) {
+ reject(err);
+return;
 }
-                  fse.removeSync(folder);
-                  t.ok(true);
-                });
+                setTimeout(() => {
+                  File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents2) => {
+                    if (err) {
+ reject(err);
+return;
+}
+                    fse.removeSync(folder);
+                    resolve();
+                  });
+                }, 2000);
               });
             });
-          });
+          }, 2000);
         });
       });
     });
   });
 });
 
-tape('ActiveComponent.prototype.mergeDesign[3](design)', (t) => {
-  t.plan(1);
+test('ActiveComponent.prototype.mergeDesign[3](design)', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'merge-design-03');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -149,36 +171,177 @@ tape('ActiveComponent.prototype.mergeDesign[3](design)', (t) => {
   const userconfig = {};
   const fileOptions = {doShallowWorkOnly: false, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      fse.outputFileSync(path.join(folder, 'designs/PercyNose.svg'), PERCY_NOSE_1);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/PercyNose.svg', {}, {from: 'test'}, (err, mana) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        return waitUntilFileProbablyWroteToDisk(() => {
-          return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents1) => {
-            if (err) {
- throw err;
+        fse.outputFileSync(path.join(folder, 'designs/PercyNose.svg'), PERCY_NOSE_1);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/PercyNose.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
 }
-            fse.outputFileSync(path.join(folder, 'designs/PercyNose.svg'), PERCY_NOSE_2); // Other one
-            return project.mergeDesigns({'designs/PercyNose.svg': true}, {from: 'test'}, (err) => {
+          setTimeout(() => {
+            File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents1) => {
               if (err) {
- throw err;
+ reject(err);
+return;
 }
-              return waitUntilFileProbablyWroteToDisk(() => {
-                return File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents2) => {
-                  if (err) {
- throw err;
+              fse.outputFileSync(path.join(folder, 'designs/PercyNose.svg'), PERCY_NOSE_2); // Other one
+              project.mergeDesigns({'designs/PercyNose.svg': true}, {from: 'test'}, (err) => {
+                if (err) {
+ reject(err);
+return;
 }
-                  fse.removeSync(folder);
-                  t.ok(true);
-                });
+                setTimeout(() => {
+                  File.read(folder, ac0.fetchActiveBytecodeFile().relpath, (err, contents2) => {
+                    if (err) {
+ reject(err);
+return;
+}
+                    fse.removeSync(folder);
+                    resolve();
+                  });
+                }, 2000);
               });
+            });
+          }, 2000);
+        });
+      });
+    });
+  });
+});
+
+test('ActiveComponent.prototype.pasteThing[1]', async () => {
+  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-01');
+  fse.removeSync(folder);
+  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
+  const platform = {};
+  const userconfig = {};
+  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
+  const envoyOptions = {mock: true};
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
+      if (err) {
+ reject(err);
+return;
+}
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+        if (err) {
+ reject(err);
+return;
+}
+        fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          const el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
+          const pasteable1 = el1.clip({from: 'test'});
+          ac0.pasteThings([pasteable1], {}, {from: 'test'}, (err) => {
+            expect(err).toBeFalsy();
+            expect(ac0.getReifiedBytecode().template.children[1].attributes['haiku-id']).toBe(`${mana.attributes['haiku-id']}`);
+            expect(ac0.getReifiedBytecode().timelines.Default[`haiku:${mana.attributes['haiku-id']}`]).toBeTruthy();
+            fse.removeSync(folder);
+            resolve();
+          });
+        });
+      });
+    });
+  });
+});
+
+test('ActiveComponent.prototype.pasteThing[1] (duplicate)', async () => {
+  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-01');
+  fse.removeSync(folder);
+  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
+  const platform = {};
+  const userconfig = {};
+  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
+  const envoyOptions = {mock: true};
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
+      if (err) {
+ reject(err);
+return;
+}
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+        if (err) {
+ reject(err);
+return;
+}
+        fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          const el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
+          const pasteable1 = el1.clip({from: 'test'});
+          ac0.pasteThings([pasteable1], {}, {from: 'test'}, (err) => {
+            expect(err).toBeFalsy();
+            expect(ac0.getReifiedBytecode().template.children[1].attributes['haiku-id']).toBe(`${mana.attributes['haiku-id']}`);
+            expect(ac0.getReifiedBytecode().timelines.Default[`haiku:${mana.attributes['haiku-id']}`]).toBeTruthy();
+            fse.removeSync(folder);
+            resolve();
+          });
+        });
+      });
+    });
+  });
+});
+
+test('ActiveComponent.prototype.pasteThing[2]', async () => {
+  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-02');
+  fse.removeSync(folder);
+  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
+  const platform = {};
+  const userconfig = {};
+  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
+  const envoyOptions = {mock: true};
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
+      if (err) {
+ reject(err);
+return;
+}
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+        if (err) {
+ reject(err);
+return;
+}
+        fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
+        const ac0 = project.getCurrentActiveComponent();
+        let el0, el1;
+        ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          el0 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
+          ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
+            if (err) {
+ reject(err);
+return;
+}
+            el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
+            const pasteables = [el0.clip({from: 'test'}), el1.clip({from: 'test'})];
+            ac0.pasteThings(pasteables, {}, {from: 'test'}, (err) => {
+              expect(err).toBeFalsy();
+              expect(ac0.getReifiedBytecode().template.children.length).toBe(4);
+              fse.removeSync(folder);
+              resolve();
             });
           });
         });
@@ -187,113 +350,7 @@ tape('ActiveComponent.prototype.mergeDesign[3](design)', (t) => {
   });
 });
 
-tape('ActiveComponent.prototype.pasteThing[1]', (t) => {
-  t.plan(3);
-  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-01');
-  fse.removeSync(folder);
-  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
-  const platform = {};
-  const userconfig = {};
-  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
-  const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
-      if (err) {
- throw err;
-}
-      fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
-        if (err) {
- throw err;
-}
-        const el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
-        const pasteable1 = el1.clip({from: 'test'});
-        return ac0.pasteThings([pasteable1], {}, {from: 'test'}, (err) => {
-          t.error(err, 'no err from paste');
-          t.equal(ac0.getReifiedBytecode().template.children[1].attributes['haiku-id'], `${mana.attributes['haiku-id']}`);
-          t.ok(ac0.getReifiedBytecode().timelines.Default[`haiku:${mana.attributes['haiku-id']}`]);
-          fse.removeSync(folder);
-        });
-      });
-    });
-  });
-});
-
-tape('ActiveComponent.prototype.pasteThing[1]', (t) => {
-  t.plan(3);
-  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-01');
-  fse.removeSync(folder);
-  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
-  const platform = {};
-  const userconfig = {};
-  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
-  const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
-      if (err) {
- throw err;
-}
-      fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
-        if (err) {
- throw err;
-}
-        const el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
-        const pasteable1 = el1.clip({from: 'test'});
-        return ac0.pasteThings([pasteable1], {}, {from: 'test'}, (err) => {
-          t.error(err, 'no err from paste');
-          t.equal(ac0.getReifiedBytecode().template.children[1].attributes['haiku-id'], `${mana.attributes['haiku-id']}`);
-          t.ok(ac0.getReifiedBytecode().timelines.Default[`haiku:${mana.attributes['haiku-id']}`]);
-          fse.removeSync(folder);
-        });
-      });
-    });
-  });
-});
-
-tape('ActiveComponent.prototype.pasteThing[2]', (t) => {
-  t.plan(2);
-  const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'paste-02');
-  fse.removeSync(folder);
-  const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
-  const platform = {};
-  const userconfig = {};
-  const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
-  const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
-      if (err) {
- throw err;
-}
-      fse.outputFileSync(path.join(folder, 'designs/Path.svg'), PATH_SVG_1);
-      const ac0 = project.getCurrentActiveComponent();
-      let el0, el1;
-      return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
-        if (err) {
- throw err;
-}
-        el0 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
-        return ac0.instantiateComponent('designs/Path.svg', {}, {from: 'test'}, (err, mana) => {
-          if (err) {
- throw err;
-}
-          el1 = ac0.findElementByComponentId(mana.attributes['haiku-id']);
-          const pasteables = [el0.clip({from: 'test'}), el1.clip({from: 'test'})];
-          return ac0.pasteThings(pasteables, {}, {from: 'test'}, (err) => {
-            t.error(err, 'no err from paste');
-            t.is(ac0.getReifiedBytecode().template.children.length, 4, 'elements were multipasted');
-            fse.removeSync(folder);
-          });
-        });
-      });
-    });
-  });
-});
-
-tape('ActiveComponent.prototype.batchUpsertEventHandlers[1]', (t) => {
-  t.plan(1);
+test('ActiveComponent.prototype.batchUpsertEventHandlers[1]', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'BUEH-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -301,20 +358,29 @@ tape('ActiveComponent.prototype.batchUpsertEventHandlers[1]', (t) => {
   const userconfig = {};
   const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      const ac0 = project.getCurrentActiveComponent();
-      const haikuId = ac0.getArtboard().getElementHaikuId();
-      const selectorName = `haiku:${haikuId}`;
-      return ac0.batchUpsertEventHandlers(selectorName, SERIALIZED_EVENTS, {from: 'test'}, (err) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        t.equal(typeof ac0.getReifiedBytecode().eventHandlers[selectorName].click.handler, 'function', 'handler is fn');
-        fse.removeSync(folder);
+        const ac0 = project.getCurrentActiveComponent();
+        const haikuId = ac0.getArtboard().getElementHaikuId();
+        const selectorName = `haiku:${haikuId}`;
+        ac0.batchUpsertEventHandlers(selectorName, SERIALIZED_EVENTS, {from: 'test'}, (err) => {
+          if (err) {
+ reject(err);
+return;
+}
+          expect(typeof ac0.getReifiedBytecode().eventHandlers[selectorName].click.handler).toBe('function');
+          fse.removeSync(folder);
+          resolve();
+        });
       });
     });
   });

@@ -1,13 +1,11 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const Project = require('./../../src/bll/Project');
-const Element = require('./../../src/bll/Element');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import Project from '../../src/bll/Project.js';
+import Element from '../../src/bll/Element.js';
 
 const TEXT_SVG = `<svg><text font-family="DontKnowDontCare" font-size="12">Hello friend.</text></svg>`;
 
-tape('File.readMana', (t) => {
-  t.plan(3);
+test('File.readMana', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'file-readmana-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -15,29 +13,36 @@ tape('File.readMana', (t) => {
   const userconfig = {};
   const fileOptions = {doWriteToDisk: true, skipDiffLogging: true};
   const envoyOptions = {mock: true};
-  return Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
       if (err) {
- throw err;
+ reject(err);
+return;
 }
-      fse.outputFileSync(path.join(folder, 'designs/Text.svg'), TEXT_SVG);
-      const ac0 = project.getCurrentActiveComponent();
-      return ac0.instantiateComponent('designs/Text.svg', {}, {from: 'test'}, (err, mana) => {
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
         if (err) {
- throw err;
+ reject(err);
+return;
 }
-        const timelineProperties = ac0
-          .fetchActiveBytecodeFile()
-          .getReifiedBytecode()
-          .timelines.Default[`haiku:${mana.children[0].attributes['haiku-id']}`];
-        t.deepEqual(timelineProperties.content, {0: {value: 'Hello friend.'}}, 'svg text content is transcluded');
-        t.deepEqual(timelineProperties.fontSize, {0: {value: 12}}, 'most svg text attributes are parsed');
-        t.deepEqual(
-          timelineProperties.fontFamily,
-          {0: {value: 'Helvetica, Arial, sans-serif'}},
-          'svg font-family is clobbered with a default sans-serif chain',
-        );
-        fse.removeSync(folder);
+        fse.outputFileSync(path.join(folder, 'designs/Text.svg'), TEXT_SVG);
+        const ac0 = project.getCurrentActiveComponent();
+        ac0.instantiateComponent('designs/Text.svg', {}, {from: 'test'}, (err, mana) => {
+          if (err) {
+ reject(err);
+return;
+}
+          const timelineProperties = ac0
+            .fetchActiveBytecodeFile()
+            .getReifiedBytecode()
+            .timelines.Default[`haiku:${mana.children[0].attributes['haiku-id']}`];
+          expect(timelineProperties.content).toEqual({0: {value: 'Hello friend.'}});
+          expect(timelineProperties.fontSize).toEqual({0: {value: 12}});
+          expect(
+            timelineProperties.fontFamily,
+          ).toEqual({0: {value: 'Helvetica, Arial, sans-serif'}});
+          fse.removeSync(folder);
+          resolve();
+        });
       });
     });
   });

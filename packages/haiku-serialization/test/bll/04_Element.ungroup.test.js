@@ -1,11 +1,11 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const {getStub} = require('haiku-testing/lib/mock');
 
-const Project = require('../../src/bll/Project');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import { getStub } from 'haiku-testing/lib/mock';
 
-tape('Element.ungroup', (suite) => {
+import Project from '../../src/bll/Project.js';
+
+test('Element.ungroup', (suite) => {
   suite.test('svg.01', (test) => {
     const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'ungroup-svg-01');
     fse.removeSync(folder);
@@ -32,13 +32,13 @@ tape('Element.ungroup', (suite) => {
           </svg>`,
         );
         const ac0 = project.getCurrentActiveComponent();
-        test.ok(ac0, 'ac present');
+        test.toBeTruthy()ac0, 'ac present');
         return ac0.instantiateComponent('designs/rects.svg', {}, {from: 'test'}, (err, mana) => {
           if (err) {
             throw err;
           }
           const element = ac0.findElementByComponentId(mana.attributes['haiku-id']);
-          test.ok(element, 'element present');
+          test.toBeTruthy()element, 'element present');
           const template = ac0.fetchActiveBytecodeFile().getReifiedDecycledBytecode().template;
           let counter = 0;
           element.getHaikuElement().visit((descendantHaikuElement) => {
@@ -60,7 +60,7 @@ tape('Element.ungroup', (suite) => {
               test.is(node.children[0].children[0].elementName, 'path', `path was transcluded in defs (${index})`);
               test.is(node.children[1].elementName, 'g', `shim group was created to shim layout (${index})`);
             });
-            test.deepEqual(
+            test.toEqual(
               defaultTimeline[`haiku:${template.children[0].children[1].attributes['haiku-id']}`],
               {'translation.x': {0: {value: -100}}},
               'shim group was offset by the expected amount',
@@ -70,7 +70,7 @@ tape('Element.ungroup', (suite) => {
               template.children[1].children[0].children[0].attributes['haiku-id'],
               'children of defs have different IDs',
             );
-            test.end();
+            tes
           });
         });
       });

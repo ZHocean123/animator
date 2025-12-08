@@ -1,74 +1,63 @@
-const tape = require('tape');
-const Changelog = require('./../../src/bll/Changelog');
+import Changelog from '../../src/bll/Changelog.js';
 
-tape('Changelog.readSingleChangelog reads and parses a single changelog file', async (t) => {
-  t.plan(2);
-
+test('Changelog.readSingleChangelog reads and parses a single changelog file', async () => {
   try {
     const changelogManager = new Changelog('0.0.0', 'test/fixtures/changelog/');
     const changelog = await changelogManager.readSingleChangelog('1.2.3.json');
-    t.equal(typeof changelog, 'object');
-    t.equal(changelog.version, '1.2.3');
+    expect(typeof changelog).toBe('object');
+    expect(changelog.version).toBe('1.2.3');
   } catch (e) {
-    t.error(e);
+    expect(e).toBeUndefined();
   }
 });
 
-tape('Changelog.readChangelogs reads and parses changelogs in a directory', async (t) => {
-  t.plan(3);
-
+test('Changelog.readChangelogs reads and parses changelogs in a directory', async () => {
   try {
     const changelogManager = new Changelog('0.0.0', 'test/fixtures/changelog/');
     const changelogs = await changelogManager.readChangelogs();
-    t.ok(Array.isArray(changelogs));
-    t.equal(changelogs.length, 3);
-    t.equal(typeof changelogs[0], 'object');
+    expect(Array.isArray(changelogs)).toBeTruthy();
+    expect(changelogs.length).toBe(3);
+    expect(typeof changelogs[0]).toBe('object');
   } catch (e) {
-    t.error(e);
+    expect(e).toBeUndefined();
   }
 });
 
-tape('Changelog.readChangelogs returns changelogs ordered by version', async (t) => {
-  t.plan(3);
-
+test('Changelog.readChangelogs returns changelogs ordered by version', async () => {
   try {
     const changelogManager = new Changelog('0.0.0', 'test/fixtures/changelog/');
     const changelogs = await changelogManager.readChangelogs();
-    t.equal(changelogs[0].version, '1.2.3');
-    t.equal(changelogs[1].version, '1.2.11');
-    t.equal(changelogs[2].version, '4.3.2');
+    expect(changelogs[0].version).toBe('1.2.3');
+    expect(changelogs[1].version).toBe('1.2.11');
+    expect(changelogs[2].version).toBe('4.3.2');
   } catch (e) {
-    t.error(e);
+    expect(e).toBeUndefined();
   }
 });
 
-tape('Changelog.readChangelogs uses the current version by default if no version is provided', async (t) => {
-  t.plan(3);
-
+test('Changelog.readChangelogs uses the current version by default if no version is provided', async () => {
   try {
     const changelogManager = new Changelog(null, 'test/fixtures/changelog/');
     const changelog = await changelogManager.getChangelog();
 
-    t.equal(changelog.version, '4.3.2');
-    t.ok(changelog.sections.Fixes);
-    t.ok(changelog.sections['What\'s new']);
+    expect(changelog.version).toBe('4.3.2');
+    expect(changelog.sections.Fixes).toBeTruthy();
+    expect(changelog.sections['What\'s new']).toBeTruthy();
   } catch (e) {
-    t.error(e);
+    expect(e).toBeUndefined();
   }
 });
 
-tape('Changelog.readChangelogs returns an aggregated changelog with the correct versions if a prior version is provided', async (t) => {
-  t.plan(4);
-
+test('Changelog.readChangelogs returns an aggregated changelog with the correct versions if a prior version is provided', async () => {
   try {
     const changelogManager = new Changelog('1.2.3', 'test/fixtures/changelog/');
     const changelog = await changelogManager.getChangelog();
 
-    t.equal(changelog.version, '4.3.2');
-    t.ok(changelog.sections.Fixes.indexOf('Fix: 1.2.11 fixes') !== -1);
-    t.ok(changelog.sections['What\'s new']);
-    t.notOk(changelog.sections['1.2.3 Heading']);
+    expect(changelog.version).toBe('4.3.2');
+    expect(changelog.sections.Fixes.indexOf('Fix: 1.2.11 fixes')).toBeGreaterThan(-1);
+    expect(changelog.sections['What\'s new']).toBeTruthy();
+    expect(changelog.sections['1.2.3 Heading']).toBeFalsy();
   } catch (e) {
-    t.error(e);
+    expect(e).toBeUndefined();
   }
 });

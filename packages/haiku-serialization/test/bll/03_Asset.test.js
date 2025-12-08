@@ -1,7 +1,6 @@
-const test = require('tape');
-const path = require('path');
-const Asset = require('./../../src/bll/Asset');
-const {PHONY_FIGMA_FILE} = require('./../../src/bll/Figma');
+import path from 'path';
+import Asset from '../../src/bll/Asset.js';
+import {PHONY_FIGMA_FILE} from '../../src/bll/Figma.js';
 
 const PROJECT_MODEL_STUB = {
   getFolder: () => {
@@ -64,23 +63,22 @@ const mockAssets = () => {
   });
 };
 
-test('Asset.assetsToDirectoryStructure', (t) => {
+test('Asset.assetsToDirectoryStructure', () => {
   const assets = mockAssets();
 
-  t.ok(assets[0], 'asset exists');
+  expect(assets[0]).toBeTruthy();
 
   const idx = 0;
 
-  t.equal(assets[idx].kind, 'folder', 'base asset is folder');
-  t.equal(assets[idx].type, 'container', 'base asset is container');
-  t.equal(assets[idx].children.length, 1, 'base asset has ok children');
-  t.equal(assets[idx].children[0].kind, 'component', 'first child asset is component');
-  t.equal(assets[idx].children[0].type, 'file', 'child asset is file');
-  t.equal(assets[idx].dump(), 'code\n  code/foo_svg/code.js', 'tree looks ok');
-  t.end();
+  expect(assets[idx].kind).toBe('folder');
+  expect(assets[idx].type).toBe('container');
+  expect(assets[idx].children.length).toBe(1);
+  expect(assets[idx].children[0].kind).toBe('component');
+  expect(assets[idx].children[0].type).toBe('file');
+  expect(assets[idx].dump()).toBe('code\n  code/foo_svg/code.js');
 });
 
-test('Asset.assetsToDirectoryStructure detects sketch assets without exported SVG files', (t) => {
+test('Asset.assetsToDirectoryStructure detects sketch assets without exported SVG files', () => {
   const assets = Asset.ingestAssets(PROJECT_MODEL_STUB, {
     'designs/TEST.sketch': {
       relpath: 'designs/TEST.sketch',
@@ -89,9 +87,8 @@ test('Asset.assetsToDirectoryStructure detects sketch assets without exported SV
     },
   });
 
-  t.equal(assets[1].children.length, 1, 'base asset has a child');
-  t.equal(assets[1].children[0].kind, 'sketch', 'child asset is sketch');
-  t.end();
+  expect(assets[1].children.length).toBe(1);
+  expect(assets[1].children[0].kind).toBe('sketch');
 });
 
 test('Asset.getAssetInfo', (t) => {

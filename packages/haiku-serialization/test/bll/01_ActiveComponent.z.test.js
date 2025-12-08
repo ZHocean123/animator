@@ -1,18 +1,17 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const async = require('async');
 
-const Project = require('./../../src/bll/Project');
-const File = require('./../../src/bll/File');
-const Element = require('./../../src/bll/Element');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import async from 'async';
+
+import Project from './../../src/bll/Project.js';
+import File from './../../src/bll/File.js';
+import Element from './../../src/bll/Element.js';
 
 const waitUntilFileProbablyWroteToDisk = (fn) => {
   return setTimeout(fn, 2000); // Disk writes happen on a 500ms interval
 };
 
-tape('ActiveComponent.prototype.instantiateComponent-with-z', (t) => {
-  t.plan(6);
+test('ActiveComponent.prototype.instantiateComponent-with-z', (t) => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'instantiate-with-z-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -32,39 +31,38 @@ tape('ActiveComponent.prototype.instantiateComponent-with-z', (t) => {
           return ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, cb);
         },
         (cb) => {
-          t.deepEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}]); return cb();
+          t.toEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}]); return cb();
         },
         (cb) => {
           return ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, cb);
         },
         (cb) => {
-          t.deepEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}]); return cb();
+          t.toEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}]); return cb();
         },
         (cb) => {
           return ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, cb);
         },
         (cb) => {
-          t.deepEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}]); return cb();
+          t.toEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}]); return cb();
         },
         (cb) => {
           return ac0.instantiateComponent('designs/Circle.svg', {}, {from: 'test'}, cb);
         },
         (cb) => {
-          t.deepEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}, {zIndex: 4, haikuId: 'Circle-e176f05781147ca7'}]); return cb();
+          t.toEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}, {zIndex: 4, haikuId: 'Circle-e176f05781147ca7'}]); return cb();
         },
         (cb) => {
           return ac0.zMoveBackward('a1ace0824b5d', 'Default', 0, {from: 'test'}, cb);
         },
         (cb) => {
-          t.deepEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}, {zIndex: 4, haikuId: 'Circle-e176f05781147ca7'}]); return cb();
+          t.toEqual(ac0.getRawStackingInfo('Default', 0), [{zIndex: 1, haikuId: 'Circle-c6c7407a1b09588e'}, {zIndex: 2, haikuId: 'Circle-21d1ab9f688d6255'}, {zIndex: 3, haikuId: 'Circle-d6c581ca76e44f6f'}, {zIndex: 4, haikuId: 'Circle-e176f05781147ca7'}]); return cb();
         },
       ], (err) => {
         if (err) {
           throw err;
         }
         fse.removeSync(folder);
-        t.ok(true);
-        t.end();
+        t.toBeTruthy()true);
       });
     });
   });

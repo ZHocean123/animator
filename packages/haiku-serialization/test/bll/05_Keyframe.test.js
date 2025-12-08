@@ -1,143 +1,141 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const async = require('async');
-const Project = require('./../../src/bll/Project');
-const Keyframe = require('./../../src/bll/Keyframe');
 
-tape('Keyframe.01', (t) => {
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import async from 'async';
+import Project from './../../src/bll/Project.js';
+import Keyframe from './../../src/bll/Keyframe.js';
+
+test('Keyframe.01', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
-  t.plan(44);
   return setupTest('keyframe-01', (err, ac, rows, done) => {
     if (err) {
       throw err;
     }
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
     const kfs = rows[2].getKeyframes();
 
     // I am able to select a single keyframe by clicking on it
     fireClick(kfs[0], false);
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
 
     // I am able to deselect a single keyframe by clicking elsewhere
     fireClick(kfs[1], false);
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[1], 'kf1 selected');
-    t.ok(!kfs[0].isSelected(), 'kf0 unselected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[1], 'kf1 selected');
+    t.toBeTruthy()!kfs[0].isSelected(), 'kf0 unselected');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // I am able to select multiple keyframes holding the `shift` key
     fireClick(kfs[0], false, {shift: true});
     fireClick(kfs[1], false, {shift: true});
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 2, '2 kfs selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[1], kfs[1], 'kf1 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 2, '2 kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
+    expect(Keyframe.where({_selected: true, component: ac})[1], kfs[1], 'kf1 selected');
 
     // I am able to deselect multiple keyframes by clicking elsewhere
     fireClick(kfs[2], false);
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kf selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[2], 'kf2 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kf selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[2], 'kf2 selected');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // I am able to deselect a previously selected keyframe holding `shift` and clicking on it
     fireClick(kfs[0], false, {shift: true});
     fireClick(kfs[1], false, {shift: true});
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 2, '2 kfs selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[1], kfs[1], 'kf1 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 2, '2 kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
+    expect(Keyframe.where({_selected: true, component: ac})[1], kfs[1], 'kf1 selected');
     fireClick(kfs[1], false, {shift: true});
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kfs selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[0], 'kf0 selected');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // I am able to select a single segment by clicking on it
     fireClick(kfs[1], true);
-    t.ok(kfs[1].isSelected(), 'kfc selected');
-    t.ok(kfs[1].isSelectedBody(), 'kfc selected');
+    t.toBeTruthy()kfs[1].isSelected(), 'kfc selected');
+    t.toBeTruthy()kfs[1].isSelectedBody(), 'kfc selected');
 
     // I am able to deselect a single segment by clicking elsewhere
     fireClick(kfs[0]);
-    t.ok(!kfs[1].isSelected(), 'orig kfc not selected');
-    t.ok(!kfs[1].isSelectedBody(), 'orig kfc not selected');
+    t.toBeTruthy()!kfs[1].isSelected(), 'orig kfc not selected');
+    t.toBeTruthy()!kfs[1].isSelectedBody(), 'orig kfc not selected');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // I am able to select multiple segments holding the `shift` key
     fireClick(kfs[0], true, {shift: true});
     fireClick(kfs[1], true, {shift: true});
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 3, '3 kfs selected');
-    t.ok(kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
-    t.ok(kfs[1].isSelected() && kfs[1].isSelectedBody(), 'kf1 selected and on body');
-    t.ok(kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 3, '3 kfs selected');
+    t.toBeTruthy()kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
+    t.toBeTruthy()kfs[1].isSelected() && kfs[1].isSelectedBody(), 'kf1 selected and on body');
+    t.toBeTruthy()kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 selected');
 
     // I am able to deselect multiple segments by clicking elsewhere
     fireClick(kfs[3], false);
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kf selected');
-    t.equal(Keyframe.where({_selected: true, component: ac})[0], kfs[3], 'kf2 selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 1, '1 kf selected');
+    expect(Keyframe.where({_selected: true, component: ac})[0], kfs[3], 'kf2 selected');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // I am able to deselect a previously selected segment holding `shift` and clicking on it
     fireClick(kfs[0], true, {shift: true});
     fireClick(kfs[1], true, {shift: true});
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 3, '3 kfs selected');
-    t.ok(kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
-    t.ok(kfs[1].isSelected() && kfs[1].isSelectedBody(), 'kf1 selected and on body');
-    t.ok(kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 selected by adjacency');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 3, '3 kfs selected');
+    t.toBeTruthy()kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
+    t.toBeTruthy()kfs[1].isSelected() && kfs[1].isSelectedBody(), 'kf1 selected and on body');
+    t.toBeTruthy()kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 selected by adjacency');
     fireClick(kfs[1], true, {shift: true});
-    t.ok(kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
-    t.ok(kfs[1].isSelected() && !kfs[1].isSelectedBody(), 'kf1 body not selected'); // *--*__*
-    t.ok(kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 still selected'); // *--*__*
+    t.toBeTruthy()kfs[0].isSelected() && kfs[0].isSelectedBody(), 'kf0 selected and on body');
+    t.toBeTruthy()kfs[1].isSelected() && !kfs[1].isSelectedBody(), 'kf1 body not selected'); // *--*__*
+    t.toBeTruthy()kfs[2].isSelected() && !kfs[2].isSelectedBody(), 'kf2 still selected'); // *--*__*
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // If three keyframes are selected I can deselect the leftmost
     fireClick(kfs[1], false, {shift: true});
     fireClick(kfs[2], false, {shift: true});
     fireClick(kfs[3], false, {shift: true});
     fireClick(kfs[1], false, {shift: true});
-    t.ok(!kfs[1].isSelected(), 'kf1 not sel');
-    t.ok(kfs[2].isSelected(), 'kf2 sel');
-    t.ok(kfs[3].isSelected(), 'kf3 sel');
+    t.toBeTruthy()!kfs[1].isSelected(), 'kf1 not sel');
+    t.toBeTruthy()kfs[2].isSelected(), 'kf2 sel');
+    t.toBeTruthy()kfs[3].isSelected(), 'kf3 sel');
 
     Keyframe.deselectAndDeactivateAllKeyframes();
-    t.equal(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
+    expect(Keyframe.where({_selected: true, component: ac}).length, 0, 'no kfs selected');
 
     // If three keyframes are selected I can deselect the rightmost
     fireClick(kfs[1], false, {shift: true});
     fireClick(kfs[2], false, {shift: true});
     fireClick(kfs[3], false, {shift: true});
     fireClick(kfs[3], false, {shift: true});
-    t.ok(kfs[1].isSelected(), 'kf1 sel');
-    t.ok(kfs[2].isSelected(), 'kf2 sel');
-    t.ok(!kfs[3].isSelected(), 'kf3 not sel');
+    t.toBeTruthy()kfs[1].isSelected(), 'kf1 sel');
+    t.toBeTruthy()kfs[2].isSelected(), 'kf2 sel');
+    t.toBeTruthy()!kfs[3].isSelected(), 'kf3 not sel');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
   });
 });
 
-tape('Keyframe.02', (t) => {
+test('Keyframe.02', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
-  t.plan(6);
   return setupTest('keyframe-02', (err, ac, rows, done) => {
     if (err) {
       throw err;
     }
     const kfs = rows[2].getKeyframes();
     // When I drag the keyframe at frame 0 a newly keyframe is created at frame 0
-    t.equal(kfs[0].getMs(), 0, 'ms ok to begin');
-    t.equal(rows[2].getKeyframes().length, 6, '6 kfs to start');
+    expect(kfs[0].getMs(), 0, 'ms ok to begin');
+    expect(rows[2].getKeyframes().length, 6, '6 kfs to start');
     kfs[0].moveTo(50, 16.666);
     ac.commitAccumulatedKeyframeMovesDebounced();
 
@@ -152,14 +150,14 @@ tape('Keyframe.02', (t) => {
       once = true;
 
       const kfs2 = rows[2].getKeyframes();
-      t.equal(kfs2.length, 7, 'more kfs');
-      t.equal(kfs2[0].getMs(), 0, 'new kf at 0 ok');
-      t.equal(kfs2[1].getMs(), 50, 'kf moved ok');
+      expect(kfs2.length, 7, 'more kfs');
+      expect(kfs2[0].getMs(), 0, 'new kf at 0 ok');
+      expect(kfs2[1].getMs(), 50, 'kf moved ok');
 
       // I can add a curve to a keyframe that was dragged from zeroth
       fireClick(kfs2[1], true);
       ac.joinSelectedKeyframes('linear', {from: 'timeline'});
-      t.equal(kfs2[1].getCurve(), 'linear', 'curve is ok');
+      expect(kfs2[1].getCurve(), 'linear', 'curve is ok');
 
       process.env.HAIKU_SUBPROCESS = subproc;
       done();
@@ -167,16 +165,15 @@ tape('Keyframe.02', (t) => {
   });
 });
 
-tape('Keyframe.03', (t) => {
+test('Keyframe.03', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
-  t.plan(2);
   return setupTest('keyframe-03', (err, ac, rows, done) => {
     if (err) {
       throw err;
     }
     const kfs = rows[2].getKeyframes();
-    t.equal(kfs.length, 6, 'kfs len ok');
+    expect(kfs.length, 6, 'kfs len ok');
 
     // I am able to delete a keyframe
     let once = true;
@@ -189,7 +186,7 @@ tape('Keyframe.03', (t) => {
       }
       if (once) {
         once = false;
-        t.equal(row.getKeyframes().length, 5, 'kfs len ok after delete');
+        expect(row.getKeyframes().length, 5, 'kfs len ok after delete');
       }
     });
     rows[2].deleteKeyframe(kfs[2], {from: 'test'});
@@ -199,31 +196,29 @@ tape('Keyframe.03', (t) => {
   });
 });
 
-tape('Keyframe.04', (t) => {
+test('Keyframe.04', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
-  t.plan(3);
   return setupTest('keyframe-04', (err, ac, rows, done) => {
     if (err) {
       throw err;
     }
     const kfs = rows[2].getKeyframes();
     fireClick(kfs[0], false, {shift: false});
-    t.equal(ac.checkIfSelectedKeyframesAreMovableToZero(), false, 'the first keyframe cannot be moved to zero');
+    expect(ac.checkIfSelectedKeyframesAreMovableToZero(), false, 'the first keyframe cannot be moved to zero');
     fireClick(kfs[1], false, {shift: false});
-    t.equal(ac.checkIfSelectedKeyframesAreMovableToZero(), true, 'the first non-zero keyframe can be moved to zero');
+    expect(ac.checkIfSelectedKeyframesAreMovableToZero(), true, 'the first non-zero keyframe can be moved to zero');
     fireClick(kfs[2], false, {shift: false});
-    t.equal(ac.checkIfSelectedKeyframesAreMovableToZero(), false, 'any other keyframe cannot be moved to zero');
+    expect(ac.checkIfSelectedKeyframesAreMovableToZero(), false, 'any other keyframe cannot be moved to zero');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
   });
 });
 
-tape('Keyframe.05', (t) => {
+test('Keyframe.05', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
-  t.plan(2);
   return setupTest('keyframe-05', (err, ac, rows, done) => {
     if (err) {
       throw err;
@@ -245,8 +240,8 @@ tape('Keyframe.05', (t) => {
       once = true;
       const kfs2 = rows[2].getKeyframes();
 
-      t.equal(kfs2[0].value, cachedValue, 'newly created keyframe at zero has initial value by default');
-      t.equal(kfs2[1].value, cachedValue, 'moved keyframe keeps its value');
+      expect(kfs2[0].value, cachedValue, 'newly created keyframe at zero has initial value by default');
+      expect(kfs2[1].value, cachedValue, 'moved keyframe keeps its value');
 
       process.env.HAIKU_SUBPROCESS = subproc;
       done();
@@ -254,7 +249,7 @@ tape('Keyframe.05', (t) => {
   });
 });
 
-tape('Keyframe.06', (t) => {
+test('Keyframe.06', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   return setupTest('keyframe-06', (err, ac, rows, done) => {
@@ -264,23 +259,22 @@ tape('Keyframe.06', (t) => {
     const kfs = rows[2].getKeyframes();
     const selection = [kfs[0], kfs[1]];
 
-    t.notOk(Keyframe.groupIsSingleTween([kfs[0]]), 'returns false if only one keyframe is selected');
-    t.notOk(Keyframe.groupIsSingleTween([kfs[0], kfs[1], kfs[2]]), 'returns false if more than two keyframes are selected');
-    t.notOk(Keyframe.groupIsSingleTween([kfs[0], kfs[3]]), 'returns false if the keyframes are not next to each other');
+    t.toBeFalsy()Keyframe.groupIsSingleTween([kfs[0]]), 'returns false if only one keyframe is selected');
+    t.toBeFalsy()Keyframe.groupIsSingleTween([kfs[0], kfs[1], kfs[2]]), 'returns false if more than two keyframes are selected');
+    t.toBeFalsy()Keyframe.groupIsSingleTween([kfs[0], kfs[3]]), 'returns false if the keyframes are not next to each other');
     selection[0].curve = 'linear';
-    t.ok(Keyframe.groupIsSingleTween(selection), 'returns true if there is a tween between the two provided keyframes');
+    t.toBeTruthy()Keyframe.groupIsSingleTween(selection), 'returns true if there is a tween between the two provided keyframes');
 
     selection[0].curve = null;
 
-    t.notOk(Keyframe.groupIsSingleTween(selection), 'returns false if there is not a tween between the keyframes');
+    t.toBeFalsy()Keyframe.groupIsSingleTween(selection), 'returns false if there is not a tween between the keyframes');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
-    t.end();
   });
 });
 
-tape('Keyframe.07', (t) => {
+test('Keyframe.07', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   return setupTest('keyframe-07', (err, ac, rows, done) => {
@@ -321,11 +315,10 @@ tape('Keyframe.07', (t) => {
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
-    t.end();
   });
 });
 
-tape('Keyframe.08', (t) => {
+test('Keyframe.08', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   return setupTest('keyframe-07', (err, ac, rows, done) => {
@@ -335,24 +328,23 @@ tape('Keyframe.08', (t) => {
     const kf = rows[2].getKeyframes()[0];
 
     kf.curve = 'linear';
-    t.equal(kf.getCurveCapitalized(), 'Linear', 'capitalizes defined curves');
+    expect(kf.getCurveCapitalized(), 'Linear', 'capitalizes defined curves');
 
     kf.curve = 'easeInOut';
-    t.equal(kf.getCurveCapitalized(), 'EaseInOut', 'capitalizes defined curves');
+    expect(kf.getCurveCapitalized(), 'EaseInOut', 'capitalizes defined curves');
 
     kf.curve = [0, 0.3, 0.2, 1];
-    t.equal(kf.getCurveCapitalized(), 'Custom', 'returns "Custom" when a curve is defined by an array');
+    expect(kf.getCurveCapitalized(), 'Custom', 'returns "Custom" when a curve is defined by an array');
 
     kf.curve = null;
-    t.equal(kf.getCurveCapitalized(), '', 'returns an empty string when a curve is not defined');
+    expect(kf.getCurveCapitalized(), '', 'returns an empty string when a curve is not defined');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
-    t.end();
   });
 });
 
-tape('Keyframe.09', (t) => {
+test('Keyframe.09', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   return setupTest('keyframe-09', (err, ac, rows, done) => {
@@ -362,26 +354,25 @@ tape('Keyframe.09', (t) => {
     const kf = rows[2].getKeyframes()[0];
 
     kf.curve = null;
-    t.equal(kf.hasCurveBody(), false, '#hasCurveBody returns false if the keyframe does not have a curve');
+    expect(kf.hasCurveBody(), false, '#hasCurveBody returns false if the keyframe does not have a curve');
 
     kf.curve = 'null';
-    t.equal(kf.hasCurveBody(), false, '#hasCurveBody returns false for invalid curve strings');
+    expect(kf.hasCurveBody(), false, '#hasCurveBody returns false for invalid curve strings');
     kf.curve = 'invalidcurve';
-    t.equal(kf.hasCurveBody(), false, '#hasCurveBody returns false for invalid curve strings');
+    expect(kf.hasCurveBody(), false, '#hasCurveBody returns false for invalid curve strings');
 
     kf.curve = [0, 0.3, 0.2, 1];
-    t.equal(kf.hasCurveBody(), true, '#hasCurveBody returns true for array-defined curves');
+    expect(kf.hasCurveBody(), true, '#hasCurveBody returns true for array-defined curves');
 
     kf.curve = 'linear';
-    t.equal(kf.hasCurveBody(), true, '#hasCurveBody returns true for a valid curve string');
+    expect(kf.hasCurveBody(), true, '#hasCurveBody returns true for a valid curve string');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
-    t.end();
   });
 });
 
-tape('Keyframe.10', (t) => {
+test('Keyframe.10', (t) => {
   const subproc = process.env.HAIKU_SUBPROCESS;
   process.env.HAIKU_SUBPROCESS = 'timeline';
   return setupTest('keyframe-09', (err, ac, rows, done) => {
@@ -391,20 +382,19 @@ tape('Keyframe.10', (t) => {
     const kf = rows[2].getKeyframes()[0];
 
     kf.curve = null;
-    t.equal(kf.getCurveInterpolationPoints(), undefined, '#getCurveInterpolationPoints returns undefined if the curve is not valid');
+    expect(kf.getCurveInterpolationPoints(), undefined, '#getCurveInterpolationPoints returns undefined if the curve is not valid');
 
     kf.curve = 'null';
-    t.equal(kf.getCurveInterpolationPoints(), undefined, '#getCurveInterpolationPoints returns undefined if the curve is not valid');
+    expect(kf.getCurveInterpolationPoints(), undefined, '#getCurveInterpolationPoints returns undefined if the curve is not valid');
 
     kf.curve = [0, 0.3, 0.2, 1];
-    t.equal(kf.getCurveInterpolationPoints(), kf.curve, '#getCurveInterpolationPoints returns the same curve definition if the curve is already interpolated');
+    expect(kf.getCurveInterpolationPoints(), kf.curve, '#getCurveInterpolationPoints returns the same curve definition if the curve is already interpolated');
 
     kf.curve = 'linear';
-    t.deepEqual(kf.getCurveInterpolationPoints(), [0, 0, 1, 1], '#getCurveInterpolationPoints returns an array if ');
+    t.toEqual(kf.getCurveInterpolationPoints(), [0, 0, 1, 1], '#getCurveInterpolationPoints returns an array if ');
 
     process.env.HAIKU_SUBPROCESS = subproc;
     done();
-    t.end();
   });
 });
 

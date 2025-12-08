@@ -1,10 +1,8 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const Project = require('./../../src/bll/Project');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import Project from '../../src/bll/Project.js';
 
-tape('Project', (t) => {
-  t.plan(16);
+test('Project', async () => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'project-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -12,31 +10,42 @@ tape('Project', (t) => {
   const userconfig = {};
   const fileOptions = {doWriteToDisk: true, skipDiffLogging: false};
   const envoyOptions = {mock: true};
-  Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
-    t.error(err, 'no err proj setup');
-    return project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
-      t.error(err, 'no error setting ac');
-      t.deepEqual(project.getMetadata(), {from: 'test', alias: 'test'});
-      t.deepEqual(project.getFileOptions(), fileOptions);
-      t.deepEqual(project.getEnvoyOptions(), envoyOptions);
-      t.deepEqual(project.getFolder(), folder);
-      t.deepEqual(project.getAlias(), 'test');
-      t.true(project.buildFileUid('foo/bar/baz.js').endsWith('haiku-serialization/test/fixtures/projects/project-01/foo/bar/baz.js'));
-      t.ok(project.getPlatform().haiku.registry[project.buildFileUid('code/main/code.js')]);
-      t.ok(project.getEnvoyClient());
-      websocket.send = () => {};
+  await new Promise((resolve, reject) => {
+    Project.setup(folder, 'test', websocket, platform, userconfig, fileOptions, envoyOptions, (err, project) => {
+      if (err) {
+ reject(err);
+return;
+}
+      project.setCurrentActiveComponent('main', {from: 'test'}, (err) => {
+        if (err) {
+ reject(err);
+return;
+}
+        expect(project.getMetadata()).toEqual({from: 'test', alias: 'test'});
+        expect(project.getFileOptions()).toEqual(fileOptions);
+        expect(project.getEnvoyOptions()).toEqual(envoyOptions);
+        expect(project.getFolder()).toEqual(folder);
+        expect(project.getAlias()).toBe('test');
+        expect(project.buildFileUid('foo/bar/baz.js').endsWith('haiku-serialization/test/fixtures/projects/project-01/foo/bar/baz.js')).toBeTruthy();
+        expect(project.getPlatform().haiku.registry[project.buildFileUid('code/main/code.js')]).toBeTruthy();
+        expect(project.getEnvoyClient()).toBeTruthy();
+        websocket.send = () => {};
 
-      const ac1 = project.findActiveComponentBySceneName('main');
-      t.ok(ac1);
-      const ac2 = project.getCurrentActiveComponent();
-      t.ok(ac2);
+        const ac1 = project.findActiveComponentBySceneName('main');
+        expect(ac1).toBeTruthy();
+        const ac2 = project.getCurrentActiveComponent();
+        expect(ac2).toBeTruthy();
 
-      project.setCurrentActiveComponent('meow_meow', {from: 'test'}, (err, ac) => {
-        t.error(err, 'no error creating + setting ac');
-        t.ok(ac, 'ac created is present');
-        t.equal(ac.getReifiedBytecode().metadata.relpath, 'code/meow_meow/code.js', 'ac created relpath is ok');
-        fse.removeSync(folder);
-        t.ok(true, 'finished');
+        project.setCurrentActiveComponent('meow_meow', {from: 'test'}, (err, ac) => {
+          if (err) {
+ reject(err);
+return;
+}
+          expect(ac).toBeTruthy();
+          expect(ac.getReifiedBytecode().metadata.relpath).toBe('code/meow_meow/code.js');
+          fse.removeSync(folder);
+          resolve();
+        });
       });
     });
   });

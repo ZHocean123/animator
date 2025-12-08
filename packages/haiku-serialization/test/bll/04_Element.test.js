@@ -1,44 +1,47 @@
-const tape = require('tape');
-const path = require('path');
-const async = require('async');
-const fse = require('haiku-fs-extra');
-const Project = require('./../../src/bll/Project');
+import path from 'path';
+import async from 'async';
+import fse from 'haiku-fs-extra';
+import Project from '../../src/bll/Project.js';
 
-tape('Element', (t) => {
-  setupTest((ac, bytecode, done) => {
-    t.plan(11);
-    const el0 = ac.findElementByComponentId(bytecode.template.attributes['haiku-id']);
-    const a1 = el0.getCompleteAddressableProperties();
-    t.ok(a1, 'addressables are present');
-    t.ok(a1['translation.x'], 'standard prop present');
-    t.equal(a1['translation.x'].type, 'native');
-    t.equal(a1['translation.x'].name, 'translation.x');
-    t.equal(a1['translation.x'].prefix, 'translation');
-    t.equal(a1['translation.x'].suffix, 'x');
-    t.equal(a1['translation.x'].fallback, 0);
-    t.equal(a1['translation.x'].typedef, 'number');
-    t.equal(a1['translation.x'].mock, undefined);
-    t.equal(a1['translation.x'].value, undefined);
-    t.deepEqual(a1['translation.x'].cluster, {prefix: 'translation', name: 'Position'});
-    done();
+test('Element', async () => {
+  await new Promise((resolve, reject) => {
+    setupTest((ac, bytecode, done) => {
+      const el0 = ac.findElementByComponentId(bytecode.template.attributes['haiku-id']);
+      const a1 = el0.getCompleteAddressableProperties();
+      expect(a1).toBeTruthy();
+      expect(a1['translation.x']).toBeTruthy();
+      expect(a1['translation.x'].type).toBe('native');
+      expect(a1['translation.x'].name).toBe('translation.x');
+      expect(a1['translation.x'].prefix).toBe('translation');
+      expect(a1['translation.x'].suffix).toBe('x');
+      expect(a1['translation.x'].fallback).toBe(0);
+      expect(a1['translation.x'].typedef).toBe('number');
+      expect(a1['translation.x'].mock).toBeUndefined();
+      expect(a1['translation.x'].value).toBeUndefined();
+      expect(a1['translation.x'].cluster).toEqual({prefix: 'translation', name: 'Position'});
+      done();
+      resolve();
+    });
   });
 });
 
-tape('Element.buildClipboardPayload', (t) => {
-  setupTest((ac, bytecode, done) => {
-    const id = bytecode.template.attributes['haiku-id'];
-    const element = ac.findElementByComponentId(id);
-    ac.batchUpsertEventHandlers(`haiku:${id}`, SERIALIZED_EVENTS, {from: 'test'}, () => {
-      const payload = element.buildClipboardPayload();
+test('Element.buildClipboardPayload', async () => {
+  await new Promise((resolve, reject) => {
+    setupTest((ac, bytecode, done) => {
+      const id = bytecode.template.attributes['haiku-id'];
+      const element = ac.findElementByComponentId(id);
+      ac.batchUpsertEventHandlers(`haiku:${id}`, SERIALIZED_EVENTS, {from: 'test'}, () => {
+        const payload = element.buildClipboardPayload();
 
-      t.equal(payload.kind, 'bytecode', 'the payload returned must have a kind property with the correct value');
-      t.ok(payload.data.eventHandlers, 'they payload must contain the event handlers of the element');
-      t.ok(payload.data.eventHandlers[`haiku:${id}`].click);
-      t.ok(payload.data.eventHandlers[`haiku:${id}`].click.handler.__function, 'the payload contains the event handlers of the element serialized');
-      t.ok(payload.data.timelines, 'the payload must contain the timelines of the element');
-      t.ok(payload.data.template, 'the payload must contain the template of the element');
-      t.end();
-      done();
+        expect(payload.kind).toBe('bytecode');
+        expect(payload.data.eventHandlers).toBeTruthy();
+        expect(payload.data.eventHandlers[`haiku:${id}`].click).toBeTruthy();
+        expect(payload.data.eventHandlers[`haiku:${id}`].click.handler.__function).toBeTruthy();
+        expect(payload.data.timelines).toBeTruthy();
+        expect(payload.data.template).toBeTruthy();
+        done();
+        resolve();
+      });
     });
   });
 });

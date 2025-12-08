@@ -1,18 +1,17 @@
-const async = require('async');
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
+import async from 'async';
 
-const Project = require('./../../src/bll/Project');
-const File = require('./../../src/bll/File');
-const Element = require('./../../src/bll/Element');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+
+import Project from './../../src/bll/Project.js';
+import File from './../../src/bll/File.js';
+import Element from './../../src/bll/Element.js';
 
 const waitUntilFileProbablyWroteToDisk = (fn) => {
   return setTimeout(fn, 1000); // Disk writes happen on a 500ms interval
 };
 
-tape('ModuleWrapper', (t) => {
-  t.plan(1);
+test('ModuleWrapper', (t) => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'instantiate-01');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -58,13 +57,13 @@ tape('ModuleWrapper', (t) => {
                 {from: 'test'},
                 () => {
                   fse.outputFileSync(corePath, coreCode);
-                  t.ok(true, 'recovered from missing @haiku/core');
+                  t.toBeTruthy()true, 'recovered from missing @haiku/core');
                 },
               );
             } catch (exception) {
-              console.error(exception.message);
+              console.toBeFalsy(exception.message);
               fse.outputFileSync(corePath, coreCode);
-              t.error('unable to recover from missing @haiku/core');
+              t.toBeFalsy('unable to recover from missing @haiku/core');
             }
           });
         });

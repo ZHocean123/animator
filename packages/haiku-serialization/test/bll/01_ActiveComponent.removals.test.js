@@ -1,12 +1,11 @@
-const tape = require('tape');
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const async = require('async');
 
-const Project = require('./../../src/bll/Project');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import async from 'async';
 
-tape('ActiveComponent.removals[1]', (t) => {
-  t.plan(4);
+import Project from './../../src/bll/Project.js';
+
+test('ActiveComponent.removals[1]', (t) => {
   const folder = path.join(__dirname, '..', 'fixtures', 'projects', 'removals-1');
   fse.removeSync(folder);
   const websocket = {on: () => {}, send: () => {}, action: () => {}, connect: () => {}};
@@ -33,28 +32,27 @@ tape('ActiveComponent.removals[1]', (t) => {
         },
         (cb) => {
           const root = ac0.fetchRootElement();
-          t.equal(root.children.length, 3);
+          expect(root.children.length, 3);
           const cid = ac0.getReifiedBytecode().template.children[1].attributes['haiku-id'];
           return ac0.deleteComponents([cid], {from: 'test'}, cb);
         },
         (cb) => {
           const root = ac0.fetchRootElement();
-          t.equal(root.children.length, 2);
+          expect(root.children.length, 2);
           const remainingCids = ac0.getReifiedBytecode().template.children.map((node) => node.attributes['haiku-id']);
           return ac0.deleteComponents(remainingCids, {from: 'test'}, cb);
         },
         (cb) => {
           const root = ac0.fetchRootElement();
-          t.equal(root.children.length, 0);
+          expect(root.children.length, 0);
           return cb();
         },
       ], (err) => {
         if (err) {
           throw err;
         }
-        t.ok(true);
+        t.toBeTruthy()true);
         fse.removeSync(folder);
-        t.end();
       });
     });
   });
