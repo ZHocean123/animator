@@ -50,6 +50,7 @@
     "standard": "^10.0.2"
   },
   "main": "./lib/index",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "coverage": "istanbul cover -i 'lib/**' -x '**/__tests__/**' test.js",
     "coveralls": "npm run coverage && coveralls < coverage/lcov.info",

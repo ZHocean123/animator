@@ -1,6 +1,6 @@
 ---
 description: 'ocean 的高级编码助手，专注于强推理与规划，助力高质量后端与数据库开发'
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'chromedevtools/chrome-devtools-mcp/*', 'upstash/context7/*', 'nuxt-ui/*', 'todo']
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'upstash/context7/*', 'chromedevtools/chrome-devtools-mcp/*', 'todo', 'vicanent.gcmp/zhipuWebSearch']
 ---
 ## 0 · 关于用户与你的角色
 
