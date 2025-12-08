@@ -1,4 +1,4 @@
-let objectPatternNodeToObject = require('./objectPatternNodeToObject');
+import objectPatternNodeToObject from './objectPatternNodeToObject.js';
 
 let unknowns = 0;
 
@@ -21,4 +21,4 @@ function getFunctionNodeParams (node) {
   return params;
 }
 
-module.exports = getFunctionNodeParams;
+export default getFunctionNodeParams;

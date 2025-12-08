@@ -6,4 +6,4 @@ function getFunctionNodeName (node) {
   );
 }
 
-module.exports = getFunctionNodeName;
+export default getFunctionNodeName;

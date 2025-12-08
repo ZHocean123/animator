@@ -1,9 +1,8 @@
-const path = require('path');
-const imageSize = require('image-size');
-const BaseModel = require('./BaseModel');
+import path from 'path';
+import imageSize from 'image-size';
+import BaseModel from './BaseModel.js';
 
-const MODPATH = '@haiku/core/components/controls/Image/code/main/code';
-const BYTECODE = require(MODPATH);
+import BYTECODE from '@haiku/core/components/controls/Image/code/main/code';
 
 /**
  * @class ImageComponent
@@ -53,4 +52,4 @@ ImageComponent.DEFAULT_OPTIONS = {
 
 BaseModel.extend(ImageComponent);
 
-module.exports = ImageComponent;
+export default ImageComponent;

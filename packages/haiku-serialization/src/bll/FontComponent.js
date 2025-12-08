@@ -1,8 +1,7 @@
-const path = require('path');
-const BaseModel = require('./BaseModel');
+import path from 'path';
+import BaseModel from './BaseModel.js';
 
-const MODPATH = '@haiku/core/components/controls/Font/code/main/code';
-const BYTECODE = require(MODPATH);
+import BYTECODE from '@haiku/core/components/controls/Font/code/main/code';
 
 /**
  * @class FontComponent
@@ -48,4 +47,4 @@ FontComponent.DEFAULT_OPTIONS = {
 
 BaseModel.extend(FontComponent);
 
-module.exports = FontComponent;
+export default FontComponent;

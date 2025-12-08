@@ -1,5 +1,5 @@
-const Svgo = require('svgo');
-const customPlugins = require('./plugins');
+import Svgo from 'svgo';
+import customPlugins from './plugins';
 
 let singleton;
 
@@ -19,7 +19,7 @@ const plugins = [
   customPlugins,
 ];
 
-module.exports = () => {
+export default () => {
   if (!singleton) {
     singleton = new Svgo({
       full: true,

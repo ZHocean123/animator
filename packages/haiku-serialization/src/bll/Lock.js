@@ -64,7 +64,7 @@ export function awaitAllLocksFreeExcept(keys, cb) {
   return awaitFree(allKeys, cb)
 }
 
-module.exports = {
+export default {
   request,
   emitter,
   awaitFree,

@@ -1,6 +1,6 @@
-const path = require('node:path')
-const { InteractionMode } = require('@haiku/core/lib/helpers/interactionModes')
-const {
+import path from 'node:path'
+import { InteractionMode } from '@haiku/core/lib/helpers/interactionModes'
+import {
   getSafeProjectName,
   getProjectNameSafeShort,
   getDefaultIllustratorAssetPath,
@@ -9,18 +9,18 @@ const {
   getProjectNameLowerCase,
   readPackageJson,
   getAngularSelectorName,
-} = require('@haiku/sdk-client')
-const async = require('async')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const fse = require('haiku-fs-extra')
-const jss = require('json-stable-stringify')
-const lodash = require('lodash')
-const WebSocket = require('ws')
-const logger = require('./../utils/LoggerInstance')
-const ActionStack = require('./ActionStack')
-const BaseModel = require('./BaseModel')
-const toTitleCase = require('./helpers/toTitleCase')
-const Lock = require('./Lock')
+} from '@haiku/sdk-client'
+import async from 'async'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import fse from 'haiku-fs-extra'
+import jss from 'json-stable-stringify'
+import lodash from 'lodash'
+import WebSocket from 'ws'
+import logger from './../utils/LoggerInstance.js'
+import ActionStack from './ActionStack.js'
+import BaseModel from './BaseModel.js'
+import toTitleCase from './helpers/toTitleCase.js'
+import Lock from './Lock.js'
 
 // 延迟加载 haiku-sdk-creator 以避免循环依赖
 let _sdkCreator = null
@@ -985,7 +985,8 @@ Project.DEFAULT_OPTIONS = {
 
 BaseModel.extend(Project)
 
-module.exports = Project
+export { Project }
+export default Project
 
 Project.awaitOneUpdateFromActiveComponent = (activeComponent, channel, fn) => {
   let once = true
@@ -1073,7 +1074,7 @@ Project.PUBLIC_METHODS = {
 }
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const ActiveComponent = require('./ActiveComponent')
-const Asset = require('./Asset')
-const File = require('./File')
-const ModuleWrapper = require('./ModuleWrapper')
+import ActiveComponent from './ActiveComponent.js'
+import Asset from './Asset.js'
+import File from './File.js'
+import ModuleWrapper from './ModuleWrapper.js'

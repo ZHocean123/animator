@@ -1,19 +1,19 @@
-const lodash = require('lodash')
-const HaikuElement = require('@haiku/core/lib/HaikuElement').default
-const Layout3D = require('@haiku/core/lib/Layout3D').default
-const { cssQueryTree } = require('@haiku/core/lib/HaikuNode')
-const { composedTransformsToTimelineProperties } = require('haiku-common')
-const functionToRFO = require('@haiku/core/lib/reflection/functionToRFO').default
-const { LAYOUT_3D_SCHEMA } = require('@haiku/core/lib/HaikuComponent')
-const KnownDOMEvents = require('@haiku/core/lib/renderers/dom/Events').default
-const decamelize = require('decamelize')
-const Matrix = require('gl-matrix')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const polygonOverlap = require('polygon-overlap')
-const titlecase = require('titlecase')
-const logger = require('./../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const TransformCache = require('./TransformCache')
+import lodash from 'lodash'
+import HaikuElement from '@haiku/core/lib/HaikuElement'
+import Layout3D from '@haiku/core/lib/Layout3D'
+import { cssQueryTree } from '@haiku/core/lib/HaikuNode'
+import { composedTransformsToTimelineProperties } from 'haiku-common'
+import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
+import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent'
+import KnownDOMEvents from '@haiku/core/lib/renderers/dom/Events'
+import decamelize from 'decamelize'
+import Matrix from 'gl-matrix'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import polygonOverlap from 'polygon-overlap'
+import titlecase from 'titlecase'
+import logger from './../utils/LoggerInstance.js'
+import BaseModel from './BaseModel.js'
+import TransformCache from './TransformCache.js'
 
 /**
  * Tag names with no presentational context on their own. These are usually found inside <defs>, but technically don't
@@ -2335,13 +2335,13 @@ Element.deselectAllOtherElements = (criteria, target, metadata) => {
   })
 }
 
-module.exports = Element
+export default Element
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require('./Bytecode')
-const ElementSelectionProxy = require('./ElementSelectionProxy')
-const MathUtils = require('./MathUtils')
-const Property = require('./Property')
-const Row = require('./Row')
-const Template = require('./Template')
-const TimelineProperty = require('./TimelineProperty')
+import Bytecode from './Bytecode.js'
+import ElementSelectionProxy from './ElementSelectionProxy.js'
+import * as MathUtils from './MathUtils.js'
+import Property from './Property.js'
+import Row from './Row.js'
+import Template from './Template.js'
+import TimelineProperty from './TimelineProperty.js'

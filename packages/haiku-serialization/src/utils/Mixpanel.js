@@ -1,8 +1,6 @@
-const os = require('node:os')
-const Mixpanel = require('mixpanel')
-const loggerModule = require('./LoggerInstance')
-
-const logger = loggerModule.default || loggerModule
+import os from 'node:os'
+import Mixpanel from 'mixpanel'
+import logger from './LoggerInstance.js'
 
 const tokens = {
   development: '53f3639f564804dcb710fd18511d1c0b',
@@ -68,4 +66,4 @@ mixpanel.haikuTrackOnce = function haikuTrackOnce(eventName, eventPayload) {
   }
 }
 
-module.exports = mixpanel
+export default mixpanel

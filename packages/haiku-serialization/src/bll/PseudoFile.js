@@ -1,4 +1,4 @@
-const BaseModel = require('./BaseModel');
+import BaseModel from './BaseModel.js';
 
 /**
  * @class PseudoFile
@@ -13,4 +13,4 @@ PseudoFile.DEFAULT_OPTIONS = {
 
 BaseModel.extend(PseudoFile);
 
-module.exports = PseudoFile;
+export default PseudoFile;

@@ -1,6 +1,6 @@
-const logger = require('../utils/LoggerInstance')
+import logger from '../utils/LoggerInstance.js'
 
-module.exports = function requestElementCoordinates(
+function requestElementCoordinates(
   { currentWebview, requestedWebview, selector, shouldNotifyEnvoy, tourClient },
   maxNumberOfTries = 15,
   currentNumberOfTries = 0,
@@ -63,3 +63,5 @@ module.exports = function requestElementCoordinates(
     }
   }
 }
+
+export default requestElementCoordinates

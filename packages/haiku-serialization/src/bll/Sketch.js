@@ -1,10 +1,10 @@
-const path = require('path');
-const fse = require('haiku-fs-extra');
-const {execSync} = require('child_process');
-const {PNG} = require('pngjs');
-const logger = require('./../utils/LoggerInstance');
-const BaseModel = require('./BaseModel');
-const sketchUtils = require('../utils/sketchUtils');
+import path from 'path';
+import fse from 'haiku-fs-extra';
+import {execSync} from 'child_process';
+import {PNG} from 'pngjs';
+import logger from './../utils/LoggerInstance.js';
+import BaseModel from './BaseModel.js';
+import sketchUtils from '../utils/sketchUtils.js';
 
 const LOOKS_LIKE_SLICE = /\.sketch\.contents\/slices\//;
 const LOOKS_LIKE_ARTBOARD = /\.sketch\.contents\/artboards\//;
@@ -152,4 +152,4 @@ function _processBase64ImageData (base64data, imageFormat, fileAbspath, bitmapIn
   return base64data;
 }
 
-module.exports = Sketch;
+export default Sketch;

@@ -1,13 +1,13 @@
-const path = require('path');
-const {exec} = require('child_process');
-const logger = require('./LoggerInstance');
-const {isMac} = require('haiku-common');
+import path from 'path';
+import {exec} from 'child_process';
+import logger from './LoggerInstance.js';
+import {isMac} from 'haiku-common';
 
 const SKETCH_PATH_FINDER = `mdfind "kMDItemKind == 'Application'" | grep Sketch.app`;
 const PARSER_CLI_PATH = '/Contents/Resources/sketchtool/bin/sketchtool';
 let sketchInstalledCache = null;
 
-module.exports = {
+const sketchUtils = {
   dumpToPaths (rawDump) {
     logger.info('[sketch utils] about to parse Sketch paths', rawDump);
 
@@ -91,3 +91,5 @@ module.exports = {
     });
   },
 };
+
+export default sketchUtils;

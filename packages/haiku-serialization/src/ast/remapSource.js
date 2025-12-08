@@ -1,6 +1,6 @@
-let parseCode = require('./parseCode');
-let traverseAST = require('./traverseAST');
-let generateCode = require('./generateCode');
+import parseCode from './parseCode.js';
+import traverseAST from './traverseAST.js';
+import generateCode from './generateCode.js';
 
 function remapSource (source, remapper) {
   if (!remapper) {
@@ -33,4 +33,4 @@ function remapSource (source, remapper) {
   return transformed;
 }
 
-module.exports = remapSource;
+export default remapSource;

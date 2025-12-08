@@ -1,14 +1,14 @@
-const path = require('node:path')
-const fse = require('fs-extra')
-const { xmlToMana } = require('haiku-common')
-const { debounce } = require('lodash')
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
-const { bootstrapSceneFilesSync } = require('@haiku/sdk-client')
-const getSvgOptimizer = require('./../svg/getSvgOptimizer')
-const logger = require('./../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const Cache = require('./Cache')
-const Lock = require('./Lock')
+import path from 'node:path'
+import fse from 'fs-extra'
+import { xmlToMana } from 'haiku-common'
+import { debounce } from 'lodash'
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import { bootstrapSceneFilesSync } from '@haiku/sdk-client'
+import getSvgOptimizer from './../svg/getSvgOptimizer.js'
+import logger from './../utils/LoggerInstance.js'
+import BaseModel from './BaseModel.js'
+import Cache from './Cache.js'
+import Lock from './Lock.js'
 
 // This file also depends on '@haiku/core/lib/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
@@ -399,11 +399,12 @@ function _isFileCode(relpath) {
   return path.extname(relpath) === '.js'
 }
 
-module.exports = File
+export {File}
+export default File
 
 const ActiveComponent = require('./ActiveComponent')
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const AST = require('./AST')
-const Bytecode = require('./Bytecode')
-const ModuleWrapper = require('./ModuleWrapper')
-const Template = require('./Template')
+import AST from './AST.js'
+import Bytecode from './Bytecode.js'
+import ModuleWrapper from './ModuleWrapper.js'
+import Template from './Template.js'

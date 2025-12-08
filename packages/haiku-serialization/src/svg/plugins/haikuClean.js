@@ -3,7 +3,7 @@
  * @param item
  * @see {@link https://github.com/svg/svgo/blob/master/docs/how-it-works/en.md}
  */
-module.exports = {
+export default {
   type: 'perItem',
   fn: (item) => {
     // Clobber font-family on any/all nodes that try to declare it so users don't get their hopes up.

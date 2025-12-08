@@ -1,14 +1,14 @@
-const lodash = require('lodash')
-const clone = require('lodash.clone')
-const cloneDeepWith = require('lodash.clonedeepwith')
-const merge = require('lodash.merge')
-const BaseModel = require('./BaseModel')
-const enhance = require('@haiku/core/lib/reflection/enhance').default
-const { xmlToMana } = require('haiku-common')
-const {  convertManaLayout } = require('haiku-common')
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
-const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default
-const logger = require('../utils/LoggerInstance')
+import lodash from 'lodash'
+import clone from 'lodash.clone'
+import cloneDeepWith from 'lodash.clonedeepwith'
+import merge from 'lodash.merge'
+import BaseModel from './BaseModel.js'
+import enhance from '@haiku/core/lib/reflection/enhance'
+import { xmlToMana } from 'haiku-common'
+import {  convertManaLayout } from 'haiku-common'
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import reifyRO from '@haiku/core/lib/reflection/reifyRO'
+import logger from '../utils/LoggerInstance.js'
 
 const HAIKU_ID_ATTRIBUTE = 'haiku-id'
 const HAIKU_TITLE_ATTRIBUTE = 'haiku-title'
@@ -1382,10 +1382,10 @@ Bytecode.addDefaultCurveIfNecessary = (
   }
 }
 
-module.exports = Bytecode
+export default Bytecode
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const ModuleWrapper = require('./ModuleWrapper')
-const State = require('./State')
-const Template = require('./Template')
-const TimelineProperty = require('./TimelineProperty')
+import ModuleWrapper from './ModuleWrapper.js'
+import State from './State.js'
+import Template from './Template.js'
+import TimelineProperty from './TimelineProperty.js'

@@ -1,9 +1,9 @@
-const Parser = require('cst').Parser
-const walk = require('estree-walker').walk
-const fsm = require('fuzzy-string-matching')
-const uniq = require('lodash').uniq
-const FORBIDDEN_EXPRESSION_TOKENS = require('@haiku/core/lib/HaikuComponent').default.FORBIDDEN_EXPRESSION_TOKENS
-const logger = require('./../utils/LoggerInstance')
+import Parser from 'cst';
+import walk from 'estree-walker';
+import fsm from 'fuzzy-string-matching';
+import uniq from 'lodash';
+import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent';
+import logger from './../utils/LoggerInstance.js';
 
 const PARSER = new Parser({
   sourceType: 'script',
@@ -462,4 +462,4 @@ function parseExpression(expr, injectables, keywords, state, cursor, options) {
 parseExpression.wrap = wrap
 parseExpression.unwrap = unwrap
 
-module.exports = parseExpression
+export default parseExpression

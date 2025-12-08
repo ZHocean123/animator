@@ -1,9 +1,9 @@
-const { formatSeconds } = require('haiku-ui-common')
-const numeral = require('numeral')
-const TimelineProperty = require('../bll/TimelineProperty')
-const logger = require('../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const MathUtils = require('./MathUtils')
+import { formatSeconds } from 'haiku-ui-common'
+import numeral from 'numeral'
+import TimelineProperty from '../bll/TimelineProperty.js'
+import logger from '../utils/LoggerInstance.js'
+import BaseModel from './BaseModel'
+import * as MathUtils from './MathUtils'
 
 const DURATION_DRAG_INCREASE = 20 // Increase by this much per each duration increase
 const DURATION_DRAG_TIMEOUT = 300 // Wait this long before increasing the duration
@@ -1026,9 +1026,10 @@ Timeline.TIME_DISPLAY_MODE = {
   SECONDS: 'seconds',
 }
 
-module.exports = Timeline
+export { Timeline }
+export default Timeline
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Expression = require('./Expression')
-const Keyframe = require('./Keyframe')
-const Property = require('./Property')
+import Expression from './Expression.js'
+import Keyframe from './Keyframe.js'
+import Property from './Property.js'

@@ -1,8 +1,8 @@
-let isFunctionNode = require('./isFunctionNode');
-let getFunctionNodeName = require('./getFunctionNodeName');
-let getFunctionNodeParams = require('./getFunctionNodeParams');
-let getFunctionNodeBody = require('./getFunctionNodeBody');
-let computeUnaryExpression = require('./computeUnaryExpression');
+import isFunctionNode from './isFunctionNode.js';
+import getFunctionNodeName from './getFunctionNodeName.js';
+import getFunctionNodeParams from './getFunctionNodeParams.js';
+import getFunctionNodeBody from './getFunctionNodeBody.js';
+import computeUnaryExpression from './computeUnaryExpression.js';
 
 function OASTToRO (oast) {
   if (oast.type === 'ObjectExpression') {
@@ -79,4 +79,4 @@ function OASTToRO (oast) {
   };
 }
 
-module.exports = OASTToRO;
+export default OASTToRO;

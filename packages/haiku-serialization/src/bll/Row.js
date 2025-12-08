@@ -1,5 +1,5 @@
-const TimelineProperty = require('../bll/TimelineProperty')
-const BaseModel = require('./BaseModel')
+import TimelineProperty from '../bll/TimelineProperty.js'
+import BaseModel from './BaseModel.js'
 
 const NAVIGATION_DIRECTIONS = {
   SAME: 0,
@@ -869,9 +869,10 @@ Row.buildHeadingUid = (component, targetElement) => {
   return `${component.getPrimaryKey()}::${targetElement.getComponentId()}-heading`
 }
 
-module.exports = Row
+export { Row }
+export default Row
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Keyframe = require('./Keyframe')
-const Property = require('./Property')
-const Timeline = require('./Timeline')
+import Keyframe from './Keyframe.js'
+import Property from './Property.js'
+import Timeline from './Timeline.js'

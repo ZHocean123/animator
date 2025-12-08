@@ -1,8 +1,8 @@
-const {
+import {
   toText,
-} = require('@haiku/core/lib/reflection/JavaScriptIdentifier');
+} from '@haiku/core/lib/reflection/JavaScriptIdentifier';
 
-module.exports = function wrapInHaikuInject (node) {
+export default function wrapInHaikuInject (node) {
   return {
     type: 'CallExpression',
     callee: {

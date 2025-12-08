@@ -1,11 +1,11 @@
-const path = require('node:path')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const { isMac, isWindows } = require('haiku-common')
-const BaseModel = require('./BaseModel')
-const { Figma, PHONY_FIGMA_FILE } = require('./Figma')
-const toTitleCase = require('./helpers/toTitleCase')
-const Illustrator = require('./Illustrator')
-const Sketch = require('./Sketch')
+import path from 'node:path'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import { isMac, isWindows } from 'haiku-common'
+import BaseModel from './BaseModel.js'
+import { Figma, PHONY_FIGMA_FILE } from './Figma.js'
+import toTitleCase from './helpers/toTitleCase.js'
+import Illustrator from './Illustrator.js'
+import Sketch from './Sketch.js'
 
 const PAGES_REGEX = isWindows() ? /\\pages\\/ : /\/pages\//
 const SLICES_REGEX = isWindows() ? /\\slices\\/ : /\/slices\//
@@ -656,6 +656,6 @@ Asset.isDesignAsset = (abspath) => {
   )
 }
 
-module.exports = Asset
+export default Asset
 
-const Template = require('./Template')
+import Template from './Template.js'

@@ -1,17 +1,17 @@
-const path = require('node:path')
-const { default: HaikuElement } = require('@haiku/core/lib/HaikuElement')
-const { default: Layout3D } = require('@haiku/core/lib/Layout3D')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const {  composedTransformsToTimelineProperties } = require('haiku-common')
-const { default: invertMatrix } = require('haiku-vendor-legacy/lib/gl-mat4/invert')
-const lodash = require('lodash')
-const logger = require('./../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const { Figma } = require('./Figma')
-const Illustrator = require('./Illustrator')
-const { rounded, transformFourVectorByMatrix, basicallyEquals } = require('./MathUtils')
-const Sketch = require('./Sketch')
-const TransformCache = require('./TransformCache')
+import path from 'node:path'
+import { default as HaikuElement } from '@haiku/core/lib/HaikuElement'
+import { default as Layout3D } from '@haiku/core/lib/Layout3D'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import {  composedTransformsToTimelineProperties } from 'haiku-common'
+import { default as invertMatrix } from 'haiku-vendor-legacy/lib/gl-mat4/invert'
+import lodash from 'lodash'
+import logger from './../utils/LoggerInstance.js'
+import BaseModel from './BaseModel.js'
+import { Figma } from './Figma.js'
+import Illustrator from './Illustrator.js'
+import { rounded, transformFourVectorByMatrix, basicallyEquals } from './MathUtils.js'
+import Sketch from './Sketch.js'
+import TransformCache from './TransformCache.js'
 
 const PI_OVER_12 = Math.PI / 12
 
@@ -2521,10 +2521,11 @@ ElementSelectionProxy.getPasteables = () => {
   return PASTEABLES
 }
 
-module.exports = ElementSelectionProxy
+export { ElementSelectionProxy }
+export default ElementSelectionProxy
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Element = require('./Element')
-const Property = require('./Property')
-const Template = require('./Template')
-const TimelineProperty = require('./TimelineProperty')
+import Element from './Element.js'
+import Property from './Property.js'
+import Template from './Template.js'
+import TimelineProperty from './TimelineProperty.js'

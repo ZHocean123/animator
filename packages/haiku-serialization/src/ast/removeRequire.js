@@ -1,6 +1,6 @@
-let _ = require('lodash');
-let traverseAST = require('./traverseAST');
-let matchesRequire = require('./matchesRequire');
+import _ from 'lodash';
+import traverseAST from './traverseAST.js';
+import matchesRequire from './matchesRequire.js';
 
 /**
  * @function removeRequire
@@ -8,7 +8,7 @@ let matchesRequire = require('./matchesRequire');
  * Remove any matching require statements (including their variable declarations)
  * from the AST. This should mutate the AST in place.
  */
-module.exports = function removeRequire (ast, identifierName, modulePath) {
+export default function removeRequire (ast, identifierName, modulePath) {
   // first traverse the AST to count the number of times the identifier is being used.
   // we assume there should be at least 1 usage (in the require stmt itself)
   let identCount = 0;

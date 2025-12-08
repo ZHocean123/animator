@@ -1,4 +1,4 @@
-module.exports = function serializeError (err) {
+function serializeError (err) {
   if (!err) {
     return null;
   }
@@ -9,4 +9,6 @@ module.exports = function serializeError (err) {
     code: err.code,
     type: err.type,
   };
-};
+}
+
+export default serializeError;

@@ -51,4 +51,4 @@ function paramsToFunctionASTParams (params) {
   return params.map(paramToFunctionASTParam);
 }
 
-module.exports = paramsToFunctionASTParams;
+export default paramsToFunctionASTParams;

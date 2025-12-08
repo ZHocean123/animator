@@ -1,13 +1,13 @@
-const HaikuComponent = require('@haiku/core/lib/HaikuComponent').default
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
-const Curve = require('@haiku/core/lib/api').Curve
-const BaseModel = require('./BaseModel')
+import HaikuComponent from '@haiku/core/lib/HaikuComponent'
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import { Curve } from '@haiku/core/lib/api'
+import BaseModel from './BaseModel.js'
 
 // 延迟加载 haiku-formats 以避免循环依赖
 let _haikuFormats = null
-function getHaikuFormats() {
+async function getHaikuFormats() {
   if (!_haikuFormats) {
-    _haikuFormats = require('haiku-formats')
+    _haikuFormats = await import('haiku-formats')
   }
   return _haikuFormats
 }
@@ -1076,7 +1076,7 @@ Keyframe.groupHasBezierEditableCurves = (keyframes) => {
     .every(kf => kf.getCurve() === referenceCurve && !kf.hasDecomposableCurve())
 }
 
-module.exports = Keyframe
+export default Keyframe
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Timeline = require('./Timeline')
+import Timeline from './Timeline.js'

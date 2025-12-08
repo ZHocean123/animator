@@ -9,4 +9,4 @@ function isFunctionNode (node) {
   return (node.type in FUNCTION_NODE_TYPES);
 }
 
-module.exports = isFunctionNode;
+export default isFunctionNode;

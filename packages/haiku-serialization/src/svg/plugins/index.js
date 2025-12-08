@@ -1,7 +1,7 @@
-const haikuClean = require('./haikuClean');
-const haikuCollapseGroups = require('./haikuCollapseGroups');
+import haikuClean  from './haikuClean';
+import haikuCollapseGroups from './haikuCollapseGroups';
 
-module.exports = {
+export default {
   haikuClean,
   haikuCollapseGroups,
 };

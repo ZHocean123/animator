@@ -1,5 +1,5 @@
-let _ = require('lodash');
-let matchesRequire = require('./matchesRequire');
+import _ from 'lodash';
+import matchesRequire from './matchesRequire.js';
 
 /**
  * @function upsertRequire
@@ -8,7 +8,7 @@ let matchesRequire = require('./matchesRequire');
  * var {identifierName} = require({modulePath}).
  * This should mutate the AST in place.
  */
-module.exports = function upsertRequire (ast, identifierName, modulePath) {
+export default function upsertRequire (ast, identifierName, modulePath) {
   // TODO: Mutate line numbers so we don't end up with a bunch of nodes on the same line
 
   // we don't need a full traversal, since we know our require stmts are at the root

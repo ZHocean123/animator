@@ -33,4 +33,4 @@ function objectPatternNodeToObject (out, node) {
   return out;
 }
 
-module.exports = objectPatternNodeToObject;
+export default objectPatternNodeToObject;

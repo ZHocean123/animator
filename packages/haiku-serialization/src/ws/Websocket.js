@@ -1,7 +1,7 @@
-const util = require('util');
-const EventEmitter = require('events').EventEmitter;
-const serializeError = require('./../utils/serializeError');
-const logger = require('./../utils/LoggerInstance');
+import util from 'util';
+import { EventEmitter } from 'events';
+import serializeError from './../utils/serializeError.js';
+import logger from './../utils/LoggerInstance.js';
 
 const STATES = {
   CONNECTING: 0, // The connection is not yet open.
@@ -279,4 +279,4 @@ Websocket.prototype.action = function action (method, params, cb, folder) {
   return this.request({type: 'action', method, params: params || [], folder}, cb);
 };
 
-module.exports = Websocket;
+export default Websocket;

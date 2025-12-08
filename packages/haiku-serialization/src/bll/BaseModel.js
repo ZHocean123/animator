@@ -1,13 +1,13 @@
-const { EventEmitter } = require('node:events')
-const lodash = require('lodash')
-const CryptoUtils = require('./../utils/CryptoUtils')
-const EmitterManager = require('./../utils/EmitterManager')
-const logger = require('./../utils/LoggerInstance')
-const Cache = require('./Cache')
-const DiskStorage = require('./storage/DiskStorage')
-const MemoryStorage = require('./storage/MemoryStorage')
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
-const reifyRO = require('@haiku/core/lib/reflection/reifyRO').default
+import { EventEmitter } from 'node:events'
+import lodash from 'lodash'
+import CryptoUtils from './../utils/CryptoUtils.js'
+import EmitterManager from './../utils/EmitterManager.js'
+import logger from './../utils/LoggerInstance.js'
+import Cache from './Cache.js'
+import DiskStorage from './storage/DiskStorage.js'
+import MemoryStorage from './storage/MemoryStorage.js'
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import reifyRO from '@haiku/core/lib/reflection/reifyRO'
 
 const SYNC_DEBOUNCE_TIME = 100 // ms
 
@@ -727,4 +727,4 @@ function createCollection(klass, opts) {
   }
 }
 
-module.exports = BaseModel
+export default BaseModel

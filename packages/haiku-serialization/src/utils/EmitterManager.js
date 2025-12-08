@@ -1,4 +1,4 @@
-const { EventEmitter } = require('node:events')
+import { EventEmitter } from 'node:events'
 
 // Prevent trigger-happy MaxListenersExceededWarning
 if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
@@ -76,4 +76,4 @@ EmitterManager.extend = (instance) => {
   return instance
 }
 
-module.exports = EmitterManager
+export default EmitterManager

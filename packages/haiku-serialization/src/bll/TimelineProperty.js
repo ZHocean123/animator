@@ -1,5 +1,5 @@
-const { getFallback } = require('@haiku/core/lib/HaikuComponent')
-const logger = require('../utils/LoggerInstance')
+import { getFallback } from '@haiku/core/lib/HaikuComponent'
+import logger from '../utils/LoggerInstance.js'
 
 const TimelineProperty = {}
 
@@ -398,4 +398,4 @@ TimelineProperty.getAssignedValueObject = (
   return keyframeGroup && keyframeGroup[timelineTime]
 }
 
-module.exports = TimelineProperty
+export default TimelineProperty

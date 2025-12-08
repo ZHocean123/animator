@@ -67,8 +67,8 @@ function expressionToOASTComponent (exp, key, keyChain) {
   throw new Error('Unable to compile expression ' + exp);
 }
 
-module.exports = expressionToOASTComponent;
+export default expressionToOASTComponent;
 
-let RFOToFunctionAST = require('./RFOToFunctionAST');
-let objectToOAST = require('./objectToOAST');
-let functionToASTExpression = require('./functionToASTExpression');
+import RFOToFunctionAST from './RFOToFunctionAST.js';
+import objectToOAST from './objectToOAST.js';
+import functionToASTExpression from './functionToASTExpression.js';

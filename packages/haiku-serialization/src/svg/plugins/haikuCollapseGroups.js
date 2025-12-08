@@ -9,12 +9,6 @@
 
 'use strict';
 
-exports.type = 'perItemReverse';
-
-exports.active = true;
-
-exports.description = 'collapses useless groups';
-
 let collections = require('svgo/plugins/_collections'),
   attrsInheritable = collections.inheritableAttrs,
   animationElems = collections.elemsGroups.animation;
@@ -48,7 +42,7 @@ function hasAnimatedAttr (item) {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
+const fn = function (item) {
 
   // non-empty elements
   if (item.isElem() && (!item.isElem('switch') || isFeaturedSwitch(item)) && !item.isEmpty()) {
@@ -105,4 +99,11 @@ function isFeaturedSwitch (elem) {
   return elem.isElem('switch') && !elem.isEmpty() && !elem.content.some(child =>
     child.hasAttr('systemLanguage') || child.hasAttr('requiredFeatures') || child.hasAttr('requiredExtensions'),
   );
+}
+
+export default {
+  type: 'perItemReverse',
+  active: true,
+  description: 'collapses useless groups',
+  fn: fn,
 }

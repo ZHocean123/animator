@@ -1,4 +1,4 @@
-const {parse} = require('@babel/parser');
+import {parse} from '@babel/parser';
 
 function parseCode (code, options) {
   try {
@@ -11,4 +11,4 @@ function parseCode (code, options) {
   }
 }
 
-module.exports = parseCode;
+export default parseCode;

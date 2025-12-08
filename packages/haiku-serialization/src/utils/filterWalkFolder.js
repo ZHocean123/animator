@@ -1,7 +1,7 @@
-let fse = require('haiku-fs-extra');
-let path = require('path');
+import fse from 'haiku-fs-extra';
+import path from 'path';
 
-module.exports = (dir, filter, done) => {
+const filterWalkFolder = (dir, filter, done) => {
   const items = [];
   return fse.walk(dir)
     .on('data', (item) => {
@@ -15,3 +15,5 @@ module.exports = (dir, filter, done) => {
     .on('end', () => done(null, items))
     .on('error', done);
 };
+
+export default filterWalkFolder;

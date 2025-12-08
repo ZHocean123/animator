@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const semver = require('semver');
+import semver from 'semver';
 
 const DEFAULT_CHANGELOG_PATH = path.join(__dirname, '..', '..', '..', '..', 'changelog/public');
 
@@ -75,4 +75,4 @@ class Changelog {
   }
 }
 
-module.exports = Changelog;
+export default Changelog;

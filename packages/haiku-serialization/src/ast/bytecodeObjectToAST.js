@@ -1,4 +1,4 @@
-const objectToOAST = require('./objectToOAST');
+import objectToOAST from './objectToOAST.js';
 
 function buildRequireStatement (identifier, modpath) {
   return {
@@ -37,7 +37,7 @@ function buildRequireStatementsFromImports (imports) {
   return statements;
 }
 
-module.exports = function bytecodeObjectToAST (
+export default function bytecodeObjectToAST (
   bytecode,
   imports = {},
   frontMatterNodes = [],

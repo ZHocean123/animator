@@ -1,10 +1,10 @@
-const { Experiment, experimentIsEnabled } = require('haiku-common')
+import { Experiment, experimentIsEnabled } from 'haiku-common'
 
-const lodash = require('lodash')
+import lodash from 'lodash'
 
-const logger = require('./../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const Lock = require('./Lock')
+import logger from './../utils/LoggerInstance.js'
+import BaseModel from './BaseModel.js'
+import Lock from './Lock.js'
 
 // No-op callback for arbitrary fire-and-forget actions
 const TIMER_TIMEOUT = 64
@@ -776,4 +776,4 @@ ActionStack.fromPOJO = (pojo) => {
   return ActionStack.upsert(pojo, {})
 }
 
-module.exports = ActionStack
+export default ActionStack

@@ -10,6 +10,8 @@ export default defineConfig({
   exports: true,
   skipNodeModulesBundle: true,
   external: [
+    'ws',
+    'haiku-fs-extra',
     'haiku-formats',
     '@haiku/core',
     '@haiku/sdk-creator',

@@ -1,4 +1,4 @@
-const {parse} = require('@babel/parser');
+import {parse} from '@babel/parser';
 
 function functionBodyStringToFunctionBodyAST (body) {
   const nodes = [];
@@ -24,4 +24,4 @@ function functionBodyStringToFunctionBodyAST (body) {
   return block;
 }
 
-module.exports = functionBodyStringToFunctionBodyAST;
+export default functionBodyStringToFunctionBodyAST;

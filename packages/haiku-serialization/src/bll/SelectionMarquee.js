@@ -1,4 +1,4 @@
-const BaseModel = require('./BaseModel');
+import BaseModel from './BaseModel.js';
 
 /**
  * @class SelectionMarquee
@@ -74,4 +74,4 @@ SelectionMarquee.DEFAULT_OPTIONS = {
 
 BaseModel.extend(SelectionMarquee);
 
-module.exports = SelectionMarquee;
+export default SelectionMarquee;

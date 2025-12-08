@@ -30,4 +30,4 @@ class TransformCache {
   }
 }
 
-module.exports = TransformCache;
+export default TransformCache;

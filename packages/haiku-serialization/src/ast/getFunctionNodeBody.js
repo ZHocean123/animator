@@ -1,4 +1,4 @@
-let generateCode = require('./generateCode');
+import generateCode from './generateCode.js';
 
 function getFunctionNodeBody (node) {
   const lines = [];
@@ -9,4 +9,4 @@ function getFunctionNodeBody (node) {
   return body;
 }
 
-module.exports = getFunctionNodeBody;
+export default getFunctionNodeBody;

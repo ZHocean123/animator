@@ -1,4 +1,4 @@
-const BaseModel = require('./BaseModel');
+import BaseModel from './BaseModel.js';
 
 /**
  * @class MountElement
@@ -141,4 +141,4 @@ MountElement.DEFAULT_OPTIONS = {
 
 BaseModel.extend(MountElement);
 
-module.exports = MountElement;
+export default MountElement;

@@ -1,9 +1,9 @@
-const path = require('path');
-const fs = require('fs');
-const BaseModel = require('./BaseModel');
-const overrideModulesLoaded = require('./../utils/overrideModulesLoaded');
-const Lock = require('./Lock');
-const logger = require('./../utils/LoggerInstance');
+import path from 'path';
+import fs from 'fs';
+import BaseModel from './BaseModel.js';
+import overrideModulesLoaded from './../utils/overrideModulesLoaded.js';
+import Lock from './Lock.js';
+import logger from './../utils/LoggerInstance.js';
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source';
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var';
@@ -420,8 +420,8 @@ ModuleWrapper.REF_TYPES = {
 
 ModuleWrapper.CORE_VERSION = CORE_VERSION;
 
-module.exports = ModuleWrapper;
+export default ModuleWrapper;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require('./Bytecode');
-const Template = require('./Template');
+import Bytecode from './Bytecode.js';
+import Template from './Template.js';

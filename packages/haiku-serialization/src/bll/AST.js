@@ -1,10 +1,10 @@
-const prettier = require('prettier')
-const BaseModel = require('./BaseModel')
-const expressionToRO = require('@haiku/core/lib/reflection/expressionToRO').default
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const bytecodeObjectToAST = require('./../ast/bytecodeObjectToAST')
-const normalizeBytecodeAST = require('./../ast/normalizeBytecodeAST')
-const parseCode = require('./../ast/parseCode')
+import prettier from 'prettier'
+import BaseModel from './BaseModel.js'
+import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import bytecodeObjectToAST from './../ast/bytecodeObjectToAST.js'
+import normalizeBytecodeAST from './../ast/normalizeBytecodeAST.js'
+import parseCode from './../ast/parseCode.js'
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source'
 const HAIKU_VAR_ATTRIBUTE = 'haiku-var'
@@ -262,9 +262,9 @@ AST.parseFile = (folder, relpath, contents, cb) => {
   return cb(null, ast)
 }
 
-module.exports = AST
+export default AST
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Bytecode = require('./Bytecode')
-const ModuleWrapper = require('./ModuleWrapper')
-const Template = require('./Template')
+import Bytecode from './Bytecode.js'
+import ModuleWrapper from './ModuleWrapper.js'
+import Template from './Template.js'

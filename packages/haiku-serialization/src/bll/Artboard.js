@@ -1,5 +1,5 @@
-const BaseModel = require('./BaseModel');
-const Matrix = require('gl-matrix');
+import BaseModel from './BaseModel.js';
+import Matrix from 'gl-matrix';
 const HAIKU_ID_ATTRIBUTE = 'haiku-id';
 
 /**
@@ -371,8 +371,8 @@ Artboard.DEFAULT_WIDTH = 550;
 Artboard.DEFAULT_HEIGHT = 400;
 Artboard.DEFAULT_ZOOM = 1;
 
-module.exports = Artboard;
+export default Artboard;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Element = require('./Element');
-const ElementSelectionProxy = require('./ElementSelectionProxy');
+import Element from './Element.js';
+import ElementSelectionProxy from './ElementSelectionProxy.js';

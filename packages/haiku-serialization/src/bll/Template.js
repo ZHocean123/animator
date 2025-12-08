@@ -1,16 +1,16 @@
-const path = require('path');
-const find = require('lodash.find');
-const merge = require('lodash.merge');
-const pascalcase = require('pascalcase');
-const {ATTRS_HYPH_TO_CAMEL} = require('@haiku/core/lib/HaikuComponent');
-const SVGPoints = require('@haiku/core/lib/helpers/SVGPoints').default;
-const { convertManaLayout} = require('haiku-common');
-const {visitManaTree} = require('@haiku/core/lib/HaikuNode');
-const {manaToXml} = require('haiku-common');
-const assign = require('lodash.assign');
-const defaults = require('lodash.defaults');
-const BaseModel = require('./BaseModel');
-const CryptoUtils = require('./../utils/CryptoUtils');
+import path from 'path';
+import find from 'lodash.find';
+import merge from 'lodash.merge';
+import pascalcase from 'pascalcase';
+import {ATTRS_HYPH_TO_CAMEL} from '@haiku/core/lib/HaikuComponent';
+import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
+import { convertManaLayout} from 'haiku-common';
+import {visitManaTree} from '@haiku/core/lib/HaikuNode';
+import {manaToXml} from 'haiku-common';
+import assign from 'lodash.assign';
+import defaults from 'lodash.defaults';
+import BaseModel from './BaseModel.js';
+import CryptoUtils from './../utils/CryptoUtils.js';
 
 const GROUP_DELIMITER = '.';
 const MERGE_STRATEGIES = {
@@ -1079,8 +1079,8 @@ Template.getPropertyValue = (
   return bytecode.timelines[timelineName][`haiku:${componentId}`][propertyName][timelineTime].value;
 };
 
-module.exports = Template;
+export default Template;
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Element = require('./Element');
-const Bytecode = require('./Bytecode');
+import Element from './Element.js';
+import Bytecode from './Bytecode.js';

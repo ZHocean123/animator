@@ -1,25 +1,25 @@
-const path = require('node:path')
-const { default: HaikuComponent, clone } = require('@haiku/core/lib/HaikuComponent')
-const { LAYOUT_3D_SCHEMA } = require('@haiku/core/lib/HaikuComponent')
-const { HAIKU_ID_ATTRIBUTE, HAIKU_LOCKED_ATTRIBUTE, HAIKU_TITLE_ATTRIBUTE, HAIKU_VAR_ATTRIBUTE } = require('@haiku/core/lib/HaikuElement')
-const { PlaybackFlag } = require('@haiku/core/lib/HaikuTimeline')
-const async = require('async')
-const jss = require('json-stable-stringify')
-const lodash = require('lodash')
-const pascalcase = require('pascalcase')
-const pretty = require('pretty')
-const HaikuDOMAdapter = require('@haiku/core/lib/adapters/dom').default
-const { InteractionMode, isPreviewMode } = require('@haiku/core/lib/helpers/interactionModes')
-const { getSortedKeyframes } = require('@haiku/core/lib/helpers/KeyframeUtils')
-const Layout3D = require('@haiku/core/lib/Layout3D')
-const { Experiment, experimentIsEnabled } = require('haiku-common')
-const { SustainedWarningChecker } = require('haiku-common')
-const ensureTrailingSlash = require('../utils/ensureTrailingSlash')
-const CryptoUtils = require('./../utils/CryptoUtils')
-const logger = require('./../utils/LoggerInstance')
-const BaseModel = require('./BaseModel')
-const toTitleCase = require('./helpers/toTitleCase')
-const Lock = require('./Lock')
+import path from 'node:path'
+import { default as HaikuComponent, clone } from '@haiku/core/lib/HaikuComponent'
+import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent'
+import { HAIKU_ID_ATTRIBUTE, HAIKU_LOCKED_ATTRIBUTE, HAIKU_TITLE_ATTRIBUTE, HAIKU_VAR_ATTRIBUTE } from '@haiku/core/lib/HaikuElement'
+import { PlaybackFlag } from '@haiku/core/lib/HaikuTimeline'
+import async from 'async'
+import jss from 'json-stable-stringify'
+import lodash from 'lodash'
+import pascalcase from 'pascalcase'
+import pretty from 'pretty'
+import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom'
+import { InteractionMode, isPreviewMode } from '@haiku/core/lib/helpers/interactionModes'
+import { getSortedKeyframes } from '@haiku/core/lib/helpers/KeyframeUtils'
+import Layout3D from '@haiku/core/lib/Layout3D'
+import { Experiment, experimentIsEnabled } from 'haiku-common'
+import { SustainedWarningChecker } from 'haiku-common'
+import ensureTrailingSlash from '../utils/ensureTrailingSlash.js'
+import CryptoUtils from './../utils/CryptoUtils.js'
+import logger from './../utils/LoggerInstance.js'
+import BaseModel from './BaseModel.js'
+import toTitleCase from './helpers/toTitleCase.js'
+import Lock from './Lock.js'
 
 const KEYFRAME_MOVE_DEBOUNCE_TIME = 100
 const CHECK_SUSTAINED_WARNINGS_DEBOUNCE_TIME = 1000
@@ -4889,25 +4889,25 @@ ActiveComponent.memorySafeBytecode = (bytecode, instance) => {
   return safe
 }
 
-module.exports = ActiveComponent
+export default ActiveComponent
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-const Artboard = require('./Artboard')
-const Asset = require('./Asset')
-const AST = require('./AST')
-const Bytecode = require('./Bytecode')
-const Element = require('./Element')
-const ElementSelectionProxy = require('./ElementSelectionProxy')
-const File = require('./File')
-const ImageComponent = require('./ImageComponent')
-const InstalledComponent = require('./InstalledComponent')
-const Keyframe = require('./Keyframe')
-const ModuleWrapper = require('./ModuleWrapper')
-const MountElement = require('./MountElement')
-const Property = require('./Property')
-const PseudoFile = require('./PseudoFile')
-const Row = require('./Row')
-const SelectionMarquee = require('./SelectionMarquee')
-const Template = require('./Template')
-const Timeline = require('./Timeline')
-const TimelineProperty = require('./TimelineProperty')
+import Artboard from './Artboard.js'
+import Asset from './Asset.js'
+import AST from './AST.js'
+import Bytecode from './Bytecode.js'
+import Element from './Element.js'
+import ElementSelectionProxy from './ElementSelectionProxy.js'
+import File from './File.js'
+import ImageComponent from './ImageComponent.js'
+import InstalledComponent from './InstalledComponent.js'
+import Keyframe from './Keyframe.js'
+import ModuleWrapper from './ModuleWrapper.js'
+import MountElement from './MountElement.js'
+import Property from './Property.js'
+import PseudoFile from './PseudoFile.js'
+import Row from './Row.js'
+import SelectionMarquee from './SelectionMarquee.js'
+import Template from './Template.js'
+import Timeline from './Timeline.js'
+import TimelineProperty from './TimelineProperty.js'

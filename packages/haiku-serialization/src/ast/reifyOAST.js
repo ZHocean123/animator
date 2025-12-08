@@ -1,9 +1,9 @@
-let OASTToRO = require('./OASTToRO');
-let reifyRO = require('@haiku/core/lib/reflection/reifyRO').default;
+import OASTToRO from './OASTToRO.js';
+import reifyRO from '@haiku/core/lib/reflection/reifyRO';
 
 function reifyOAST (oast, referenceEvaluator, skipFunctionReification) {
   const ro = OASTToRO(oast);
   return reifyRO(ro, referenceEvaluator, skipFunctionReification);
 }
 
-module.exports = reifyOAST;
+export default reifyOAST;

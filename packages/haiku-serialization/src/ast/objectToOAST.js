@@ -1,4 +1,4 @@
-const {LAYOUT_3D_SCHEMA} = require('@haiku/core/lib/HaikuComponent');
+import {LAYOUT_3D_SCHEMA} from '@haiku/core/lib/HaikuComponent';
 
 /**
  * We can emit a "shorthand" for bytecode timeline properties at serialization time like so:
@@ -70,7 +70,7 @@ const objectToOAST = (obj, keyChain = []) => {
   return oast;
 };
 
-module.exports = objectToOAST;
+export default objectToOAST;
 
 // Down here to avoid circular dependency blank object
 const expressionToOASTComponent = require('./expressionToOASTComponent');

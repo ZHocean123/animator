@@ -24,4 +24,4 @@ class MockWebsocket {
   }
 }
 
-module.exports = MockWebsocket;
+export default MockWebsocket;

@@ -1,5 +1,5 @@
-const path = require('path');
-const BaseModel = require('./BaseModel');
+import path from 'path';
+import BaseModel from './BaseModel.js';
 
 /**
  * @class InstalledComponent
@@ -38,6 +38,6 @@ InstalledComponent.DEFAULT_OPTIONS = {
 
 BaseModel.extend(InstalledComponent);
 
-module.exports = InstalledComponent;
+export default InstalledComponent;
 
-const ModuleWrapper = require('./ModuleWrapper');
+import ModuleWrapper from './ModuleWrapper.js';

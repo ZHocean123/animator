@@ -1,14 +1,14 @@
-let upsertRequire = require('./upsertRequire');
-let removeRequire = require('./removeRequire');
-let traverseAST = require('./traverseAST');
-let wrapInHaikuInject = require('./wrapInHaikuInject');
+import upsertRequire from './upsertRequire.js';
+import removeRequire from './removeRequire.js';
+import traverseAST from './traverseAST.js';
+import wrapInHaikuInject from './wrapInHaikuInject.js';
 
 /**
  * @function normalizeBytecodeAST
  * @description Given an AST of a bytecode file, normalize it so that it
  * uses all of the up-to-date constructs expected for the output file.
  */
-module.exports = function normalizeBytecodeAST (ast) {
+export default function normalizeBytecodeAST (ast) {
   // Make sure we get rid of any legacy references to @haiku/player
   removeRequire(ast, 'Haiku', '@haiku/player');
 
