@@ -1,14 +1,14 @@
 import path from 'node:path'
 import { InteractionMode } from '@haiku/core/lib/helpers/interactionModes'
 import {
-  getSafeProjectName,
-  getProjectNameSafeShort,
+  getAngularSelectorName,
   getDefaultIllustratorAssetPath,
   getDefaultSketchAssetPath,
-  getReactProjectName,
   getProjectNameLowerCase,
+  getProjectNameSafeShort,
+  getReactProjectName,
+  getSafeProjectName,
   readPackageJson,
-  getAngularSelectorName,
 } from '@haiku/sdk-client'
 import async from 'async'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
@@ -18,9 +18,15 @@ import lodash from 'lodash'
 import WebSocket from 'ws'
 import logger from './../utils/LoggerInstance.js'
 import ActionStack from './ActionStack.js'
+// Down here to avoid Node circular dependency stub objects. #FIXME
+import ActiveComponent from './ActiveComponent'
+import Asset from './Asset.js'
 import BaseModel from './BaseModel.js'
+
+import File from './File.js'
 import toTitleCase from './helpers/toTitleCase.js'
 import Lock from './Lock.js'
+import ModuleWrapper from './ModuleWrapper.js'
 
 // 延迟加载 haiku-sdk-creator 以避免循环依赖
 let _sdkCreator = null
@@ -1072,9 +1078,3 @@ Project.PUBLIC_METHODS = {
   closeNamedActiveComponent: true,
   renameComponent: true,
 }
-
-// Down here to avoid Node circular dependency stub objects. #FIXME
-import ActiveComponent from './ActiveComponent.js'
-import Asset from './Asset.js'
-import File from './File.js'
-import ModuleWrapper from './ModuleWrapper.js'

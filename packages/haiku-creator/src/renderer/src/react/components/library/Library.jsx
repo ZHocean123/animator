@@ -1,9 +1,9 @@
-import { statSync } from 'node:fs'
-import { basename, extname } from 'node:path'
+// 不能在渲染进程直接使用 Node 内置模块，改用 preload 暴露的受控 API
+// 提供轻量的路径工具以替代 node:path
 import { ipcRenderer, shell } from 'electron'
 import { isMac } from 'haiku-common'
 import { UserSettings } from 'haiku-sdk-creator'
-import { Asset, didAskedForSketch, Figma, MAX_ITEMS_TO_IMPORT, mixpanel, sketchUtils } from 'haiku-serialization'
+import { Asset, didAskedForSketch, Figma, mixpanel, sketchUtils } from 'haiku-serialization'
 import { ExternalLink, LoadingTopBar, Palette } from 'haiku-ui-common'
 
 import * as lodash from 'lodash'
@@ -14,6 +14,16 @@ import SketchDownloader from '../SketchDownloader'
 import AssetList from './AssetList'
 import DesignFileCreator from './DesignFileCreator'
 import FileImporter from './FileImporter'
+
+const basename = p => (typeof p === 'string' ? p.replace(/.*[\\/]/, '') : '')
+function extname(p) {
+  if (typeof p !== 'string')
+    return ''
+  const i = p.lastIndexOf('.')
+  return i >= 0 ? p.slice(i) : ''
+}
+
+const MAX_ITEMS_TO_IMPORT = 100
 
 function openWithDefaultProgram(asset) {
   shell.openItem(asset.getAbspath())
@@ -392,17 +402,21 @@ class Library extends React.Component {
     )
   }
 
-  warnComplexFiles(filePaths) {
-    filePaths.forEach((path) => {
-      if (statSync(path).size > 30000000) { // 30MB, number found by experimentation
-        this.props.createNotice({
-          type: 'warning',
-          title: 'Warning',
-          message: `${basename(path)} is a large file, you may experience performance problems.`,
-        })
-        mixpanel.haikuTrack(`creator:${extname(path)}:complex-design-warning-shown`)
+  async warnComplexFiles(filePaths) {
+    for (const path of filePaths) {
+      try {
+        const stat = await window.electronAPI.fs.stat(path)
+        if (stat && !stat.error && stat.size > 30000000) {
+          this.props.createNotice({
+            type: 'warning',
+            title: 'Warning',
+            message: `${basename(path)} is a large file, you may experience performance problems.`,
+          })
+          mixpanel.haikuTrack(`creator:${extname(path)}:complex-design-warning-shown`)
+        }
       }
-    })
+      catch {}
+    }
   }
 
   handleFileDrop = (filePaths) => {

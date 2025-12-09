@@ -2,11 +2,16 @@
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { app, dialog } from 'electron'
-import { ditto, download, logger, unzip } from 'haiku-serialization'
+import { app } from 'electron'
+import { isMac } from 'haiku-common'
+import * as HS from 'haiku-serialization'
 import nodeFetch from 'node-fetch'
 import * as qs from 'qs'
 import { v4 as uuidv4 } from 'uuid'
+
+const logger = (HS as any).logger
+const fileManipulation = (HS as any).fileManipulation ?? HS
+const { download, unzip, ditto } = fileManipulation as any
 
 const DEFAULT_OPTIONS = {
   server: process.env.HAIKU_AUTOUPDATE_SERVER,
@@ -25,6 +30,10 @@ export interface CheckResult {
 export default {
   async update(url: string, progressCallback: (progress: number) => void, options = DEFAULT_OPTIONS) {
     if (process.env.HAIKU_SKIP_AUTOUPDATE !== '1') {
+      if (!isMac()) {
+        logger.warn('[autoupdater] Skipping mac-only update routine on non-mac platform')
+        return
+      }
       if (
         !options.server
         || !options.environment

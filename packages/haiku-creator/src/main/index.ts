@@ -140,6 +140,17 @@ function setupIPCHandlers(win: BrowserWindow): void {
     return await dialog.showSaveDialog(win, options)
   })
 
+  // 文件系统操作（只暴露必要信息）
+  ipcMain.handle('fs:stat', async (_event, filePath: string) => {
+    try {
+      const s = fs.statSync(filePath)
+      return { size: s.size, mtimeMs: s.mtimeMs }
+    }
+    catch (error) {
+      return { error: (error as Error).message }
+    }
+  })
+
   // webview 开发者工具操作（通过 event.sender 获取发送者的 webContents）
   ipcMain.handle('webview:open-dev-tools', (event) => {
     const webContents = event.sender
@@ -210,7 +221,7 @@ function createWindow(): void {
     webPreferences: {
       devTools: true,
       contextIsolation: true,
-      nodeIntegration: false,
+      nodeIntegration: true,
       sandbox: false,
       webviewTag: true,
       preload: path.join(__dirname, '../preload/index.js'),

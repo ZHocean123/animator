@@ -2,7 +2,7 @@
  * Electron API 的全局类型定义
  * 用于在渲染进程中提供 window.electronAPI 的类型支持
  */
-import type { OpenDialogReturnValue, SaveDialogReturnValue, OpenDialogOptions, SaveDialogOptions } from 'electron'
+import type { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from 'electron'
 
 // Creator 窗口的 electronAPI 类型
 export interface CreatorElectronAPI {

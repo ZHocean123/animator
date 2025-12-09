@@ -55,6 +55,11 @@ const electronAPI = {
     isDevToolsFocused: () => ipcRenderer.invoke('window:is-dev-tools-focused'),
   },
 
+  // 文件系统（受控，主进程执行）
+  fs: {
+    stat: (filePath: string) => ipcRenderer.invoke('fs:stat', filePath),
+  },
+
   // 对话框操作
   dialog: {
     showOpenDialog: (options: Electron.OpenDialogOptions) =>
