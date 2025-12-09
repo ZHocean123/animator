@@ -8,7 +8,7 @@ export default defineConfig({
   sourcemap: true,
 
   // 包特定输出
-  outDir: 'lib',
+  outDir: 'out',
   // 包特定外部依赖
   external: [
     // 外部依赖

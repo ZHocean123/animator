@@ -62,7 +62,7 @@ function CreatorElectron() {
 inherits(CreatorElectron, EventEmitter)
 const creator = new CreatorElectron()
 
-const appUrl = `file://${path.join(__dirname, '..', 'index.html')}`
+// const appUrl = `file://${path.join(__dirname, '..', 'index.html')}`
 
 // Plumbing starts up this process, and it uses HAIKU_ENV to forward to us data about
 // how it has been set up, e.g. what ports it is using for websocket server, envoy, etc.

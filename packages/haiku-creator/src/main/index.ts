@@ -6,6 +6,7 @@ import https from 'node:https'
 import * as path from 'node:path'
 import { URL } from 'node:url'
 import { inherits } from 'node:util'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences } from 'electron'
 import ElectronProxyAgent from 'electron-proxy-agent'
 import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
@@ -66,8 +67,6 @@ function CreatorElectron() {
 }
 inherits(CreatorElectron, EventEmitter)
 const creator = new CreatorElectron()
-
-const appUrl = `file://${path.join(__dirname, '..', '..', 'index.html')}`
 
 // Plumbing starts up this process, and it uses HAIKU_ENV to forward to us data about
 // how it has been set up, e.g. what ports it is using for websocket server, envoy, etc.
@@ -197,19 +196,9 @@ function createWindow(): void {
     })
   }
 
-  if (logger) {
-    logger.view = 'main'
-  }
-  else {
-    console.warn('Logger not available, skipping view assignment')
-  }
+  logger.view = 'main'
 
-  if (mixpanel) {
-    mixpanel.haikuTrack('app:initialize')
-  }
-  else {
-    console.warn('Mixpanel not available, skipping analytics')
-  }
+  mixpanel.haikuTrack('app:initialize')
 
   browserWindow = new BrowserWindow({
     title: 'Haiku Animator',
@@ -224,7 +213,7 @@ function createWindow(): void {
       nodeIntegration: false,
       sandbox: false,
       webviewTag: true,
-      preload: path.join(__dirname, '..', 'preload', 'index.js'),
+      preload: path.join(__dirname, '../preload/index.js'),
     },
   })
 
@@ -267,7 +256,15 @@ function createWindow(): void {
 
   browserWindow.setTitle('Haiku Animator')
   browserWindow.maximize()
-  browserWindow.loadURL(appUrl)
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
+    browserWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
+  }
+  else {
+    browserWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
+  }
 
   if (process.env.DEV === '1' || process.env.DEV === 'creator') {
     browserWindow.openDevTools()
@@ -360,8 +357,6 @@ if (app) {
 }
 
 async function showFileDialog(): Promise<void> {
-  const { dialog } = require('electron')
-
   //////////
   // BEGIN HACK:  take over the electron process, patch user through a sequence of dialogs to
   /// ///         select the active folder; pass the selected folder directly into plumbing.
@@ -440,17 +435,28 @@ async function showFileDialog(): Promise<void> {
   /////
 }
 
-async function onAppReady(): Promise<void> {
-  await showFileDialog()
-  createWindow()
-}
+app.whenReady().then(async () => {
+  // Set app user model id for windows
+  electronApp.setAppUserModelId('com.electron')
 
-if (app && app.isReady()) {
-  onAppReady()
-}
-else if (app) {
-  app.on('ready', onAppReady)
-}
+  // Default open or close DevTools by F12 in development
+  // and ignore CommandOrControl + R in production.
+  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window)
+  })
+
+  await showFileDialog()
+
+  createWindow()
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0)
+      createWindow()
+  })
+})
 
 // Hacky: When plumbing launches inside an Electron process it expects an EventEmitter-like
 // object as the export, so we expose this here even though it doesn't do much

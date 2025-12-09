@@ -15,51 +15,6 @@
   </head>
   <body style="position: relative">
     <div id="mount" style="width: 100%; height: 100%; overflow: hidden"></div>
-    <script>
-      window.eval = globalThis.eval = function () {
-        // noop: eval is forbidden
-      }
-    </script>
-    <script src="../../../node_modules/raven-js/dist/raven.js"></script>
-    <script>
-      // 设置视图标识
-      window.HAIKU_VIEW = 'creator'
-    </script>
-    <script>
-      // Monaco uses a custom amd loader that over-rides node's require.
-      // Keep a reference to node's require so we can restore it after executing the amd loader file.
-      var nodeRequire = globalThis.require
-    </script>
-    <script src="../../../node_modules/monaco-editor/min/vs/loader.js"></script>
-    <script>
-      // Save Monaco's amd require and restore Node's require
-      var amdRequire = globalThis.require
-      globalThis.require = nodeRequire
-    </script>
-    <script>
-      // 设置monaco编辑器路径配置
-      function uriFromPath(_path) {
-        // 简单的路径处理，不依赖node.js模块
-        var pathName = _path.replace(/\\/g, '/')
-        if (pathName.length > 0 && pathName.charAt(0) !== '/') {
-          pathName = '/' + pathName
-        }
-        return encodeURI('file://' + pathName)
-      }
-
-      // 使用相对路径构建baseUrl
-      var monacoBasePath = '../../../node_modules/monaco-editor/min'
-      amdRequire.config({
-        baseUrl: monacoBasePath,
-      })
-      // workaround monaco-css not understanding the environment
-      self.module = undefined
-      // workaround monaco-typescript not understanding the environment
-      self.process.browser = true
-      amdRequire(['vs/editor/editor.main'], function () {
-        window.monaco = monaco
-      })
-    </script>
-    <script type="module" src="./main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

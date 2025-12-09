@@ -1,6 +1,6 @@
 import { MockWebsocket, Websocket } from 'haiku-serialization'
 import { createRoot } from 'react-dom/client'
-import Creator from '../react/Creator'
+import Creator from './react/Creator'
 
 function _fixPlumbingUrl(url: string): string {
   return url.replace(/^http/, 'ws')
@@ -66,17 +66,14 @@ async function initializeApp(): Promise<void> {
   })
 
   const container = document.getElementById('mount')
-  if (container) {
-    const root = createRoot(container)
-    root.render(
-      <Creator
-        websocket={websocket}
-        haiku={haiku}
-        folder={haiku.folder}
-        {...props}
-      />,
-    )
-  }
+  createRoot(container!).render(
+    <Creator
+      websocket={websocket}
+      haiku={haiku}
+      folder={haiku.folder}
+      {...props}
+    />,
+  )
 }
 
 // 启动应用

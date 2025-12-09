@@ -697,6 +697,9 @@ importers:
       '@babel/parser':
         specifier: 7.0.0
         version: 7.0.0
+      '@electron-toolkit/utils':
+        specifier: ^4.0.0
+        version: 4.0.0(electron@39.2.5)
       '@haiku/core':
         specifier: ^5.0.0
         version: 5.1.2(@angular/core@18.2.14(rxjs@7.8.2)(zone.js@0.14.10))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2122,6 +2125,11 @@ packages:
 
   '@dprint/toml@0.6.4':
     resolution: {integrity: sha512-bZXIUjxr0LIuHWshZr/5mtUkOrnh0NKVZEF6ACojW5z7zkJu7s9sV2mMXm8XQDqN4cJzdHYUYzUyEGdfciaLJA==}
+
+  '@electron-toolkit/utils@4.0.0':
+    resolution: {integrity: sha512-qXSntwEzluSzKl4z5yFNBknmPGjPa3zFhE4mp9+h0cgokY5ornAeP+CJQDBhKsL1S58aOQfcwkD3NwLZCl+64g==}
+    peerDependencies:
+      electron: '>=13.0.0'
 
   '@electron/asar@3.4.1':
     resolution: {integrity: sha512-i4/rNPRS84t0vSRa2HorerGRXWyF4vThfHesw0dmcWHp+cspK743UanA0suA5Q5y8kzY2y6YKrvbIUn69BCAiA==}
@@ -12190,6 +12198,10 @@ snapshots:
   '@dprint/markdown@0.17.8': {}
 
   '@dprint/toml@0.6.4': {}
+
+  '@electron-toolkit/utils@4.0.0(electron@39.2.5)':
+    dependencies:
+      electron: 39.2.5
 
   '@electron/asar@3.4.1':
     dependencies:

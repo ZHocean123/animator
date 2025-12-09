@@ -54,6 +54,7 @@ export default defineConfig({
     'haiku-*',
     'remote',
     'electron-proxy-agent',
+    'gl-matrix',
   ],
   skipNodeModulesBundle: true,
 

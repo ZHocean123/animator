@@ -1,5 +1,5 @@
 import { Palette } from 'haiku-ui-common'
-import { BTN_STYLES } from './btnShared.js'
+import { BTN_STYLES } from './btnShared'
 import { DASH_STYLES } from './dashShared'
 
 export const TOUR_STYLES = {

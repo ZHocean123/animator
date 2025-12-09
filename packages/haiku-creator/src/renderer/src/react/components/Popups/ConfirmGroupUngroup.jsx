@@ -108,11 +108,10 @@ class ConfirmGroupUngroup extends React.Component {
         <ModalFooter style={STYLES.modalFooter}>
           <div style={{ display: 'inline-block', width: '100%' }}>
             <input
-              style={{ marginTop: 5 }}
+              style={{ marginTop: 5, ...STYLES.checkInput }}
               type="checkbox"
               name="not-show-again"
               id="not-show-again"
-              style={STYLES.checkInput}
               ref={(input) => {
                 this.checkInput = input
               }}

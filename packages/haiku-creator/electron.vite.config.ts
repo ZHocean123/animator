@@ -7,45 +7,9 @@ import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 // 确保 __dirname 在 ES 模块中可用
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
-// 环境变量
-const isDevelopment = process.env.NODE_ENV === 'development'
-const isProduction = process.env.NODE_ENV === 'production'
-
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin({
-      // 排除 Node.js 内置模块，避免 generate createRequire
-      exclude: [
-        'node:*',
-        'fs',
-        'path',
-        'url',
-        'util',
-        'events',
-        'http',
-        'https',
-        'os',
-        'crypto',
-        'stream',
-        'child_process',
-        'querystring',
-        'net',
-        'tls',
-        'dns',
-        'zlib',
-        'yargs',
-      ],
-    })],
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'src/main/index.ts'),
-        },
-      },
-      minify: isProduction ? 'esbuild' : false,
-      sourcemap: isDevelopment,
-      target: 'node18',
-    },
+    plugins: [externalizeDepsPlugin({ })],
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
@@ -57,39 +21,7 @@ export default defineConfig({
     },
   },
   preload: {
-    plugins: [externalizeDepsPlugin({
-      // 排除 Node.js 内置模块，避免 generate createRequire
-      exclude: [
-        'node:*',
-        'fs',
-        'path',
-        'url',
-        'util',
-        'events',
-        'http',
-        'https',
-        'os',
-        'crypto',
-        'stream',
-        'child_process',
-        'querystring',
-        'net',
-        'tls',
-        'dns',
-        'zlib',
-        'yargs',
-      ],
-    })],
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'src/preload/index.ts'),
-        },
-      },
-      minify: isProduction ? 'esbuild' : false,
-      sourcemap: isDevelopment,
-      target: 'node18',
-    },
+    plugins: [externalizeDepsPlugin({ })],
   },
   renderer: {
     resolve: {
@@ -101,40 +33,7 @@ export default defineConfig({
         '@creator': resolve(__dirname, 'src'),
       },
     },
-    plugins: [
-      react({
-        // 移除emotion配置，因为项目中没有使用
-      }),
-    ],
-    build: {
-      rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'src/renderer/index.html'),
-        },
-        output: {
-          // 代码分割配置
-          manualChunks: {
-            // 将React相关库打包在一起
-            'react-vendor': ['react', 'react-dom', 'react-draggable'],
-            // 将Monaco Editor单独打包
-            'monaco-editor': ['monaco-editor'],
-            // 将UI相关库打包在一起
-            'ui-vendor': ['radium', 'react-color', 'react-popover'],
-            // 将工具库打包在一起
-            'utils-vendor': ['lodash', 'uuid', 'color', 'qs'],
-            // 将Haiku内部模块打包在一起
-            'haiku-modules': ['haiku-common', 'haiku-serialization', 'haiku-plumbing', 'haiku-ui-common', 'react-syntax-highlighter'],
-          },
-        },
-      },
-      minify: isProduction ? 'esbuild' : false,
-      sourcemap: isDevelopment ? 'inline' : false,
-      target: 'es2020',
-      // 启用CSS代码分割
-      cssCodeSplit: true,
-      // 优化资源大小
-      assetsInlineLimit: 4096,
-    },
+    plugins: [react({ include: [/\.jsx?$/, /\.tsx?$/] })],
     optimizeDeps: {
       // Monaco Editor 需要特殊处理
       exclude: ['monaco-editor'],
@@ -150,9 +49,9 @@ export default defineConfig({
         'qs',
         'radium',
         'react-draggable',
-        'estree-walker'
+        'estree-walker',
       ],
-    }, 
+    },
     define: {
       // 为 Monaco Editor 定义全局变量
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),

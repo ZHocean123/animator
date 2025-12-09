@@ -1,18 +1,26 @@
-import lodash from 'lodash'
-import HaikuElement from '@haiku/core/lib/HaikuElement'
-import Layout3D from '@haiku/core/lib/Layout3D'
-import { cssQueryTree } from '@haiku/core/lib/HaikuNode'
-import { composedTransformsToTimelineProperties } from 'haiku-common'
-import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
 import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent'
+import HaikuElement from '@haiku/core/lib/HaikuElement'
+import { cssQueryTree } from '@haiku/core/lib/HaikuNode'
+import Layout3D from '@haiku/core/lib/Layout3D'
+import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
 import KnownDOMEvents from '@haiku/core/lib/renderers/dom/Events'
 import decamelize from 'decamelize'
-import Matrix from 'gl-matrix'
-import { Experiment, experimentIsEnabled } from 'haiku-common'
+import * as Matrix from 'gl-matrix'
+import { composedTransformsToTimelineProperties, Experiment, experimentIsEnabled } from 'haiku-common'
+import lodash from 'lodash'
 import polygonOverlap from 'polygon-overlap'
 import titlecase from 'titlecase'
 import logger from './../utils/LoggerInstance.js'
 import BaseModel from './BaseModel.js'
+// Down here to avoid Node circular dependency stub objects. #FIXME
+import Bytecode from './Bytecode.js'
+
+import ElementSelectionProxy from './ElementSelectionProxy.js'
+import * as MathUtils from './MathUtils.js'
+import Property from './Property.js'
+import Row from './Row.js'
+import Template from './Template.js'
+import TimelineProperty from './TimelineProperty.js'
 import TransformCache from './TransformCache.js'
 
 /**
@@ -2336,12 +2344,3 @@ Element.deselectAllOtherElements = (criteria, target, metadata) => {
 }
 
 export default Element
-
-// Down here to avoid Node circular dependency stub objects. #FIXME
-import Bytecode from './Bytecode.js'
-import ElementSelectionProxy from './ElementSelectionProxy.js'
-import * as MathUtils from './MathUtils.js'
-import Property from './Property.js'
-import Row from './Row.js'
-import Template from './Template.js'
-import TimelineProperty from './TimelineProperty.js'
