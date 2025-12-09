@@ -1,9 +1,9 @@
-import Parser from 'cst';
-import walk from 'estree-walker';
-import fsm from 'fuzzy-string-matching';
-import uniq from 'lodash';
-import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent';
-import logger from './../utils/LoggerInstance.js';
+import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent'
+import Parser from 'cst'
+import { walk } from 'estree-walker'
+import fsm from 'fuzzy-string-matching'
+import uniq from 'lodash'
+import logger from './../utils/LoggerInstance.js'
 
 const PARSER = new Parser({
   sourceType: 'script',

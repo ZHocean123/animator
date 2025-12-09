@@ -324,7 +324,10 @@ function go() {
   // Allow anything in .env to override the environment variables we set here.
   require('dotenv').config()
   log.hat('Note: NOT watching for code changes. To watch for code changes, run pnpm dev-all in a new tab.')
-  mainProcess = spawn('pnpm', binaryArgs, { cwd, env: globalThis.process.env, stdio: 'inherit' })
+  const creatorFolder = path.join(__dirname, '../packages/haiku-creator')
+  log.hat(creatorFolder)
+
+  mainProcess = spawn('pnpm', ['electron-vite', 'dev'], { cwd: creatorFolder, env: globalThis.process.env, stdio: 'inherit' })
 
   globalThis.process.on('exit', () => {
     if (mainProcess && !mainProcess.killed) {
