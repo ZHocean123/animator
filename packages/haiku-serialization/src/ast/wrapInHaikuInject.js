@@ -1,6 +1,6 @@
 import {
   toText,
-} from '@haiku/core/lib/reflection/JavaScriptIdentifier';
+} from '@haiku/core/lib/reflection/JavaScriptIdentifier.js';
 
 export default function wrapInHaikuInject (node) {
   return {

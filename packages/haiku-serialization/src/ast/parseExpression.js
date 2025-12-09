@@ -1,5 +1,5 @@
-import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent'
-import Parser from 'cst'
+import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent.js'
+import { Parser } from 'cst'
 import { walk } from 'estree-walker'
 import fsm from 'fuzzy-string-matching'
 import uniq from 'lodash'

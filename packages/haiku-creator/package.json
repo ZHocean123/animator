@@ -8,20 +8,20 @@
   "license": "PROPRIETARY",
   "exports": {
     ".": {
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./electron": {
-      "require": "./lib/electron.cjs",
-      "import": "./lib/electron.mjs"
+      "import": "./lib/electron.mjs",
+      "require": "./lib/electron.cjs"
     },
     "./entry": {
-      "require": "./lib/entry.cjs",
-      "import": "./lib/entry.mjs"
+      "import": "./lib/entry.mjs",
+      "require": "./lib/entry.cjs"
     },
     "./preload/creator-preload": {
-      "require": "./lib/preload/creator-preload.cjs",
-      "import": "./lib/preload/creator-preload.mjs"
+      "import": "./lib/preload/creator-preload.mjs",
+      "require": "./lib/preload/creator-preload.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -38,7 +38,7 @@
     "compile": "tsdown",
     "compile-declarations": "tsdown -p tsconfig.declarations.json",
     "develop": "tsdown --watch",
-    "electron-dev": "cross-env HAIKU_PLUMBING_PORT=9221 DEV=1 electron-vite dev",
+    "electron-dev": "cross-env DEV=1 electron-vite dev",
     "electron-build": "electron-vite build",
     "electron-preview": "electron-vite preview",
     "start": "electron ./out/main/index.js",

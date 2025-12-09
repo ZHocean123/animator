@@ -150,8 +150,9 @@ export default defineConfig({
         'qs',
         'radium',
         'react-draggable',
+        'estree-walker'
       ],
-    },
+    }, 
     define: {
       // 为 Monaco Editor 定义全局变量
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),

@@ -1,12 +1,12 @@
-import generate from '@babel/generator';
+import { generate } from '@babel/generator'
 
-function generateCode (ast, options, code) {
+function generateCode(ast, options, code) {
   const output = generate(ast, options || {
     retainLines: true,
     comments: true,
-  }, code || '');
+  }, code || '')
 
-  return output.code;
+  return output.code
 }
 
-export default generateCode;
+export default generateCode

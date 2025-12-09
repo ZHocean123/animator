@@ -8,7 +8,6 @@ export default defineConfig({
   dts: false,
   sourcemap: true,
   exports: true,
-  skipNodeModulesBundle: true,
   external: [
     'ws',
     'haiku-fs-extra',

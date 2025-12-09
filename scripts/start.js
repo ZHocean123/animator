@@ -327,7 +327,7 @@ function go() {
   const creatorFolder = path.join(__dirname, '../packages/haiku-creator')
   log.hat(creatorFolder)
 
-  mainProcess = spawn('pnpm', ['electron-vite', 'dev'], { cwd: creatorFolder, env: globalThis.process.env, stdio: 'inherit' })
+  mainProcess = spawn('pnpm', ['electron-dev'], { cwd: creatorFolder, env: globalThis.process.env, stdio: 'inherit' })
 
   globalThis.process.on('exit', () => {
     if (mainProcess && !mainProcess.killed) {
