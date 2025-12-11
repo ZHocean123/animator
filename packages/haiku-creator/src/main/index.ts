@@ -7,7 +7,7 @@ import * as path from 'node:path'
 import { URL } from 'node:url'
 import { inherits } from 'node:util'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences, shell, clipboard } from 'electron'
+import { app, BrowserWindow, clipboard, dialog, ipcMain, protocol, session, shell, systemPreferences } from 'electron'
 // electron-proxy-agent is no longer needed as Electron has built-in proxy support
 // import ElectronProxyAgent from 'electron-proxy-agent'
 import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
@@ -48,8 +48,13 @@ function handleUrl(url: string): void {
 
 // Disable "Start Dictation" and "Emoji & Symbols" menu items on MAC
 if (isMac()) {
-  systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
-  systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+  try {
+    systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
+    systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+  }
+  catch (error) {
+    logger.warn('[system-preferences] Failed to set system preferences:', error)
+  }
 }
 
 app?.on('login', (event, webContents, request, authInfo, _authenticate) => {
@@ -266,7 +271,7 @@ function createWindow(): void {
       nodeIntegration: true,
       sandbox: false,
       webviewTag: true,
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/index.mjs'),
     },
   })
 
@@ -327,30 +332,41 @@ function createWindow(): void {
   // its own websocket connections to our plumbing server, etc.
   browserWindow.webContents.on('did-finish-load', () => {
     const ses = session.fromPartition('persist:name')
-    
-    // Set up proxy configuration using Electron's built-in session API
-    ses.setProxy({
-      mode: 'pac_script',
-      pacScript: `function FindProxyForURL(url, host) {
-        return "${haiku.plumbing.url}";
-      }`
-    })
 
-    // Resolve proxy configuration
-    ses.resolveProxy(haiku.plumbing.url, (proxy) => {
-      haiku.proxy = {
-        // Proxy URL will come through in PAC syntax, e.g. `PROXY secure.megacorp.com:3128`
-        // @see {@link https://en.wikipedia.org/wiki/Proxy_auto-config}
-        url: proxy.replace(`${ProxyType.Proxied} `, ''),
-        active: isProxied(proxy),
-      }
+    try {
+      // Set up proxy configuration using Electron's built-in session API
+      ses.setProxy({
+        mode: 'pac_script',
+        pacScript: `function FindProxyForURL(url, host) {
+          return "${haiku.plumbing.url}";
+        }`,
+      })
 
+      // Resolve proxy configuration
+      ses.resolveProxy(haiku.plumbing.url, (proxy) => {
+        haiku.proxy = {
+          // Proxy URL will come through in PAC syntax, e.g. `PROXY secure.megacorp.com:3128`
+          // @see {@link https://en.wikipedia.org/wiki/Proxy_auto-config}
+          url: proxy.replace(`${ProxyType.Proxied} `, ''),
+          active: isProxied(proxy),
+        }
+
+        browserWindow.webContents.send('haiku', haiku)
+        if (globalThis.process.env.HAIKU_INITIAL_URL) {
+          handleUrl(globalThis.process.env.HAIKU_INITIAL_URL)
+          delete globalThis.process.env.HAIKU_INITIAL_URL
+        }
+      })
+    }
+    catch (error) {
+      logger.warn('[proxy-setup] Failed to set up proxy:', error)
+      // Continue without proxy if setup fails
       browserWindow.webContents.send('haiku', haiku)
       if (globalThis.process.env.HAIKU_INITIAL_URL) {
         handleUrl(globalThis.process.env.HAIKU_INITIAL_URL)
         delete globalThis.process.env.HAIKU_INITIAL_URL
       }
-    })
+    }
   })
 
   browserWindow.on('closed', () => {

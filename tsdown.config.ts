@@ -42,7 +42,6 @@ export default defineConfig({
     'react-dom',
     'session',
     'remote',
-    'fsevents',
     ...builtinModules,
     /\.node$/,
   ],

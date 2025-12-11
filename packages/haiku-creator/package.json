@@ -1,8 +1,8 @@
 {
   "name": "haiku-creator",
   "productName": "Haiku",
-  "version": "5.1.2",
   "type": "module",
+  "version": "5.1.2",
   "private": true,
   "description": "Haiku Creator UI",
   "author": "Matthew Trost <matthew@haiku.ai>",
@@ -17,7 +17,7 @@
     "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
     "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' | tap-spec",
     "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' 'test/**/*.test.js' > test-result.tap",
-    "electron-dev": "cross-env DEV=1 electron-vite dev",
+    "electron-dev": "cross-env DEV=1 electron-vite dev  -- --trace-warnings",
     "electron-build": "electron-vite build",
     "electron-preview": "electron-vite preview",
     "start": "electron ./out/main/index.js",

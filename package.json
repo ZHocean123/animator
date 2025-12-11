@@ -1,7 +1,7 @@
 {
   "name": "haiku-mono",
-  "version": "5.1.2",
   "type": "module",
+  "version": "5.1.2",
   "private": true,
   "description": "Haiku Animator",
   "author": "Haiku Systems Inc.",
@@ -114,7 +114,6 @@
       "core-js",
       "electron-chromedriver",
       "es5-ext",
-      "fsevents",
       "radium",
       "spectron"
     ],

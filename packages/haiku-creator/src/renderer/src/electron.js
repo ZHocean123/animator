@@ -42,8 +42,13 @@ function handleUrl(url) {
 
 // Disable "Start Dictation" and "Emoji & Symbols" menu items on MAC
 if (isMac()) {
-  systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
-  systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+  try {
+    systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
+    systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
+  }
+  catch (error) {
+    logger.warn('[system-preferences] Failed to set system preferences:', error)
+  }
 }
 
 app.on('login', (event, webContents, request, authInfo, authenticate) => {
@@ -260,13 +265,13 @@ function createWindow() {
   // its own websocket connections to our plumbing server, etc.
   browserWindow.webContents.on('did-finish-load', () => {
     const ses = session.fromPartition('persist:name')
-    
+
     // Set up proxy configuration using Electron's built-in session API
     ses.setProxy({
       mode: 'pac_script',
       pacScript: `function FindProxyForURL(url, host) {
         return "${haiku.plumbing.url}";
-      }`
+      }`,
     })
 
     // Resolve proxy configuration
