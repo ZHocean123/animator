@@ -1,7 +1,7 @@
-import type { BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty } from '@haiku/core/lib/api'
+import type { BytecodeTimelineProperties, LayoutSpec, ThreeDimensionalLayoutProperty } from '@haiku/core/api'
 import type { ComposedTransformSpec } from 'haiku-common'
-import { LAYOUT_3D_VANITIES } from '@haiku/core/lib/HaikuComponent'
-import Layout3D from '@haiku/core/lib/Layout3D'
+import { LAYOUT_3D_VANITIES } from '@haiku/core/HaikuComponent'
+import Layout3D from '@haiku/core/Layout3D'
 import { composedTransformsToTimelineProperties } from 'haiku-common'
 import { initialValueOr } from './timelineUtils'
 

@@ -1,6 +1,6 @@
-import { mat4_multiply_vec4 } from '@haiku/core/lib/helpers/PathUtils'
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
-import Layout3D from '@haiku/core/lib/Layout3D'
+import { mat4_multiply_vec4 } from '@haiku/core/helpers/PathUtils'
+import SVGPoints from '@haiku/core/helpers/SVGPoints'
+import Layout3D from '@haiku/core/Layout3D'
 import { Palette } from 'haiku-ui-common'
 import transpose from 'haiku-vendor-legacy/lib/gl-mat4/transpose'
 

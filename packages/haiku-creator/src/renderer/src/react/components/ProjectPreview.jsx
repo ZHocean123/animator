@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as Module from 'node:module'
 import * as path from 'node:path'
-import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter'
+import HaikuDOMAdapter from '@haiku/core/adapters/dom/HaikuDOMAdapter'
 import { TourUtils } from 'haiku-common'
 import { ensureTrailingSlash } from 'haiku-serialization'
 import { InteractionMode } from 'haiku-ui-common'

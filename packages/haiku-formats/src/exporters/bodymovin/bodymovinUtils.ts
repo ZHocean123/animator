@@ -1,5 +1,5 @@
-import type { BytecodeTimelineProperty } from '@haiku/core/lib/api'
-import type { CurveSpec } from '@haiku/core/lib/vendor/svg-points/types'
+import type { BytecodeTimelineProperty } from '@haiku/core/api'
+import type { CurveSpec } from '@haiku/core/vendor/svg-points/types'
 
 import type {
   BodymovinCoordinates,
@@ -8,7 +8,7 @@ import type {
   BodymovinProperty,
   Keyframe,
 } from './bodymovinTypes'
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
+import SVGPoints from '@haiku/core/helpers/SVGPoints'
 import {
   AnimationKey,
   PathKey,

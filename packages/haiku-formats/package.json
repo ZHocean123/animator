@@ -3,16 +3,14 @@
   "version": "5.1.2",
   "description": "Formatting-related utilities for Haiku.",
   "license": "UNLICENSED",
+  "type": "module",
   "exports": {
-    ".": {
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
-    },
+    ".": "./lib/index.mjs",
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.cjs",
+  "main": "./lib/index.mjs",
   "module": "./lib/index.mjs",
-  "types": "./lib/index.d.cts",
+  "types": "./lib/index.d.mts",
   "scripts": {
     "lint": "eslint src/**/*.{ts,tsx,js,jsx} --fix",
     "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",

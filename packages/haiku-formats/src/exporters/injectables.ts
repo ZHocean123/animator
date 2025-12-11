@@ -3,7 +3,7 @@ import type {
   BytecodeStateType,
   BytecodeSummonable,
   HaikuBytecode,
-} from '@haiku/core/lib/api'
+} from '@haiku/core/api'
 
 /**
  * A class we can instantiate to act as a stub for injectables that can't be evaluated sensibly during export.

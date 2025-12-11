@@ -2,14 +2,14 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import type HaikuElement from '@haiku/core/lib/HaikuElement'
-import type { Vec2 } from '@haiku/core/lib/helpers/PathUtils'
-import type { CurveSpec } from '@haiku/core/lib/vendor/svg-points/types'
-import { distance } from '@haiku/core/lib/helpers/PathUtils'
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
-import Layout3D from '@haiku/core/lib/Layout3D'
-import create from 'haiku-vendor-legacy/lib/gl-mat4/create'
-import invert from 'haiku-vendor-legacy/lib/gl-mat4/invert'
+import type HaikuElement from '@haiku/core/HaikuElement'
+import type { Vec2 } from '@haiku/core/helpers/PathUtils'
+import type { CurveSpec } from '@haiku/core/vendor/svg-points/types'
+import { distance } from '@haiku/core/helpers/PathUtils'
+import SVGPoints from '@haiku/core/helpers/SVGPoints'
+import Layout3D from '@haiku/core/Layout3D'
+import { default as create } from 'haiku-vendor-legacy/lib/gl-mat4/create'
+import { default as invert } from 'haiku-vendor-legacy/lib/gl-mat4/invert'
 
 // Number of pixels allowance for a line to be selected
 export const DEFAULT_LINE_SELECTION_THRESHOLD = 5

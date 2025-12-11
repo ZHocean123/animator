@@ -1,21 +1,27 @@
 /* eslint-disable node/prefer-global/process */
-const cp = require('node:child_process')
-const path = require('node:path')
-const async = require('async')
-const fse = require('fs-extra')
-const inquirer = require('inquirer')
-const lodash = require('lodash')
-const argv = require('yargs').argv
-const os = require('node:os')
-const spawn = require('cross-spawn')
-const log = require('./helpers/log')
+import cp from 'node:child_process'
+import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import async from 'async'
+import spawn from 'cross-spawn'
+import dotenv from 'dotenv'
+import fse from 'fs-extra'
+import inquirer from 'inquirer'
+import lodash from 'lodash'
+import yargs from 'yargs'
+import log from './helpers/log.js'
 
-const allPackages = require('./helpers/packages')()
+// Manually parse arguments for ES module compatibility
+const argv = yargs.argv || {}
+const args = process.argv.slice(2)
 
-const groups = lodash.keyBy(allPackages, 'shortname')
-const ROOT = path.join(__dirname, '..')
-const plumbingPackage = groups.plumbing
-const blankProject = path.join(plumbingPackage.abspath, 'test/fixtures/projects/blank-project/')
+let allPackages
+let groups
+let ROOT
+let plumbingPackage
+let blankProject
+let packageJson
 
 let mainProcess
 
@@ -32,108 +38,139 @@ const DEFAULTS = {
   skipInitialBuild: false,
 }
 
-const inputs = lodash.assign({}, DEFAULTS, argv)
-delete inputs._
-delete inputs.$0
+let FOLDER_CHOICES
 
-// List of arguments following the command
-const args = argv._
+// Initialize after loading packages
+async function initialize() {
+  const inputs = lodash.assign({}, DEFAULTS, argv)
+  delete inputs._
+  delete inputs.$0
 
-const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim()
-log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`)
-if (!inputs.branch) {
-  inputs.branch = branch
-}
+  // Get command line arguments manually (skip node and script path)
+  const scriptArgs = process.argv.slice(2)
 
-const FOLDER_CHOICES = {
-  'default': null,
-  'none': null,
-  'blank': blankProject,
-  'blank-noclean': blankProject,
-  'primitives-misc-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/primitives-misc-1'),
-  'nan-errorz-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/nan-errorz'),
-  'percy-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/percybanking'),
-  'statetransitions-core': path.join(ROOT, 'packages/@haiku/core/demo/projects/statetransitions'),
-  'simple-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/simple'),
-  'AliensRepro-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/AliensRepro'),
-  'SuperComplex-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/SuperComplex'),
-  'comet-rotation-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/comet-rotation'),
-  'grouping-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/grouping'),
-  'ttt-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/TicTacToe1'),
-  'Apr91-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/Apr91'),
-  'mc1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc1'),
-  'mc0-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc0'),
-  'mc2-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc2'),
-  'mc3-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc3'),
-  'mc4-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc4'),
-  'mc-anim1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc-anim1'),
-  'Bricks-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/Bricks'),
-  'groupers-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/groupers-1'),
-  'repeat-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-1'),
-  'repeat-2-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-2'),
-  'repeat-if-00-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-if-00'),
-  'repeat-2-auto-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-2-auto'),
-  'complex-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/complex'),
-  'SuperComplex-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/SuperComplex'),
-  'AliensRepro-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/AliensRepro'),
-  'Move-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/Move'),
-  'metapoem2-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/metapoem2'),
-  'text-content-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/text-content'),
-  'pkey-dupe-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/pkey-dupe'),
-  'coinage-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/coinage'),
-  'hovmc-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/hovmc'),
-  'indexif-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/indexif'),
-  'overr-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/overr'),
-  'playstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/playstate'),
-  'substate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/substate'),
-  'repstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repstate'),
-}
+  // Store in global scope for access by other functions
+  globalThis.inputs = inputs
+  globalThis.args = scriptArgs
 
-// Support:
-//   pnpm start --default
-//   pnpm start default
-//   pnpm start --preset=default
-if (argv.default === true) {
-  argv.preset = 'default'
-}
-else if (!Object.prototype.hasOwnProperty.call(argv, 'preset') && args.length > 0) {
-  argv.preset = args[0]
-}
+  // Load packages
+  const packagesModule = await import('./helpers/packages.js')
+  allPackages = packagesModule.default()
 
-// Support:
-//   pnpm start haiku://..
-//
-// We pass only first haiku:// protocol URI to creator
-// On Windows and Linux, custom protocol handler is passed as argument
-const haikuURI = args.find(arg => arg.startsWith('haiku://'))
+  groups = lodash.keyBy(allPackages, 'shortname')
+  // In ES modules, use import.meta.url to get __dirname
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  ROOT = path.join(__dirname, '..')
+  plumbingPackage = groups.plumbing
+  blankProject = path.join(plumbingPackage.abspath, 'test/fixtures/projects/blank-project/')
 
-const availablePresets = {
-  'glass': 'primitives-misc-1-glass',
-  'timeline': 'complex-timeline',
-  'blank': 'blank',
-  'blank-noclean': 'blank-noclean',
-}
+  // Store ROOT in global scope for other functions
+  globalThis.ROOT = ROOT
 
-if (Object.prototype.hasOwnProperty.call(FOLDER_CHOICES, argv.preset)) {
-  inputs.folderChoice = argv.preset
-}
-else if (availablePresets[argv.preset]) {
-  inputs.devChoice = argv.preset
-  inputs.folderChoice = availablePresets[argv.preset] || globalThis.process.env.HAIKU_PROJECT_FOLDER
-}
-else if (argv.preset === 'fast') {
-  inputs.skipInitialBuild = true
-}
-else {
-  delete argv.preset
-}
+  // Read package.json version synchronously
+  packageJson = JSON.parse(fse.readFileSync(path.join(ROOT, 'package.json'), 'utf-8'))
 
-if (argv.preset) {
-  log.hat(`running automatically with preset ${argv.preset}`)
-  runAutomatic()
-}
-else {
-  runInteractive()
+  const branch = cp.execSync('git symbolic-ref --short -q HEAD || git rev-parse --short HEAD').toString().trim()
+  log.log(`fyi, your current branch is ${JSON.stringify(branch)}\n`)
+  if (!inputs.branch) {
+    inputs.branch = branch
+  }
+
+  FOLDER_CHOICES = {
+    'default': null,
+    'none': null,
+    'blank': blankProject,
+    'blank-noclean': blankProject,
+    'primitives-misc-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/primitives-misc-1'),
+    'nan-errorz-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/nan-errorz'),
+    'percy-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/percybanking'),
+    'statetransitions-core': path.join(ROOT, 'packages/@haiku/core/demo/projects/statetransitions'),
+    'simple-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/simple'),
+    'AliensRepro-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/AliensRepro'),
+    'SuperComplex-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/SuperComplex'),
+    'comet-rotation-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/comet-rotation'),
+    'grouping-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/grouping'),
+    'ttt-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/TicTacToe1'),
+    'Apr91-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/Apr91'),
+    'mc1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc1'),
+    'mc0-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc0'),
+    'mc2-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc2'),
+    'mc3-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc3'),
+    'mc4-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc4'),
+    'mc-anim1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/mc-anim1'),
+    'Bricks-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/Bricks'),
+    'groupers-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/groupers-1'),
+    'repeat-1-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-1'),
+    'repeat-2-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-2'),
+    'repeat-if-00-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-if-00'),
+    'repeat-2-auto-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repeat-2-auto'),
+    'complex-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/complex'),
+    'SuperComplex-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/SuperComplex'),
+    'AliensRepro-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/AliensRepro'),
+    'Move-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/Move'),
+    'metapoem2-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/metapoem2'),
+    'text-content-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/text-content'),
+    'pkey-dupe-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/pkey-dupe'),
+    'coinage-timeline': path.join(ROOT, 'packages/haiku-timeline/test/projects/coinage'),
+    'hovmc-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/hovmc'),
+    'indexif-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/indexif'),
+    'overr-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/overr'),
+    'playstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/playstate'),
+    'substate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/substate'),
+    'repstate-glass': path.join(ROOT, 'packages/haiku-glass/test/projects/repstate'),
+  }
+
+  // Store in global scope
+  globalThis.FOLDER_CHOICES = FOLDER_CHOICES
+
+  // Support:
+  //   pnpm start --default
+  //   pnpm start default
+  //   pnpm start --preset=default
+  if (argv.default === true) {
+    argv.preset = 'default'
+  }
+  else if (!Object.prototype.hasOwnProperty.call(argv, 'preset') && scriptArgs.length > 0) {
+    argv.preset = scriptArgs[0]
+  }
+
+  // Support:
+  //   pnpm start haiku://..
+  //
+  // We pass only first haiku:// protocol URI to creator
+  // On Windows and Linux, custom protocol handler is passed as argument
+  const haikuURI = scriptArgs.find(arg => arg.startsWith('haiku://'))
+  globalThis.haikuURI = haikuURI
+
+  const availablePresets = {
+    'glass': 'primitives-misc-1-glass',
+    'timeline': 'complex-timeline',
+    'blank': 'blank',
+    'blank-noclean': 'blank-noclean',
+  }
+
+  if (Object.prototype.hasOwnProperty.call(FOLDER_CHOICES, argv.preset)) {
+    inputs.folderChoice = argv.preset
+  }
+  else if (availablePresets[argv.preset]) {
+    inputs.devChoice = argv.preset
+    inputs.folderChoice = availablePresets[argv.preset] || globalThis.process.env.HAIKU_PROJECT_FOLDER
+  }
+  else if (argv.preset === 'fast') {
+    inputs.skipInitialBuild = true
+  }
+  else {
+    delete argv.preset
+  }
+
+  if (argv.preset) {
+    log.hat(`running automatically with preset ${argv.preset}`)
+    runAutomatic()
+  }
+  else {
+    runInteractive()
+  }
 }
 
 function runInteractive() {
@@ -149,7 +186,7 @@ function runInteractive() {
             { name: 'just glass', value: 'glass' },
             { name: 'just timeline', value: 'timeline' },
           ],
-          default: inputs.devChoice,
+          default: globalThis.inputs.devChoice,
         },
         {
           type: 'list',
@@ -172,22 +209,22 @@ function runInteractive() {
             { name: 'Move (timeline)', value: 'Move-timeline' },
             { name: 'metapoem2 (timeline)', value: 'metapoem2-timeline' },
           ],
-          default: inputs.folderChoice,
+          default: globalThis.inputs.folderChoice,
         },
         {
           type: 'confirm',
           name: 'dev',
           message: 'Automatically open Chrome Dev Tools?',
-          default: inputs.dev,
+          default: globalThis.inputs.dev,
         },
       ]).then((answers) => {
-        lodash.assign(inputs, answers)
+        lodash.assign(globalThis.inputs, answers)
         return cb()
       })
     },
 
     (cb) => {
-      log.log(`inputs were: ${JSON.stringify(inputs, null, 2)}`)
+      log.log(`inputs were: ${JSON.stringify(globalThis.inputs, null, 2)}`)
       inquirer.prompt([
         {
           type: 'confirm',
@@ -241,7 +278,7 @@ function setup() {
   log.hat(`preparing to develop locally`, 'cyan')
 
   if (globalThis.process.env.DEV === undefined) {
-    globalThis.process.env.DEV = (inputs.dev) ? '0' : undefined
+    globalThis.process.env.DEV = (globalThis.inputs.dev) ? '0' : undefined
   }
 
   globalThis.process.env.HAIKU_SKIP_AUTOUPDATE = '1'
@@ -252,12 +289,12 @@ function setup() {
   globalThis.process.env.HAIKU_RELEASE_BRANCH = 'master'
   globalThis.process.env.HAIKU_RELEASE_PLATFORM = getReleasePlatform()
   globalThis.process.env.HAIKU_RELEASE_ARCHITECTURE = getReleaseArchitecture()
-  globalThis.process.env.HAIKU_RELEASE_VERSION = require('./../package.json').version
+  globalThis.process.env.HAIKU_RELEASE_VERSION = packageJson.version
   globalThis.process.env.HAIKU_AUTOUPDATE_SERVER = 'http://localhost:3002'
 
-  if (inputs.devChoice === 'everything') {
+  if (globalThis.inputs.devChoice === 'everything') {
     globalThis.process.env.HAIKU_PLUMBING_URL = 'http://0.0.0.0:1024'
-    if (inputs.folderChoice === 'blank') {
+    if (globalThis.inputs.folderChoice === 'blank') {
       fse.removeSync(blankProject)
       fse.mkdirpSync(blankProject)
       fse.outputFileSync(path.join(blankProject, '.keep'), '')
@@ -269,7 +306,7 @@ function setup() {
 }
 
 function go() {
-  if (inputs.skipInitialBuild) {
+  if (globalThis.inputs.skipInitialBuild) {
     log.hat('skipping initial build')
   }
   else {
@@ -283,15 +320,15 @@ function go() {
 
   log.hat('starting local development', 'green')
 
-  const chosenFolder = FOLDER_CHOICES[inputs.folderChoice]
+  const chosenFolder = globalThis.FOLDER_CHOICES[globalThis.inputs.folderChoice]
   if (chosenFolder) {
     globalThis.process.env.HAIKU_PROJECT_FOLDER = chosenFolder
   }
 
   let cwd = ROOT
   const binaryArgs = []
-  switch (inputs.devChoice) {
-    case 'everything':
+  switch (globalThis.inputs.devChoice) {
+    case 'everything': {
       globalThis.process.env.HAIKU_DEBUG = '1'
       // Electron 28 不支持 --remote-debugging-port，使用 --inspect-brk 代替
       binaryArgs.push('electron', '--inspect=9220', '--inspect-brk=9221', '.')
@@ -305,26 +342,29 @@ function go() {
 
       // On Windows and Linux, custom protocol handler is
       // passed as argument, so here we forward it
-      if (haikuURI) {
-        binaryArgs.push(haikuURI)
+      if (globalThis.haikuURI) {
+        binaryArgs.push(globalThis.haikuURI)
       }
       break
-    case 'glass':
+    }
+    case 'glass': {
       cwd = groups.glass.abspath
       binaryArgs.push('start')
       break
-    case 'timeline':
+    }
+    case 'timeline': {
       cwd = groups.timeline.abspath
       binaryArgs.push('start')
       break
+    }
   }
 
   console.log('binaryArgs', binaryArgs)
 
   // Allow anything in .env to override the environment variables we set here.
-  require('dotenv').config()
+  dotenv.config()
   log.hat('Note: NOT watching for code changes. To watch for code changes, run pnpm dev-all in a new tab.')
-  const creatorFolder = path.join(__dirname, '../packages/haiku-creator')
+  const creatorFolder = path.join(globalThis.ROOT, 'packages/haiku-creator')
   log.hat(creatorFolder)
 
   mainProcess = spawn('pnpm', ['electron-dev'], { cwd: creatorFolder, env: globalThis.process.env, stdio: 'inherit' })
@@ -337,3 +377,9 @@ function go() {
 
   mainProcess.on('exit', globalThis.process.exit)
 }
+
+// Start the application
+initialize().catch((err) => {
+  console.error('Failed to initialize:', err)
+  process.exit(1)
+})

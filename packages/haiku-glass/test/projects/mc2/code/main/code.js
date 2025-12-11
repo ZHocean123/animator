@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("packages/@haiku/core/src/index.ts");
 var _code_asfd_code = require("./../asfd/code.js");
 module.exports = {
   metadata: {

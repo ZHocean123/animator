@@ -1,4 +1,4 @@
-import fse from 'haiku-fs-extra';
+import * as fse from 'haiku-fs-extra';
 import path from 'path';
 
 const filterWalkFolder = (dir, filter, done) => {

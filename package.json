@@ -1,6 +1,7 @@
 {
   "name": "haiku-mono",
   "version": "5.1.2",
+  "type": "module",
   "private": true,
   "description": "Haiku Animator",
   "author": "Haiku Systems Inc.",
@@ -68,8 +69,8 @@
     "derequire": "^2.1.1",
     "dotenv": "^16.3.1",
     "electron": "catalog:",
-    "electron-builder": "^24.9.1",
-    "electron-vite": "^2.3.0",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^5.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-format": "^1.0.2",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -102,7 +103,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@haiku/core": "^5.0.0",
+      "@haiku/core": "workspace:*",
       "@types/node": "^22.0.0",
       "@types/react": "catalog:",
       "react-transition-group": "^1.1.2",

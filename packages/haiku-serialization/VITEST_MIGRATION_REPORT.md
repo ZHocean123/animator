@@ -84,7 +84,7 @@ export default defineConfig({
 // ✅ 正确的 ESModule 格式
 import BaseModel from '../../src/bll/BaseModel.js';
 import path from 'path';
-import fse from 'haiku-fs-extra';
+import * as fse from 'haiku-fs-extra';
 import {PHONY_FIGMA_FILE} from '../../src/bll/Figma.js';
 
 // ✅ 第三方包保持原生导入

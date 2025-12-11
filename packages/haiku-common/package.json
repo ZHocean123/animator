@@ -1,6 +1,7 @@
 {
   "name": "haiku-common",
   "version": "5.1.2",
+  "type": "module",
   "description": "Common library for Haiku.",
   "authors": [
     "Sasha Joseph <sasha@haiku.ai>"

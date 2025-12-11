@@ -1,1 +1,1 @@
-module.exports = ['haiku-*', '@haiku/*']
+export default ['haiku-*', '@haiku/*']

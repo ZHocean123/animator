@@ -1,6 +1,6 @@
 /* eslint-disable node/prefer-global/process */
 import * as fs from 'node:fs'
-import * as os from 'node:os'
+import os from 'node:os'
 import * as path from 'node:path'
 import { app } from 'electron'
 import { isMac } from 'haiku-common'

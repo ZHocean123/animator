@@ -1,4 +1,4 @@
-import marshalParams from '@haiku/core/lib/reflection/marshalParams'
+import marshalParams from '@haiku/core/reflection/marshalParams'
 import * as CodeMirror from 'codemirror'
 import { clipboard } from 'electron'
 import { Expression, MathUtils, parseExpression, Property } from 'haiku-serialization'

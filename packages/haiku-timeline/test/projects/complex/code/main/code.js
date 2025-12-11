@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("@haiku/core/src/index.js");
 var bubtonkillingsworth = require("../bubtonkillingsworth/code.js");
 module.exports = {
   metadata: {

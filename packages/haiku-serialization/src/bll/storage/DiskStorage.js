@@ -1,5 +1,5 @@
 import path from 'node:path'
-import fse from 'haiku-fs-extra'
+import * as fse from 'haiku-fs-extra'
 import haikuHomeDir from './../../utils/HaikuHomeDir'
 
 // 尝试从默认导出获取路径

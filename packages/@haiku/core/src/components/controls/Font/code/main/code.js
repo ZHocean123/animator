@@ -1,6 +1,6 @@
-let Haiku = require('@haiku/core');
+import inject from '../../../../../reflection/inject.ts'
 
-module.exports = {
+export default {
   metadata: {
     type: 'haiku',
     name: 'HaikuControlsFont',
@@ -8,8 +8,8 @@ module.exports = {
   },
 
   states: {
-    name: {type: 'string', value: ''},
-    href: {type: 'string', value: ''},
+    name: { type: 'string', value: '' },
+    href: { type: 'string', value: '' },
   },
 
   timelines: {
@@ -21,9 +21,9 @@ module.exports = {
         'sizeMode.x': 1,
         'sizeMode.y': 1,
         'sizeMode.z': 1,
-        content: {
+        'content': {
           0: {
-            value: Haiku.inject(function (href, name) {
+            value: inject(function (href, name) {
               const style = {
                 elementName: 'style',
                 attributes: {},
@@ -33,7 +33,7 @@ module.exports = {
                     src: url("${href}");
                   }
                 `],
-              };
+              }
 
               if (this.isEditMode()) {
                 return {
@@ -59,10 +59,10 @@ module.exports = {
                     name,
                     style,
                   ],
-                };
+                }
               }
 
-              return style;
+              return style
             }, 'href', 'name'),
           },
         },
@@ -78,4 +78,4 @@ module.exports = {
     },
     children: [],
   },
-};
+}

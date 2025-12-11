@@ -15,6 +15,7 @@ export default defineConfig({
     '@haiku/core',
     '@haiku/sdk-creator',
     'haiku-serialization',
+    'haiku-common',
     'gl-matrix',
   ],
 })

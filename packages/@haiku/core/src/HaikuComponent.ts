@@ -4185,3 +4185,5 @@ function stringToInt(str) {
 
   return hash >>> 0
 }
+
+export const FORBIDDEN_EXPRESSION_TOKENS = HaikuComponent.FORBIDDEN_EXPRESSION_TOKENS

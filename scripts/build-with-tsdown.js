@@ -1,13 +1,17 @@
 /* eslint-disable node/prefer-global/process */
-const cp = require('node:child_process')
-const fs = require('node:fs')
-const path = require('node:path')
-const async = require('async')
-const argv = require('yargs').argv
-const glob = require('glob')
+import cp from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
+import async from 'async'
+import { glob } from 'glob'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-const allPackages = require('./helpers/packages')()
-const log = require('./helpers/log')
+import log from './helpers/log.js'
+import getPackages from './helpers/packages.js'
+
+const argv = yargs(hideBin(process.argv)).argv
+const allPackages = getPackages()
 
 if (!process.env.NODE_ENV) {
   // babel-cli requires this to be set for reasons I don't know
@@ -23,7 +27,7 @@ async.each(allPackages, (pack, done) => {
     /* Load last compile time from file */
     let lastCompileTime = null
     if (!argv.force && fs.existsSync(lastCompileFilename)) {
-      const lastCompile = require(lastCompileFilename)
+      const lastCompile = JSON.parse(fs.readFileSync(lastCompileFilename, 'utf-8'))
       if (Object.prototype.hasOwnProperty.call(lastCompile, 'lastCompileTime')) {
         lastCompileTime = new Date(lastCompile.lastCompileTime)
       }
@@ -71,7 +75,7 @@ async.each(allPackages, (pack, done) => {
 
     /* Update last compile time */
     lastCompileTime = new Date()
-    fs.writeFileSync(lastCompileFilename, `module.exports = ${JSON.stringify({ lastCompileTime })};`)
+    fs.writeFileSync(lastCompileFilename, JSON.stringify({ lastCompileTime }, null, 2))
 
     done()
   }

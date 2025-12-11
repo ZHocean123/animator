@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel.js';
-import {tokenizeDirective} from '@haiku/core/lib/reflection/Tokenizer';
+import {tokenizeDirective} from '@haiku/core/reflection/Tokenizer';
 
 /**
  * @class Expression

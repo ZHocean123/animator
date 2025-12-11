@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events'
-import * as os from 'node:os'
+import os from 'node:os'
 import * as path from 'node:path'
-import HaikuComponent from '@haiku/core/lib/HaikuComponent'
+import HaikuComponent from '@haiku/core/HaikuComponent'
 import { createProjectFiles } from '@haiku/sdk-client'
 import { ErrorCode } from '@haiku/sdk-inkstone'
 /* tslint:disable:no-shadowed-variable */

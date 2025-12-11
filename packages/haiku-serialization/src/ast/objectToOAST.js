@@ -1,5 +1,5 @@
-import { LAYOUT_3D_SCHEMA } from '@haiku/core/lib/HaikuComponent.js'
-import expressionToOASTComponent from './expressionToOASTComponent.js'
+import { LAYOUT_3D_SCHEMA } from '@haiku/core/HaikuComponent'
+import expressionToOASTComponent from './expressionToOASTComponent'
 
 /**
  * We can emit a "shorthand" for bytecode timeline properties at serialization time like so:

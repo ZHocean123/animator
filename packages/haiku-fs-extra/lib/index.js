@@ -36,3 +36,15 @@ Object.defineProperty(jsonfile, 'spaces', {
 })
 
 module.exports.jsonfile = jsonfile // so users of fs-extra can modify jsonFile.spaces
+
+// 显式导出 ES 模块需要的命名导出
+module.exports.mkdirpSync = fs.mkdirpSync
+module.exports.writeJsonSync = fs.writeJsonSync
+module.exports.readJsonSync = fs.readJsonSync
+module.exports.emptyDirSync = fs.emptyDirSync
+module.exports.ensureFileSync = fs.ensureFileSync
+module.exports.writeFile = fs.writeFile
+module.exports.writeFileSync = fs.writeFileSync
+module.exports.existsSync = fs.existsSync
+module.exports.walkSync = fs.walkSync
+module.exports.readFileSync = fs.readFileSync

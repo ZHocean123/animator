@@ -1,5 +1,5 @@
-import type { BytecodeTimelineProperty } from '@haiku/core/lib/api'
-import { Curve } from '@haiku/core/lib/api'
+import type { BytecodeTimelineProperty } from '@haiku/core/api'
+import { Curve } from '@haiku/core/api'
 import * as BezierEasing from 'bezier-easing'
 import { flatten } from 'lodash'
 
@@ -213,7 +213,7 @@ function composeBezierBreakpoints(first: BezierBreakpoint[], second: BezierBreak
  * Gets bezier breakpoints for a decomposable curve.
  *
  * This method uses pre-calculated BezierBreakpoint[]s derived from the curve definitions in
- * @haiku/core/lib/vendor/just-curves using #math.
+ * @haiku/core/vendor/just-curves using #math.
  *
  * Note: we could write some ugly code to express easeOutBounce and easeOutElastic in terms of easeInBounce and
  * easeInElastic respectively, but the overhead isn't quite worth it. Note that the "Out" variant of a set of "In"

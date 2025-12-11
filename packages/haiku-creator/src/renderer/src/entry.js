@@ -1,10 +1,9 @@
 /* eslint-disable node/prefer-global/process */
-import * as electron from 'electron'
 import { shouldEmitErrors } from 'haiku-common'
 import { SentryReporter } from 'haiku-sdk-creator'
 import setup from './dom'
 
-electron.ipcRenderer.on('haiku', (_, haiku) => {
+window.electronAPI.on('haiku', (haiku) => {
   if (haiku.dotenv) {
     Object.assign(globalThis.process.env, haiku.dotenv)
   }

@@ -1,5 +1,5 @@
 import type { ColorResult } from 'react-color'
-import { get, to } from '@haiku/core/lib/vendor/color-string/index'
+import { get, to } from '@haiku/core/vendor/color-string/index'
 
 export enum DisplayValues {
   HEX,

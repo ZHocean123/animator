@@ -1,7 +1,7 @@
 /* tslint:disable:no-shadowed-variable */
 import {VERSION} from '@core/HaikuComponent';
-import {BytecodeNode, BytecodeTimelineProperties, Curve, HaikuBytecode} from '@haiku/core/lib/api';
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints';
+import {BytecodeNode, BytecodeTimelineProperties, Curve, HaikuBytecode} from '@haiku/core/api';
+import SVGPoints from '@haiku/core/helpers/SVGPoints';
 import tape = require('tape');
 
 import {BodymovinExporter} from '@formats/exporters/bodymovin/bodymovinExporter';

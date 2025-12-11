@@ -1,4 +1,4 @@
-import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter'
+import HaikuDOMAdapter from '@haiku/core/adapters/dom/HaikuDOMAdapter'
 import { ensureTrailingSlash, logger } from 'haiku-serialization'
 import { InteractionMode } from 'haiku-ui-common'
 import * as React from 'react'

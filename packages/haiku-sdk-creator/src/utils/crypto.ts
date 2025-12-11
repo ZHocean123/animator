@@ -1,4 +1,4 @@
-import { randomString } from '@haiku/core/lib/helpers/StringUtils'
+import { randomString } from '@haiku/core/helpers/StringUtils'
 
 export type Obfuscation = [string, string]
 

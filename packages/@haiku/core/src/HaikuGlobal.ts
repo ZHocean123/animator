@@ -2,10 +2,10 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
+import { version as VERSION } from './../package.json'
 import enhance from './reflection/enhance'
-import inject from './reflection/inject'
 
-const VERSION = require('./../package.json').version
+import inject from './reflection/inject'
 
 export interface HaikuRoot {
   haiku?: {
@@ -26,20 +26,20 @@ export interface HaikuRoot {
 }
 
 function buildRoot() {
-  // We need a global harness so we can...
+  // We need a globalThis harness so we can...
   // - have a single rAF loop even if we've got multiple Haiku Contexts on the same page
-  // - expose some global APIs that we hope to make available for all components
+  // - expose some globalThis APIs that we hope to make available for all components
   let ROOT: HaikuRoot = {}
 
   // Window gets highest precedence since most likely we're running in DOM
   if (typeof window !== 'undefined') {
     ROOT = window as HaikuRoot
   }
-  else if (typeof global !== 'undefined') {
-    ROOT = global as HaikuRoot
+  else if (typeof globalThis !== 'undefined') {
+    ROOT = globalThis as HaikuRoot
   }
   else {
-    // On the off-chance there is no real global, just use the orig object
+    // On the off-chance there is no real globalThis, just use the orig object
   }
 
   if (!ROOT.haiku) {

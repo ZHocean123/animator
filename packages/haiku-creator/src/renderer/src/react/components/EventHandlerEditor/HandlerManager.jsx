@@ -1,5 +1,5 @@
 import { parse } from '@babel/parser'
-import functionToRFO from '@haiku/core/lib/reflection/functionToRFO'
+import functionToRFO from '@haiku/core/reflection/functionToRFO'
 import { logger } from 'haiku-serialization'
 import * as prettier from 'prettier'
 

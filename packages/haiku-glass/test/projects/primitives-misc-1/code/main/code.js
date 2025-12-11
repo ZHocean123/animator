@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("@haiku/core/src/index.js");
 var _code_bits_code = require("./../bits/code.js");
 var _code_dots_code = require("./../dots/code.js");
 var haiku_core_components_controls_Image_code_main_code = require("@haiku/core/components/controls/Image/code/main/code.js");

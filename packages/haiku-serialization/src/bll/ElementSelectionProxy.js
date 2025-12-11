@@ -1,16 +1,21 @@
 import path from 'node:path'
-import { default as HaikuElement } from '@haiku/core/lib/HaikuElement'
-import { default as Layout3D } from '@haiku/core/lib/Layout3D'
-import { Experiment, experimentIsEnabled } from 'haiku-common'
-import {  composedTransformsToTimelineProperties } from 'haiku-common'
-import { default as invertMatrix } from 'haiku-vendor-legacy/lib/gl-mat4/invert'
+import HaikuElement from '@haiku/core/HaikuElement'
+import Layout3D from '@haiku/core/Layout3D'
+import { composedTransformsToTimelineProperties, Experiment, experimentIsEnabled } from 'haiku-common'
+import invertMatrix from 'haiku-vendor-legacy/lib/gl-mat4/invert.js'
 import lodash from 'lodash'
 import logger from './../utils/LoggerInstance.js'
 import BaseModel from './BaseModel.js'
+// Down here to avoid Node circular dependency stub objects. #FIXME
+import Element from './Element.js'
 import { Figma } from './Figma.js'
 import Illustrator from './Illustrator.js'
-import { rounded, transformFourVectorByMatrix, basicallyEquals } from './MathUtils.js'
+import { basicallyEquals, rounded, transformFourVectorByMatrix } from './MathUtils.js'
+import Property from './Property.js'
+
 import Sketch from './Sketch.js'
+import Template from './Template.js'
+import TimelineProperty from './TimelineProperty.js'
 import TransformCache from './TransformCache.js'
 
 const PI_OVER_12 = Math.PI / 12
@@ -2523,9 +2528,3 @@ ElementSelectionProxy.getPasteables = () => {
 
 export { ElementSelectionProxy }
 export default ElementSelectionProxy
-
-// Down here to avoid Node circular dependency stub objects. #FIXME
-import Element from './Element.js'
-import Property from './Property.js'
-import Template from './Template.js'
-import TimelineProperty from './TimelineProperty.js'

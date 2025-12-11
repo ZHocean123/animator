@@ -1,4 +1,4 @@
-import fse from 'haiku-fs-extra';
+import * as fse from 'haiku-fs-extra';
 import filterWalkFolder from './filterWalkFolder.js';
 
 function walkFiles (dir, done) {

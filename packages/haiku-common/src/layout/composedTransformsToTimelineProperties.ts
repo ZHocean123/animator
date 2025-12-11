@@ -4,9 +4,9 @@
  * Note: this and all related work should be moved out of @haiku/core in conjunction with xmlToMana and friends.
  */
 
-import type { LayoutSpec } from '@haiku/core/lib/api'
+import type { LayoutSpec } from '@haiku/core/api'
 import type { DecomposedMat4 } from 'haiku-vendor-legacy/lib/mat4-decompose'
-import Layout3D from '@haiku/core/lib/Layout3D'
+import Layout3D from '@haiku/core/Layout3D'
 import mat4Decompose from 'haiku-vendor-legacy/lib/mat4-decompose'
 
 export interface ComposedTransformSpec {

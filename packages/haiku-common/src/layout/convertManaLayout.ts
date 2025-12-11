@@ -2,10 +2,10 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import type { BytecodeNode, PrimitiveType } from '@haiku/core/lib/api'
-import { visitManaTree } from '@haiku/core/lib/HaikuNode'
-import Layout3D, { AUTO_SIZING_TOKEN } from '@haiku/core/lib/Layout3D'
-import { SVG_SIZEABLES } from '@haiku/core/lib/layout/applyCssLayout'
+import type { BytecodeNode, PrimitiveType } from '@haiku/core/api'
+import { visitManaTree } from '@haiku/core/HaikuNode'
+import Layout3D, { AUTO_SIZING_TOKEN } from '@haiku/core/Layout3D'
+import { SVG_SIZEABLES } from '@haiku/core/layout/applyCssLayout'
 import cssValue from 'haiku-vendor-legacy/lib/css-value'
 import parseCssTransformString from './parseCssTransformString'
 

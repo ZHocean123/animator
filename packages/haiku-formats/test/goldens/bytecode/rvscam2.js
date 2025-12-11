@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("packages/@haiku/core/src/index.ts");
 module.exports = {
   metadata: {
     folder: "/Users/dsiegel/.haiku/projects/moejoederek/rvscam2",

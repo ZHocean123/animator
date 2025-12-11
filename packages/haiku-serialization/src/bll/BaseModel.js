@@ -6,8 +6,8 @@ import logger from './../utils/LoggerInstance'
 import Cache from './Cache'
 import DiskStorage from './storage/DiskStorage'
 import MemoryStorage from './storage/MemoryStorage'
-import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
-import reifyRO from '@haiku/core/lib/reflection/reifyRO'
+import expressionToRO from '@haiku/core/reflection/expressionToRO'
+import reifyRO from '@haiku/core/reflection/reifyRO'
 
 const SYNC_DEBOUNCE_TIME = 100 // ms
 

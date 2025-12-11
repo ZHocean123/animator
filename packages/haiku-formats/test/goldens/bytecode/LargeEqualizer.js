@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("packages/@haiku/core/src/index.ts");
 module.exports = {
   metadata: {
     uuid: "f9dacc95-4d05-4ab8-b9b6-c2436353a42b",

@@ -1,6 +1,6 @@
 import path from 'path';
 import async from 'async';
-import fse from 'haiku-fs-extra';
+import * as fse from 'haiku-fs-extra';
 import Project from '../../src/bll/Project.js';
 
 test('Element', async () => {

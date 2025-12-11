@@ -1,4 +1,4 @@
-import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/lib/HaikuComponent.js'
+import { FORBIDDEN_EXPRESSION_TOKENS } from '@haiku/core/HaikuComponent'
 import { Parser } from 'cst'
 import { walk } from 'estree-walker'
 import fsm from 'fuzzy-string-matching'

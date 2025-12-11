@@ -7,7 +7,7 @@ import * as path from 'node:path'
 import { URL } from 'node:url'
 import { inherits } from 'node:util'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences, shell, clipboard } from 'electron'
 import ElectronProxyAgent from 'electron-proxy-agent'
 import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
 import TopMenu from 'haiku-common/electron/TopMenu'
@@ -140,11 +140,52 @@ function setupIPCHandlers(win: BrowserWindow): void {
     return await dialog.showSaveDialog(win, options)
   })
 
+  // Shell 操作
+  ipcMain.handle('shell:open-external', async (_event, url: string) => {
+    return await shell.openExternal(url)
+  })
+  ipcMain.handle('shell:show-item', async (_event, abspath: string) => {
+    return shell.showItemInFolder(abspath)
+  })
+
+  // 剪贴板
+  ipcMain.handle('clipboard:write-text', async (_event, text: string) => {
+    clipboard.writeText(text)
+    return true
+  })
+
   // 文件系统操作（只暴露必要信息）
   ipcMain.handle('fs:stat', async (_event, filePath: string) => {
     try {
       const s = fs.statSync(filePath)
       return { size: s.size, mtimeMs: s.mtimeMs }
+    }
+    catch (error) {
+      return { error: (error as Error).message }
+    }
+  })
+  ipcMain.handle('fs:read-file', async (_event, filePath: string) => {
+    try {
+      return fs.readFileSync(filePath, 'utf-8')
+    }
+    catch (error) {
+      return { error: (error as Error).message }
+    }
+  })
+  ipcMain.handle('fs:readdir', async (_event, dirPath: string) => {
+    try {
+      return fs.readdirSync(dirPath)
+    }
+    catch (error) {
+      return { error: (error as Error).message }
+    }
+  })
+
+  // Node 模块解析
+  ipcMain.handle('module:resolve', async (_event, payload: { pkg: string, rel: string }) => {
+    try {
+      const target = require.resolve(path.join(payload.pkg, payload.rel))
+      return target
     }
     catch (error) {
       return { error: (error as Error).message }

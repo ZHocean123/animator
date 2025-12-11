@@ -1,4 +1,4 @@
-import type { HaikuBytecode } from '@haiku/core/lib/api'
+import type { HaikuBytecode } from '@haiku/core/api'
 import type { ExporterRequest } from 'haiku-sdk-creator'
 import { ExporterFormat } from 'haiku-sdk-creator'
 

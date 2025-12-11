@@ -1,6 +1,6 @@
-import HaikuComponent from '@haiku/core/lib/HaikuComponent'
-import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
-import { Curve } from '@haiku/core/lib/api'
+import HaikuComponent from '@haiku/core/HaikuComponent'
+import expressionToRO from '@haiku/core/reflection/expressionToRO'
+import { Curve } from '@haiku/core/api'
 import BaseModel from './BaseModel.js'
 
 // 延迟加载 haiku-formats 以避免循环依赖

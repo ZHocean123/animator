@@ -1,5 +1,5 @@
 import camelcase from 'camelcase';
-import ReservedWords from '@haiku/core/lib/reflection/ReservedWords';
+import ReservedWords from '@haiku/core/reflection/ReservedWords';
 import BaseModel from './BaseModel.js';
 
 /**

@@ -1,1 +1,1 @@
-module.exports = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
+export default ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']

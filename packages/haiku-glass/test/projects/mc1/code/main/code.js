@@ -1,4 +1,4 @@
-var Haiku = require("@haiku/core");
+var Haiku = require("packages/@haiku/core/src/index.ts");
 var component = require("../component/code.js");
 module.exports = {
   metadata: {

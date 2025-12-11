@@ -1,6 +1,6 @@
 
 import TimelineProperty from './../../src/bll/TimelineProperty.js';
-const HaikuComponent = require('@haiku/core/lib/HaikuComponent').default;
+const HaikuComponent = require('@haiku/core/HaikuComponent').default;
 
 const findElementsByHaikuId = () => {
   return {elementName: 'svg', attributes: {}, children: []};

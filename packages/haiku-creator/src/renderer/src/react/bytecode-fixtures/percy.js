@@ -1,4 +1,4 @@
-const Haiku = require('@haiku/core')
+const Haiku = require('packages/@haiku/core/src/index.js')
 
 module.exports = {
   metadata: {

@@ -51,7 +51,7 @@ export default defineConfig({
   dts: true,
 
   // 保持与现有构建兼容
-  format: ['cjs', 'esm'],
+  format: ['esm'],
   shims: true,
 
   // 禁用监听模式，避免在构建脚本中出现错误

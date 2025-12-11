@@ -1,4 +1,4 @@
-import { getFallback } from '@haiku/core/lib/HaikuComponent'
+import { getFallback } from '@haiku/core/HaikuComponent'
 import logger from '../utils/LoggerInstance.js'
 
 const TimelineProperty = {}

@@ -2,7 +2,7 @@ import path from 'node:path'
 import fse from 'fs-extra'
 import { xmlToMana } from 'haiku-common'
 import { debounce } from 'lodash'
-import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import expressionToRO from '@haiku/core/reflection/expressionToRO'
 import { bootstrapSceneFilesSync } from '@haiku/sdk-client'
 import getSvgOptimizer from './../svg/getSvgOptimizer.js'
 import logger from './../utils/LoggerInstance.js'
@@ -10,7 +10,7 @@ import BaseModel from './BaseModel.js'
 import Cache from './Cache.js'
 import Lock from './Lock.js'
 
-// This file also depends on '@haiku/core/lib/HaikuComponent'
+// This file also depends on '@haiku/core/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
 // ^^ Leave this message in this file so we can grep for it if necessary
 

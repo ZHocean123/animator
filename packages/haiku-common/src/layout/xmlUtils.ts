@@ -1,4 +1,4 @@
-import type { BytecodeNode, BytecodeNodeAttributes, BytecodeNodeStyle } from '@haiku/core/lib/api'
+import type { BytecodeNode, BytecodeNodeAttributes, BytecodeNodeStyle } from '@haiku/core/api'
 import toStyle from 'haiku-vendor-legacy/lib/to-style'
 import xmlParser from 'haiku-vendor-legacy/lib/xml-parser'
 

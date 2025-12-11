@@ -2,7 +2,7 @@
 import path from 'node:path'
 import { URL, URLSearchParams } from 'node:url'
 import { inkstone } from '@haiku/sdk-inkstone'
-import fse from 'haiku-fs-extra'
+import * as fse from 'haiku-fs-extra'
 import request from 'request'
 import { sanitize } from '../utils/fileManipulation.js'
 import logger from '../utils/LoggerInstance.js'

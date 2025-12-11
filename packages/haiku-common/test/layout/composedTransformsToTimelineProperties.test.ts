@@ -1,7 +1,7 @@
 import * as tape from 'tape';
 
 import composedTransformsToTimelineProperties from '@common/layout/composedTransformsToTimelineProperties';
-import Layout3D from '@haiku/core/lib/Layout3D';
+import Layout3D from '@haiku/core/Layout3D';
 
 tape(
   'composedTransformsToTimelineProperties',

@@ -1,13 +1,14 @@
 {
   "name": "@haiku/core",
+  "type": "module",
   "version": "5.1.2",
   "description": "Haiku Core is a JavaScript library for building user interfaces",
   "license": "MIT",
   "homepage": "https://www.haikuforteams.com",
   "directories": {
     "lib": "lib",
-    "dom": "dom",
-    "components": "components",
+    "dom": "src/dom",
+    "components": "src/components",
     "dist": "dist"
   },
   "repository": "https://github.com/HaikuTeam/core",
@@ -21,7 +22,70 @@
     "rendering",
     "engine"
   ],
+  "scripts": {
+    "lint": "eslint --ignore-pattern '!src/vendor/**' src/**/*.ts --fix",
+    "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
+    "fix": "pnpm lint --fix",
+    "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
+    "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
+    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
+    "compile": "tsdown",
+    "develop": "tsdown --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "bundle": "pnpm compile && pnpm ts ./scripts/bundle.ts",
+    "demos": "pnpm ts ./scripts/demos.ts"
+  },
+  "authors": [
+    "Matthew Trost <matthew@haiku.ai>",
+    "Zack Brown <zack@haiku.ai>",
+    "Taylor Poe <taylor@haiku.ai>",
+    "Sasha Joseph <sasha@haiku.ai>"
+  ],
+  "peerDependencies": {
+    "@angular/core": "^18.0.0",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@angular/core": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "async": "^3.2.4",
+    "chokidar": "^3.5.3",
+    "cross-env": "^7.0.3",
+    "depcheck": "^1.4.7",
+    "express": "^4.18.2",
+    "filesize": "^10.0.8",
+    "fs-extra": "^11.1.1",
+    "haiku-testing": "workspace:*",
+    "handlebars": "^4.7.8",
+    "istanbul-reporter-cobertura-haiku": "^1.0.2",
+    "jsdom": "^22.1.0",
+    "leaked-handles": "^5.2.0",
+    "nodemon": "^3.0.1",
+    "nyc": "^15.1.0",
+    "opn": "^6.0.0",
+    "react-router-dom": "^6.8.1",
+    "rollup": "^4.9.5",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify-es": "^0.0.1",
+    "rxjs": "^7.8.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.7.2",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
   "exports": {
+    ".": {
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
     "./adapters/angular-dom/HaikuAngularDOMAdapter": {
       "require": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.cjs",
       "import": "./lib/adapters/angular-dom/HaikuAngularDOMAdapter.mjs"
@@ -58,9 +122,37 @@
       "require": "./lib/api/index.cjs",
       "import": "./lib/api/index.mjs"
     },
+    "./components/controls/Font/code/main/code": {
+      "require": "./lib/components/controls/Font/code/main/code.cjs",
+      "import": "./lib/components/controls/Font/code/main/code.mjs"
+    },
+    "./components/controls/Image/code/main/code": {
+      "require": "./lib/components/controls/Image/code/main/code.cjs",
+      "import": "./lib/components/controls/Image/code/main/code.mjs"
+    },
+    "./components/controls/Text/code/main/code": {
+      "require": "./lib/components/controls/Text/code/main/code.cjs",
+      "import": "./lib/components/controls/Text/code/main/code.mjs"
+    },
     "./Config": {
       "require": "./lib/Config.cjs",
       "import": "./lib/Config.mjs"
+    },
+    "./dom": {
+      "require": "./lib/dom/index.cjs",
+      "import": "./lib/dom/index.mjs"
+    },
+    "./dom/angular": {
+      "require": "./lib/dom/angular/index.cjs",
+      "import": "./lib/dom/angular/index.mjs"
+    },
+    "./dom/react": {
+      "require": "./lib/dom/react/index.cjs",
+      "import": "./lib/dom/react/index.mjs"
+    },
+    "./dom/vue": {
+      "require": "./lib/dom/vue/index.cjs",
+      "import": "./lib/dom/vue/index.mjs"
     },
     "./HaikuBase": {
       "require": "./lib/HaikuBase.cjs",
@@ -608,64 +700,7 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "index.js",
-  "scripts": {
-    "lint": "eslint --ignore-pattern '!src/vendor/**' src/**/*.ts --fix",
-    "lint-report": "pnpm lint -f checkstyle -o checkstyle-result.xml",
-    "fix": "pnpm lint --fix",
-    "ts": "cross-env NODE_ENV=test ts-node -r tsconfig-paths/register -P tsconfig.all.json",
-    "test": "pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' | tap-spec",
-    "test-report": "nyc pnpm ts ./node_modules/.bin/tape 'test/**/*.test.ts' > test-result.tap",
-    "compile": "tsdown",
-    "develop": "tsdown --watch",
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "bundle": "pnpm compile && pnpm ts ./scripts/bundle.ts",
-    "demos": "pnpm ts ./scripts/demos.ts"
-  },
-  "authors": [
-    "Matthew Trost <matthew@haiku.ai>",
-    "Zack Brown <zack@haiku.ai>",
-    "Taylor Poe <taylor@haiku.ai>",
-    "Sasha Joseph <sasha@haiku.ai>"
-  ],
-  "peerDependencies": {
-    "@angular/core": "^18.0.0",
-    "react": "catalog:",
-    "react-dom": "catalog:"
-  },
-  "devDependencies": {
-    "@angular/core": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1",
-    "async": "^3.2.4",
-    "chokidar": "^3.5.3",
-    "cross-env": "^7.0.3",
-    "depcheck": "^1.4.7",
-    "express": "^4.18.2",
-    "filesize": "^10.0.8",
-    "fs-extra": "^11.1.1",
-    "haiku-testing": "workspace:*",
-    "handlebars": "^4.7.8",
-    "istanbul-reporter-cobertura-haiku": "^1.0.2",
-    "jsdom": "^22.1.0",
-    "leaked-handles": "^5.2.0",
-    "nodemon": "^3.0.1",
-    "nyc": "^15.1.0",
-    "opn": "^6.0.0",
-    "react-router-dom": "^6.8.1",
-    "rollup": "^4.9.5",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-uglify-es": "^0.0.1",
-    "rxjs": "^7.8.1",
-    "tap-spec": "^5.0.0",
-    "tape": "^5.7.2",
-    "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
-  }
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts"
 }

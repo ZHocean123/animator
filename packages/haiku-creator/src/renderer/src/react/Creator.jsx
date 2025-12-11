@@ -750,8 +750,8 @@ export default class Creator extends React.Component {
       this.setState({
         readyForAuth: true,
         isUserAuthenticated: user && organization,
-      }, () => {
-        if (this.state.isUserAuthenticated && typeof this._postAuthCallback === 'function') {
+      }, (prevState) => {
+        if (prevState.isUserAuthenticated && typeof this._postAuthCallback === 'function') {
           this._postAuthCallback()
           delete this._postAuthCallback
         }

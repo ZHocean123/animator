@@ -1,6 +1,6 @@
 import path from 'path';
-import fse from 'haiku-fs-extra';
-import {VERSION} from '@haiku/core/lib/HaikuComponent';
+import * as fse from 'haiku-fs-extra';
+import {VERSION} from '@haiku/core/HaikuComponent';
 
 import Project from '../../src/bll/Project.js';
 import File from '../../src/bll/File.js';

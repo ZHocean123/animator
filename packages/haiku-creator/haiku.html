@@ -22,7 +22,7 @@
       const mount = document.getElementById('mount')
       const { ipcRenderer } = require('electron')
       const { requireFromFile } = require('haiku-serialization')
-      const { default: HaikuDOMAdapter } = require('@haiku/core/lib/adapters/dom/HaikuDOMAdapter')
+      const { default: HaikuDOMAdapter } = require('@haiku/core/adapters/dom/HaikuDOMAdapter')
       let bytecode, component
 
       ipcRenderer.on('mount', (_, { bytecodePath, width, height, options }) => {

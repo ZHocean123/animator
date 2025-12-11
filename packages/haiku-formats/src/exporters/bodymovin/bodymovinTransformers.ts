@@ -1,6 +1,6 @@
 import type { MaybeAnimated } from './bodymovinTypes'
 /** @file Transformers for Bodymovin quirks. */
-import ColorUtils from '@haiku/core/lib/helpers/ColorUtils'
+import ColorUtils from '@haiku/core/helpers/ColorUtils'
 import {
   DasharrayKey,
   DasharrayRole,

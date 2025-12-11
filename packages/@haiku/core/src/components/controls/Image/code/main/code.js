@@ -1,38 +1,38 @@
-let Haiku = require('@haiku/core');
+import inject from '../../../../../reflection/inject.ts'
 
-module.exports = {
+export default {
   metadata: {
     type: 'haiku',
     name: 'HaikuControlsImage',
   },
 
   states: {
-    width: {type: 'number', value: 200},
-    height: {type: 'number', value: 200},
-    href: {type: 'string', value: 'https://via.placeholder.com/200x200'},
+    width: { type: 'number', value: 200 },
+    height: { type: 'number', value: 200 },
+    href: { type: 'string', value: 'https://via.placeholder.com/200x200' },
   },
 
   timelines: {
     Default: {
       'haiku:HaikuControlsDiv': {
-        'style.WebkitTapHighlightColor': {0: {value: 'rgba(0,0,0,0)'}},
-        'style.position': {0: {value: 'relative'}},
-        'style.overflowX': {0: {value: 'hidden'}},
-        'style.overflowY': {0: {value: 'hidden'}},
-        'sizeMode.x': {0: {value: 1}},
-        'sizeMode.y': {0: {value: 1}},
-        'sizeMode.z': {0: {value: 1}},
+        'style.WebkitTapHighlightColor': { 0: { value: 'rgba(0,0,0,0)' } },
+        'style.position': { 0: { value: 'relative' } },
+        'style.overflowX': { 0: { value: 'hidden' } },
+        'style.overflowY': { 0: { value: 'hidden' } },
+        'sizeMode.x': { 0: { value: 1 } },
+        'sizeMode.y': { 0: { value: 1 } },
+        'sizeMode.z': { 0: { value: 1 } },
         'sizeAbsolute.x': {
           0: {
-            value: Haiku.inject(function (width) {
-              return width;
+            value: inject((width) => {
+              return width
             }, 'width'),
           },
         },
         'sizeAbsolute.y': {
           0: {
-            value: Haiku.inject(function (height) {
-              return height;
+            value: inject((height) => {
+              return height
             }, 'height'),
           },
         },
@@ -40,22 +40,22 @@ module.exports = {
       'haiku:HaikuControlsImg': {
         src: {
           0: {
-            value: Haiku.inject(function (href) {
-              return href || '';
+            value: inject((href) => {
+              return href || ''
             }, 'href'),
           },
         },
         width: {
           0: {
-            value: Haiku.inject(function (width) {
-              return width;
+            value: inject((width) => {
+              return width
             }, 'width'),
           },
         },
         height: {
           0: {
-            value: Haiku.inject(function (height) {
-              return height;
+            value: inject((height) => {
+              return height
             }, 'height'),
           },
         },
@@ -80,4 +80,4 @@ module.exports = {
       },
     ],
   },
-};
+}

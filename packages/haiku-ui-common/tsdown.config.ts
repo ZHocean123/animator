@@ -19,5 +19,6 @@ export default {
     'electron',
     'react',
     'react-dom',
+    'haiku-common',
   ],
 }

@@ -1,4 +1,4 @@
-import { getFallback } from '@haiku/core/lib/HaikuComponent'
+import { getFallback } from '@haiku/core/HaikuComponent'
 import decamelize from 'decamelize'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import titlecase from 'titlecase'

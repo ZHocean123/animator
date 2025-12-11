@@ -4,9 +4,9 @@
 import {
   InteractionMode as CoreInteractionMode,
   isPreviewMode,
-} from '@haiku/core/lib/helpers/interactionModes'
+} from '@haiku/core/helpers/interactionModes'
 
-export * from '@haiku/core/lib/helpers/interactionModes'
+export * from '@haiku/core/helpers/interactionModes'
 
 /**
  * Interaction mode types for Haiku app use (creator/glass/timeline)

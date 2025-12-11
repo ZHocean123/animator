@@ -14,5 +14,6 @@ export default defineConfig({
   minify: false,
   external: [
     'electron',
+    '@haiku/core',
   ],
 })

@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { InteractionMode } from '@haiku/core/lib/helpers/interactionModes'
+import { InteractionMode } from '@haiku/core/helpers/interactionModes'
 import {
   getAngularSelectorName,
   getDefaultIllustratorAssetPath,
@@ -12,7 +12,7 @@ import {
 } from '@haiku/sdk-client'
 import async from 'async'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
-import fse from 'haiku-fs-extra'
+import * as fse from 'haiku-fs-extra'
 import jss from 'json-stable-stringify'
 import lodash from 'lodash'
 import WebSocket from 'ws'

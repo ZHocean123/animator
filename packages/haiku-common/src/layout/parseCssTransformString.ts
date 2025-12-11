@@ -2,8 +2,8 @@
  * Copyright (c) Haiku 2016-2018. All rights reserved.
  */
 
-import parseCssValueString from '@haiku/core/lib/helpers/parseCssValueString'
-import Layout3D from '@haiku/core/lib/Layout3D'
+import parseCssValueString from '@haiku/core/helpers/parseCssValueString'
+import Layout3D from '@haiku/core/Layout3D'
 import cssMat4 from 'haiku-vendor-legacy/lib/css-mat4'
 import composedTransformsToTimelineProperties from './composedTransformsToTimelineProperties'
 

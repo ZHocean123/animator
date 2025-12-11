@@ -1,4 +1,4 @@
-import type { BytecodeNode, BytecodeSummonable } from '@haiku/core/lib/api'
+import type { BytecodeNode, BytecodeSummonable } from '@haiku/core/api'
 import type { ExporterInterface } from '..'
 import { writeFile } from 'fs-extra'
 import { logger, Template } from 'haiku-serialization'

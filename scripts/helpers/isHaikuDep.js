@@ -1,15 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs'
+import path from 'node:path'
 
-module.exports = (name) => {
+export default (name) => {
   if (!name.startsWith('haiku-') && !name.startsWith('@haiku')) {
     return false;
   }
 
   try {
-    const stats = fs.statSync(path.join(global.process.cwd(), 'packages', name));
+    const stats = fs.statSync(path.join(process.cwd(), 'packages', name));
     return stats.isDirectory();
   } catch (e) {
     return false;
   }
-};
+}

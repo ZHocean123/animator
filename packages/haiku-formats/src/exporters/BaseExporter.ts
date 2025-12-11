@@ -2,8 +2,8 @@ import type {
   BytecodeTimelineProperties,
   HaikuBytecode,
   ThreeDimensionalLayoutProperty,
-} from '@haiku/core/lib/api'
-import HaikuDOMAdapter from '@haiku/core/lib/adapters/dom/HaikuDOMAdapter'
+} from '@haiku/core/api'
+import HaikuDOMAdapter from '@haiku/core/adapters/dom/HaikuDOMAdapter'
 
 export default class BaseExporter {
   constructor(protected readonly bytecode: HaikuBytecode, protected readonly componentFolder: string) {}

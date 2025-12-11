@@ -1,4 +1,4 @@
-import expressionToRO from '@haiku/core/lib/reflection/expressionToRO'
+import expressionToRO from '@haiku/core/reflection/expressionToRO'
 import { Experiment, experimentIsEnabled } from 'haiku-common'
 import prettier from 'prettier'
 import bytecodeObjectToAST from './../ast/bytecodeObjectToAST.js'

@@ -5,16 +5,16 @@ import type {
   BytecodeTimelineProperty,
   HaikuBytecode,
   ThreeDimensionalLayoutProperty,
-} from '@haiku/core/lib/api'
-import type { CurveSpec } from '@haiku/core/lib/vendor/svg-points/types'
+} from '@haiku/core/api'
+import type { CurveSpec } from '@haiku/core/vendor/svg-points/types'
 import type { ExporterInterface } from '..'
 import type { BodymovinFill, BodymovinShape, BodymovinTransform, Keyframe, MaybeAnimated, SvgInheritable } from './bodymovinTypes'
 import { extname, join } from 'node:path'
 import {
   Curve,
-} from '@haiku/core/lib/api'
-import { synchronizePathStructure } from '@haiku/core/lib/helpers/PathUtils'
-import SVGPoints from '@haiku/core/lib/helpers/SVGPoints'
+} from '@haiku/core/api'
+import { synchronizePathStructure } from '@haiku/core/helpers/PathUtils'
+import SVGPoints from '@haiku/core/helpers/SVGPoints'
 import { existsSync, readFileSync, writeFile } from 'fs-extra'
 import { logger, Template } from 'haiku-serialization'
 

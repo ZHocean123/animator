@@ -1,5 +1,5 @@
 import path from 'path';
-import fse from 'haiku-fs-extra';
+import * as fse from 'haiku-fs-extra';
 import {execSync} from 'child_process';
 import {PNG} from 'pngjs';
 import logger from './../utils/LoggerInstance.js';

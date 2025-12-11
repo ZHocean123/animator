@@ -1,5 +1,5 @@
 import OASTToRO from './OASTToRO.js';
-import reifyRO from '@haiku/core/lib/reflection/reifyRO';
+import reifyRO from '@haiku/core/reflection/reifyRO';
 
 function reifyOAST (oast, referenceEvaluator, skipFunctionReification) {
   const ro = OASTToRO(oast);

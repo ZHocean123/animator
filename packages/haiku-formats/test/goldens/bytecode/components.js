@@ -1,4 +1,4 @@
-let Haiku = require('@haiku/core');
+let Haiku = require('packages/@haiku/core/src/index.ts');
 module.exports = {
   metadata: {
     title: 'Main',
