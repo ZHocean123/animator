@@ -1,14 +1,21 @@
 import path from 'node:path'
-import fse from 'fs-extra'
-import { xmlToMana } from 'haiku-common'
-import { debounce } from 'lodash'
 import expressionToRO from '@haiku/core/reflection/expressionToRO'
 import { bootstrapSceneFilesSync } from '@haiku/sdk-client'
+import fse from 'fs-extra'
+import { xmlToMana } from 'haiku-common'
+import lodash from 'lodash'
 import getSvgOptimizer from './../svg/getSvgOptimizer.js'
 import logger from './../utils/LoggerInstance.js'
+// Down here to avoid Node circular dependency stub objects. #FIXME
+import AST from './AST.js'
 import BaseModel from './BaseModel.js'
+import Bytecode from './Bytecode.js'
 import Cache from './Cache.js'
 import Lock from './Lock.js'
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.
+import Template from './Template.js'
+
+const { debounce } = lodash
 
 // This file also depends on '@haiku/core/HaikuComponent'
 // in the sense that one of those instances is assigned as .hostInstance here.
@@ -399,12 +406,7 @@ function _isFileCode(relpath) {
   return path.extname(relpath) === '.js'
 }
 
-export {File}
+export { File }
 export default File
 
 const ActiveComponent = require('./ActiveComponent')
-// Down here to avoid Node circular dependency stub objects. #FIXME
-import AST from './AST.js'
-import Bytecode from './Bytecode.js'
-import ModuleWrapper from './ModuleWrapper.js'
-import Template from './Template.js'

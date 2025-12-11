@@ -33,7 +33,20 @@ export default defineConfig({
         '@creator': resolve(__dirname, 'src'),
       },
     },
-    plugins: [react({ include: [/\.jsx?$/, /\.tsx?$/] })],
+    plugins: [
+      react({ include: [/\.jsx?$/, /\.tsx?$/] }),
+      {
+        name: 'native-modules',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url?.endsWith('.node')) {
+              res.setHeader('Content-Type', 'application/octet-stream')
+            }
+            next()
+          })
+        },
+      },
+    ],
     build: {
       rollupOptions: {
         external: [
@@ -74,8 +87,13 @@ export default defineConfig({
           'worker_threads',
           // Electron 特定模块
           'electron',
+          'session',
+          'remote',
+          'fsevents',
           '/^haiku-/',
           '/^@haiku\\//',
+          // 处理 .node 文件
+          /\.node$/,
         ],
       },
     },

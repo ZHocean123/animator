@@ -1,3 +1,4 @@
+import { builtinModules } from 'node:module'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'tsdown'
@@ -39,6 +40,11 @@ export default defineConfig({
     'electron',
     'react',
     'react-dom',
+    'session',
+    'remote',
+    'fsevents',
+    ...builtinModules,
+    /\.node$/,
   ],
 
   // 开发服务器配置

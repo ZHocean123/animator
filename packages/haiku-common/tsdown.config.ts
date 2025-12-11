@@ -16,4 +16,10 @@ export default defineConfig({
     'electron',
     '@haiku/core',
   ],
+  copy: [
+    {
+      from: 'config',
+      to: 'lib/config',
+    },
+  ],
 })

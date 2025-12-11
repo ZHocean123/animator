@@ -26,7 +26,7 @@ import BaseModel from './BaseModel.js'
 import File from './File.js'
 import toTitleCase from './helpers/toTitleCase.js'
 import Lock from './Lock.js'
-import ModuleWrapper from './ModuleWrapper.js'
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.
 
 // 延迟加载 haiku-sdk-creator 以避免循环依赖
 let _sdkCreator = null

@@ -3,9 +3,11 @@ import os from 'node:os'
 import path from 'node:path'
 import { isMac, isWindows } from 'haiku-common'
 import * as fse from 'haiku-fs-extra'
-import { v4 as uuidv4 } from 'uuid'
+import uuid from 'uuid'
 import { stringifyPath } from '../utils/fileManipulation.js'
 import logger from '../utils/LoggerInstance.js'
+
+const { v4: uuidv4 } = uuid
 
 const IS_ILLUSTRATOR_FILE_RE = /\.ai$/
 const IS_ILLUSTRATOR_FOLDER_RE = /\.ai\.contents/

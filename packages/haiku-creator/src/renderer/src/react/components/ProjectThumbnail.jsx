@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import { shell } from 'electron'
 import { isWindows } from 'haiku-common'
 import { Palette, StackMenuSVG } from 'haiku-ui-common'
 
@@ -25,7 +24,7 @@ class ProjectThumbnail extends React.Component {
   }
 
   openBrowserToProjectSharePage() {
-    shell.openExternal(this.props.projectShareUrl)
+    window.electronAPI.shell.openExternal(this.props.projectShareUrl)
   }
 
   showDeleteModal = (e) => {
@@ -35,7 +34,7 @@ class ProjectThumbnail extends React.Component {
 
   showItemInFolder = (e) => {
     e.stopPropagation()
-    shell.showItemInFolder(this.props.projectPath)
+    window.electronAPI.shell.showItemInFolder(this.props.projectPath)
   }
 
   onClick = () => {

@@ -1385,7 +1385,7 @@ Bytecode.addDefaultCurveIfNecessary = (
 export default Bytecode
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
-import ModuleWrapper from './ModuleWrapper.js'
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.
 import State from './State.js'
 import Template from './Template.js'
 import TimelineProperty from './TimelineProperty.js'

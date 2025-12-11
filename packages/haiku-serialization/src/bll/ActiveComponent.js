@@ -4902,7 +4902,7 @@ import File from './File.js'
 import ImageComponent from './ImageComponent.js'
 import InstalledComponent from './InstalledComponent.js'
 import Keyframe from './Keyframe.js'
-import ModuleWrapper from './ModuleWrapper.js'
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.
 import MountElement from './MountElement.js'
 import Property from './Property.js'
 import PseudoFile from './PseudoFile.js'

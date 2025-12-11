@@ -721,9 +721,6 @@ importers:
       color:
         specifier: ^4.2.3
         version: 4.2.3
-      electron-proxy-agent:
-        specifier: ^1.2.1
-        version: 1.2.1
       electron-updater:
         specifier: ^6.6.2
         version: 6.6.2
@@ -3313,10 +3310,6 @@ packages:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
     engines: {node: '>=10'}
 
-  '@tootallnate/once@1.1.2':
-    resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
-    engines: {node: '>= 6'}
-
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
@@ -4040,9 +4033,6 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  agent-base@2.1.1:
-    resolution: {integrity: sha512-oDtZV740o3fr5oJtPLOsgH2hl2TRPscNXIx4VzzBwVlXVkv8RHm7XXqGAYg8t20+Gwu6LNDnx8HRMGqVGPZ8Vw==}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -5214,9 +5204,6 @@ packages:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
     engines: {node: '>=0.10'}
 
-  data-uri-to-buffer@0.0.4:
-    resolution: {integrity: sha512-nntmCbCupHk2zFSWe64pTt0LJ2U6Bt3K1MWgwXiEAj9IEaowSXbGLYN7m8xCb4hbpQl8QSCRBkKT9tFRUMkU7A==}
-
   data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
@@ -5625,9 +5612,6 @@ packages:
     resolution: {integrity: sha512-ccBACsMgbGd3HcQsD9vwT2pnWbCFT+P5h2ICMy77JU4kNrR5pN1uTBjQ1Q9Fl5Cpg0FHjhVREZCmBxt4e+ekHQ==}
     engines: {node: '>=10.12.0'}
     hasBin: true
-
-  electron-proxy-agent@1.2.1:
-    resolution: {integrity: sha512-sxAmdPUngywVIhpxlvB/44fJtb6qUJzQS48Zl+2qU1fUlLUYp8nLwzfiCqrIJlAtxs4NcZnMsh+sA4Xr3YtMiw==}
 
   electron-publish@24.13.1:
     resolution: {integrity: sha512-2ZgdEqJ8e9D17Hwp5LEq5mLQPjqU3lv/IALvgp+4W8VeNhryfGhYEQC/PgDPMrnWUp+l60Ou5SJLsu+k4mhQ8A==}
@@ -6483,9 +6467,6 @@ packages:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
-  file-uri-to-path@0.0.2:
-    resolution: {integrity: sha512-jNmalsdk1enTf+tjxrMb3nutLleumh96WWtXJQHU700Jmjyl/CHj33Di5iFECNNfgb9GwlMNKU18tukUPlFXMg==}
-
   file-uri-to-path@1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
 
@@ -6722,10 +6703,6 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  ftp@0.3.10:
-    resolution: {integrity: sha512-faFVML1aBx2UoDStmLwv2Wptt4vw5x03xxX172nhA5Y5HBshW5JweqQ2W4xL4dezQTG8inJsuYcpPHHU3X5OTQ==}
-    engines: {node: '>=0.8.0'}
-
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
@@ -6799,9 +6776,6 @@ packages:
 
   get-tsconfig@4.13.0:
     resolution: {integrity: sha512-1VKTZJCwBrvbd+Wn3AOgQP/2Av+TfTCOlE4AcRJE72W1ksZXbAx8PPBR9RzgTeSPzlPMHrbANMH3LbltH73wxQ==}
-
-  get-uri@1.1.0:
-    resolution: {integrity: sha512-wI/6HgPCAUPOMAQ7Nmgwe4cTcchoFUdlIZzH4AzGbTVA9D4PVN9Auuo4Opqc7i1iD/HxCYVF6+4VwfGMg04wVQ==}
 
   get-value@2.0.6:
     resolution: {integrity: sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==}
@@ -7145,10 +7119,6 @@ packages:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
 
-  http-proxy-agent@4.0.1:
-    resolution: {integrity: sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==}
-    engines: {node: '>= 6'}
-
   http-proxy-agent@5.0.0:
     resolution: {integrity: sha512-n2hY8YdoRE1i7r6M0w9DIw5GgZN0G25P8zLCRQ8rjXtTU3vsNFBI/vWK/UIeE6g5MUUz6avwAPXmL6Fy9D/90w==}
     engines: {node: '>= 6'}
@@ -7324,9 +7294,6 @@ packages:
   ip-address@10.1.0:
     resolution: {integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==}
     engines: {node: '>= 12'}
-
-  ip@1.1.9:
-    resolution: {integrity: sha512-cyRxvOEpNHNtchU3Ln9KC/auJgup87llfQpQ+t5ghoC/UhL16SWzbueiCsdTnWmqAWl7LadfuwhlqmtOaqMHdQ==}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -9787,9 +9754,6 @@ packages:
     resolution: {integrity: sha512-7BGwRHqt4s/uVbuyoeejRn4YmFnYZiFl4AuaeXHlgZf3sONF0SOGlxs2Pw8g6hCKupo08RafIO5YXFNOKTfwsQ==}
     engines: {node: '>=0.10.0'}
 
-  readable-stream@1.1.14:
-    resolution: {integrity: sha512-+MeVjFf4L44XUkhM1eYbD8fyEsxcV81pqMSR5gblfcLCHfZvbrqy4/qYHE+/R5HoBUT11WV5O08Cr1n3YXkWVQ==}
-
   readable-stream@2.2.9:
     resolution: {integrity: sha512-iuxqX7b7FYt08AriYECxUsK9KTXE3A/FenxIa3IPmvANHxaTP/wGIwwf+IidvvIDk/MsCp/oEV6A8CXo4SDcCg==}
 
@@ -10222,10 +10186,6 @@ packages:
     resolution: {integrity: sha512-+wT/N6AyZdZddsoTm03GlNDmMcECBJhj392I1HfDWfhUnRB15EwCyAPIkbRJ7Nk3FF4JdrUohrquprBTMH223g==}
     engines: {node: '>=0.10.0'}
 
-  semver@5.0.3:
-    resolution: {integrity: sha512-5OkOBiw69xqmxOFIXwXsiY1HlE+om8nNptg1ZIf95fzcnfgOv2fLm7pmmGbRJsjJIqPpW5Kwy4wpDBTz5wQlUw==}
-    hasBin: true
-
   semver@5.3.0:
     resolution: {integrity: sha512-mfmm3/H9+67MCVix1h+IXTpDwL6710LyHuk7+cWC9T1mE0qz4iHhh6r4hU2wrIT9iTsAAC2XQRvfblL028cpLw==}
     hasBin: true
@@ -10390,10 +10350,6 @@ packages:
   slide@1.1.6:
     resolution: {integrity: sha512-NwrtjCg+lZoqhFU8fOwl4ay2ei8PaqCBOUV3/ektPY9trO1yQ1oXEfmHAhKArUVUr/hOHvy5f6AdP17dCM0zMw==}
 
-  smart-buffer@1.1.15:
-    resolution: {integrity: sha512-1+8bxygjTsNfvQe0/0pNBesTOlSHtOeG6b6LYbvsZCCHDKYZ40zcQo6YTnZBWrBSLWOCbrHljLdEmGMYebu7aQ==}
-    engines: {node: '>= 0.10.15', npm: '>= 1.3.5'}
-
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
@@ -10425,9 +10381,6 @@ packages:
     engines: {node: '>=0.8.0'}
     deprecated: This module moved to @hapi/sntp. Please make sure to switch over as this distribution is no longer supported and may contain bugs and critical security issues.
 
-  socks-proxy-agent@2.1.1:
-    resolution: {integrity: sha512-sFtmYqdUK5dAMh85H0LEVFUCO7OhJJe1/z2x/Z6mxp3s7/QPf1RkZmpZy+BpuU0bEjcV9npqKjq9Y3kwFUjnxw==}
-
   socks-proxy-agent@7.0.0:
     resolution: {integrity: sha512-Fgl0YPZ902wEsAyiQ+idGd1A7rSFx/ayC1CQVMw5P+EQx2V0SgpGtf6OKFhVjPflPUl9YMmEOnmfjCdMUsygww==}
     engines: {node: '>= 10'}
@@ -10435,11 +10388,6 @@ packages:
   socks-proxy-agent@8.0.5:
     resolution: {integrity: sha512-HehCEsotFqbPW9sJ8WVYB6UbmIMv7kUUORIF2Nncq4VQvBfNBLibW9YZR5dlYCSUhwcD628pRllm7n+E+YTzJw==}
     engines: {node: '>= 14'}
-
-  socks@1.1.10:
-    resolution: {integrity: sha512-ArX4vGPULWjKDKgUnW8YzfI2uXW7kzgkJuB0GnFBA/PfT3exrrOk+7Wk2oeb894Qf20u1PWv9LEgrO0Z82qAzA==}
-    engines: {node: '>= 0.10.0', npm: '>= 1.3.5'}
-    deprecated: If using 2.x branch, please upgrade to at least 2.1.6 to avoid a serious bug with socket data flow and an import issue introduced in 2.1.0
 
   socks@2.8.7:
     resolution: {integrity: sha512-HLpt+uLy/pxB+bum/9DzAgiKS8CX1EvbWxI4zlmgGCExImLdiad2iCwXT5Z4c9c3Eq8rP2318mPW2c+QbtjK8A==}
@@ -10657,9 +10605,6 @@ packages:
   string.prototype.trimstart@1.0.8:
     resolution: {integrity: sha512-UXSH262CSZY1tfu3G3Secr6uGLCFVPMhIqHjlgCUtCCcgihYc/xKs9djMTMUOb2j1mVSeU8EU6NWc/iQKU6Gfg==}
     engines: {node: '>= 0.4'}
-
-  string_decoder@0.10.31:
-    resolution: {integrity: sha512-ev2QzSzWPYmy9GuqfIVildA4OdcGLeFZQrq5ys6RtiuF+RQQiZWr8TZNyAcuVXyQRYfEO+MsoB/1BuQVhOJuoQ==}
 
   string_decoder@1.0.3:
     resolution: {integrity: sha512-4AH6Z5fzNNBcH+6XDMfA/BTt87skxqJlO0lAh3Dker5zThcAxG6mKz+iGu308UKoPPQ8Dcqx/4JhujzltRa+hQ==}
@@ -11870,9 +11815,6 @@ packages:
 
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
-
-  xregexp@2.0.0:
-    resolution: {integrity: sha512-xl/50/Cf32VsGq/1R8jJE5ajH1yMCQkpmoS10QbFZWl2Oor4H0Me64Pu2yxvsRWK3m6soJbmGfzSR7BYmDcWAA==}
 
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
@@ -13412,8 +13354,6 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@tootallnate/once@1.1.2': {}
-
   '@tootallnate/once@2.0.0': {}
 
   '@trysound/sax@0.2.0': {}
@@ -14310,11 +14250,6 @@ snapshots:
   acorn@7.4.1: {}
 
   acorn@8.15.0: {}
-
-  agent-base@2.1.1:
-    dependencies:
-      extend: 3.0.2
-      semver: 5.0.3
 
   agent-base@6.0.2:
     dependencies:
@@ -15790,8 +15725,6 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
-  data-uri-to-buffer@0.0.4: {}
-
   data-uri-to-buffer@4.0.1: {}
 
   data-urls@4.0.0:
@@ -16269,18 +16202,6 @@ snapshots:
     dependencies:
       '@electron/get': 1.14.1
       extract-zip: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  electron-proxy-agent@1.2.1:
-    dependencies:
-      agent-base: 2.1.1
-      debug: 2.6.9(supports-color@6.1.0)
-      extend: 3.0.2
-      get-uri: 1.1.0
-      http-proxy-agent: 4.0.1
-      https-proxy-agent: 5.0.1
-      socks-proxy-agent: 2.1.1
     transitivePeerDependencies:
       - supports-color
 
@@ -17617,8 +17538,6 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
-  file-uri-to-path@0.0.2: {}
-
   file-uri-to-path@1.0.0:
     optional: true
 
@@ -17899,11 +17818,6 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  ftp@0.3.10:
-    dependencies:
-      readable-stream: 1.1.14
-      xregexp: 2.0.0
-
   function-bind@1.1.2: {}
 
   function.prototype.name@1.1.8:
@@ -17980,17 +17894,6 @@ snapshots:
   get-tsconfig@4.13.0:
     dependencies:
       resolve-pkg-maps: 1.0.0
-
-  get-uri@1.1.0:
-    dependencies:
-      data-uri-to-buffer: 0.0.4
-      debug: 2.6.9(supports-color@6.1.0)
-      extend: 3.0.2
-      file-uri-to-path: 0.0.2
-      ftp: 0.3.10
-      readable-stream: 2.3.8
-    transitivePeerDependencies:
-      - supports-color
 
   get-value@2.0.6: {}
 
@@ -18422,14 +18325,6 @@ snapshots:
       statuses: 2.0.1
       toidentifier: 1.0.1
 
-  http-proxy-agent@4.0.1:
-    dependencies:
-      '@tootallnate/once': 1.1.2
-      agent-base: 6.0.2
-      debug: 4.4.3(supports-color@5.5.0)
-    transitivePeerDependencies:
-      - supports-color
-
   http-proxy-agent@5.0.0:
     dependencies:
       '@tootallnate/once': 2.0.0
@@ -18637,8 +18532,6 @@ snapshots:
   invert-kv@1.0.0: {}
 
   ip-address@10.1.0: {}
-
-  ip@1.1.9: {}
 
   ipaddr.js@1.9.1: {}
 
@@ -21465,13 +21358,6 @@ snapshots:
       normalize-package-data: 2.5.0
       path-type: 1.1.0
 
-  readable-stream@1.1.14:
-    dependencies:
-      core-util-is: 1.0.3
-      inherits: 2.0.4
-      isarray: 0.0.1
-      string_decoder: 0.10.31
-
   readable-stream@2.2.9:
     dependencies:
       buffer-shims: 1.0.0
@@ -22016,8 +21902,6 @@ snapshots:
       semver: 5.7.2
       semver-regex: 1.0.0
 
-  semver@5.0.3: {}
-
   semver@5.3.0: {}
 
   semver@5.7.2: {}
@@ -22220,8 +22104,6 @@ snapshots:
 
   slide@1.1.6: {}
 
-  smart-buffer@1.1.15: {}
-
   smart-buffer@4.2.0: {}
 
   smob@1.5.0: {}
@@ -22268,12 +22150,6 @@ snapshots:
     dependencies:
       hoek: 2.16.3
 
-  socks-proxy-agent@2.1.1:
-    dependencies:
-      agent-base: 2.1.1
-      extend: 3.0.2
-      socks: 1.1.10
-
   socks-proxy-agent@7.0.0:
     dependencies:
       agent-base: 6.0.2
@@ -22289,11 +22165,6 @@ snapshots:
       socks: 2.8.7
     transitivePeerDependencies:
       - supports-color
-
-  socks@1.1.10:
-    dependencies:
-      ip: 1.1.9
-      smart-buffer: 1.1.15
 
   socks@2.8.7:
     dependencies:
@@ -22602,8 +22473,6 @@ snapshots:
       call-bind: 1.0.8
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
-
-  string_decoder@0.10.31: {}
 
   string_decoder@1.0.3:
     dependencies:
@@ -24013,8 +23882,6 @@ snapshots:
   xmlbuilder@15.1.1: {}
 
   xmlchars@2.2.0: {}
-
-  xregexp@2.0.0: {}
 
   xtend@4.0.2: {}
 

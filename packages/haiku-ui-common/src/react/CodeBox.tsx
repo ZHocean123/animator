@@ -1,7 +1,7 @@
 /* tslint:disable:import-name */
 import * as React from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism/index.js'
 import Palette from '../Palette'
 
 export interface CodeBoxProps {

@@ -2,11 +2,13 @@
 import type { MenuItemConstructorOptions } from 'electron'
 import type { PlumbingProject } from '../types'
 import { app, Menu, shell } from 'electron'
-import { assign, isEqual } from 'lodash'
+import lodash from 'lodash'
 
 import { isMac, isWindows } from '../environments/os'
 import { Experiment, experimentIsEnabled } from '../experiments'
 import { TourUtils } from '../types/enums'
+
+const { assign, isEqual } = lodash
 
 // Only set app name if we're in an Electron environment
 if (typeof app !== 'undefined') {

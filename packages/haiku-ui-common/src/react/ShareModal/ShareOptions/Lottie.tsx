@@ -1,13 +1,13 @@
 import { join } from 'node:path'
-import { remote } from 'electron'
+import { dialog } from 'electron'
 import { copyFile, exists } from 'fs-extra'
 import * as React from 'react'
 import { SHARED_STYLES } from '../../../SharedStyles'
 import { ExternalLink } from '../../ExternalLink'
 import { PUBLISH_SHARED } from './PublishStyles'
 
-// 延迟获取 dialog，避免在 remote 不可用时崩溃
-const getDialog = () => remote?.dialog
+// 直接使用 dialog
+const getDialog = () => dialog
 
 export interface LottieProps {
   entry: string

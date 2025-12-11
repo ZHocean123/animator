@@ -26,7 +26,15 @@ class InstalledComponent extends BaseModel {
 
   getIdentifier () {
     // This identifier is going to be something like HaikuLine or MyOrg_MyName
-    return ModuleWrapper.modulePathToIdentifierName(this.modpath);
+    // Using native ESModule functionality instead of ModuleWrapper
+    const parts = this.modpath.split(path.sep);
+    // @haiku/blah/foo.js -> @haiku/blah/foo
+    const nicepath = path.dirname(this.modpath) + path.sep + path.basename(this.modpath, path.extname(this.modpath));
+    const partsArray = nicepath.split(path.sep);
+    // Underscoreize the path, so @haiku/core/blah/blah -> haiku_core_blah_blah
+    return partsArray.map((part) => {
+      return part.replace(/\W+/g, '_');
+    }).join('_').slice(1); // Remove leading '_'
   }
 }
 
@@ -40,4 +48,4 @@ BaseModel.extend(InstalledComponent);
 
 export default InstalledComponent;
 
-import ModuleWrapper from './ModuleWrapper.js';
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.

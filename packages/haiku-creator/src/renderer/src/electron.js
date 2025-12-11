@@ -7,7 +7,8 @@ import * as path from 'node:path'
 import { URL } from 'node:url'
 import { inherits } from 'node:util'
 import { app, BrowserWindow, dialog, ipcMain, protocol, session, systemPreferences } from 'electron'
-import ElectronProxyAgent from 'electron-proxy-agent'
+// electron-proxy-agent is no longer needed as Electron has built-in proxy support
+// import ElectronProxyAgent from 'electron-proxy-agent'
 import { isMac, isProxied, isWindows, ProxyType } from 'haiku-common'
 import TopMenu from 'haiku-common/electron/TopMenu'
 import { ensureTrailingSlash, logger, mixpanel } from 'haiku-serialization'
@@ -259,8 +260,16 @@ function createWindow() {
   // its own websocket connections to our plumbing server, etc.
   browserWindow.webContents.on('did-finish-load', () => {
     const ses = session.fromPartition('persist:name')
-    https.globalAgent = http.globalAgent = new ElectronProxyAgent(session.defaultSession)
+    
+    // Set up proxy configuration using Electron's built-in session API
+    ses.setProxy({
+      mode: 'pac_script',
+      pacScript: `function FindProxyForURL(url, host) {
+        return "${haiku.plumbing.url}";
+      }`
+    })
 
+    // Resolve proxy configuration
     ses.resolveProxy(haiku.plumbing.url, (proxy) => {
       haiku.proxy = {
         // Proxy URL will come through in PAC syntax, e.g. `PROXY secure.megacorp.com:3128`

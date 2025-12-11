@@ -161,7 +161,7 @@ class Stage extends React.Component {
     }
   }
 
-  injectWebview() {
+  async injectWebview() {
     this.webview = document.createElement('webview')
 
     const query = qs.stringify(assign({}, this.props.haiku, {
@@ -176,7 +176,9 @@ class Stage extends React.Component {
       },
     }))
 
-    const url = `file://${require.resolve(path.join('haiku-glass', 'index.html'))}?${query}`
+    const resolved = await window.electronAPI.module.resolve('haiku-glass', 'index.html')
+    const target = typeof resolved === 'string' ? resolved : ''
+    const url = `file://${target}?${query}`
 
     this.webview.setAttribute('src', url)
     this.webview.setAttribute('id', 'glass-webview')

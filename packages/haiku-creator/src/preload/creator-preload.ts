@@ -63,6 +63,28 @@ const electronAPI = {
       ipcRenderer.invoke('dialog:show-save-dialog', options),
   },
 
+  // Shell 操作
+  shell: {
+    openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', url),
+    showItemInFolder: (abspath: string) => ipcRenderer.invoke('shell:show-item', abspath),
+  },
+
+  // 剪贴板
+  clipboard: {
+    writeText: (text: string) => ipcRenderer.invoke('clipboard:write-text', text),
+  },
+
+  // 只读文件系统
+  fs: {
+    readFile: (abspath: string) => ipcRenderer.invoke('fs:read-file', abspath),
+    readdir: (abspath: string) => ipcRenderer.invoke('fs:readdir', abspath),
+  },
+
+  // Node 模块解析
+  module: {
+    resolve: (pkg: string, rel: string) => ipcRenderer.invoke('module:resolve', { pkg, rel }),
+  },
+
   // 发送消息到主进程（白名单通道）
   send: (channel: string, ...args: unknown[]) => {
     if (ALLOWED_SEND_CHANNELS.includes(channel)) {

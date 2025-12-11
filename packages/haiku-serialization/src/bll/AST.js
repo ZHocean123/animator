@@ -8,7 +8,7 @@ import BaseModel from './BaseModel.js'
 
 // Down here to avoid Node circular dependency stub objects. #FIXME
 import Bytecode from './Bytecode.js'
-import ModuleWrapper from './ModuleWrapper.js'
+// ModuleWrapper has been removed as part of migration to ESModule and electron-vite hot reload support.
 import Template from './Template.js'
 
 const HAIKU_SOURCE_ATTRIBUTE = 'haiku-source'
